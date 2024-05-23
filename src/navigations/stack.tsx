@@ -1,10 +1,10 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types/navigation/stack";
-import MainBottomNav from "./bottom";
-import Appearance from "../screens/Profile/Appearance";
-import Sell from "../screens/Sell";
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { RootStackParamList } from "../types/navigation/stack"
+import MainBottomNav from "./bottom"
+import Appearance from "../screens/Profile/Appearance"
+import Sell from "../screens/Sell"
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function MainStackNav() {
   return (
@@ -25,7 +25,7 @@ function MainStackNav() {
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
-  );
+  )
 }
 
-export default MainStackNav;
+export default MainStackNav
