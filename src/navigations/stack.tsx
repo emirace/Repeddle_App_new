@@ -5,7 +5,7 @@ import Appearance from "../screens/profile/Appearance";
 import Sell from "../screens/Sell";
 import Chat from "../screens/chat/Chat";
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function MainStackNav() {
   return (
@@ -31,7 +31,7 @@ function MainStackNav() {
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
-  );
+  )
 }
 
-export default MainStackNav;
+export default MainStackNav

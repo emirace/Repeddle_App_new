@@ -87,4 +87,31 @@ export type TopSellers = {
   lastName: string
   image: string
   sold: number
+  badge?: string
+}
+
+export type UserByUsername = {
+  user: {
+    _id: string
+    username: string
+    followers: string[]
+    following: string[]
+    likes: string[]
+    sold: Array<string>
+    numReviews: number
+    region: string
+    createdAt: string
+    image?: string
+    badge?: boolean
+    about?: string
+    rating?: number
+    buyers?: string[]
+    rebundle?: IRebundle
+  }
+  products: {
+    all: IProduct[]
+    sold: IProduct[]
+    liked: IProduct[]
+    selling: IProduct[]
+  }
 }
