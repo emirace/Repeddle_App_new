@@ -1,27 +1,27 @@
 // MainBottomNav.tsx
-import React, { useRef } from "react";
-import { StyleProp, View, ViewStyle, Platform } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Icon } from "react-native-paper";
-import { lightTheme } from "../constant/theme";
-import useCart from "../hooks/useCart";
-import { MainScreenNavigationProp } from "../types/navigation/stack";
-import Home from "../screens/Home";
-import Category from "../screens/Category";
-import Chat from "../screens/chat/Conversation";
-import Profile from "../screens/profile";
-import CustomTabBarButton from "../components/CustomTabBarButton";
-import Conversation from "../screens/chat/Conversation";
+import React, { useRef } from "react"
+import { StyleProp, View, ViewStyle, Platform } from "react-native"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { Icon } from "react-native-paper"
+import { lightTheme } from "../constant/theme"
+import useCart from "../hooks/useCart"
+import { MainScreenNavigationProp } from "../types/navigation/stack"
+import Home from "../screens/Home"
+import Category from "../screens/Category"
+import Chat from "../screens/chat/Conversation"
+import Profile from "../screens/Profile"
+import CustomTabBarButton from "../components/CustomTabBarButton"
+import Conversation from "../screens/chat/Conversation"
 
 type TabConfiguration = {
-  name: string;
-  component: React.ComponentType<any>;
-  iconSource: { selected: string; unselected: string };
-  badge?: any;
-  floatingButton?: boolean;
-};
+  name: string
+  component: React.ComponentType<any>
+  iconSource: { selected: string; unselected: string }
+  badge?: any
+  floatingButton?: boolean
+}
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator()
 
 const tabBarStyle: StyleProp<ViewStyle> = {
   elevation: 0,
@@ -34,7 +34,7 @@ const tabBarStyle: StyleProp<ViewStyle> = {
   borderRadius: 20,
   height: 90,
   paddingTop: Platform.OS === "ios" ? 30 : 0,
-};
+}
 
 const tabBarShadowStyle: StyleProp<ViewStyle> = {
   shadowColor: lightTheme.colors.secondary,
@@ -42,20 +42,20 @@ const tabBarShadowStyle: StyleProp<ViewStyle> = {
   shadowOpacity: 0.1,
   shadowRadius: 3.5,
   elevation: 5,
-};
+}
 
 const tabBarBadgeStyle: StyleProp<ViewStyle> = {
   position: "absolute",
   top: Platform.OS === "android" ? 10 : -10,
   right: -5,
   backgroundColor: lightTheme.colors.primary,
-};
+}
 
 const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
   navigation,
   route,
 }) => {
-  const { cart } = useCart();
+  const { cart } = useCart()
 
   const tabConfigurations: TabConfiguration[] = [
     {
@@ -87,7 +87,7 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
       component: Profile,
       iconSource: { selected: "account", unselected: "account-outline" },
     },
-  ];
+  ]
 
   return (
     <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -131,7 +131,7 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
         ))}
       </Tab.Navigator>
     </View>
-  );
-};
+  )
+}
 
-export default MainBottomNav;
+export default MainBottomNav

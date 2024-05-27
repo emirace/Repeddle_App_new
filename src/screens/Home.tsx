@@ -5,18 +5,19 @@ import {
   Dimensions,
   FlatList,
   ActivityIndicator,
-  Text,
+  Animated,
 } from "react-native"
-import React, { useState } from "react"
-import { Appbar, Searchbar, useTheme } from "react-native-paper"
+import React, { useEffect, useRef, useState } from "react"
+import { Appbar, IconButton, Searchbar, useTheme } from "react-native-paper"
 import useThemeContext from "../hooks/useTheme"
 import { MainScreenNavigationProp } from "../types/navigation/stack"
 import { TopSellers } from "../types/user"
 import HomeContents from "../section/home/HomeContents"
 import { IProduct } from "../types/product"
-import { lightTheme } from "../constant/theme"
 import homeStyles from "../section/home/homeStyles"
 import ProductItem from "../components/ProductItem"
+import useProducts from "../hooks/useProducts"
+import useUser from "../hooks/useUser"
 
 const WIDTH = Dimensions.get("screen").width
 
@@ -24,34 +25,126 @@ type Props = MainScreenNavigationProp
 
 const numColumns = 2
 
-const Home = ({ navigation }: Props) => {
+const Home = ({ navigation }: any) => {
   const { themeMode } = useThemeContext()
 
+  const { products, fetchProducts, loading } = useProducts()
+  const { getTopSellers } = useUser()
+
   const [searchQuery, setSearchQuery] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [sellers, setSellers] = useState<TopSellers[]>([])
   const [sellerLoading, setSellerLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(false)
+  const [sellerError, setSellerError] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
 
-  // const formatData = (data: IProduct[], numColumns: number) => {
-  //   const totalRows = Math.floor(data.length / numColumns)
-  //   let totalLastRow = data.length - totalRows * numColumns
-  //   if (totalLastRow !== 0 && totalLastRow !== numColumns) {
-  //     data.push({ key: "blank", empty: true })
-  //   }
-  //   return data
-  // }
+  useEffect(() => {
+    fetchProducts(`page=${currentPage}`)
+  }, [])
+
+  useEffect(() => {
+    const fetchSellers = async () => {
+      setSellerLoading(true)
+      const res = await getTopSellers()
+      if (typeof res === "string") {
+        setSellerError(res)
+      } else {
+        setSellers(res)
+      }
+
+      setSellerLoading(false)
+    }
+
+    fetchSellers()
+  }, [])
 
   const handleMore = () => {
-    if (hasMore) {
+    if (currentPage < products.totalPages) {
       setCurrentPage(currentPage + 1)
-      setIsLoading(true)
     }
   }
 
-  const error = ""
-  const seller: TopSellers[] = []
-  const products: IProduct[] = []
+  const handleSearch = () => {
+    navigation.navigate("Search", { query: searchQuery })
+  }
+
+  const animatedValue = useRef(new Animated.Value(0)).current
+
+  const searchAnimation = {
+    transform: [
+      {
+        translateX: animatedValue.interpolate({
+          inputRange: [0, 40],
+          outputRange: [-15, 60],
+          extrapolate: "clamp",
+        }),
+      },
+      {
+        translateY: animatedValue.interpolate({
+          inputRange: [0, 50],
+          outputRange: [0, -75],
+          extrapolate: "clamp",
+        }),
+      },
+    ],
+    width: animatedValue.interpolate({
+      inputRange: [0, 35],
+      outputRange: [WIDTH, WIDTH - 150],
+      extrapolate: "clamp",
+    }),
+    // height: animatedValue.interpolate({
+    //   inputRange: [0, 35],
+    //   outputRange: [55, 1],
+    //   extrapolate: "clamp",
+    // }),
+  }
+
+  const logoAnimation = {
+    transform: [
+      {
+        scaleX: animatedValue.interpolate({
+          inputRange: [0, 50],
+          outputRange: [1, 0],
+          extrapolate: "clamp",
+        }),
+      },
+      {
+        translateX: animatedValue.interpolate({
+          inputRange: [0, 25],
+          outputRange: [5, -55],
+          extrapolate: "clamp",
+        }),
+      },
+    ],
+    opacity: animatedValue.interpolate({
+      inputRange: [0, 25],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    }),
+  }
+
+  const logo2Animation = {
+    transform: [
+      {
+        scaleX: animatedValue.interpolate({
+          inputRange: [0, 50],
+          outputRange: [0, 1],
+          extrapolate: "clamp",
+        }),
+      },
+      {
+        translateX: animatedValue.interpolate({
+          inputRange: [0, 25],
+          outputRange: [-55, 0],
+          extrapolate: "clamp",
+        }),
+      },
+    ],
+    opacity: animatedValue.interpolate({
+      inputRange: [15, 55],
+      outputRange: [0, 1],
+      extrapolate: "clamp",
+    }),
+  }
 
   return (
     <View>
@@ -62,30 +155,58 @@ const Home = ({ navigation }: Props) => {
           marginBottom: 20,
         }}
       >
-        <Image
+        <Animated.Image
           source={{
             uri:
               themeMode === "dark"
                 ? "https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif"
                 : "https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif",
           }}
-          style={{
-            width: WIDTH * 0.5,
-            height: 40,
-            objectFit: "contain",
-          }}
+          style={[
+            {
+              width: WIDTH * 0.5,
+              height: 40,
+              objectFit: "contain",
+            },
+            logoAnimation,
+          ]}
           alt="logo"
         />
+        <Animated.Image
+          source={{
+            uri:
+              themeMode === "dark"
+                ? "https://res.cloudinary.com/emirace/image/upload/v1658136004/Reppedle_Black_ebqmot.gif"
+                : "https://res.cloudinary.com/emirace/image/upload/v1658136003/Reppedle_White_d56cic.gif",
+          }}
+          style={[
+            {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 60,
+              marginLeft: 10,
+              height: 60,
+              resizeMode: "contain",
+            },
+            logo2Animation,
+          ]}
+        />
+        <IconButton icon="cart" />
       </Appbar.Header>
       <View style={styles.content}>
-        <Searchbar
-          placeholder="Search"
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-        />
+        <Animated.View style={[styles.bottomHeader, searchAnimation]}>
+          <Searchbar
+            placeholder="Search"
+            onChangeText={setSearchQuery}
+            value={searchQuery}
+            onSubmitEditing={handleSearch}
+            onIconPress={handleSearch}
+          />
+        </Animated.View>
       </View>
       <FlatList
-        data={products}
+        data={products.products}
         renderItem={({ item }) => (
           <RenderItem item={item} navigation={navigation} />
         )}
@@ -95,20 +216,20 @@ const Home = ({ navigation }: Props) => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={() => (
           <HomeContents
-            seller={seller}
-            error={error}
+            seller={sellers}
+            error={sellerError}
             isLoading={sellerLoading}
             navigation={navigation}
           />
         )}
-        // onScroll={(e) => {
-        //   const offsetY = e.nativeEvent.contentOffset.y;
-        //   animatedValue.setValue(offsetY);
-        // }}
+        onScroll={(e) => {
+          const offsetY = e.nativeEvent.contentOffset.y
+          animatedValue.setValue(offsetY)
+        }}
         scrollEventThrottle={16}
         onEndReached={handleMore}
         onEndReachedThreshold={0}
-        ListFooterComponent={() => <Footer isLoading={isLoading} />}
+        ListFooterComponent={() => <Footer isLoading={loading} />}
       />
     </View>
   )
@@ -122,12 +243,13 @@ const RenderItem = ({
   navigation: MainScreenNavigationProp["navigation"]
 }) => {
   let { itemStyles, invisible } = homeStyles
-  // if (item.empty) {
-  //   return <View style={[itemStyles, invisible]} />
-  // }
+
   return (
     <View style={itemStyles}>
-      <ProductItem navigation={navigation} product={item} />
+      <ProductItem
+        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        product={item}
+      />
     </View>
   )
 }
@@ -157,5 +279,9 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
+  },
+  bottomHeader: {
+    // height: 1,
+    paddingHorizontal: 10,
   },
 })

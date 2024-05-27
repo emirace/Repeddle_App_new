@@ -25,7 +25,7 @@ const SearchNavbar = ({ navigation, gotoCart, back, onPress }: Props) => {
           }
         >
           {back ? (
-            <IconButton icon="chevron-back" />
+            <IconButton icon="keyboard-backspace" />
           ) : (
             <Image
               source={{
