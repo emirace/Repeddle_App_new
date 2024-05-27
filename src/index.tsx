@@ -15,6 +15,8 @@ import useTheme from "./hooks/useTheme";
 import { darkTheme, lightTheme } from "./constant/theme";
 import MainStackNav from "./navigations/stack";
 import { CartProvider } from "./contexts/CartContext";
+import MessageProvider from "./contexts/MessageContext";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -40,9 +42,13 @@ const Main = () => {
       <NavigationContainer
         theme={themeMode === "dark" ? CombinedDarkTheme : CombinedDefaultTheme}
       >
-        <CartProvider>
-          <MainStackNav />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <MessageProvider>
+              <MainStackNav />
+            </MessageProvider>
+          </CartProvider>
+        </AuthProvider>
       </NavigationContainer>
     </PaperProvider>
   );

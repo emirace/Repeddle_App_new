@@ -4,6 +4,7 @@ export type RootStackParamList = {
   Main: undefined;
   Appearance: undefined;
   Sell: undefined;
+  Chat: { conversationId: string };
 };
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -19,4 +20,9 @@ export type SellNavigationProp = NativeStackScreenProps<
 export type AppearanceNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Appearance"
+>;
+
+export type ChatNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Chat"
 >;
