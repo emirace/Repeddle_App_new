@@ -2,10 +2,11 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { MainBottomStackList } from "./bottom"
 
 export type RootStackParamList = {
-  Main: MainBottomStackList
-  Appearance: undefined
-  Sell: undefined
-}
+  Main: undefined;
+  Appearance: undefined;
+  Sell: undefined;
+  Chat: { conversationId: string };
+};
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
   RootStackParamList,
@@ -20,4 +21,9 @@ export type SellNavigationProp = NativeStackScreenProps<
 export type AppearanceNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Appearance"
->
+>;
+
+export type ChatNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Chat"
+>;

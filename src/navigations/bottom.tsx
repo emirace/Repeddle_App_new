@@ -8,9 +8,10 @@ import useCart from "../hooks/useCart";
 import { MainScreenNavigationProp } from "../types/navigation/stack";
 import Home from "../screens/Home";
 import Category from "../screens/Category";
-import Chat from "../screens/Chat";
-import Profile from "../screens/Profile";
+import Chat from "../screens/chat/Conversation";
+import Profile from "../screens/profile";
 import CustomTabBarButton from "../components/CustomTabBarButton";
+import Conversation from "../screens/chat/Conversation";
 
 type TabConfiguration = {
   name: string;
@@ -78,7 +79,7 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
     },
     {
       name: "Chat",
-      component: Chat,
+      component: Conversation,
       iconSource: { selected: "chat", unselected: "chat-outline" },
     },
     {
