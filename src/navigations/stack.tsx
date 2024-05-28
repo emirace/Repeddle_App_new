@@ -1,11 +1,13 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types/navigation/stack";
-import MainBottomNav from "./bottom";
-import Appearance from "../screens/profile/Appearance";
-import Sell from "../screens/Sell";
-import Chat from "../screens/chat/Chat";
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { RootStackParamList } from "../types/navigation/stack"
+import MainBottomNav from "./bottom"
+import Appearance from "../screens/Profile/Appearance"
+import Sell from "../screens/Sell"
+import Search from "../screens/Search"
+import Product from "../screens/Product"
+import Chat from "../screens/chat/Chat"
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function MainStackNav() {
   return (
@@ -13,6 +15,16 @@ function MainStackNav() {
       <Stack.Screen
         name="Main"
         component={MainBottomNav}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Search"
+        component={Search}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Product"
+        component={Product}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -31,7 +43,7 @@ function MainStackNav() {
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
-  );
+  )
 }
 
-export default MainStackNav;
+export default MainStackNav

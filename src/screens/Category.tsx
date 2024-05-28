@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { Appbar } from "react-native-paper";
+import { StyleSheet, Text, View } from "react-native"
+import React from "react"
+import { Appbar } from "react-native-paper"
 
 const Category = () => {
   return (
@@ -9,13 +9,13 @@ const Category = () => {
         <Appbar.Content title="Category" />
       </Appbar.Header>
     </View>
-  );
-};
+  )
+}
 
-export default Category;
+export default Category
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-});
+})
