@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { lightTheme } from "../constant/theme"
 import { Ionicons } from "@expo/vector-icons"
 import MultiSlider from "@ptomasroos/react-native-multi-slider"
@@ -25,23 +25,36 @@ import {
 } from "../utils/constants"
 import { useTheme } from "react-native-paper"
 import { ICategory } from "../types/category"
+import useBrands from "../hooks/useBrand"
 
 type Props = {
-  filters: SearchOptionsObject
-  handleFilter: (key: SearchOptionsKey, val: string | number) => void
+  tempFilters: SearchOptionsObject
+  handleTempFilter: (key: SearchOptionsKey, val: string | number) => void
   setEnableScrolling: (val: boolean) => void
 }
 
-const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
+const Filters = ({
+  handleTempFilter,
+  tempFilters,
+  setEnableScrolling,
+}: Props) => {
   const { colors } = useTheme()
+  const { brands, fetchBrands } = useBrands()
 
   const [priceRange, setPriceRange] = useState([
-    filters.minPrice,
-    filters.maxPrice,
+    +(tempFilters.minPrice ?? 0),
+    +(tempFilters.maxPrice ?? 5000),
   ])
 
-  const [queryBrand, setQueryBrand] = useState<null | string>(null)
-  const [searchBrand, setSearchBrand] = useState(null)
+  const [queryBrand, setQueryBrand] = useState<string>("")
+
+  useEffect(() => {
+    const params = [["search", queryBrand]]
+
+    const string = new URLSearchParams(params).toString()
+
+    fetchBrands(string)
+  })
 
   const [collapse, setCollapse] = useState({
     category: true,
@@ -64,11 +77,11 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
 
   const handleAfterPriceChange = (values: number[]) => {
     const [newMinValue, newMaxValue] = values
-    if (filters.minPrice !== newMinValue) {
-      handleFilter("minPrice", newMinValue)
+    if (tempFilters.minPrice !== newMinValue) {
+      handleTempFilter("minPrice", newMinValue)
     }
-    if (filters.maxPrice !== newMaxValue) {
-      handleFilter("maxPrice", newMaxValue)
+    if (tempFilters.maxPrice !== newMaxValue) {
+      handleTempFilter("maxPrice", newMaxValue)
     }
     setPriceRange(values)
   }
@@ -93,27 +106,28 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View
             style={[styles.list, collapse.category ? {} : styles.inactivate]}
           >
             <TouchableOpacity
-              style={styles.link}
-              onPress={() => handleFilter("category", "all")}
+              onPress={() => handleTempFilter("category", "all")}
             >
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
-                  name="md-stop-circle"
+                  name="stop-circle-sharp"
                   size={10}
                   color={lightTheme.colors.secondary}
                 />
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.category ? styles.selected : {},
+                    !tempFilters.category || "all" === tempFilters.category
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All
@@ -123,20 +137,19 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
             {categories.length > 0 &&
               categories.map((c) => (
                 <TouchableOpacity
-                  style={styles.link}
-                  onPress={() => handleFilter("category", c.name)}
+                  onPress={() => handleTempFilter("category", c.name)}
                 >
                   <View style={styles.listItem}>
                     <Ionicons
                       style={{ marginRight: 5 }}
-                      name="md-stop-circle"
+                      name="stop-circle-sharp"
                       size={10}
                       color={lightTheme.colors.secondary}
                     />
                     <Text
                       style={[
                         styles.itemText,
-                        c.name === filters.category ? styles.selected : {},
+                        c.name === tempFilters.category ? styles.selected : {},
                       ]}
                     >
                       {c.name}
@@ -159,36 +172,35 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.brand ? {} : styles.inactivate]}>
             <TextInput
               placeholder="Search brands"
               placeholderTextColor="grey"
-              value={queryBrand ?? filters.brand?.toString()}
+              value={queryBrand ?? tempFilters.brand?.toString()}
               onChangeText={(text) => {
-                handleFilter("brand", "")
+                handleTempFilter("brand", "")
                 setQueryBrand(text)
               }}
-              style={[styles.textInput, { color: colors.text }]}
-              cursorColor={colors.text}
+              style={[styles.textInput, { color: colors.outline }]}
+              cursorColor={colors.outline}
             />
-            <TouchableOpacity
-              onPress={() => handleFilter("brand", "all")}
-              style={styles.link}
-            >
+            <TouchableOpacity onPress={() => handleTempFilter("brand", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
-                  name="md-stop-circle"
+                  name="stop-circle-sharp"
                   size={10}
                   color={lightTheme.colors.secondary}
                 />
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.brand ? styles.selected : {},
+                    !tempFilters.brand || "all" === tempFilters.brand
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All
@@ -196,13 +208,13 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
               </View>
             </TouchableOpacity>
             {queryBrand &&
-              searchBrand &&
-              searchBrand.map((p, index) => (
+              brands.length > 0 &&
+              brands.map((p, index) => (
                 <View key={p._id}>
-                  <TouchableOpacity style={styles.link}>
+                  <TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
-                        handleFilter("brand", p.name)
+                        handleTempFilter("brand", p.name)
                         setQueryBrand("")
                         Keyboard.dismiss()
                       }}
@@ -210,14 +222,14 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                     >
                       <Ionicons
                         style={{ marginRight: 5 }}
-                        name="md-stop-circle"
+                        name="stop-circle-sharp"
                         size={10}
                         color={lightTheme.colors.secondary}
                       />
                       <Text
                         style={[
                           styles.itemText,
-                          p.name === filters.brand ? styles.selected : {},
+                          p.name === tempFilters.brand ? styles.selected : {},
                         ]}
                       >
                         {p.name}
@@ -241,7 +253,7 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.price ? {} : styles.inactivate]}>
@@ -278,26 +290,25 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                 collapse.deal ? "chevron-up-outline" : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
 
           <View style={[styles.list, collapse.deal ? {} : styles.inactivate]}>
-            <TouchableOpacity
-              style={styles.link}
-              onPress={() => handleFilter("deal", "all")}
-            >
+            <TouchableOpacity onPress={() => handleTempFilter("deal", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
-                  name="md-stop-circle"
+                  name="stop-circle-sharp"
                   size={10}
                   color={lightTheme.colors.secondary}
                 />
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.deal ? styles.selected : {},
+                    !tempFilters.deal || "all" === tempFilters.deal
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All
@@ -307,20 +318,19 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
             {deals.map((p) => (
               <View key={p.id}>
                 <TouchableOpacity
-                  style={styles.link}
-                  onPress={() => handleFilter("deal", p.value)}
+                  onPress={() => handleTempFilter("deal", p.value)}
                 >
                   <View style={styles.listItem}>
                     <Ionicons
                       style={{ marginRight: 5 }}
-                      name="md-stop-circle"
+                      name="stop-circle-sharp"
                       size={10}
                       color={lightTheme.colors.secondary}
                     />
                     <Text
                       style={[
                         styles.itemText,
-                        p.value === filters.deal ? styles.selected : {},
+                        p.value === tempFilters.deal ? styles.selected : {},
                       ]}
                     >
                       {p.name}
@@ -345,49 +355,59 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
 
           <View
             style={[styles.rating, collapse.review ? {} : styles.inactivate]}
           >
-            <TouchableOpacity onPress={() => handleFilter("rating", 1)}>
+            <TouchableOpacity onPress={() => handleTempFilter("rating", 1)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={+(filters?.rating ?? 0) >= 1 ? "star" : "star-outline"}
+                name={
+                  +(tempFilters?.rating ?? 0) >= 1 ? "star" : "star-outline"
+                }
                 size={26}
                 color={lightTheme.colors.primary}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleFilter("rating", 2)}>
+            <TouchableOpacity onPress={() => handleTempFilter("rating", 2)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={+(filters?.rating ?? 0) >= 2 ? "star" : "star-outline"}
+                name={
+                  +(tempFilters?.rating ?? 0) >= 2 ? "star" : "star-outline"
+                }
                 size={26}
                 color={lightTheme.colors.primary}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleFilter("rating", 3)}>
+            <TouchableOpacity onPress={() => handleTempFilter("rating", 3)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={+(filters?.rating ?? 0) >= 3 ? "star" : "star-outline"}
+                name={
+                  +(tempFilters?.rating ?? 0) >= 3 ? "star" : "star-outline"
+                }
                 size={26}
                 color={lightTheme.colors.primary}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleFilter("rating", 4)}>
+            <TouchableOpacity onPress={() => handleTempFilter("rating", 4)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={+(filters?.rating ?? 0) >= 4 ? "star" : "star-outline"}
+                name={
+                  +(tempFilters?.rating ?? 0) >= 4 ? "star" : "star-outline"
+                }
                 size={26}
                 color={lightTheme.colors.primary}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleFilter("rating", 5)}>
+            <TouchableOpacity onPress={() => handleTempFilter("rating", 5)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={+(filters?.rating ?? 0) >= 5 ? "star" : "star-outline"}
+                name={
+                  +(tempFilters?.rating ?? 0) >= 5 ? "star" : "star-outline"
+                }
                 size={26}
                 color={lightTheme.colors.primary}
               />
@@ -407,19 +427,18 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.color ? {} : styles.inactivate]}>
-            <TouchableOpacity
-              style={styles.link}
-              onPress={() => handleFilter("color", "all")}
-            >
+            <TouchableOpacity onPress={() => handleTempFilter("color", "all")}>
               <View style={styles.listItem}>
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.color ? styles.selected : {},
+                    !tempFilters.color || "all" === tempFilters.color
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All
@@ -430,8 +449,7 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
               {color1.map((c, i) => (
                 <TouchableOpacity
                   style={[
-                    styles.link,
-                    c.name === filters.color
+                    c.name === tempFilters.color
                       ? {
                           borderWidth: 2,
                           borderColor: lightTheme.colors.primary,
@@ -439,7 +457,7 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                       : {},
                   ]}
                   key={c.id}
-                  onPress={() => handleFilter("color", c.name)}
+                  onPress={() => handleTempFilter("color", c.name)}
                 >
                   <View style={styles.listItem}>
                     {c.name === "multiculour" ? (
@@ -481,19 +499,18 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                 collapse.size ? "chevron-up-outline" : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.size ? {} : styles.inactivate]}>
-            <TouchableOpacity
-              style={styles.link}
-              onPress={() => handleFilter("size", "all")}
-            >
+            <TouchableOpacity onPress={() => handleTempFilter("size", "all")}>
               <View style={styles.listItem}>
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.size ? styles.selected : {},
+                    !tempFilters.size || "all" === tempFilters.size
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All
@@ -503,9 +520,8 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
             <View style={styles.color}>
               {sizelist.map((c, i) => (
                 <TouchableOpacity
-                  style={styles.link}
                   key={c.id}
-                  onPress={() => handleFilter("size", c.name)}
+                  onPress={() => handleTempFilter("size", c.name)}
                 >
                   <View style={styles.listItem}>
                     <View
@@ -517,16 +533,16 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                         height: 20,
                         borderRadius: 5,
                         borderColor:
-                          c.name === filters.size
+                          c.name === tempFilters.size
                             ? lightTheme.colors.primary
-                            : colors.text,
+                            : colors.outline,
                       }}
                     >
                       <Text
                         style={[
                           [
                             styles.itemText,
-                            c.name === filters.size ? styles.selected : {},
+                            c.name === tempFilters.size ? styles.selected : {},
                           ],
                           { textTransform: "uppercase" },
                         ]}
@@ -553,27 +569,28 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View
             style={[styles.list, collapse.shipping ? {} : styles.inactivate]}
           >
             <TouchableOpacity
-              style={styles.link}
-              onPress={() => handleFilter("shipping", "all")}
+              onPress={() => handleTempFilter("shipping", "all")}
             >
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
-                  name="md-stop-circle"
+                  name="stop-circle-sharp"
                   size={10}
                   color={lightTheme.colors.secondary}
                 />
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.shipping ? styles.selected : {},
+                    !tempFilters.shipping || "all" === tempFilters.shipping
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All Product
@@ -582,21 +599,20 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
             </TouchableOpacity>
             {shippinglist.map((c, i) => (
               <TouchableOpacity
-                style={styles.link}
                 key={c.id}
-                onPress={() => handleFilter("shipping", c.name)}
+                onPress={() => handleTempFilter("shipping", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
                     style={{ marginRight: 5 }}
-                    name="md-stop-circle"
+                    name="stop-circle-sharp"
                     size={10}
                     color={lightTheme.colors.secondary}
                   />
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === filters.shipping ? styles.selected : {},
+                      c.name === tempFilters.shipping ? styles.selected : {},
                     ]}
                   >
                     {c.name}
@@ -619,27 +635,28 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View
             style={[styles.list, collapse.condition ? {} : styles.inactivate]}
           >
             <TouchableOpacity
-              style={styles.link}
-              onPress={() => handleFilter("condition", "all")}
+              onPress={() => handleTempFilter("condition", "all")}
             >
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
-                  name="md-stop-circle"
+                  name="stop-circle-sharp"
                   size={10}
                   color={lightTheme.colors.secondary}
                 />
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.condition ? styles.selected : {},
+                    !tempFilters.condition || "all" === tempFilters.condition
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All Condition
@@ -648,21 +665,20 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
             </TouchableOpacity>
             {conditionlist.map((c, i) => (
               <TouchableOpacity
-                style={styles.link}
                 key={c.id}
-                onPress={() => handleFilter("price", c.name)}
+                onPress={() => handleTempFilter("price", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
                     style={{ marginRight: 5 }}
-                    name="md-stop-circle"
+                    name="stop-circle-sharp"
                     size={10}
                     color={lightTheme.colors.secondary}
                   />
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === filters.condition ? styles.selected : {},
+                      c.name === tempFilters.condition ? styles.selected : {},
                     ]}
                   >
                     {c.name}
@@ -687,7 +703,7 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View
@@ -697,20 +713,22 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
             ]}
           >
             <TouchableOpacity
-              style={styles.link}
-              onPress={() => handleFilter("availability", "all")}
+              onPress={() => handleTempFilter("availability", "all")}
             >
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
-                  name="md-stop-circle"
+                  name="stop-circle-sharp"
                   size={10}
                   color={lightTheme.colors.secondary}
                 />
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.availability ? styles.selected : {},
+                    !tempFilters.availability ||
+                    "all" === tempFilters.availability
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All
@@ -719,21 +737,22 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
             </TouchableOpacity>
             {availabilitylist.map((c, i) => (
               <TouchableOpacity
-                style={styles.link}
                 key={c.id}
-                onPress={() => handleFilter("availability", c.name)}
+                onPress={() => handleTempFilter("availability", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
                     style={{ marginRight: 5 }}
-                    name="md-stop-circle"
+                    name="stop-circle-sharp"
                     size={10}
                     color={lightTheme.colors.secondary}
                   />
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === filters.availability ? styles.selected : {},
+                      c.name === tempFilters.availability
+                        ? styles.selected
+                        : {},
                     ]}
                   >
                     {c.name}
@@ -754,25 +773,24 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                 collapse.type ? "chevron-up-outline" : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.type ? {} : styles.inactivate]}>
-            <TouchableOpacity
-              style={styles.link}
-              onPress={() => handleFilter("type", "all")}
-            >
+            <TouchableOpacity onPress={() => handleTempFilter("type", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
-                  name="md-stop-circle"
+                  name="stop-circle-sharp"
                   size={10}
                   color={lightTheme.colors.secondary}
                 />
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.type ? styles.selected : {},
+                    !tempFilters.type || "all" === tempFilters.type
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All
@@ -781,21 +799,20 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
             </TouchableOpacity>
             {typelist.map((c, i) => (
               <TouchableOpacity
-                style={styles.link}
                 key={c.id}
-                onPress={() => handleFilter("type", c.name)}
+                onPress={() => handleTempFilter("type", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
                     style={{ marginRight: 5 }}
-                    name="md-stop-circle"
+                    name="stop-circle-sharp"
                     size={10}
                     color={lightTheme.colors.secondary}
                   />
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === filters.type ? styles.selected : {},
+                      c.name === tempFilters.type ? styles.selected : {},
                     ]}
                   >
                     {c.name}
@@ -818,27 +835,28 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.text}
+              color={colors.outline}
             />
           </TouchableOpacity>
           <View
             style={[styles.list, collapse.pattern ? {} : styles.inactivate]}
           >
             <TouchableOpacity
-              style={styles.link}
-              onPress={() => handleFilter("pattern", "all")}
+              onPress={() => handleTempFilter("pattern", "all")}
             >
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
-                  name="md-stop-circle"
+                  name="stop-circle-sharp"
                   size={10}
                   color={lightTheme.colors.secondary}
                 />
                 <Text
                   style={[
                     styles.itemText,
-                    "all" === filters.pattern ? styles.selected : {},
+                    !tempFilters.pattern || "all" === tempFilters.pattern
+                      ? styles.selected
+                      : {},
                   ]}
                 >
                   All
@@ -847,21 +865,20 @@ const Filters = ({ filters, handleFilter, setEnableScrolling }: Props) => {
             </TouchableOpacity>
             {patternlist.map((c, i) => (
               <TouchableOpacity
-                style={styles.link}
                 key={c.id}
-                onPress={() => handleFilter("pattern", c.name)}
+                onPress={() => handleTempFilter("pattern", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
                     style={{ marginRight: 5 }}
-                    name="md-stop-circle"
+                    name="stop-circle-sharp"
                     size={10}
                     color={lightTheme.colors.secondary}
                   />
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === filters.pattern ? styles.selected : {},
+                      c.name === tempFilters.pattern ? styles.selected : {},
                     ]}
                   >
                     {c.name}

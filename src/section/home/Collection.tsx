@@ -15,7 +15,7 @@ type Props = {
   navigation: MainScreenNavigationProp["navigation"]
 }
 
-const Collection = ({}: Props) => {
+const Collection = ({ navigation }: Props) => {
   const { colors } = useTheme()
   return (
     <>
@@ -27,7 +27,6 @@ const Collection = ({}: Props) => {
           />
         </View>
         <TouchableOpacity
-        // TODO:
         // onPress={() => navigation.navigate("CategoryStack")}
         >
           <Text style={homeStyles.seeAll}>see all</Text>
@@ -41,7 +40,9 @@ const Collection = ({}: Props) => {
       <View style={homeStyles.categoryScroll}>
         <FlatList
           data={images}
-          renderItem={({ item }) => <RenderItemcat item={item} />}
+          renderItem={({ item }) => (
+            <RenderItemcat navigation={navigation} item={item} />
+          )}
           horizontal
           showsHorizontalScrollIndicator={false}
           snapToInterval={260}
@@ -62,8 +63,7 @@ const Collection = ({}: Props) => {
           <Text style={homeStyles.classicText}>Classic Men Wears</Text>
           <TouchableOpacity
             style={homeStyles.classicButton}
-            // TODO:
-            // onPress={() => navigation.navigate("Search", { query: "men" })}
+            onPress={() => navigation.navigate("Search", { query: "men" })}
           >
             <Text
               style={[
@@ -88,8 +88,7 @@ const Collection = ({}: Props) => {
           <Text style={homeStyles.classicText}>Smart Kid's Wears</Text>
           <TouchableOpacity
             style={homeStyles.classicButton}
-            // TODO:
-            // onPress={() => navigation.navigate("Search", { query: "kid" })}
+            onPress={() => navigation.navigate("Search", { query: "kid" })}
           >
             <Text
               style={[
@@ -114,8 +113,7 @@ const Collection = ({}: Props) => {
           <Text style={homeStyles.classicText}>High Taste Women Wears</Text>
           <TouchableOpacity
             style={homeStyles.classicButton}
-            // TODO:
-            // onPress={() => navigation.navigate("Search", { query: "women" })}
+            onPress={() => navigation.navigate("Search", { query: "women" })}
           >
             <Text
               style={[
@@ -161,13 +159,18 @@ const images = [
   },
 ]
 
-const RenderItemcat = ({ item }: { item: (typeof images)[number] }) => {
+const RenderItemcat = ({
+  item,
+  navigation,
+}: {
+  item: (typeof images)[number]
+  navigation: MainScreenNavigationProp["navigation"]
+}) => {
   const { colors } = useTheme()
 
   return (
     <TouchableOpacity
-      // TODO:
-      //   onPress={() => navigation.navigate("Search", { query: item.text })}
+      onPress={() => navigation.navigate("Search", { query: item.text })}
       style={homeStyles.catStyles}
     >
       <Image

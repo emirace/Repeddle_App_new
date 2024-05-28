@@ -2,8 +2,13 @@ import { FlatList, Image, Text, TouchableOpacity, View } from "react-native"
 import React from "react"
 import homeStyles from "./homeStyles"
 import { useTheme } from "react-native-paper"
+import { MainScreenNavigationProp } from "../../types/navigation/stack"
 
-const HomeBrands = () => {
+type Props = {
+  navigation: MainScreenNavigationProp["navigation"]
+}
+
+const HomeBrands = ({ navigation }: Props) => {
   return (
     <>
       <View style={[homeStyles.catTitle, { marginTop: 10 }]}>
@@ -32,7 +37,9 @@ const HomeBrands = () => {
       <View style={homeStyles.categoryScroll}>
         <FlatList
           data={brands}
-          renderItem={({ item }) => <RenderItemcat item={item} />}
+          renderItem={({ item }) => (
+            <RenderItemcat navigation={navigation} item={item} />
+          )}
           horizontal
           showsHorizontalScrollIndicator={false}
           snapToInterval={260}
@@ -45,13 +52,17 @@ const HomeBrands = () => {
   )
 }
 
-const RenderItemcat = ({ item }: { item: (typeof brands)[number] }) => {
+const RenderItemcat = ({
+  item,
+  navigation,
+}: {
+  item: (typeof brands)[number]
+  navigation: MainScreenNavigationProp["navigation"]
+}) => {
   const { colors } = useTheme()
   return (
     <TouchableOpacity
-      // TODO:
-      // onPress={() => navigation.navigate('Search', { query: item.text })}
-      // activeOpacity={0.8}
+      onPress={() => navigation.navigate("Search", { query: item.text })}
       style={[homeStyles.catStyles]}
     >
       <Image

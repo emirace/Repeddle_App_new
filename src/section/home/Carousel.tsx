@@ -40,6 +40,8 @@ const entries = [
 
 type Entry = typeof entries
 
+type Screens = keyof MainScreenNavigationProp
+
 const RenderItemSlider = ({
   item,
   navigation,
