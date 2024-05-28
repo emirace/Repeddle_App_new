@@ -14,12 +14,11 @@ import { currency } from "../utils/common"
 import { lightTheme } from "../constant/theme"
 
 type Props = {
-  // TODO:
-  navigation: any
+  navigate: (slug: string) => void
   product: IProduct
 }
 
-const ProductItem = ({ navigation, product }: Props) => {
+const ProductItem = ({ navigate, product }: Props) => {
   const [user, setUser] = useState<IUser | null>(null)
 
   const liked = useMemo(
@@ -45,7 +44,7 @@ const ProductItem = ({ navigation, product }: Props) => {
 
   return (
     <Pressable
-      onPress={() => navigation.navigate("Product", { id: product.slug })}
+      onPress={() => navigate(product.slug)}
       style={[styles.container]}
     >
       <Image source={{ uri: product.images[0] }} style={styles.image} />
