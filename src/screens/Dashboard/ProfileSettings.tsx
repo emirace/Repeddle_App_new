@@ -34,9 +34,11 @@ import { UpdateFields } from "../../types/user"
 import Input from "../../components/Input"
 import useNewsletter from "../../hooks/useNewsletter"
 import Rebundle from "../../components/Rebundle"
+import { ProfileNavigationProp } from "../../types/navigation/stack"
 
-// TODO:
-const ProfileSettings = ({ navigation }: { navigation: any }) => {
+type Props = ProfileNavigationProp
+
+const ProfileSettings = ({ navigation }: Props) => {
   const { user, loading, updateUser } = useAuth()
   const { colors } = useTheme()
 
@@ -507,13 +509,13 @@ const ProfileSettings = ({ navigation }: { navigation: any }) => {
               styles.textarea,
               {
                 backgroundColor: colors.elevation.level2,
-                color: colors.outline,
+                color: colors.onBackground,
                 padding: 10,
               },
             ]}
             multiline={true}
             placeholder="  About"
-            placeholderTextColor={colors.outline}
+            placeholderTextColor={colors.onBackground}
             numberOfLines={10}
             onChangeText={(text) => handleOnChange(text, "about")}
             value={input.about}
@@ -604,7 +606,11 @@ const ProfileSettings = ({ navigation }: { navigation: any }) => {
                   <TouchableOpacity
                     onPress={() => setShowAddress(!showAddress)}
                   >
-                    <Ionicons name="close" size={18} color={colors.outline} />
+                    <Ionicons
+                      name="close"
+                      size={18}
+                      color={colors.onBackground}
+                    />
                   </TouchableOpacity>
                 </View>
                 <Text style={{ marginTop: 10 }}>
@@ -650,7 +656,7 @@ const ProfileSettings = ({ navigation }: { navigation: any }) => {
                     <Picker.Item
                       style={{
                         backgroundColor: colors.elevation.level2,
-                        color: colors.outline,
+                        color: colors.onBackground,
                       }}
                       label={"--select province--"}
                       value={""}
@@ -660,7 +666,7 @@ const ProfileSettings = ({ navigation }: { navigation: any }) => {
                           <Picker.Item
                             style={{
                               backgroundColor: colors.elevation.level2,
-                              color: colors.outline,
+                              color: colors.onBackground,
                             }}
                             key={index}
                             label={name}
@@ -671,7 +677,7 @@ const ProfileSettings = ({ navigation }: { navigation: any }) => {
                           <Picker.Item
                             style={{
                               backgroundColor: colors.elevation.level2,
-                              color: colors.outline,
+                              color: colors.onBackground,
                             }}
                             key={index}
                             label={name}
@@ -717,7 +723,11 @@ const ProfileSettings = ({ navigation }: { navigation: any }) => {
                   <TouchableOpacity
                     onPress={() => setShowAccount(!showAccount)}
                   >
-                    <Ionicons name="close" size={18} color={colors.outline} />
+                    <Ionicons
+                      name="close"
+                      size={18}
+                      color={colors.onBackground}
+                    />
                   </TouchableOpacity>
                 </View>
                 <Text style={{ marginTop: 10 }}>
@@ -765,7 +775,7 @@ const ProfileSettings = ({ navigation }: { navigation: any }) => {
                     <Picker.Item
                       style={{
                         backgroundColor: colors.elevation.level2,
-                        color: colors.outline,
+                        color: colors.onBackground,
                       }}
                       label={"--select bank--"}
                       value={""}
@@ -775,7 +785,7 @@ const ProfileSettings = ({ navigation }: { navigation: any }) => {
                           <Picker.Item
                             style={{
                               backgroundColor: colors.elevation.level2,
-                              color: colors.outline,
+                              color: colors.onBackground,
                             }}
                             key={index}
                             label={name.name}
@@ -786,7 +796,7 @@ const ProfileSettings = ({ navigation }: { navigation: any }) => {
                           <Picker.Item
                             style={{
                               backgroundColor: colors.elevation.level2,
-                              color: colors.outline,
+                              color: colors.onBackground,
                             }}
                             key={index}
                             value={name.name}

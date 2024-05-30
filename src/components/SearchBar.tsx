@@ -25,13 +25,13 @@ const SearchBar = ({ onPress }: Props) => {
           onPress={() => onPress(query)}
           style={styles.searchicon}
         >
-          <Ionicons name="search" size={25} color={colors.outline} />
+          <Ionicons name="search" size={25} color={colors.onBackground} />
         </TouchableOpacity>
         <TextInput
           value={query}
           placeholder={"Search anything"}
-          placeholderTextColor={colors.outline}
-          //   color={colors.outline}
+          placeholderTextColor={colors.onBackground}
+          //   color={colors.onBackground}
           style={styles.TextInput}
           keyboardType="web-search"
           returnKeyType="search"

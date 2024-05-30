@@ -65,7 +65,7 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
     <View>
       <View style={[styles.row, { justifyContent: "space-between" }]}>
         <View style={styles.row}>
-          <FontAwesome5 name="truck" size={18} color={colors.outline} />
+          <FontAwesome5 name="truck" size={18} color={colors.onBackground} />
           <Text style={[styles.text]}>Rebundle</Text>
           <Tooltip
             title={`Re:bundle allows buyers to shop multiple items from your store and only pay for delivery once! The buyer will be charged delivery on their first purchase, and, if they make any additional purchases within the next 2 hours, free delivery will then automatically apply. Shops who enable bundling sell more and faster.  `}
@@ -73,7 +73,7 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
             <IconButton
               icon="help-circle-outline"
               size={18}
-              iconColor={colors.outline}
+              iconColor={colors.onBackground}
               style={{ marginLeft: 10 }}
             />
           </Tooltip>

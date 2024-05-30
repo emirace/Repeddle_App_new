@@ -37,13 +37,13 @@ const Input = ({ error, onFocus, password, icon, ...props }: Props) => {
           style={styles.inputIcon}
           name={icon}
           size={20}
-          color={colors.outline}
+          color={colors.onBackground}
         />
         <TextInput
           secureTextEntry={hidePassword}
           style={styles.TextInput}
           autoCorrect={false}
-          placeholderTextColor={colors.outline}
+          placeholderTextColor={colors.onBackground}
           onFocus={() => {
             onFocus && onFocus()
             setIsFocus(true)
@@ -57,7 +57,7 @@ const Input = ({ error, onFocus, password, icon, ...props }: Props) => {
             style={styles.inputIcon}
             name={hidePassword ? "eye-outline" : "eye-off-outline"}
             size={20}
-            color={colors.outline}
+            color={colors.onBackground}
           />
         )}
       </View>

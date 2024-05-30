@@ -1,6 +1,7 @@
 import { ScrollView, View } from "react-native"
 import React from "react"
 import { Appbar, List, useTheme } from "react-native-paper"
+import { RootStackParamList } from "../../types/navigation/stack"
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { colors } = useTheme()
@@ -54,7 +55,7 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
             <List.Item
               key={item.name}
               title={item.name}
-              // description="Select your prefered theme"
+              description={item.description}
               titleStyle={{
                 fontSize: 22,
               }}
@@ -70,41 +71,53 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
   )
 }
 
-const dashboardItems = [
+const dashboardItems: {
+  name: string
+  link: keyof RootStackParamList
+  leftIcon: string
+  description: string
+}[] = [
   {
     name: "My Profile",
-    link: "profile",
+    link: "Profile",
     leftIcon: "account",
+    description: "Manage your profile",
   },
   {
     name: "My Products",
-    link: "profile",
-    leftIcon: "account",
+    link: "ProductList",
+    leftIcon: "bookmark",
+    description: "Manage your products",
   },
   {
     name: "Orders",
-    link: "profile",
-    leftIcon: "account",
+    link: "OrderList",
+    leftIcon: "basket",
+    description: "View your purchased and sold returns history",
   },
   {
     name: "My Earnings",
-    link: "profile",
+    link: "Profile",
     leftIcon: "account",
+    description: "See your achievements",
   },
   {
     name: "My Wishlist",
-    link: "profile",
+    link: "Profile",
     leftIcon: "account",
+    description: "View saved products",
   },
   {
     name: "Returns",
-    link: "profile",
+    link: "Profile",
     leftIcon: "account",
+    description: "View returns history",
   },
   {
     name: "All Transactions",
-    link: "profile",
+    link: "Profile",
     leftIcon: "account",
+    description: "View all your transactions",
   },
 ]
 
