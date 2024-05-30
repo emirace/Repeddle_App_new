@@ -1,0 +1,175 @@
+import { FontAwesome5, Ionicons } from "@expo/vector-icons"
+import React, { useState } from "react"
+import {
+  StyleSheet,
+  Switch,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native"
+import {
+  ActivityIndicator,
+  IconButton,
+  Text,
+  Tooltip,
+  useTheme,
+} from "react-native-paper"
+import { IRebundle } from "../types/user"
+import { currentAddress, goto, region } from "../utils/common"
+import { getBackendErrorMessage } from "../utils/error"
+
+type Props = {
+  bundle: boolean
+  setBundle: (val: boolean) => void
+}
+
+const Rebundle = ({ bundle, setBundle }: Props) => {
+  const { colors } = useTheme()
+
+  const [rebundleStatus, setRebundleStatus] = useState(bundle)
+  const [rebundleCount, setRebundleCount] = useState("")
+  const [rebundleError, setRebundleError] = useState("")
+  const [loadingRebundle, setLoadingRebundle] = useState(false)
+
+  const toggleSwitch = (mode: boolean) => {
+    if (mode) {
+      setRebundleStatus(mode)
+    } else {
+      setRebundleStatus(mode)
+      handleRebundle({ status: false, count: 0 })
+    }
+  }
+
+  const handleRebundle = async (value?: IRebundle) => {
+    if (value) {
+      // TODO: handle bundle
+      setBundle(value.status)
+      return
+    }
+    if (!rebundleCount) {
+      setRebundleError("Enter the quantity of item(s) for Rebundle")
+      return
+    }
+    try {
+      setLoadingRebundle(true)
+      // TODO: handle bundle
+      // setBundle(data.status)
+      setLoadingRebundle(false)
+    } catch (err) {
+      setLoadingRebundle(false)
+      console.log(getBackendErrorMessage(err))
+    }
+  }
+
+  return (
+    <View>
+      <View style={[styles.row, { justifyContent: "space-between" }]}>
+        <View style={styles.row}>
+          <FontAwesome5 name="truck" size={18} color={colors.outline} />
+          <Text style={[styles.text]}>Rebundle</Text>
+          <Tooltip
+            title={`Re:bundle allows buyers to shop multiple items from your store and only pay for delivery once! The buyer will be charged delivery on their first purchase, and, if they make any additional purchases within the next 2 hours, free delivery will then automatically apply. Shops who enable bundling sell more and faster.  `}
+          >
+            <IconButton
+              icon="help-circle-outline"
+              size={18}
+              iconColor={colors.outline}
+              style={{ marginLeft: 10 }}
+            />
+          </Tooltip>
+        </View>
+        <Switch
+          trackColor={{ false: "#767577", true: "#dedede" }}
+          thumbColor={rebundleStatus ? colors.primary : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleSwitch}
+          value={rebundleStatus}
+        />
+      </View>
+      {rebundleStatus &&
+        (bundle ? (
+          <Ionicons name="checkbox" size={24} color={colors.primary} />
+        ) : (
+          <View>
+            <Text>
+              Please input numbers of how many item(s) you are willing to pack
+              in delivery bag(s) for a buyer when Rebundle is active
+            </Text>
+
+            <Text
+              style={[styles.link, { color: colors.secondary }]}
+              onPress={() => goto(`${currentAddress(region())}/rebundle`)}
+            >
+              More on Re:bundle
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                borderWidth: 1,
+                borderRadius: 5,
+                borderColor: colors.primary,
+              }}
+            >
+              <TextInput
+                style={{
+                  backgroundColor: colors.elevation.level2,
+
+                  flex: 1,
+                  height: 40,
+                  borderTopLeftRadius: 5,
+                  borderBottomLeftRadius: 5,
+                }}
+                keyboardType="numeric"
+                onChangeText={(text) => setRebundleCount(text)}
+                onFocus={() => {
+                  setRebundleError("")
+                }}
+              />
+              {loadingRebundle ? (
+                <ActivityIndicator size={"large"} color={colors.primary} />
+              ) : (
+                <TouchableOpacity
+                  onPress={() => handleRebundle()}
+                  style={[styles.button, { backgroundColor: colors.primary }]}
+                >
+                  <Text style={{ color: "white", fontWeight: "bold" }}>
+                    Activate
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            {rebundleError ? (
+              <Text style={{ color: "red" }}>{rebundleError}</Text>
+            ) : null}
+          </View>
+        ))}
+    </View>
+  )
+}
+
+export default Rebundle
+
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  text: {
+    paddingHorizontal: 10,
+  },
+  button: {
+    padding: 5,
+    paddingHorizontal: 20,
+    height: 40,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  link: {
+    fontSize: 14,
+    textDecorationLine: "underline",
+    marginVertical: 5,
+  },
+})

@@ -2,7 +2,6 @@ import {
   Image,
   Keyboard,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -23,7 +22,7 @@ import {
   sizelist,
   typelist,
 } from "../utils/constants"
-import { useTheme } from "react-native-paper"
+import { Text, useTheme } from "react-native-paper"
 import { ICategory } from "../types/category"
 import useBrands from "../hooks/useBrand"
 
@@ -43,7 +42,7 @@ const Filters = ({
 
   const [priceRange, setPriceRange] = useState([
     +(tempFilters.minPrice ?? 0),
-    +(tempFilters.maxPrice ?? 5000),
+    +(tempFilters.maxPrice ?? 500000),
   ])
 
   const [queryBrand, setQueryBrand] = useState<string>("")

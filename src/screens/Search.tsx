@@ -6,7 +6,7 @@ import {
   View,
 } from "react-native"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet"
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet"
 import { Ionicons } from "@expo/vector-icons"
 import { IProduct } from "../types/product"
 import { normaliseH } from "../utils/normalize"
@@ -14,15 +14,16 @@ import { SearchOptionsKey, SearchOptionsObject } from "../types/search"
 import MyButton from "../components/MyButton"
 import { SearchScreenNavigationProp } from "../types/navigation/stack"
 import ProductItem from "../components/ProductItem"
-import { Text, useTheme } from "react-native-paper"
+import { Appbar, IconButton, Text, useTheme } from "react-native-paper"
 import SearchNavbar from "../components/SearchNavbar"
 import Filters from "../components/Filters"
 import useProducts from "../hooks/useProducts"
+import SearchBar from "../components/SearchBar"
 
 const numColumns = 2
 
 const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
-  const bottomSheetRef = useRef<BottomSheet>(null)
+  const bottomSheetRef = useRef<BottomSheetModal>(null)
   const snapPoints = useMemo(() => ["1%", "100%"], [])
 
   const { fetchProducts, loading, products: productData } = useProducts()
@@ -68,6 +69,17 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
     fetch()
   }, [fetchProd])
 
+  const formatData = (data: IProduct[]) => {
+    const isEven = data.length % 2 === 0
+
+    if (!isEven) {
+      const empty = { ...data[0], empty: true }
+      data.push(empty)
+    }
+
+    return data
+  }
+
   const handleSearch = async (query: string) => {
     handleTempFilters("query", query)
     setCurrentPage(1)
@@ -92,75 +104,91 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   }
 
   return (
-    <View style={styles.container}>
-      <SearchNavbar navigation={navigation} back onPress={handleSearch} />
-
-      <View style={styles.filterCont}>
-        <TouchableOpacity
-          onPress={() => bottomSheetRef.current?.expand()}
-          style={styles.iconCont}
-        >
-          <Ionicons name="filter" size={24} />
-        </TouchableOpacity>
-        <View style={styles.resultCont}>
-          <Text style={[styles.result]}>{productData.totalCount} results</Text>
-        </View>
-      </View>
-      {!hasResult && !loading && (
-        <Text
-          style={{
-            textAlign: "center",
-            width: "100%",
-            marginVertical: 20,
-          }}
-        >
-          🔎 Cant't find what you're looking for? Try related products!
-        </Text>
-      )}
-
-      <FlatList
-        data={products}
-        renderItem={({ item }) => (
-          <RenderItem item={item} navigation={navigation} />
-        )}
-        keyExtractor={(item, index) => item._id}
-        numColumns={numColumns}
-        showsVerticalScrollIndicator={false}
-        onEndReached={handleMore}
-        onEndReachedThreshold={0}
-        style={{ paddingHorizontal: 10 }}
-        ListFooterComponent={() => <Footer loading={loading} />}
-      />
-
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={snapPoints}
-        enablePanDownToClose={true}
-        backgroundStyle={{ backgroundColor: colors.background }}
+    <View>
+      <Appbar.Header
+        mode="small"
+        style={{
+          justifyContent: "space-between",
+          backgroundColor: colors.primary,
+        }}
       >
-        <BottomSheetScrollView
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={enableScrolling}
-          keyboardShouldPersistTaps={"always"}
-        >
-          <Filters
-            tempFilters={tempFilters}
-            handleTempFilter={handleTempFilters}
-            setEnableScrolling={setEnableScrolling}
-          />
-        </BottomSheetScrollView>
-
-        <View style={styles.button}>
-          <MyButton
-            text={`Apply filter (${Object.keys(tempFilters).length})`}
-            onPress={() => {
-              handleFilter()
-              bottomSheetRef.current?.close()
-            }}
-          />
+        <Appbar.BackAction
+          onPress={() => navigation.goBack()}
+          color={colors.background}
+        />
+        <SearchBar onPress={handleSearch} />
+        <IconButton icon="cart-outline" iconColor={colors.background} />
+      </Appbar.Header>
+      <View style={styles.container}>
+        <View style={styles.filterCont}>
+          <TouchableOpacity
+            onPress={() => bottomSheetRef.current?.expand()}
+            style={styles.iconCont}
+          >
+            <Ionicons name="filter" size={24} />
+          </TouchableOpacity>
+          <View style={styles.resultCont}>
+            <Text style={[styles.result]}>
+              {productData.totalCount} results
+            </Text>
+          </View>
         </View>
-      </BottomSheet>
+        {!hasResult && !loading && (
+          <Text
+            style={{
+              textAlign: "center",
+              width: "100%",
+              marginVertical: 20,
+            }}
+          >
+            🔎 Cant't find what you're looking for? Try related products!
+          </Text>
+        )}
+
+        <FlatList
+          data={formatData(products)}
+          renderItem={({ item }) => (
+            <RenderItem item={item} navigation={navigation} />
+          )}
+          keyExtractor={(item, index) => item._id}
+          numColumns={numColumns}
+          showsVerticalScrollIndicator={false}
+          onEndReached={handleMore}
+          onEndReachedThreshold={0}
+          style={{ paddingHorizontal: 10 }}
+          ListFooterComponent={() => <Footer loading={loading} />}
+        />
+
+        <BottomSheetModal
+          ref={bottomSheetRef}
+          index={0}
+          snapPoints={snapPoints}
+          enablePanDownToClose={true}
+          backgroundStyle={{ backgroundColor: colors.background }}
+        >
+          <BottomSheetScrollView
+            showsVerticalScrollIndicator={false}
+            scrollEnabled={enableScrolling}
+            keyboardShouldPersistTaps={"always"}
+          >
+            <Filters
+              tempFilters={tempFilters}
+              handleTempFilter={handleTempFilters}
+              setEnableScrolling={setEnableScrolling}
+            />
+          </BottomSheetScrollView>
+
+          <View style={styles.button}>
+            <MyButton
+              text={`Apply filter (${Object.keys(tempFilters).length})`}
+              onPress={() => {
+                handleFilter()
+                bottomSheetRef.current?.close()
+              }}
+            />
+          </View>
+        </BottomSheetModal>
+      </View>
     </View>
   )
 }
@@ -169,10 +197,12 @@ const RenderItem = ({
   item,
   navigation,
 }: {
-  item: IProduct
+  item: IProduct & { empty?: boolean }
   navigation: SearchScreenNavigationProp["navigation"]
 }) => {
-  let { itemStyles } = styles
+  let { itemStyles, invisible } = styles
+
+  if (item.empty) return <View style={[itemStyles, invisible]}></View>
 
   return (
     <View style={itemStyles}>

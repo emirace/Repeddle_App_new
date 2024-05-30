@@ -90,3 +90,118 @@ export const deals = [
     value: "50",
   },
 ]
+
+export const states = {
+  Nigeria: [
+    "Abuja(fct)",
+
+    "Abia",
+
+    "Adamawa",
+
+    "Akwa Ibom",
+
+    "Anambra",
+
+    "Bauchi",
+
+    "Bayelsa",
+
+    "Benue",
+
+    "Borno",
+
+    "Cross River",
+
+    "Delta",
+
+    "Ebonyi",
+
+    "Edo",
+
+    "Ekiti",
+
+    "Enugu",
+
+    "Gombe",
+
+    "Imo",
+
+    "Jigawa",
+
+    "Kaduna",
+
+    "Kano",
+
+    "Katsina",
+
+    "Kebbi",
+
+    "Kogi",
+
+    "Kwara",
+
+    "Lagos",
+
+    "Nasarawa",
+
+    "Niger",
+    "Ogun",
+    "Ondo",
+    "Osun",
+    "Oyo",
+    "Plateau",
+    "Rivers",
+    "Sokoto",
+    "Taraba",
+    "Yobe",
+    "Zamfara",
+  ],
+  SouthAfrican: [
+    "Eastern Cape",
+    "Free State",
+    "Gauteng",
+    "KwaZulu-Natal",
+    "Limpopo",
+    "Mpumalanga",
+    "Northern Cape",
+    "North West",
+    "Western Cape",
+  ],
+}
+
+export const banks = {
+  Nigeria: [
+    { name: "Access Bank", code: "044" },
+    { name: "Zenith Bank", code: "057" },
+    { name: "GTBank", code: "057" },
+    { name: "First Bank of Nigeria", code: "011" },
+    { name: "UBA", code: "022" },
+    { name: "Union Bank", code: "032" },
+    { name: "Fidelity Bank", code: "070" },
+    { name: "FCMB", code: "214" },
+    { name: "Enterprise Bank", code: "084" },
+    { name: "Citibank Nigeria", code: "000" },
+    { name: "Ecobank", code: "050" },
+    { name: "Heritage Bank", code: "030" },
+    { name: "Keystone Bank", code: "082" },
+    { name: "Standbic IBTC", code: "039" },
+    { name: "Standard Chartered", code: "000" },
+    { name: "Sterling Bank", code: "232" },
+    { name: "Unity Bank", code: "215" },
+    { name: "Wema Bank", code: "035" },
+  ],
+  SouthAfrica: [
+    { name: "Absa Bank", code: "Absa Bank" },
+    { name: "African Bank", code: "African Bank" },
+    { name: "Bidvest Bank", code: "Bidvest Bank" },
+    { name: "Capitec Bank", code: "Capitec Bank" },
+    { name: "Discovery Bank", code: "Discovery Bank" },
+    { name: "First National Bank", code: "National Bank" },
+    { name: "Investec", code: "Investec" },
+    { name: "Nedbank", code: "Nedbank" },
+    { name: "Standard Bank", code: "Standard Bank" },
+    { name: "Ubank", code: "Ubank" },
+    { name: "TymeBank", code: "TymeBank" },
+  ],
+}

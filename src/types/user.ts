@@ -67,7 +67,7 @@ export interface UpdateFields {
     state: string
     zipcode: number
   }
-  rebundle: {
+  rebundle?: {
     status: boolean
     count: number
   }
