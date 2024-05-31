@@ -8,6 +8,9 @@ export type RootStackParamList = {
   Product: { slug: string }
   Chat: { conversationId: string }
   Sell: undefined
+  Profile: undefined
+  ProductList: undefined
+  OrderList: undefined
 }
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -33,4 +36,17 @@ export type AppearanceNavigationProp = NativeStackScreenProps<
 export type ChatNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Chat"
+>
+
+export type ProfileNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Profile"
+>
+export type ProductListNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "ProductList"
+>
+export type OrderListNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "OrderList"
 >

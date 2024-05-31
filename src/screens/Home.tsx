@@ -18,6 +18,7 @@ import homeStyles from "../section/home/homeStyles"
 import ProductItem from "../components/ProductItem"
 import useProducts from "../hooks/useProducts"
 import useUser from "../hooks/useUser"
+import SearchBar from "../components/SearchBar"
 
 const WIDTH = Dimensions.get("screen").width
 
@@ -31,7 +32,6 @@ const Home = ({ navigation }: any) => {
   const { products, fetchProducts, loading } = useProducts()
   const { getTopSellers } = useUser()
 
-  const [searchQuery, setSearchQuery] = useState("")
   const [sellers, setSellers] = useState<TopSellers[]>([])
   const [sellerLoading, setSellerLoading] = useState(false)
   const [sellerError, setSellerError] = useState("")
@@ -57,14 +57,25 @@ const Home = ({ navigation }: any) => {
     fetchSellers()
   }, [])
 
+  const formatData = (data: IProduct[]) => {
+    const isEven = data.length % 2 === 0
+
+    if (!isEven) {
+      const empty = { ...data[0], empty: true }
+      data.push(empty)
+    }
+
+    return data
+  }
+
   const handleMore = () => {
     if (currentPage < products.totalPages) {
       setCurrentPage(currentPage + 1)
     }
   }
 
-  const handleSearch = () => {
-    navigation.navigate("Search", { query: searchQuery })
+  const handleSearch = (val: string) => {
+    navigation.navigate("Search", { query: val })
   }
 
   const animatedValue = useRef(new Animated.Value(0)).current
@@ -81,7 +92,7 @@ const Home = ({ navigation }: any) => {
       {
         translateY: animatedValue.interpolate({
           inputRange: [0, 50],
-          outputRange: [0, -75],
+          outputRange: [0, -70],
           extrapolate: "clamp",
         }),
       },
@@ -195,18 +206,18 @@ const Home = ({ navigation }: any) => {
         <IconButton icon="cart" />
       </Appbar.Header>
       <View style={styles.content}>
-        <Animated.View style={[styles.bottomHeader, searchAnimation]}>
-          <Searchbar
-            placeholder="Search"
-            onChangeText={setSearchQuery}
-            value={searchQuery}
-            onSubmitEditing={handleSearch}
-            onIconPress={handleSearch}
-          />
+        <Animated.View
+          style={[
+            styles.bottomHeader,
+            searchAnimation,
+            { backgroundColor: "transparent" },
+          ]}
+        >
+          <SearchBar onPress={handleSearch} />
         </Animated.View>
       </View>
       <FlatList
-        data={products.products}
+        data={formatData(products.products)}
         renderItem={({ item }) => (
           <RenderItem item={item} navigation={navigation} />
         )}
@@ -220,6 +231,7 @@ const Home = ({ navigation }: any) => {
             error={sellerError}
             isLoading={sellerLoading}
             navigation={navigation}
+            products={products.products}
           />
         )}
         onScroll={(e) => {
@@ -239,10 +251,12 @@ const RenderItem = ({
   item,
   navigation,
 }: {
-  item: IProduct
+  item: IProduct & { empty?: boolean }
   navigation: MainScreenNavigationProp["navigation"]
 }) => {
   let { itemStyles, invisible } = homeStyles
+
+  if (item.empty) return <View style={[itemStyles, invisible]}></View>
 
   return (
     <View style={itemStyles}>

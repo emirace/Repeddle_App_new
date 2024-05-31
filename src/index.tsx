@@ -20,6 +20,9 @@ import { CartProvider } from "./contexts/CartContext"
 import { ProductProvider } from "./contexts/ProductContext"
 import { UserProvider } from "./contexts/UserContext"
 import { BrandProvider } from "./contexts/BrandContext"
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
+import { NewsletterProvider } from "./contexts/NewsletterContext"
+import { OrderProvider } from "./contexts/OrderContext"
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -45,19 +48,25 @@ const Main = () => {
       <NavigationContainer
         theme={themeMode === "dark" ? CombinedDarkTheme : CombinedDefaultTheme}
       >
-        <ProductProvider>
-          <UserProvider>
-            <BrandProvider>
-              <AuthProvider>
-                <CartProvider>
-                  <MessageProvider>
-                    <MainStackNav />
-                  </MessageProvider>
-                </CartProvider>
-              </AuthProvider>
-            </BrandProvider>
-          </UserProvider>
-        </ProductProvider>
+        <BottomSheetModalProvider>
+          <ProductProvider>
+            <UserProvider>
+              <BrandProvider>
+                <AuthProvider>
+                  <CartProvider>
+                    <NewsletterProvider>
+                      <OrderProvider>
+                        <MessageProvider>
+                          <MainStackNav />
+                        </MessageProvider>
+                      </OrderProvider>
+                    </NewsletterProvider>
+                  </CartProvider>
+                </AuthProvider>
+              </BrandProvider>
+            </UserProvider>
+          </ProductProvider>
+        </BottomSheetModalProvider>
       </NavigationContainer>
     </PaperProvider>
   )

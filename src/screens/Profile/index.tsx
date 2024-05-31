@@ -1,12 +1,21 @@
-import { View } from "react-native";
-import React from "react";
-import { Appbar, List, useTheme } from "react-native-paper";
+import { ScrollView, View } from "react-native"
+import React from "react"
+import { Appbar, List, useTheme } from "react-native-paper"
+import { RootStackParamList } from "../../types/navigation/stack"
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <ScrollView
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+      }}
+      contentContainerStyle={{
+        paddingBottom: 130,
+      }}
+    >
       <Appbar.Header>
         <Appbar.Content title="Profile" />
       </Appbar.Header>
@@ -40,9 +49,76 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
             onPress={() => navigation.navigate("Appearance")}
           />
         </List.Section>
+        <List.Section>
+          <List.Subheader>Dashboard</List.Subheader>
+          {dashboardItems.map((item) => (
+            <List.Item
+              key={item.name}
+              title={item.name}
+              description={item.description}
+              titleStyle={{
+                fontSize: 22,
+              }}
+              left={() => <List.Icon icon={item.leftIcon} />}
+              right={() => <List.Icon icon="chevron-right" />}
+              descriptionStyle={{ fontSize: 18 }}
+              onPress={() => navigation.navigate(`${item.link}`)}
+            />
+          ))}
+        </List.Section>
       </View>
-    </View>
-  );
-};
+    </ScrollView>
+  )
+}
 
-export default Profile;
+const dashboardItems: {
+  name: string
+  link: keyof RootStackParamList
+  leftIcon: string
+  description: string
+}[] = [
+  {
+    name: "My Profile",
+    link: "Profile",
+    leftIcon: "account",
+    description: "Manage your profile",
+  },
+  {
+    name: "My Products",
+    link: "ProductList",
+    leftIcon: "bookmark",
+    description: "Manage your products",
+  },
+  {
+    name: "Orders",
+    link: "OrderList",
+    leftIcon: "basket",
+    description: "View your purchased and sold returns history",
+  },
+  {
+    name: "My Earnings",
+    link: "Profile",
+    leftIcon: "account",
+    description: "See your achievements",
+  },
+  {
+    name: "My Wishlist",
+    link: "Profile",
+    leftIcon: "account",
+    description: "View saved products",
+  },
+  {
+    name: "Returns",
+    link: "Profile",
+    leftIcon: "account",
+    description: "View returns history",
+  },
+  {
+    name: "All Transactions",
+    link: "Profile",
+    leftIcon: "account",
+    description: "View all your transactions",
+  },
+]
+
+export default Profile

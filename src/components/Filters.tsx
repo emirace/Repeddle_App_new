@@ -2,7 +2,6 @@ import {
   Image,
   Keyboard,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -23,7 +22,7 @@ import {
   sizelist,
   typelist,
 } from "../utils/constants"
-import { useTheme } from "react-native-paper"
+import { Text, useTheme } from "react-native-paper"
 import { ICategory } from "../types/category"
 import useBrands from "../hooks/useBrand"
 
@@ -43,7 +42,7 @@ const Filters = ({
 
   const [priceRange, setPriceRange] = useState([
     +(tempFilters.minPrice ?? 0),
-    +(tempFilters.maxPrice ?? 5000),
+    +(tempFilters.maxPrice ?? 500000),
   ])
 
   const [queryBrand, setQueryBrand] = useState<string>("")
@@ -106,7 +105,7 @@ const Filters = ({
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View
@@ -172,7 +171,7 @@ const Filters = ({
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.brand ? {} : styles.inactivate]}>
@@ -184,8 +183,8 @@ const Filters = ({
                 handleTempFilter("brand", "")
                 setQueryBrand(text)
               }}
-              style={[styles.textInput, { color: colors.outline }]}
-              cursorColor={colors.outline}
+              style={[styles.textInput, { color: colors.onBackground }]}
+              cursorColor={colors.onBackground}
             />
             <TouchableOpacity onPress={() => handleTempFilter("brand", "all")}>
               <View style={styles.listItem}>
@@ -253,7 +252,7 @@ const Filters = ({
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.price ? {} : styles.inactivate]}>
@@ -290,7 +289,7 @@ const Filters = ({
                 collapse.deal ? "chevron-up-outline" : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
 
@@ -355,7 +354,7 @@ const Filters = ({
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
 
@@ -427,7 +426,7 @@ const Filters = ({
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.color ? {} : styles.inactivate]}>
@@ -499,7 +498,7 @@ const Filters = ({
                 collapse.size ? "chevron-up-outline" : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.size ? {} : styles.inactivate]}>
@@ -535,7 +534,7 @@ const Filters = ({
                         borderColor:
                           c.name === tempFilters.size
                             ? lightTheme.colors.primary
-                            : colors.outline,
+                            : colors.onBackground,
                       }}
                     >
                       <Text
@@ -569,7 +568,7 @@ const Filters = ({
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View
@@ -635,7 +634,7 @@ const Filters = ({
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View
@@ -703,7 +702,7 @@ const Filters = ({
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View
@@ -773,7 +772,7 @@ const Filters = ({
                 collapse.type ? "chevron-up-outline" : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.type ? {} : styles.inactivate]}>
@@ -835,7 +834,7 @@ const Filters = ({
                   : "chevron-forward-outline"
               }
               size={15}
-              color={colors.outline}
+              color={colors.onBackground}
             />
           </TouchableOpacity>
           <View

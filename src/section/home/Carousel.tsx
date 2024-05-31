@@ -1,6 +1,5 @@
 import {
   Image,
-  Text,
   TouchableOpacity,
   View,
   useWindowDimensions,
@@ -10,6 +9,7 @@ import CarouselItem from "react-native-reanimated-carousel"
 import { LinearGradient } from "expo-linear-gradient"
 import homeStyles from "./homeStyles"
 import { MainScreenNavigationProp } from "../../types/navigation/stack"
+import { Text, useTheme } from "react-native-paper"
 
 const entries = [
   {
@@ -49,6 +49,8 @@ const RenderItemSlider = ({
   item: Entry[number]
   navigation: MainScreenNavigationProp["navigation"]
 }) => {
+  const { colors } = useTheme()
+
   return (
     <View style={homeStyles.item}>
       <Image source={{ uri: item.illustration }} style={homeStyles.image} />
@@ -68,7 +70,14 @@ const RenderItemSlider = ({
             //   navigation.navigate(`${item.screen}`, { query1: "2" })
             // }
           >
-            <Text style={homeStyles.classicButtonText}>{item.button}</Text>
+            <Text
+              style={[
+                homeStyles.classicButtonText,
+                { borderBottomColor: colors.primary },
+              ]}
+            >
+              {item.button}
+            </Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>

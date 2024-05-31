@@ -1,7 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { StyleSheet, TouchableOpacity, View } from "react-native"
 import React from "react"
 import { Ionicons } from "@expo/vector-icons"
 import { lightTheme } from "../constant/theme"
+import { Text } from "react-native-paper"
 
 type Props = {
   icon?: keyof typeof Ionicons.glyphMap

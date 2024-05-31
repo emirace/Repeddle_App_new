@@ -1,7 +1,7 @@
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native"
+import { FlatList, Image, TouchableOpacity, View } from "react-native"
 import React from "react"
 import homeStyles from "./homeStyles"
-import { useTheme } from "react-native-paper"
+import { Text, useTheme } from "react-native-paper"
 import { MainScreenNavigationProp } from "../../types/navigation/stack"
 
 type Props = {
@@ -28,6 +28,8 @@ const HomeBrands = ({ navigation }: Props) => {
         style={{
           paddingHorizontal: 10,
           textAlign: "justify",
+          fontFamily: "chronicle-text",
+          lineHeight: 18,
         }}
       >
         Discover brands that tick the boxes, from names you love, price that
@@ -75,6 +77,7 @@ const RenderItemcat = ({
           textTransform: "uppercase",
           fontWeight: "500",
           color: colors.secondary,
+          fontFamily: "chronicle-text",
         }}
       >
         {item.text}
