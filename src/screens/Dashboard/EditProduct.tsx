@@ -204,10 +204,35 @@ const EditProduct = ({ navigation, route }: Props) => {
   useEffect(() => {
     const fetchProduct = async () => {
       const res = await fetchProductById(route.params.id)
-      if (res) {
+      if (typeof res !== "string") {
+        setInput({
+          name: res.name,
+          mainCategory: res.mainCategory,
+          subCategory: res.subCategory ?? input.subCategory,
+          category: res.category ?? input.category,
+          description: res.description,
+          brand: res.brand ?? input.brand,
+          price: res.sellingPrice.toString(),
+          specification: res.specification ?? input.specification,
+          condition: res.condition,
+          keyFeatures: res.keyFeatures ?? input.keyFeatures,
+          video: res.video ?? input.video,
+          material: res.material ?? input.material,
+          // TODO:
+          tag: res.tags[0],
+          color: res.color ?? input.color,
+          luxuryImage: res.luxuryImage ?? input.luxuryImage,
+          luxury: res.luxury ?? input.luxury,
+          vintage: res.vintage ?? input.vintage,
+          image1: "",
+          image2: "",
+          image3: "",
+          image4: "",
+          image: "",
+        })
       } else {
         // TODO: toast notification
-        Alert.alert(error)
+        Alert.alert(res)
       }
     }
 
@@ -368,7 +393,7 @@ const EditProduct = ({ navigation, route }: Props) => {
         }}
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
+        <Appbar.Content title="Edit Product" />
         <Appbar.Action
           icon="cart-outline"
           onPress={() => navigation.navigate("Cart")}
@@ -1262,6 +1287,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               { backgroundColor: colors.elevation.level2 },
             ]}
             multiline={true}
+            textAlignVertical="top"
             placeholder="  Specs"
             placeholderTextColor={colors.onBackground}
             numberOfLines={5}
@@ -1283,6 +1309,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               },
             ]}
             multiline={true}
+            textAlignVertical="top"
             placeholder="  Description"
             placeholderTextColor={colors.onBackground}
             numberOfLines={10}

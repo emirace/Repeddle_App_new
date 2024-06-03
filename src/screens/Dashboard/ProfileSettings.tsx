@@ -125,7 +125,7 @@ const ProfileSettings = ({ navigation }: Props) => {
     // }
   }
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [newsletterStatus, setNewsletterStatus] = useState(input.newsletter)
   const [show, setShow] = useState(false)
   const [showAddress, setShowAddress] = useState(false)
@@ -511,9 +511,10 @@ const ProfileSettings = ({ navigation }: Props) => {
               },
             ]}
             multiline={true}
-            placeholder="  About"
+            placeholder="About"
             placeholderTextColor={colors.onBackground}
             numberOfLines={10}
+            textAlignVertical="top"
             onChangeText={(text) => handleOnChange(text, "about")}
             value={input.about}
           />
