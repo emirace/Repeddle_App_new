@@ -19,7 +19,7 @@ import {
   useTheme,
 } from "react-native-paper"
 import useProducts from "../../hooks/useProducts"
-import { IBrand, IProduct, ISize } from "../../types/product"
+import { IBrand, ISize } from "../../types/product"
 import { EditProductNavigationProp } from "../../types/navigation/stack"
 import useCategory from "../../hooks/useCategory"
 import Input from "../../components/Input"

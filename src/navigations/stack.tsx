@@ -10,6 +10,7 @@ import ProfileSettings from "../screens/Dashboard/ProfileSettings"
 import ProductList from "../screens/Dashboard/ProductList"
 import OrderList from "../screens/Dashboard/OrderList"
 import EditProduct from "../screens/Dashboard/EditProduct"
+import OrderDetails from "../screens/Dashboard/OrderDetails"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -64,6 +65,12 @@ function MainStackNav() {
       <Stack.Screen
         name="EditProduct"
         component={EditProduct}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="OrderDetails"
+        component={OrderDetails}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
