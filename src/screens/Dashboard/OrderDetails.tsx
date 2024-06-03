@@ -5,8 +5,11 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  StyleProp,
   StyleSheet,
   TextInput,
+  TextProps,
+  TextStyle,
   TouchableOpacity,
   View,
 } from "react-native"
@@ -30,6 +33,7 @@ import { Ionicons } from "@expo/vector-icons"
 import SelectDropdown from "react-native-select-dropdown"
 import { displayDeliveryStatus } from "../../utils/render"
 import { normaliseH } from "../../utils/normalize"
+import DeliveryHistory from "../../components/DeliveryHistory"
 
 type Props = OrderDetailsNavigationProp
 
@@ -119,7 +123,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
   let itemsPrice = 0
 
   return (
-    <View style={[styles.container, bac]}>
+    <View style={[styles.container]}>
       <Appbar.Header
         mode="small"
         style={{
@@ -576,7 +580,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                               <Pressable
                                 onPress={() =>
                                   navigation.navigate("MyAccount", {
-                                    id: order.buyer._id,
+                                    username: order.buyer.username,
                                   })
                                 }
                               >
@@ -602,7 +606,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                 <Pressable
                                   onPress={() =>
                                     navigation.navigate("MyAccount", {
-                                      id: orderitem.seller._id,
+                                      username: orderitem.seller.username,
                                     })
                                   }
                                 >
@@ -936,7 +940,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                             <Pressable
                               onPress={() =>
                                 navigation.navigate("MyAccount", {
-                                  id: orderitem.seller._id,
+                                  username: orderitem.seller.username,
                                 })
                               }
                             >
@@ -963,7 +967,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                               <Pressable
                                 onPress={() =>
                                   navigation.navigate("MyAccount", {
-                                    id: order.buyer._id,
+                                    username: order.buyer.username,
                                   })
                                 }
                               >
@@ -1121,12 +1125,12 @@ const OrderDetails = ({ navigation, route }: Props) => {
 
 export default OrderDetails
 
-type TextProps = PropsWithChildren<{
-  style?: any
-  props?: any
-}>
+type TextaProps = PropsWithChildren<{
+  style?: StyleProp<TextStyle>
+}> &
+  TextProps
 
-const Text1 = ({ props, style, children }: TextProps) => {
+const Text1 = ({ style, children, ...props }: TextaProps) => {
   return (
     <Text style={[style]} {...props}>
       {children}

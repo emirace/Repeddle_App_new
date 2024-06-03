@@ -190,7 +190,7 @@ const RenderItem = ({ item, navigation, confirmDelete }: RenderItemProps) => {
       </Pressable>
       <TouchableOpacity
         style={styles.iconButton}
-        onPress={() => navigation.navigate("ViewProduct", { id: item.slug })}
+        onPress={() => navigation.navigate("Product", { slug: item.slug })}
       >
         <Ionicons name="eye" size={20} color={colors.onBackground} />
       </TouchableOpacity>
