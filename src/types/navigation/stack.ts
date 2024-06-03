@@ -11,6 +11,7 @@ export type RootStackParamList = {
   Profile: undefined
   ProductList: undefined
   OrderList: undefined
+  EditProduct: { id: string }
 }
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -49,4 +50,9 @@ export type ProductListNavigationProp = NativeStackScreenProps<
 export type OrderListNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "OrderList"
+>
+
+export type EditProductNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "EditProduct"
 >

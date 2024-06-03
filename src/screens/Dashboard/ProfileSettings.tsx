@@ -15,7 +15,6 @@ import React, { PropsWithChildren, ReactNode, useState } from "react"
 import {
   ActivityIndicator,
   Appbar,
-  IconButton,
   Switch,
   Text,
   useTheme,
@@ -173,7 +172,8 @@ const ProfileSettings = ({ navigation }: Props) => {
       const res = await uploadImage(file)
       setImage(res)
     } catch (error) {
-      //   addNotification(error as string)
+      //   // TODO: toast notification
+      Alert.alert(error as string)
     }
   }
 
@@ -333,10 +333,7 @@ const ProfileSettings = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction
-          onPress={() => navigation.goBack()}
-          color={colors.background}
-        />
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Profile" />
         <Appbar.Action icon="magnify" />
       </Appbar.Header>

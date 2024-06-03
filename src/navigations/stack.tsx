@@ -9,6 +9,7 @@ import Chat from "../screens/chat/Chat"
 import ProfileSettings from "../screens/Dashboard/ProfileSettings"
 import ProductList from "../screens/Dashboard/ProductList"
 import OrderList from "../screens/Dashboard/OrderList"
+import EditProduct from "../screens/Dashboard/EditProduct"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -58,6 +59,11 @@ function MainStackNav() {
       <Stack.Screen
         name="OrderList"
         component={OrderList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditProduct"
+        component={EditProduct}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

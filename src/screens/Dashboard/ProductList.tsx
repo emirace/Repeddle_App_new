@@ -77,10 +77,7 @@ const ProductList = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction
-          onPress={() => navigation.goBack()}
-          color={colors.onBackground}
-        />
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Products" />
         <Appbar.Action
           icon="magnify"
