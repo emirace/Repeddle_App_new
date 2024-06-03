@@ -27,6 +27,7 @@ const Purchase = (props: Props) => {
 
   useEffect(() => {
     fetchOrders()
+    console.log("fetched1")
   }, [])
 
   return (
@@ -115,7 +116,7 @@ const RenderItem = ({
         </View>
       </View>
       <TouchableOpacity
-        onPress={() => navigation.navigate("OrderDetail", { id: item._id })}
+        onPress={() => navigation.navigate("OrderDetails", { id: item._id })}
       >
         <Text style={[styles.orderDetail, { color: colors.primary }]}>
           See Details
@@ -195,7 +196,7 @@ const RenderProductItem = ({
   return (
     <TouchableOpacity
       style={[styles.productItem, { backgroundColor }]}
-      onPress={() => navigation.navigate("Order", { id: item._id })}
+      onPress={() => navigation.navigate("OrderDetails", { id: item._id })}
     >
       <Text>{item.items[0].product.name}</Text>
       <Text>

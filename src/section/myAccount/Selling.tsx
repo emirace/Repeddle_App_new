@@ -1,0 +1,131 @@
+import { Pressable, StyleSheet, View } from "react-native"
+import React from "react"
+import { Text, useTheme } from "react-native-paper"
+import { IProduct } from "../../types/product"
+import { MyAccountNavigationProp } from "../../types/navigation/stack"
+import { Tabs } from "react-native-collapsible-tab-view"
+import ProductItem from "../../components/ProductItem"
+import { TouchableOpacity } from "react-native-gesture-handler"
+
+type Props = {
+  products: IProduct[]
+  navigation: MyAccountNavigationProp["navigation"]
+}
+
+const numColumns = 2
+
+const Selling = ({ navigation, products }: Props) => {
+  const { colors } = useTheme()
+
+  const formatData = (data: IProduct[]) => {
+    const totalRows = Math.floor(data.length / numColumns)
+    let totalLastRow = data.length - totalRows * numColumns
+    if (totalLastRow !== 0 && totalLastRow !== numColumns) {
+      const empty = { ...data[0], empty: true }
+      data.push(empty)
+    }
+    return data
+  }
+
+  return (
+    <View>
+      {!products.length ? (
+        <View style={styles.continueCont}>
+          <View style={styles.frsttext}>
+            <Text style={{ color: colors.onBackground }}>
+              No product found.{" "}
+            </Text>
+            <TouchableOpacity>
+              <Text
+                style={styles.secondtext}
+                onPress={() => navigation.navigate("Main")}
+              >
+                Go Shopping
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <Tabs.FlatList
+          data={formatData(products)}
+          renderItem={({ item }) => (
+            <RenderItem item={item} navigation={navigation} />
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          numColumns={numColumns}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
+    </View>
+  )
+}
+
+const RenderItem = ({
+  item,
+  navigation,
+}: {
+  item: IProduct & { empty?: boolean }
+  navigation: MyAccountNavigationProp["navigation"]
+}) => {
+  let { itemStyles, invisible } = styles
+
+  if (item.empty) {
+    return <View style={[itemStyles, invisible]} />
+  }
+
+  return (
+    item.countInStock > 0 && (
+      <Pressable style={itemStyles}>
+        <ProductItem
+          product={item}
+          navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        />
+      </Pressable>
+    )
+  )
+}
+
+export default Selling
+
+const styles = StyleSheet.create({
+  container: {
+    // height: 300,
+  },
+  buttonContainer: {
+    backgroundColor: "#8a1719",
+    borderRadius: 10,
+    padding: 10,
+    margin: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  itemStyles: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    margin: 10,
+    borderRadius: 15,
+  },
+  itemText: {
+    color: "white",
+    fontSize: 30,
+  },
+  invisible: { backgroundColor: "transparent" },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  continueCont: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+  },
+  frsttext: { justifyContent: "center", flexDirection: "row" },
+  secondtext: { fontWeight: "500", fontSize: 15, color: "#8a1719" },
+})

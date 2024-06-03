@@ -205,3 +205,80 @@ export const banks = {
     { name: "TymeBank", code: "TymeBank" },
   ],
 }
+
+export const materials = [
+  "Acrylic",
+  "Cashmere",
+  "Cloth",
+  "Cotton",
+  "Exotic leathers",
+  "Faux fur",
+  "Fur",
+  "Leather",
+  "Linen",
+  "Polyester",
+  "Polyurethane",
+  "Pony-style calfskin",
+  "Suede",
+  "Silk",
+  "Rayon",
+  "Synthetic",
+  "Spandex",
+  "Tweed",
+  "Vegan leather",
+  "Velvet",
+  "Wool",
+  "Other",
+]
+
+export const features = [
+  "Abstract",
+  "Argyle",
+  "Camo",
+  "Checked",
+  "Chevron & Herringbone",
+  "Color Block",
+  "Crocodile",
+  "Floral",
+  "Gingham",
+  "Graphic",
+  "Houndstooth",
+  "Leopard",
+  "Metalic",
+  "Paisley",
+  "Plain",
+  "Polkadot",
+  "Snakeskin",
+  "Stripes",
+  "Stars",
+  "Solid",
+  "Tartan",
+  "Tie-Dye",
+  "Tropical",
+  "Tweed",
+  "Zebra",
+  "Other",
+]
+
+export const paxiOption = [
+  { text: "Offer free shipping to buyer + R 0.00", value: 0 },
+  { text: "Standard parcel (450x370 mm) + R 59.95", value: 59.95 },
+  { text: "Large parcel (640x510 mm) + R 99.95", value: 99.95 },
+]
+export const pudoOption = [
+  { text: "Offer free shipping to buyer + R 0.00", value: 0 },
+  { text: "Extra-Small (600x170x80 mm) + R 40.00", value: 40 },
+  { text: "Small (600x410x80 mm) + R 50.00", value: 50 },
+  { text: "Medium (600x410x190 mm) + R 50.00", value: 50 },
+  { text: "Large (600x410x410 mm) + R 50.00", value: 50 },
+  { text: "Extra-Large (600x410x690 mm) + R 50.00", value: 50 },
+]
+export const postnetOption = [
+  { text: "Offer free shipping to buyer + R 0.00", value: 0 },
+  { text: "Standard parcel (up to 5kg) + R 99.99", value: 99.99 },
+]
+
+export const aramexOption = [
+  { text: "Offer free shipping to buyer + R 0.00", value: 0 },
+  { text: "Standard parcel (350x450 mm) + R 99.99", value: 99.99 },
+]

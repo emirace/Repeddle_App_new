@@ -146,7 +146,6 @@ export type ICreateProduct = Omit<
   | "seller"
   | "slug"
   | "buyers"
-  | "deliveryOption"
   | "rating"
   | "likes"
   | "shares"
@@ -160,6 +159,7 @@ export type ICreateProduct = Omit<
   | "costPriceHistory"
   | "createdAt"
   | "updatedAt"
+  | "reviews"
 >
 
 export type IBrand = {

@@ -26,3 +26,12 @@ export type ISubCategoryItem = {
   path: string
   _id: string
 }
+
+export type ICreateCategory = Omit<
+  ICategory,
+  "_id" | "createdAt" | "updatedAt"
+> & {
+  subCategories: (Omit<ISubCategory, "_id"> & {
+    items: Omit<ISubCategoryItem, "_id">[]
+  })[]
+}
