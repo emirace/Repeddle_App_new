@@ -14,6 +14,9 @@ export type RootStackParamList = {
   EditProduct: { id: string }
   OrderDetails: { id: string }
   MyAccount: { username: string }
+  BuyersProtection: undefined
+  SizeChart: undefined
+  Cart: undefined
 }
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -45,6 +48,12 @@ export type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Profile"
 >
+
+export type ProductNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Product"
+>
+
 export type ProductListNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "ProductList"
@@ -67,4 +76,18 @@ export type OrderDetailsNavigationProp = NativeStackScreenProps<
 export type MyAccountNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "MyAccount"
+>
+
+export type BuyersProtectionNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "BuyersProtection"
+>
+
+export type SizeChartNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "SizeChart"
+>
+export type CartNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Cart"
 >

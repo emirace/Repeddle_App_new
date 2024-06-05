@@ -12,6 +12,9 @@ import OrderList from "../screens/Dashboard/OrderList"
 import EditProduct from "../screens/Dashboard/EditProduct"
 import OrderDetails from "../screens/Dashboard/OrderDetails"
 import MyAccount from "../screens/Profile/MyAccount"
+import BuyersProtection from "../screens/BuyersProtection"
+import SizeChart from "../screens/SizeChart"
+import Cart from "../screens/Cart"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -78,6 +81,21 @@ function MainStackNav() {
       <Stack.Screen
         name="MyAccount"
         component={MyAccount}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BuyersProtection"
+        component={BuyersProtection}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SizeChart"
+        component={SizeChart}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Cart"
+        component={Cart}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

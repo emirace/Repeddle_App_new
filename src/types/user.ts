@@ -10,6 +10,7 @@ export interface IAddress {
 export interface IRebundle {
   status: boolean
   count: number
+  method?: string
 }
 
 export interface IUser {

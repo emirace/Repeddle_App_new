@@ -24,6 +24,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { NewsletterProvider } from "./contexts/NewsletterContext"
 import { OrderProvider } from "./contexts/OrderContext"
 import { CategoryProvider } from "./contexts/CategoryContext"
+import { StoreProvider } from "./contexts/StoreContext"
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -50,25 +51,27 @@ const Main = () => {
         theme={themeMode === "dark" ? CombinedDarkTheme : CombinedDefaultTheme}
       >
         <BottomSheetModalProvider>
-          <ProductProvider>
-            <UserProvider>
-              <BrandProvider>
-                <AuthProvider>
-                  <CategoryProvider>
-                    <CartProvider>
-                      <NewsletterProvider>
-                        <OrderProvider>
-                          <MessageProvider>
-                            <MainStackNav />
-                          </MessageProvider>
-                        </OrderProvider>
-                      </NewsletterProvider>
-                    </CartProvider>
-                  </CategoryProvider>
-                </AuthProvider>
-              </BrandProvider>
-            </UserProvider>
-          </ProductProvider>
+          <StoreProvider>
+            <ProductProvider>
+              <UserProvider>
+                <BrandProvider>
+                  <AuthProvider>
+                    <CategoryProvider>
+                      <CartProvider>
+                        <NewsletterProvider>
+                          <OrderProvider>
+                            <MessageProvider>
+                              <MainStackNav />
+                            </MessageProvider>
+                          </OrderProvider>
+                        </NewsletterProvider>
+                      </CartProvider>
+                    </CategoryProvider>
+                  </AuthProvider>
+                </BrandProvider>
+              </UserProvider>
+            </ProductProvider>
+          </StoreProvider>
         </BottomSheetModalProvider>
       </NavigationContainer>
     </PaperProvider>
