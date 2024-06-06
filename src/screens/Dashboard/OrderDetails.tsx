@@ -200,7 +200,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                       })
                     }
                   >
-                    <Text1 style={{ fontwe: "bold" }}>Log a return</Text1>
+                    <Text1 style={{ fontWeight: "bold" }}>Log a return</Text1>
                     <Text style={{ color: "red" }}>{daydiff(3)} days left</Text>
                   </Pressable>
                 )}

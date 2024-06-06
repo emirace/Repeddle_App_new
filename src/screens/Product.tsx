@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Alert,
   Animated,
+  Dimensions,
   FlatList,
   Image,
   Modal,
@@ -85,6 +86,8 @@ const Product = ({ navigation, route }: Props) => {
 
       setRecentlyViewed(data)
     }
+
+    getRecent()
   }, [])
 
   const isOnlineCon = (c: string) => {
@@ -106,7 +109,7 @@ const Product = ({ navigation, route }: Props) => {
       {
         translateY: animatedValue.interpolate({
           inputRange: [600, 650],
-          outputRange: [-40, 0],
+          outputRange: [-100, 0],
           extrapolate: "clamp",
         }),
       },
@@ -116,6 +119,11 @@ const Product = ({ navigation, route }: Props) => {
       outputRange: [0, 1],
       extrapolate: "clamp",
     }),
+    // height: animatedValue.interpolate({
+    //   inputRange: [600, 650],
+    //   outputRange: [0, 55],
+    //   extrapolate: "clamp",
+    // }),
   }
 
   const nameAnimation = {
@@ -145,6 +153,8 @@ const Product = ({ navigation, route }: Props) => {
 
     return 0
   }, [])
+
+  console.log(product)
 
   const sizeHandler = (item: string) => {
     if (!product) return
@@ -233,7 +243,7 @@ const Product = ({ navigation, route }: Props) => {
       >
         <View
           style={{
-            height: 55,
+            height: 100,
             backgroundColor: colors.primary,
             position: "absolute",
             top: 0,
@@ -298,7 +308,11 @@ const Product = ({ navigation, route }: Props) => {
 
           <View style={styles.titleCont}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={[styles.title]} numberOfLines={1}>
+              <Text
+                style={[styles.title]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {product.name}
               </Text>
             </View>
@@ -386,6 +400,7 @@ const Product = ({ navigation, route }: Props) => {
             <Text>Tags:</Text>
             {product.tags.map((t) => (
               <Text
+                key={t}
                 onPress={() => navigation.navigate("Search", { query: t })}
                 style={[styles.tag, { borderColor: colors.onBackground }]}
               >
@@ -472,7 +487,7 @@ const Product = ({ navigation, route }: Props) => {
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate("SellerReview", {
-                      userId: product.seller._id,
+                      id: product.seller._id,
                     })
                   }
                 >
@@ -539,7 +554,7 @@ const Product = ({ navigation, route }: Props) => {
                   (size) =>
                     size.quantity > 0 && (
                       <SizeSelection
-                        key={size.size}
+                        key={size._id}
                         selectedSize={selectedSize}
                         symbol={size.size}
                         sizeHandler={sizeHandler}
@@ -740,14 +755,26 @@ const Product = ({ navigation, route }: Props) => {
             },
             nameAnimation,
           ]}
+          ellipsizeMode="tail"
+          numberOfLines={1}
         >
           {product.name}
         </Animated.Text>
         <TouchableOpacity
-          style={[styles.like, { backgroundColor: colors.elevation.level2 }]}
+          style={[
+            styles.like,
+            {
+              backgroundColor: colors.elevation.level2,
+            },
+          ]}
           onPress={() => navigation.navigate("Cart")}
         >
-          <Ionicons name="cart-outline" size={24} color={colors.onBackground} />
+          <Ionicons
+            name="cart-outline"
+            size={24}
+            style={{ padding: 0 }}
+            color={colors.onBackground}
+          />
 
           {cart.length > 0 && (
             <View style={styles.badge}>
@@ -790,13 +817,17 @@ const Product = ({ navigation, route }: Props) => {
           <View style={styles.button}>
             <MyButton
               onPress={addToCartHandler}
-              text={product.countInStock > 0 ? "add to cart" : "Sold out"}
+              text={
+                product.sold || !(product.countInStock > 0)
+                  ? "Sold out"
+                  : "add to cart"
+              }
               icon={
-                product.countInStock > 0
+                product.sold || !(product.countInStock > 0)
                   ? "cart-outline"
                   : "alert-circle-outline"
               }
-              disable={product.countInStock <= 0}
+              disable={product.sold || !(product.countInStock > 0)}
             />
           </View>
         </View>
@@ -826,6 +857,8 @@ const RenderItem = ({
 
 export default Product
 
+const { width } = Dimensions.get("screen")
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -837,7 +870,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     position: "absolute",
-    top: 0,
+    top: normaliseH(40),
     left: 0,
     right: 0,
     zIndex: 10,
@@ -853,11 +886,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   image: { height: 450 },
-  details: { paddingHorizontal: 20 },
+  details: { paddingHorizontal: 15 },
   titleCont: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    width: width - normaliseW(106),
   },
   rating: { flexDirection: "row", alignItems: "center" },
   title: {
@@ -931,6 +965,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
+    position: "absolute",
+    right: 5,
+    top: "30%",
   },
   love: {
     position: "relative",

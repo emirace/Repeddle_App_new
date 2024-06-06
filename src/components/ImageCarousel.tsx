@@ -150,7 +150,7 @@ const RenderItem = ({
 
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={handleImagePress}>
-      <Image source={{ uri: item }} style={styles.image} />
+      <Image source={{ uri: item }} style={styles.image} resizeMode="cover" />
     </TouchableOpacity>
   )
 }
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   image: {
     width: SCREEN_WIDTH,
     height: 550,
-    resizeMode: "contain",
+    // resizeMode: "contain",
   },
   dot: {
     width: 10,

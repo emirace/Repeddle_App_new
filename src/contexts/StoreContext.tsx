@@ -53,7 +53,7 @@ export const StoreProvider = ({ children }: PropsWithChildren) => {
     try {
       const jsonValue = await SecureStore.getItemAsync(key)
       if (!jsonValue) return null
-      console.log(JSON.parse(jsonValue))
+
       return jsonValue != null ? JSON.parse(jsonValue) : null
     } catch (e) {
       // error reading value

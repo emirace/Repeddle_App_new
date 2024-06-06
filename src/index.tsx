@@ -46,6 +46,7 @@ const Main = () => {
       <StatusBar
         animated={true}
         style={themeMode === "dark" ? "light" : "dark"}
+        backgroundColor={lightTheme.colors.primary}
       />
       <NavigationContainer
         theme={themeMode === "dark" ? CombinedDarkTheme : CombinedDefaultTheme}

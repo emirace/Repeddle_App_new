@@ -23,6 +23,7 @@ const TopNavigation = ({ tabs }: Props) => {
           height: 2,
         },
         tabBarStyle: { backgroundColor: "transparent" },
+        lazy: true,
       }}
     >
       {tabs.map((tab) => (

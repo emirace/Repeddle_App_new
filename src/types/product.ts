@@ -5,6 +5,7 @@ export interface IReview {
   comment: string
   rating: number
   like?: string
+  _id: string
 }
 
 export interface Share {
@@ -19,6 +20,7 @@ export interface ViewCount {
 }
 
 export interface ISize {
+  _id: string
   size: string
   quantity: number
 }
@@ -201,3 +203,13 @@ export type RecentProduct = {
   productId: string
   product: IProduct
 }
+
+export type Coupon =
+  | {
+      type: "fixed"
+      value: number
+    }
+  | {
+      type: "percent"
+      percentOff: number
+    }

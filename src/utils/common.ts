@@ -1,6 +1,6 @@
 import { CartItem } from "../contexts/CartContext"
 import { saveImageService } from "../services/image"
-import { IProduct } from "../types/product"
+import { Coupon, IProduct } from "../types/product"
 import * as WebBrowser from "expo-web-browser"
 
 export const currency = (region: IProduct["region"]) => {
@@ -92,4 +92,25 @@ export const checkDeliverySelect = (cart: CartItem[]) => {
     }
   })
   return success
+}
+
+export const generateTransactionRef = (length: number) => {
+  var result = ""
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+  var charactersLength = characters.length
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return `emirace_tx_ref_${result}`
+}
+
+export const couponDiscount = (coupon: Coupon, price: number) => {
+  if (coupon.type === "fixed") {
+    return coupon.value
+  } else if (coupon.type === "percent") {
+    return (coupon.percentOff / 100) * price
+  } else {
+    return 0
+  }
 }

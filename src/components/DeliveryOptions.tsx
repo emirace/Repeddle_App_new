@@ -227,11 +227,8 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.Action
-          icon="chevron-back"
-          onPress={() => setShowModel(false)}
-        />
-        <Appbar.Content title="select Delivery option" />
+        <Appbar.Action icon="arrow-left" onPress={() => setShowModel(false)} />
+        <Appbar.Content title="Select Delivery option" />
         <Appbar.Action icon="cart-outline" />
       </Appbar.Header>
       {/* <View style={styles.header}>
@@ -262,12 +259,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                   }}
                   style={styles.option}
                 >
-                  <Radio
-                    x={x}
-                    setDeliveryOption={setDeliveryOption}
-                    setValue={setValue}
-                    deliveryOption={deliveryOption}
-                  />
+                  <Radio x={x} deliveryOption={deliveryOption} />
                   <Text1 style={styles.label}>
                     {x.name}{" "}
                     {x.value === 0 ? (

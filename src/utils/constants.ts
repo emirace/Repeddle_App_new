@@ -1840,3 +1840,14 @@ export const postnet = {
     "Worcester",
   ],
 }
+
+export const API_KEY = "FLWPUBK_TEST-6a1e30713a8c6962ecb7d6cfbda2df69-X"
+export const GOOGLE_WEB_API_KEY =
+  "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com"
+export const GOOGLE_ANDRIOD_API_KEY =
+  "359040935611-pvpel7hdmi6g31b7oajkafvbq62i3l7m.apps.googleusercontent.com"
+export const GOOGLE_IOS_API_KEY =
+  "359040935611-1kijfv8vvtn9ghvehrqqciv2dm7sme3m.apps.googleusercontent.com"
+export const PAYFAST_ID = 21331397
+export const PAYFAST_KEY = "f6dtd8f8khb4m"
+export const FB_ID = "1192378101342003"

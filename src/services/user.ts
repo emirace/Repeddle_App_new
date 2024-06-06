@@ -2,7 +2,7 @@ import {
   IUser,
   IUsersWithPagination,
   TopSellers,
-  UpdateFields,
+  UpdateUser,
   UserByUsername,
 } from "../types/user"
 import { getBackendErrorMessage } from "../utils/error"
@@ -105,7 +105,7 @@ export async function getUserByIdService(id: string): Promise<IUser> {
 
 export async function updateUserByIdService(
   id: string,
-  userData: UpdateFields
+  userData: UpdateUser
 ): Promise<IUser> {
   try {
     const response: { user: IUser; status: boolean; message: string } =

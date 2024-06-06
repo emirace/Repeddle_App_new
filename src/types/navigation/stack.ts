@@ -17,6 +17,10 @@ export type RootStackParamList = {
   BuyersProtection: undefined
   SizeChart: undefined
   Cart: undefined
+  Checkout: undefined
+  PaymentMethod: undefined
+  CreateProduct: undefined
+  SellerReview: { id: string }
 }
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -90,4 +94,24 @@ export type SizeChartNavigationProp = NativeStackScreenProps<
 export type CartNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Cart"
+>
+
+export type CheckoutNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Checkout"
+>
+
+export type PaymentMethodNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "PaymentMethod"
+>
+
+export type CreateProductNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "CreateProduct"
+>
+
+export type SellerReviewNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "SellerReview"
 >

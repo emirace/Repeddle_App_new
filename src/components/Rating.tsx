@@ -21,7 +21,7 @@ const Rating = (props: Props) => {
     <View>
       <View style={styles.rating}>
         {Array.from({ length: 5 }).map((_, i) => (
-          <View style={styles.star}>
+          <View style={styles.star} key={i}>
             <Ionicons
               name={
                 props.rating >= i + 1

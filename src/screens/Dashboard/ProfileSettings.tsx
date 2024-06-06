@@ -29,7 +29,7 @@ import { region, timeDifference, uploadImage } from "../../utils/common"
 import moment from "moment"
 import { normaliseH } from "../../utils/normalize"
 import MyButton from "../../components/MyButton"
-import { UpdateFields } from "../../types/user"
+import { UpdateUser } from "../../types/user"
 import Input from "../../components/Input"
 import useNewsletter from "../../hooks/useNewsletter"
 import Rebundle from "../../components/Rebundle"
@@ -280,7 +280,7 @@ const ProfileSettings = ({ navigation }: Props) => {
   const submitHandler = async () => {
     setIsLoading(true)
 
-    const data: UpdateFields = {
+    const data: UpdateUser = {
       firstName: input.firstName!,
       lastName: input.lastName!,
       dob: input.dob,

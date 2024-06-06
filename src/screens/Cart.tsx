@@ -21,6 +21,7 @@ import { CartItem } from "../contexts/CartContext"
 import QuantitySelector from "../components/QuantitySelector"
 import DeliveryOptions from "../components/DeliveryOptions"
 import CustomAlert from "../components/CustomAlert"
+import { normaliseW } from "../utils/normalize"
 
 type Props = CartNavigationProp
 
@@ -210,7 +211,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
           <View style={styles.subRow}>
             <QuantitySelector quantity={item.quantity} item={item} />
             <TouchableOpacity onPress={() => setShowAlert(true)}>
-              <Ionicons name="trash-outline" size={20} color={colors.onError} />
+              <Ionicons name="trash-outline" size={20} color={colors.error} />
             </TouchableOpacity>
             <CustomAlert
               visible={showAlert}
@@ -226,7 +227,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
               style={{ marginLeft: 20 }}
               onPress={() => setModalVisible(true)}
             >
-              {item.deliverySelect ? (
+              {item.deliverySelect["delivery Option"] ? (
                 <Text style={{ fontSize: 14, color: colors.secondary }}>
                   {item.deliverySelect["delivery Option"]}
                 </Text>
@@ -285,7 +286,9 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     borderRadius: 15,
   },
-  detail: {},
+  detail: {
+    maxWidth: normaliseW(190),
+  },
   name: { fontWeight: "bold", textTransform: "capitalize", fontSize: 15 },
   price: {
     fontWeight: "500",
