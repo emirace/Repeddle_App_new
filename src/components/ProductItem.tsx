@@ -2,7 +2,6 @@ import {
   Image,
   Pressable,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native"
@@ -12,6 +11,7 @@ import { FontAwesome } from "@expo/vector-icons"
 import { IUser } from "../types/user"
 import { currency } from "../utils/common"
 import { lightTheme } from "../constant/theme"
+import { Text } from "react-native-paper"
 
 type Props = {
   navigate: (slug: string) => void

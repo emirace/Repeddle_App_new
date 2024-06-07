@@ -70,8 +70,7 @@ const homeStyles = StyleSheet.create({
     fontWeight: "600",
     textTransform: "capitalize",
     lineHeight: 30,
-    // TODO:
-    // fontFamily: "absential-sans-medium",
+    fontFamily: "absential-sans-medium",
   },
   seeAll: {
     fontSize: 18,
@@ -118,8 +117,7 @@ const homeStyles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.5)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
-    // TODO:
-    // fontFamily: "absential-sans-bold",
+    fontFamily: "absential-sans-bold",
   },
 
   gradientOverlay: {
@@ -155,7 +153,6 @@ const homeStyles = StyleSheet.create({
   classicButtonText: {
     color: "white",
     textTransform: "uppercase",
-    borderBottomColor: lightTheme.colors.primary,
     borderBottomWidth: 2,
     fontWeight: "bold",
   },
@@ -190,6 +187,8 @@ const homeStyles = StyleSheet.create({
   info: {
     paddingHorizontal: 10,
     textAlign: "justify",
+    fontFamily: "chronicle-text",
+    lineHeight: 18,
   },
 })
 

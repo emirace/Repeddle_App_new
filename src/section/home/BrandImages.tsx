@@ -18,13 +18,17 @@ const BrandImages = () => {
 
   return (
     <View
-      style={[homeStyles.brandScroll, { backgroundColor: colors.background }]}
+      style={[
+        homeStyles.brandScroll,
+        { backgroundColor: colors.elevation.level2 },
+      ]}
     >
       <FlatList
         data={themeMode === "dark" ? brandLogo : brandLogodark}
         renderItem={renderBrand}
         horizontal
         showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: 2 }}
         snapToInterval={260}
         snapToAlignment={"center"}
         decelerationRate={"fast"}

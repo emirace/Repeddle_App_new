@@ -20,6 +20,11 @@ import { CartProvider } from "./contexts/CartContext"
 import { ProductProvider } from "./contexts/ProductContext"
 import { UserProvider } from "./contexts/UserContext"
 import { BrandProvider } from "./contexts/BrandContext"
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
+import { NewsletterProvider } from "./contexts/NewsletterContext"
+import { OrderProvider } from "./contexts/OrderContext"
+import { CategoryProvider } from "./contexts/CategoryContext"
+import { StoreProvider } from "./contexts/StoreContext"
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -41,23 +46,34 @@ const Main = () => {
       <StatusBar
         animated={true}
         style={themeMode === "dark" ? "light" : "dark"}
+        backgroundColor={lightTheme.colors.primary}
       />
       <NavigationContainer
         theme={themeMode === "dark" ? CombinedDarkTheme : CombinedDefaultTheme}
       >
-        <ProductProvider>
-          <UserProvider>
-            <BrandProvider>
-              <AuthProvider>
-                <CartProvider>
-                  <MessageProvider>
-                    <MainStackNav />
-                  </MessageProvider>
-                </CartProvider>
-              </AuthProvider>
-            </BrandProvider>
-          </UserProvider>
-        </ProductProvider>
+        <BottomSheetModalProvider>
+          <StoreProvider>
+            <ProductProvider>
+              <UserProvider>
+                <BrandProvider>
+                  <AuthProvider>
+                    <CategoryProvider>
+                      <CartProvider>
+                        <NewsletterProvider>
+                          <OrderProvider>
+                            <MessageProvider>
+                              <MainStackNav />
+                            </MessageProvider>
+                          </OrderProvider>
+                        </NewsletterProvider>
+                      </CartProvider>
+                    </CategoryProvider>
+                  </AuthProvider>
+                </BrandProvider>
+              </UserProvider>
+            </ProductProvider>
+          </StoreProvider>
+        </BottomSheetModalProvider>
       </NavigationContainer>
     </PaperProvider>
   )

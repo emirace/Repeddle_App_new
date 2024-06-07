@@ -1,5 +1,5 @@
 // AuthContext.tsx
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react"
 import {
   registerUserService,
   deleteUserService,
@@ -14,287 +14,287 @@ import {
   getSuggestUsernameService,
   unFollowUserService,
   followUserService,
-} from "../services/auth";
-import { IUser, UpdateFields } from "../types/user";
-import * as SecureStore from "expo-secure-store";
-import socket from "../socket";
+} from "../services/auth"
+import { IUser, UpdateUser } from "../types/user"
+import * as SecureStore from "expo-secure-store"
+import socket from "../socket"
 
 interface Props {
-  children?: ReactNode;
+  children?: ReactNode
 }
 
 export const AuthContext = createContext<{
-  user: IUser | null;
-  error: string | null;
-  loading: boolean;
-  authErrorModalOpen: boolean;
-  setAuthErrorModalOpen: (value: boolean) => void;
-  sendVerifyEmail: (credentials: { email: string }) => Promise<boolean>;
-  verifyEmail: (credentials: { token: string }) => Promise<boolean>;
+  user: IUser | null
+  error: string | null
+  loading: boolean
+  authErrorModalOpen: boolean
+  setAuthErrorModalOpen: (value: boolean) => void
+  sendVerifyEmail: (credentials: { email: string }) => Promise<boolean>
+  verifyEmail: (credentials: { token: string }) => Promise<boolean>
   registerUser: (tokenData: {
-    token: string;
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
-  }) => Promise<boolean>;
-  login: (credentials: { email: string; password: string }) => Promise<boolean>;
-  sendForgetPasswordEmail: (credentials: { email: string }) => Promise<boolean>;
-  getUser: () => Promise<IUser | null>;
-  updateUser: (userData: UpdateFields) => Promise<IUser | null>;
-  logout: () => void;
-  deleteUser: (id: string) => Promise<boolean | null>;
-  resetPassword: (password: string, token: string) => Promise<boolean>;
+    token: string
+    username: string
+    password: string
+    firstName: string
+    lastName: string
+    phone: string
+  }) => Promise<boolean>
+  login: (credentials: { email: string; password: string }) => Promise<boolean>
+  sendForgetPasswordEmail: (credentials: { email: string }) => Promise<boolean>
+  getUser: () => Promise<IUser | null>
+  updateUser: (userData: UpdateUser) => Promise<IUser | null>
+  logout: () => void
+  deleteUser: (id: string) => Promise<boolean | null>
+  resetPassword: (password: string, token: string) => Promise<boolean>
   getSuggestUsername: (body: {
-    firstName: string;
-    lastName: string;
-    otherText?: string;
-  }) => Promise<string[]>;
-  unFollowUser: (userId: string) => Promise<string | null>;
-  followUser: (userId: string) => Promise<string | null>;
-} | null>(null);
+    firstName: string
+    lastName: string
+    otherText?: string
+  }) => Promise<string[]>
+  unFollowUser: (userId: string) => Promise<string | null>
+  followUser: (userId: string) => Promise<string | null>
+} | null>(null)
 
 export const AuthProvider: React.FC<Props> = ({ children }) => {
-  const [user, setUser] = useState<IUser | null>(null);
-  const [authToken, setAuthToken] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [authErrorModalOpen, setAuthErrorModalOpen] = useState(false);
+  const [user, setUser] = useState<IUser | null>(null)
+  const [authToken, setAuthToken] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [authErrorModalOpen, setAuthErrorModalOpen] = useState(false)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleError = (error: any) => {
-    setLoading(false);
+    setLoading(false)
 
     // Check if the error indicates an invalid or expired token
     if (error === "Token expired" || error === "Invalid token") {
-      setError("");
+      setError("")
       // Set the state to open the auth error modal
-      setAuthErrorModalOpen(true);
+      setAuthErrorModalOpen(true)
     } else {
-      setError(error || "An error occurred.");
+      setError(error || "An error occurred.")
     }
-  };
+  }
 
   const sendVerifyEmail = async (userData: { email: string }) => {
     try {
-      setError("");
-      setLoading(true);
-      const response = await sendVerifyEmailService(userData);
-      setLoading(false);
-      return !!response;
+      setError("")
+      setLoading(true)
+      const response = await sendVerifyEmailService(userData)
+      setLoading(false)
+      return !!response
     } catch (error) {
-      handleError(error);
-      return false;
+      handleError(error)
+      return false
     }
-  };
+  }
 
   const verifyEmail = async (tokenData: { token: string }) => {
     try {
-      setError("");
-      const response = await verifyEmailService(tokenData);
-      return !!response;
+      setError("")
+      const response = await verifyEmailService(tokenData)
+      return !!response
     } catch (error) {
-      handleError(error);
-      return false;
+      handleError(error)
+      return false
     }
-  };
+  }
 
   const registerUser = async (tokenData: {
-    token: string;
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
+    token: string
+    username: string
+    password: string
+    firstName: string
+    lastName: string
+    phone: string
   }) => {
     try {
-      setError("");
-      const response = await registerUserService(tokenData);
-      return !!response;
+      setError("")
+      const response = await registerUserService(tokenData)
+      return !!response
     } catch (error) {
-      handleError(error);
-      return false;
+      handleError(error)
+      return false
     }
-  };
+  }
 
   const login = async (credentials: { email: string; password: string }) => {
     try {
-      setError("");
-      setLoading(true);
-      const authenticatedToken = await loginUser(credentials);
+      setError("")
+      setLoading(true)
+      const authenticatedToken = await loginUser(credentials)
       if (authenticatedToken) {
-        setAuthToken(authenticatedToken);
-        setLoading(false);
-        setAuthErrorModalOpen(false);
-        return true;
+        setAuthToken(authenticatedToken)
+        setLoading(false)
+        setAuthErrorModalOpen(false)
+        return true
       }
-      setLoading(false);
-      return false;
+      setLoading(false)
+      return false
     } catch (error) {
-      handleError(error);
-      return false;
+      handleError(error)
+      return false
     }
-  };
+  }
 
   const sendForgetPasswordEmail = async (userData: { email: string }) => {
     try {
-      setError("");
-      setLoading(true);
-      const response = await forgetPasswordService(userData);
-      setLoading(false);
-      return !!response;
+      setError("")
+      setLoading(true)
+      const response = await forgetPasswordService(userData)
+      setLoading(false)
+      return !!response
     } catch (error) {
-      handleError(error);
-      return false;
+      handleError(error)
+      return false
     }
-  };
+  }
 
   const getSuggestUsername = async (body: {
-    firstName: string;
-    lastName: string;
-    otherText?: string;
+    firstName: string
+    lastName: string
+    otherText?: string
   }) => {
     try {
-      const response = await getSuggestUsernameService(body);
+      const response = await getSuggestUsernameService(body)
 
-      return response;
+      return response
     } catch (error) {
-      console.error(error);
-      return [];
+      console.error(error)
+      return []
     }
-  };
+  }
 
   const getUser = async () => {
     try {
-      setError("");
-      setLoading(true);
-      const authenticatedUser = await getUserService();
+      setError("")
+      setLoading(true)
+      const authenticatedUser = await getUserService()
       if (authenticatedUser) {
-        setUser(authenticatedUser);
-        return authenticatedUser;
+        setUser(authenticatedUser)
+        return authenticatedUser
       }
-      return null;
+      return null
     } catch (error) {
-      handleError(error);
-      return null;
+      handleError(error)
+      return null
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
   const unFollowUser = async (userId: string) => {
     try {
-      setError("");
-      setLoading(true);
-      const result = await unFollowUserService(userId);
+      setError("")
+      setLoading(true)
+      const result = await unFollowUserService(userId)
 
       if (user) {
-        const followers = user.followers.filter((fl) => fl !== userId);
-        const newUser = user;
-        newUser.followers = followers;
+        const followers = user.followers.filter((fl) => fl !== userId)
+        const newUser = user
+        newUser.followers = followers
 
-        setUser(newUser);
+        setUser(newUser)
       }
 
-      setLoading(false);
-      return result;
+      setLoading(false)
+      return result
     } catch (error) {
-      handleError(error as string);
-      setLoading(false);
-      return null;
+      handleError(error as string)
+      setLoading(false)
+      return null
     }
-  };
+  }
 
   const followUser = async (userId: string) => {
     try {
-      setError("");
-      setLoading(true);
-      const result = await followUserService(userId);
+      setError("")
+      setLoading(true)
+      const result = await followUserService(userId)
 
       if (user) {
-        const followers = [...user.followers, userId];
-        const newUser = user;
-        newUser.followers = followers;
+        const followers = [...user.followers, userId]
+        const newUser = user
+        newUser.followers = followers
 
-        setUser(newUser);
+        setUser(newUser)
       }
 
-      setLoading(false);
-      return result;
+      setLoading(false)
+      return result
     } catch (error) {
-      handleError(error as string);
-      setLoading(false);
-      return null;
+      handleError(error as string)
+      setLoading(false)
+      return null
     }
-  };
+  }
 
-  const updateUser = async (userData: UpdateFields) => {
+  const updateUser = async (userData: UpdateUser) => {
     try {
-      setError("");
-      const updatedUser = await updateUserService(userData);
+      setError("")
+      const updatedUser = await updateUserService(userData)
       if (updatedUser) {
-        setUser(updatedUser);
-        return updatedUser;
+        setUser(updatedUser)
+        return updatedUser
       }
-      return null;
+      return null
     } catch (error) {
-      handleError(error);
-      return null;
+      handleError(error)
+      return null
     }
-  };
+  }
 
   const deleteUser = async (id: string) => {
     try {
-      setError("");
-      const result = await deleteUserService(id);
+      setError("")
+      const result = await deleteUserService(id)
       if (result) {
         // getAllUser();
-        return result;
+        return result
       }
-      return null;
+      return null
     } catch (error) {
-      handleError(error);
-      return null;
+      handleError(error)
+      return null
     }
-  };
+  }
 
   const resetPassword = async (password: string, token: string) => {
     try {
-      setError("");
-      setLoading(true);
-      const response = await resetUserPasswordService(password, token);
-      setLoading(false);
-      return !!response;
+      setError("")
+      setLoading(true)
+      const response = await resetUserPasswordService(password, token)
+      setLoading(false)
+      return !!response
     } catch (error) {
-      handleError(error);
-      return false;
+      handleError(error)
+      return false
     }
-  };
+  }
 
   const logout = async () => {
-    logoutUser();
-    setUser(null);
-    await SecureStore.deleteItemAsync("authToken");
-  };
+    logoutUser()
+    setUser(null)
+    await SecureStore.deleteItemAsync("authToken")
+  }
 
   useEffect(() => {
     if (user) {
-      socket.emit("login", user._id);
+      socket.emit("login", user._id)
     }
-  }, [user]);
+  }, [user])
 
   useEffect(() => {
     const checkUser = async () => {
       // const savedToken = await SecureStore.getItemAsync("authToken");
       const savedToken =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjI1NjAyYjFlNzcyNGZjNWMyNjhiMDIiLCJlbWFpbCI6ImVtaXJhY2Vncm91cEBnbWFpbC5jb20iLCJ2ZXJzaW9uIjoiTmFOMTExMTExMTExMTExIiwiaWF0IjoxNzE2NTA2MjY3LCJleHAiOjE3MTkwOTgyNjd9.42JnIolX9r_hTZ6hcjuMEyPmg9VC8hSSQHf0vTqWNF8";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjI1NjAyYjFlNzcyNGZjNWMyNjhiMDIiLCJlbWFpbCI6ImVtaXJhY2Vncm91cEBnbWFpbC5jb20iLCJ2ZXJzaW9uIjoiTmFOMTExMTExMTExMTExIiwiaWF0IjoxNzE2NTA2MjY3LCJleHAiOjE3MTkwOTgyNjd9.42JnIolX9r_hTZ6hcjuMEyPmg9VC8hSSQHf0vTqWNF8"
       if (savedToken) {
-        await getUser();
+        await getUser()
       }
-      setLoading(false);
-    };
-    checkUser();
-  }, [authToken]);
+      setLoading(false)
+    }
+    checkUser()
+  }, [authToken])
 
   return (
     <AuthContext.Provider
@@ -321,5 +321,5 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     >
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}

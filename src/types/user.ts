@@ -10,6 +10,7 @@ export interface IAddress {
 export interface IRebundle {
   status: boolean
   count: number
+  method?: string
 }
 
 export interface IUser {
@@ -50,6 +51,7 @@ export interface IUser {
   influencer?: boolean
   rebundle?: IRebundle
   earnings?: number
+  balance?: number
 }
 
 export interface UpdateFields {
@@ -67,11 +69,13 @@ export interface UpdateFields {
     state: string
     zipcode: number
   }
-  rebundle: {
+  rebundle?: {
     status: boolean
     count: number
   }
 }
+
+export type UpdateUser = Partial<IUser>
 
 export type UserBalance = {
   currency: string

@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   FlatList,
   ActivityIndicator,
   Image,
@@ -10,7 +9,7 @@ import React from "react"
 import homeStyles from "./homeStyles"
 import { TopSellers } from "../../types/user"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { useTheme } from "react-native-paper"
+import { Text, useTheme } from "react-native-paper"
 
 type Props = {
   isLoading?: boolean

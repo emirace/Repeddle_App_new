@@ -1,13 +1,6 @@
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
+import { FlatList, Image, TouchableOpacity, View } from "react-native"
 import React from "react"
-import { useTheme } from "react-native-paper"
+import { Text, useTheme } from "react-native-paper"
 import homeStyles from "./homeStyles"
 import { MainScreenNavigationProp } from "../../types/navigation/stack"
 
@@ -183,6 +176,9 @@ const RenderItemcat = ({
           textTransform: "uppercase",
           fontWeight: "500",
           color: colors.tertiary,
+          fontFamily: "chronicle-text",
+          lineHeight: 18,
+          marginTop: 2,
         }}
       >
         {item.text}
