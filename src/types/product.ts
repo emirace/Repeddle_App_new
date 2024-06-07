@@ -5,6 +5,7 @@ export interface IReview {
   comment: string
   rating: number
   like?: string
+  _id: string
 }
 
 export interface Share {
@@ -19,6 +20,7 @@ export interface ViewCount {
 }
 
 export interface ISize {
+  _id: string
   size: string
   quantity: number
 }
@@ -92,6 +94,7 @@ export interface Seller {
   sold: string[]
   numReviews: number
   badge: boolean
+  region?: "NGN" | "ZAR"
   createdAt: string
   updatedAt: string
 }
@@ -126,9 +129,26 @@ export interface Review {
   comment: string
   rating: number
   like: string
+  createdAt?: string
+  _id: string
 }
 
-export interface Meta {}
+export interface Meta {
+  lat?: number
+  lng?: number
+  name: string
+  address: string
+  phone: string
+  stationId: number
+  point?: string
+  province?: string
+  shortName?: string
+  pickUp?: string
+  postalcode?: string
+  city?: string
+  suburb?: string
+  email?: string
+}
 
 export interface SellingPriceHistory {
   value: number
@@ -176,3 +196,20 @@ export type ICreateBrand = {
   published: boolean
   name: string
 }
+
+export type RecentProduct = {
+  score: number
+  numViews: number
+  productId: string
+  product: IProduct
+}
+
+export type Coupon =
+  | {
+      type: "fixed"
+      value: number
+    }
+  | {
+      type: "percent"
+      percentOff: number
+    }

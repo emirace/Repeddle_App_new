@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // TODO: remove the lint above
-import { IProduct } from "./product"
+import { IProduct, Meta } from "./product"
 import { IUser } from "./user"
 
 export type DeliverStatus =
@@ -215,14 +215,7 @@ export type IReturn = {
       likes: Array<any>
       sold: boolean
       soldAll: boolean
-      meta?: {
-        lat: number
-        lng: number
-        name: string
-        address: string
-        phone: string
-        stationId: number
-      }
+      meta?: Meta
       active: boolean
       countInStock: number
       region: "NGN" | "ZAR"

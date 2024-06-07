@@ -1,5 +1,6 @@
+import { CartItem } from "../contexts/CartContext"
 import { saveImageService } from "../services/image"
-import { IProduct } from "../types/product"
+import { Coupon, IProduct } from "../types/product"
 import * as WebBrowser from "expo-web-browser"
 
 export const currency = (region: IProduct["region"]) => {
@@ -65,4 +66,51 @@ export const deliveryNumber = (status: string) => {
   } as const
 
   return deliveryStatusMap[status as keyof typeof deliveryStatusMap] ?? 0
+}
+
+export const conditionDetails = (item: string) => {
+  if (item === "New with Tags") {
+    return "New with Tags: A preowned secondhand product that has never been worn or used. These products reflect no sign of use and has its original purchase tags on it. This product shows no alterations, no defects and comes with Original purchase tags."
+  } else if (item === "New with No Tags") {
+    return "A preowned secondhand product that has never been worn or use but doesn’t have original purchase tags. This product should show no defects or alterations."
+  } else if (item === "Excellent Condition") {
+    return "A preowned secondhand Product still in an excellent condition that has only been used or worn very slightly, (perhaps 1–3 times) and carefully maintained. These Product may reflect very minimal worn or usage sign. Product do not have any damage on the fabric or material, no worn smell and no missing accessory, button or pieces. "
+  } else if (item === "Good Condition") {
+    return "A preowned secondhand product in a very good condition which has been used or worn and properly maintained. No remarkable defects (Tear, Hole or Rust) expected."
+  } else if (item === "Fair Condition") {
+    return "A preowned secondhand product which has been frequently used or worn. Products may show reasonable defects signs, scratches, worn corners or interior wear. Defects are shown on product photos and mentioned in description."
+  } else {
+    return "No condition Selected"
+  }
+}
+
+export const checkDeliverySelect = (cart: CartItem[]) => {
+  var success = true
+  cart.map((x) => {
+    if (!x.deliverySelect) {
+      success = false
+    }
+  })
+  return success
+}
+
+export const generateTransactionRef = (length: number) => {
+  var result = ""
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+  var charactersLength = characters.length
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return `emirace_tx_ref_${result}`
+}
+
+export const couponDiscount = (coupon: Coupon, price: number) => {
+  if (coupon.type === "fixed") {
+    return coupon.value
+  } else if (coupon.type === "percent") {
+    return (coupon.percentOff / 100) * price
+  } else {
+    return 0
+  }
 }

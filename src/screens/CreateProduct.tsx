@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Keyboard,
   Modal,
   ScrollView,
   StyleSheet,
@@ -18,30 +19,38 @@ import {
   Tooltip,
   useTheme,
 } from "react-native-paper"
-import useProducts from "../../hooks/useProducts"
-import { IBrand, ISize } from "../../types/product"
-import { EditProductNavigationProp } from "../../types/navigation/stack"
-import useCategory from "../../hooks/useCategory"
-import Input from "../../components/Input"
+import useCategory from "../hooks/useCategory"
+import { IBrand, ISize } from "../types/product"
+import Input from "../components/Input"
 import { Picker } from "@react-native-picker/picker"
 import { Ionicons } from "@expo/vector-icons"
-import { color1, features, materials } from "../../utils/constants"
-import { currency, region, uploadImage } from "../../utils/common"
-import MyButton from "../../components/MyButton"
-import { normaliseH } from "../../utils/normalize"
-import AddDeliveryOption from "../../components/AddDeliveryOption"
-import Condition from "../../components/Condition"
-import useBrands from "../../hooks/useBrand"
+import Condition from "../components/Condition"
+import { color1, features, materials } from "../utils/constants"
+import useBrands from "../hooks/useBrand"
 import * as ImagePicker from "expo-image-picker"
+import { currency, region, uploadImage } from "../utils/common"
+import MyButton from "../components/MyButton"
+import useProducts from "../hooks/useProducts"
+import AddDeliveryOption from "../components/AddDeliveryOption"
+import { CreateProductNavigationProp } from "../types/navigation/stack"
+import useAuth from "../hooks/useAuth"
+import { normaliseH } from "../utils/normalize"
+import FeeStructure from "../components/FeeStructure"
+import VideoPickerComponent from "../components/VideoPickerComponent"
+import AddOtherBrands from "../components/AddOtherBrands"
+import AddAccount from "../components/AddAccount"
+import AddAddress from "../components/AddAddress"
+import { useIsFocused } from "@react-navigation/native"
 
-type Props = EditProductNavigationProp
+type Props = CreateProductNavigationProp
 
-const EditProduct = ({ navigation, route }: Props) => {
+const CreateProduct = ({ navigation }: Props) => {
   const { colors } = useTheme()
-
-  const { loading, fetchProductById, error, updateProduct } = useProducts()
   const { fetchBrands, brands } = useBrands()
-  const { fetchCategories, categories } = useCategory()
+  const { categories, fetchCategories } = useCategory()
+  const { createProduct, error } = useProducts()
+  const { user } = useAuth()
+  const isFocused = useIsFocused()
 
   const [input, setInput] = useState({
     name: "",
@@ -68,6 +77,7 @@ const EditProduct = ({ navigation, route }: Props) => {
     luxury: false,
     vintage: false,
   })
+
   const [tempSize, setTempSize] = useState("S")
   const [modalVisible, setModalVisible] = useState(false)
   const [countInStock, setCountInStock] = useState(1)
@@ -77,6 +87,7 @@ const EditProduct = ({ navigation, route }: Props) => {
   const [showCondition, setShowCondition] = useState(false)
   const [price, setPrice] = useState("")
   const [discount, setDiscount] = useState("")
+  const [showVideoModal, setShowVideoModal] = useState(false)
 
   const [paxi, setPaxi] = useState(true)
   const [gig, setGig] = useState(false)
@@ -92,12 +103,14 @@ const EditProduct = ({ navigation, route }: Props) => {
   const [deliveryOption, setDeliveryOption] = useState([
     { name: "Pick up from Seller", value: 0 },
   ])
-  let tags: string[] = []
-  let sizesInputCounts = [1]
-
   const [queryBrand, setQueryBrand] = useState("")
   const [searchBrand, setSearchBrand] = useState<IBrand[]>([])
-  const [loadingUpload, setLoadingUpload] = useState(false)
+  const [showOtherBrand, setShowOtherBrand] = useState(false)
+  const [showFeeStructure, setShowFeeStructure] = useState(false)
+  const [refresh, setRefresh] = useState(false)
+
+  let tags: string[] = []
+  let sizesInputCounts = [1]
 
   const handleOnChange = (text: string | boolean, key: keyof typeof input) => {
     setInput((prevState) => ({ ...prevState, [key]: text }))
@@ -107,164 +120,9 @@ const EditProduct = ({ navigation, route }: Props) => {
     setValidationError((prevState) => ({ ...prevState, [key]: text }))
   }
 
-  const handleTags = (tag: string) => {
-    if (tag.includes(" ")) {
-      // TODO: toast notification
-      Alert.alert("Please remove unnecessary space")
-      return
-    }
-
-    if (tags.length > 5) {
-      // TODO: toast notification
-      Alert.alert("You can't add more five tags ")
-
-      return
-    }
-    if (tag.length > 0) {
-      tags.push(tag)
-      handleOnChange("", "tag")
-    }
-  }
-
-  const removeTags = (tag: string) => {
-    const newtags = tags.filter((data) => data != tag)
-    tags = newtags
-  }
-
-  const discountCalc = () => {
-    if (parseInt(price) < parseInt(discount)) return null
-    return ((parseInt(price) - parseInt(discount)) / parseInt(price)) * 100
-  }
-
-  const uploadImageHandler = async (photo: any, key: keyof typeof input) => {
-    const file = photo as File
-    const bodyFormData = new FormData()
-    bodyFormData.append("file", file)
-    // setLoadingUpload(true)
-    try {
-      const res = await uploadImage(file)
-      handleOnChange(res, key)
-    } catch (error) {
-      //   // TODO: toast notification
-      Alert.alert(error as string)
-    }
-  }
-
-  const sizeHandler = (sizenow: string) => {
-    if (!sizenow) {
-      // TODO: toast notification
-      Alert.alert("Please enter size")
-      return
-    }
-
-    const exist = sizes.some((s) => s.size === sizenow)
-
-    if (exist) {
-      const newSizes = sizes.filter((s) => s.size !== sizenow)
-      setSizes(newSizes)
-    } else {
-      setSizes((prevSizes) => [...prevSizes, { size: sizenow, quantity: 1 }])
-    }
-
-    setInput((prev) => ({ ...prev, selectedSize: "" }))
-  }
-
-  const addSizeQuantity = (label: string, value: number) => {
-    const sizeIndex = sizes.findIndex((x) => x.size === label)
-    if (sizeIndex === -1) return
-    sizes[sizeIndex].quantity = value
-  }
-  const [refresh, setRefresh] = useState(false)
   const addSizesCont = () => {
     sizesInputCounts.push(1)
-    setRefresh(!refresh)
   }
-
-  const pickImage = async (key: keyof typeof input) => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    })
-
-    if (!result.canceled) {
-      let localUri = result.assets[0].uri
-      let filename = localUri.split("/").pop()
-      if (!filename) return
-      let match = /\.(\w+)$/.exec(filename)
-      let type = match ? `image/${match[1]}` : `image`
-
-      uploadImageHandler({ uri: localUri, name: filename, type }, key)
-      console.log({ uri: localUri, name: filename, type })
-    }
-  }
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      const res = await fetchProductById(route.params.id)
-      if (typeof res !== "string") {
-        setInput({
-          name: res.name,
-          mainCategory: res.mainCategory,
-          subCategory: res.subCategory ?? input.subCategory,
-          category: res.category ?? input.category,
-          description: res.description,
-          brand: res.brand ?? input.brand,
-          price: res.sellingPrice.toString(),
-          specification: res.specification ?? input.specification,
-          condition: res.condition,
-          keyFeatures: res.keyFeatures ?? input.keyFeatures,
-          video: res.video ?? input.video,
-          material: res.material ?? input.material,
-          // TODO:
-          tag: res.tags[0],
-          color: res.color ?? input.color,
-          luxuryImage: res.luxuryImage ?? input.luxuryImage,
-          luxury: res.luxury ?? input.luxury,
-          vintage: res.vintage ?? input.vintage,
-          image1: "",
-          image2: "",
-          image3: "",
-          image4: "",
-          image: "",
-        })
-      } else {
-        // TODO: toast notification
-        Alert.alert(res)
-      }
-    }
-
-    fetchProduct()
-  }, [route.params.id, refresh])
-
-  useEffect(() => {
-    const fetchCate = async () => {
-      const res = await fetchCategories()
-      if (res) {
-      } else {
-        // TODO: toast notification
-        Alert.alert(error)
-      }
-    }
-
-    fetchCate()
-  }, [])
-
-  useEffect(() => {
-    const getFilterBrand = async () => {
-      const params: string[][] = [["search", queryBrand]]
-
-      const string = new URLSearchParams(params).toString()
-
-      const res = await fetchBrands(string)
-
-      if (res) setSearchBrand(brands)
-    }
-
-    if (queryBrand) getFilterBrand()
-  }, [queryBrand])
 
   const validation = () => {
     var valid = true
@@ -349,7 +207,7 @@ const EditProduct = ({ navigation, route }: Props) => {
     if (input.image3) images.push(input.image3)
     if (input.image4) images.push(input.image4)
 
-    const res = await updateProduct(route.params.id, {
+    const res = await createProduct({
       name: input.name,
       images,
       video: input.video,
@@ -377,12 +235,113 @@ const EditProduct = ({ navigation, route }: Props) => {
     })
 
     if (res) {
-      if (navigation.canGoBack()) return navigation.goBack()
-      navigation.navigate("ProductList")
+      navigation.navigate("MyAccount", { username: user!.username })
     } else {
       // TODO: toast notification
       Alert.alert(error)
     }
+  }
+
+  const handleTags = (tag: string) => {
+    if (tag.includes(" ")) {
+      // TODO: toast notification
+      Alert.alert("Please remove unnecessary space")
+      return
+    }
+
+    if (tags.length > 5) {
+      // TODO: toast notification
+      Alert.alert("You can't add more five tags ")
+
+      return
+    }
+    if (tag.length > 0) {
+      tags.push(tag)
+      handleOnChange("", "tag")
+    }
+  }
+
+  const removeTags = (tag: string) => {
+    const newtags = tags.filter((data) => data != tag)
+    tags = newtags
+  }
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  useEffect(() => {
+    const getFilterBrand = async () => {
+      const params: string[][] = [["search", queryBrand]]
+
+      const string = new URLSearchParams(params).toString()
+
+      const res = await fetchBrands(string)
+
+      if (res) setSearchBrand(brands)
+    }
+
+    if (queryBrand) getFilterBrand()
+  }, [queryBrand])
+
+  const pickImage = async (key: keyof typeof input) => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    })
+
+    if (!result.canceled) {
+      let localUri = result.assets[0].uri
+      let filename = localUri.split("/").pop()
+      if (!filename) return
+      let match = /\.(\w+)$/.exec(filename)
+      let type = match ? `image/${match[1]}` : `image`
+
+      uploadImageHandler({ uri: localUri, name: filename, type }, key)
+      console.log({ uri: localUri, name: filename, type })
+    }
+  }
+
+  const uploadImageHandler = async (photo: any, key: keyof typeof input) => {
+    const file = photo as File
+    const bodyFormData = new FormData()
+    bodyFormData.append("file", file)
+    // setLoadingUpload(true)
+    try {
+      const res = await uploadImage(file)
+      handleOnChange(res, key)
+    } catch (error) {
+      //   // TODO: toast notification
+      Alert.alert(error as string)
+    }
+  }
+
+  const sizeHandler = (sizenow: string) => {
+    if (!sizenow) {
+      // TODO: toast notification
+      Alert.alert("Please enter size")
+      return
+    }
+
+    const exist = sizes.some((s) => s.size === sizenow)
+
+    if (exist) {
+      const newSizes = sizes.filter((s) => s.size !== sizenow)
+      setSizes(newSizes)
+    } else {
+      setSizes((prevSizes) => [...prevSizes, { size: sizenow, quantity: 1 }])
+    }
+
+    setInput((prev) => ({ ...prev, selectedSize: "" }))
+  }
+
+  const addSizeQuantity = (label: string, value: number) => {
+    const sizeIndex = sizes.findIndex((x) => x.size === label)
+    if (sizeIndex === -1) return
+    sizes[sizeIndex].quantity = value
   }
 
   return (
@@ -395,16 +354,23 @@ const EditProduct = ({ navigation, route }: Props) => {
         }}
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Edit Product" />
+        <Appbar.Content title="My Orders" />
         <Appbar.Action
           icon="cart-outline"
           onPress={() => navigation.navigate("Cart")}
         />
       </Appbar.Header>
-      {!categories && loading ? (
+
+      <AddAccount navigation={navigation} isFocused={isFocused} />
+      <AddAddress navigation={navigation} isFocused={isFocused} />
+      {!categories ? (
         <ActivityIndicator size={"large"} color={colors.primary} />
       ) : (
-        <ScrollView style={styles.form} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={styles.form}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="always"
+        >
           <Text style={styles.info}>
             When adding product, do not ignore to fill all relevant fields and
             following the product adding rules. Always remember; The best
@@ -432,7 +398,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                 padding: 5,
                 color: "grey",
               }}
-              onValueChange={(itemValue) =>
+              onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "mainCategory")
               }
             >
@@ -463,6 +429,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               {validationError.mainCategory}
             </Text>
           )}
+
           <Text style={[styles.label]}>Category</Text>
           <View style={styles.picker}>
             <Picker
@@ -472,7 +439,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                 padding: 5,
                 color: "grey",
               }}
-              onValueChange={(itemValue) =>
+              onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "category")
               }
             >
@@ -516,7 +483,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                 padding: 5,
                 color: "grey",
               }}
-              onValueChange={(itemValue) =>
+              onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "subCategory")
               }
             >
@@ -541,8 +508,8 @@ const EditProduct = ({ navigation, route }: Props) => {
                               backgroundColor: colors.elevation.level2,
                               color: colors.onBackground,
                             }}
-                            label={item.name}
-                            value={item.name}
+                            // label={item}
+                            value={item}
                             key={index}
                           />
                         ))
@@ -560,7 +527,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             <Tooltip title="Should you not be certain which condition your product falls under when listing, we suggest you choose between the last three option depending on what you see (if your product isn’t NEW or with TAG) and take very clear visible photos indicating every little details. Also, to avoid returns and help you sell fast, give every possible information in your product description so as to clearly inform buyer about your product’s condition.">
               <Ionicons
                 name="help-circle"
-                size={15}
+                size={20}
                 color={colors.onBackground}
                 style={{ marginHorizontal: 5 }}
               />
@@ -570,6 +537,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               <Text style={styles.infoLink}>help?</Text>
             </TouchableOpacity>
           </View>
+
           <Modal
             animationType="slide"
             transparent={true}
@@ -651,13 +619,13 @@ const EditProduct = ({ navigation, route }: Props) => {
             <Text style={[styles.label]}>Materials/Fibric</Text>
             <Tooltip
               title="How do I know what the primary material of the product is?
-                      This information is mostly indicated on the Product
-                      labels, please refer to the label detailing the
-                      composition of your Product."
+                          This information is mostly indicated on the Product
+                          labels, please refer to the label detailing the
+                          composition of your Product."
             >
               <Ionicons
                 name="help-circle"
-                size={15}
+                size={20}
                 color={colors.onBackground}
                 style={{ marginHorizontal: 5 }}
               />
@@ -703,27 +671,39 @@ const EditProduct = ({ navigation, route }: Props) => {
             </Text>
           )}
           <Text style={[styles.label]}>Brands</Text>
+          <Text style={styles.info}>
+            Can't find the brand you're listing? Search & use Other
+          </Text>
           <TextInput
             placeholder="Search brands"
-            value={queryBrand ?? ""}
+            placeholderTextColor="gray"
+            keyboardType="web-search"
+            returnKeyType="search"
+            onSubmitEditing={() => Keyboard.dismiss()}
             onChangeText={(text) => {
+              handleOnChange("", "brand")
               setQueryBrand(text)
             }}
-            style={[
-              styles.textInput,
-              { color: colors.onBackground, borderColor: colors.outline },
-            ]}
+            style={[styles.textInput, { borderColor: colors.outline }]}
             cursorColor={colors.onBackground}
           />
           {searchBrand &&
-            searchBrand.map((p, index) => (
+            queryBrand &&
+            [
+              ...searchBrand,
+              { name: "Other", _id: Math.random().toString() },
+            ].map((p, index) => (
               <View key={p._id}>
                 <TouchableOpacity
                   style={styles.listItem}
                   onPress={() => {
-                    handleOnChange(p.name, "brand")
-                    setQueryBrand(p.name)
-                    setSearchBrand([])
+                    Keyboard.dismiss()
+                    if (p.name === "Other") {
+                      setShowOtherBrand(true)
+                    } else {
+                      handleOnChange(p.name, "brand")
+                    }
+                    setQueryBrand("")
                   }}
                 >
                   <Ionicons
@@ -736,27 +716,39 @@ const EditProduct = ({ navigation, route }: Props) => {
                 </TouchableOpacity>
               </View>
             ))}
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={showOtherBrand}
+            onRequestClose={() => {
+              setShowOtherBrand(!showOtherBrand)
+            }}
+          >
+            <AddOtherBrands
+              setShowOtherBrand={setShowOtherBrand}
+              handleOnChange={handleOnChange}
+            />
+          </Modal>
           {validationError.brand && (
             <Text style={{ color: "red", fontSize: 12 }}>
               {validationError.brand}
             </Text>
           )}
           <View style={styles.infoRow}>
-            <Text style={[styles.label, { color: colors.onBackground }]}>
-              Color
-            </Text>
+            <Text style={[styles.label]}>Color</Text>
 
             <Tooltip
               title="How can I ensure that colour of the 
-              product is clear? For you to get accuracy in 
-              colour. Please take photos using a good source 
-              of natural light to ensure clear colour. The 
-              best and 
-              accurate photos always sale 95% faster"
+                  product is clear? For you to get accuracy in 
+                  colour. Please take photos using a good source 
+                  of natural light to ensure clear colour. The 
+                  best and 
+                  accurate photos always sale 95% faster"
             >
               <Ionicons
                 name="help-circle"
-                size={15}
+                size={20}
                 color={colors.onBackground}
                 style={{ marginHorizontal: 5 }}
               />
@@ -792,8 +784,8 @@ const EditProduct = ({ navigation, route }: Props) => {
                     color: colors.onBackground,
                   }}
                   key={index}
-                  label={c.name}
-                  value={c.name}
+                  //   label={c}
+                  value={c}
                 />
               ))}
             </Picker>
@@ -809,7 +801,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             <Tooltip title="If image size appears to be too large, you can simply crop the image on your phone and try again. This should reduce the size of the image you're trying upload.">
               <Ionicons
                 name="help-circle"
-                size={15}
+                size={20}
                 color={colors.onBackground}
                 style={{ marginHorizontal: 5 }}
               />
@@ -824,6 +816,7 @@ const EditProduct = ({ navigation, route }: Props) => {
           </Text>
           <View style={styles.imageCont}>
             <TouchableOpacity
+              // onPress={() => setModalVisibleIMage(true)}
               onPress={() => pickImage("image1")}
               style={[
                 styles.camera,
@@ -897,16 +890,28 @@ const EditProduct = ({ navigation, route }: Props) => {
               {validationError.image}
             </Text>
           )}
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowVideoModal(true)}>
             <Text style={[styles.addVideo, { color: colors.primary }]}>
               ADD SHORT VIDEO
             </Text>
           </TouchableOpacity>
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={showVideoModal}
+            onRequestClose={() => {
+              setShowVideoModal(!showVideoModal)
+            }}
+          >
+            <VideoPickerComponent setShowVideoModal={setShowVideoModal} />
+          </Modal>
+
           <View style={[{ flexDirection: "row" }]}>
             <View style={{ flex: 1, paddingRight: 10 }}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Checkbox
-                  // style={styles.checkbox}
+                  //   style={styles.checkbox}
                   status={input.luxury ? "checked" : "unchecked"}
                   onPress={() => handleOnChange(!input.luxury, "luxury")}
                   color={input.luxury ? colors.primary : undefined}
@@ -976,19 +981,6 @@ const EditProduct = ({ navigation, route }: Props) => {
           </View>
           <View style={styles.checkContainer}>
             <Text style={{ marginRight: 10 }}>Item do not require size</Text>
-            <View style={styles.infoRow}>
-              <Tooltip
-                title="If I feel the product and the size seems to differ from what indicated on the label, what should I do?
-              Please be advised to list the product with the size printed on the label. Mentioning the size discrepancy, you noticed in the product description helps a great deal for buyers to make informed size decision. If buyers are forewarned, they will not be disappointed. This minimizes the chances of your products been returned as a result of unfit size."
-              >
-                <Ionicons
-                  name="help-circle"
-                  size={15}
-                  color={colors.onBackground}
-                  style={{ marginHorizontal: 5 }}
-                />
-              </Tooltip>
-            </View>
             <Switch
               style={styles.checkbox1}
               trackColor={{ false: "#ddd", true: "#ddd" }}
@@ -1000,9 +992,20 @@ const EditProduct = ({ navigation, route }: Props) => {
           </View>
           {!addSize ? (
             <>
-              <Text style={[styles.label, { color: colors.onBackground }]}>
-                add size
-              </Text>
+              <View style={styles.infoRow}>
+                <Text style={[styles.label]}>add size</Text>
+                <Tooltip
+                  title="If I feel the product and the size seems to differ from what indicated on the label, what should I do?
+                  Please be advised to list the product with the size printed on the label. Mentioning the size discrepancy, you noticed in the product description helps a great deal for buyers to make informed size decision. If buyers are forewarned, they will not be disappointed. This minimizes the chances of your products been returned as a result of unfit size."
+                >
+                  <Ionicons
+                    name="help-circle"
+                    size={20}
+                    color={colors.onBackground}
+                    style={{ marginHorizontal: 5 }}
+                  />
+                </Tooltip>
+              </View>
               <Text style={styles.info}>
                 Provide the exact size as indicated on your product's label.
               </Text>
@@ -1021,8 +1024,8 @@ const EditProduct = ({ navigation, route }: Props) => {
                     </View>
                     <View style={{ flex: 1, marginLeft: 10 }}>
                       <Input
-                        placeholder="Quantity"
                         keyboardType="numeric"
+                        placeholder="Quantity"
                         onChangeText={(text) =>
                           addSizeQuantity(tempSize, +text)
                         }
@@ -1043,7 +1046,6 @@ const EditProduct = ({ navigation, route }: Props) => {
               <Text style={[styles.label]}>Count in stock</Text>
               <TextInput
                 keyboardType="numeric"
-                placeholderTextColor={colors.onBackground}
                 style={[
                   styles.input,
                   {
@@ -1051,26 +1053,26 @@ const EditProduct = ({ navigation, route }: Props) => {
                     backgroundColor: colors.elevation.level2,
                   },
                 ]}
-                placeholder={`${countInStock}`}
                 value={countInStock.toString()}
-                onChangeText={(text) => setCountInStock(+text)}
+                onChangeText={(v) => setCountInStock(+v)}
               />
             </>
           )}
           {sizesError && (
             <Text style={{ color: "red", fontSize: 12 }}>{sizesError}</Text>
           )}
+
           <View style={styles.infoRow}>
-            <Text style={[styles.label]}>Shipping Location</Text>
+            <Text style={[styles.label]}>Shipping location</Text>
 
             <Tooltip
               title="Please select if your product can be shipped anywhere around
-              your country. If you're in Nigeria, Only select Nigeria. If
-              you are selling in South Africa only select South Africa"
+                  your country. If you're in Nigeria, Only select Nigeria. If
+                  you are selling in South Africa only select South Africa"
             >
               <Ionicons
                 name="help-circle"
-                size={15}
+                size={20}
                 color={colors.onBackground}
                 style={{ marginHorizontal: 5 }}
               />
@@ -1079,14 +1081,14 @@ const EditProduct = ({ navigation, route }: Props) => {
           {/* TODO: not in product schema  */}
           {/* <View style={styles.picker}>
             <Picker
-              selectedValue={input.shippingLocation}
+              selectedValue={input.location}
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
                 color: "grey",
               }}
               onValueChange={(itemValue, itemIndex) =>
-                handleOnChange(itemValue, "shippingLocation")
+                handleOnChange(itemValue, "location")
               }
             >
               <Picker.Item
@@ -1115,10 +1117,10 @@ const EditProduct = ({ navigation, route }: Props) => {
                 value={"South Africa"}
               />
             </Picker>
-          </View>
-          {validationError.shippingLocation && (
+          </View> */}
+          {/* {validationError.location && (
             <Text style={{ color: "red", fontSize: 12 }}>
-              {validationError.shippingLocation}
+              {validationError.location}
             </Text>
           )} */}
           <Text style={[styles.label]}>Key Feature : Pattern & Print</Text>
@@ -1130,7 +1132,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                 padding: 5,
                 color: "grey",
               }}
-              onValueChange={(itemValue) =>
+              onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "keyFeatures")
               }
             >
@@ -1160,6 +1162,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               {validationError.keyFeatures}
             </Text>
           )}
+
           <Text style={[styles.label]}>Delivery options</Text>
           {deliveryOption.map((d) => (
             <View key={d.name} style={styles.deliv}>
@@ -1172,7 +1175,6 @@ const EditProduct = ({ navigation, route }: Props) => {
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-              Alert.alert("Modal has been closed.")
               setModalVisible(!modalVisible)
             }}
           >
@@ -1220,7 +1222,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               ]}
             >
               {currency(region())}
-              {discount ? price : null}
+              {discount ? input.price : null}
             </Text>
           </View>
           <View style={{ flexDirection: "row", flex: 1 }}>
@@ -1231,7 +1233,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                 <Tooltip title="Any price suggestion for my product? We encourage you to be as reasonable as possible, as over prized products are turn off to buyers. Keep in mind that our community are experienced secondhand THRIFT buyers & sellers both in vintage and luxury goods and overpricing may affect the sale of your product. However, buyers will appreciate a fairly reasonable price that’s worth the value of your product. Also, bear in mind that there might be competitive product you may be selling on our app or website, hence, be sure to beat any possible competition you can. Offer discounts, promos or free delivery where and when possible as these are great ways to sell FAST! We are doing our best to provide you with competitive goods and price suggestions for similar and previously SOLD products.">
                   <Ionicons
                     name="help-circle"
-                    size={15}
+                    size={20}
                     color={colors.onBackground}
                     style={{ marginHorizontal: 5 }}
                   />
@@ -1263,9 +1265,14 @@ const EditProduct = ({ navigation, route }: Props) => {
                     setDiscount("")
                   }
                 }}
-                placeholder="Discount in percentage"
+                placeholder="Discount in %"
                 onFocus={() => {}}
               />
+              {/* {validationError.discount && (
+                <Text style={{ color: "red", fontSize: 12 }}>
+                  {validationError.discount}
+                </Text>
+              )} */}
             </View>
           </View>
           <Text style={[styles.info, { padding: 0, color: colors.secondary }]}>
@@ -1276,8 +1283,24 @@ const EditProduct = ({ navigation, route }: Props) => {
             business as part of our community, you will not be charged Repeddle
             commission fee. To understand how our fee works after the grace
             period, please have a look at our fee structure
-            <Text style={{ color: colors.secondary }}> here</Text>
+            <Text
+              style={{ color: colors.secondary }}
+              onPress={() => setShowFeeStructure(true)}
+            >
+              {" "}
+              here
+            </Text>
           </Text>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={showFeeStructure}
+            onRequestClose={() => {
+              setShowFeeStructure(!showFeeStructure)
+            }}
+          >
+            <FeeStructure setShowFeeStructure={setShowFeeStructure} />
+          </Modal>
           <Text style={[styles.label]}>specification</Text>
           <Text style={styles.info}>
             FOR CHILDREN'S WEAR/SH0ES, Please manually enter the Size/Age
@@ -1289,18 +1312,20 @@ const EditProduct = ({ navigation, route }: Props) => {
               { backgroundColor: colors.elevation.level2 },
             ]}
             multiline={true}
-            textAlignVertical="top"
             placeholder="  Specs"
+            // color={colors.onBackground}
             placeholderTextColor={colors.onBackground}
             numberOfLines={5}
             onChangeText={(text) => handleOnChange(text, "specification")}
             value={input.specification}
           />
+
           {validationError.specification && (
             <Text style={{ color: "red", fontSize: 12 }}>
               {validationError.specification}
             </Text>
           )}
+
           <Text style={[styles.label]}>description</Text>
           <TextInput
             style={[
@@ -1311,7 +1336,6 @@ const EditProduct = ({ navigation, route }: Props) => {
               },
             ]}
             multiline={true}
-            textAlignVertical="top"
             placeholder="  Description"
             placeholderTextColor={colors.onBackground}
             numberOfLines={10}
@@ -1366,10 +1390,11 @@ const EditProduct = ({ navigation, route }: Props) => {
               </View>
             </View>
           </View>
+
           <View style={{ marginBottom: 10 }}>
             <MyButton
               icon="add-circle-outline"
-              text={"Update Product"}
+              text={"Add Product"}
               onPress={() => validation()}
             />
           </View>
@@ -1379,7 +1404,7 @@ const EditProduct = ({ navigation, route }: Props) => {
   )
 }
 
-export default EditProduct
+export default CreateProduct
 
 const styles = StyleSheet.create({
   container: {
@@ -1433,6 +1458,7 @@ const styles = StyleSheet.create({
   infoLink: {
     fontSize: 11,
     textDecorationLine: "underline",
+    marginLeft: 5,
   },
   input: {
     borderRadius: 5,
@@ -1533,5 +1559,54 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 15,
     textTransform: "capitalize",
+  },
+  uploadButton: {
+    fontSize: 20,
+    color: "blue",
+    marginVertical: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalText: {
+    fontSize: 20,
+    color: "blue",
+    marginBottom: 20,
+  },
+  modalImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 20,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+  },
+  // camera: {
+  //   position: "absolute",
+  //   bottom: 0,
+  //   width: "100%",
+  //   height: "100%",
+  // },
+  cameraButton: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    padding: 10,
+    backgroundColor: "white",
+    borderRadius: 50,
+  },
+  cameraButtonText: {
+    fontSize: 20,
   },
 })

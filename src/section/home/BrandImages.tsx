@@ -17,7 +17,12 @@ const BrandImages = () => {
   const { colors } = usePaperTheme()
 
   return (
-    <View style={[homeStyles.brandScroll, { backgroundColor: colors.surface }]}>
+    <View
+      style={[
+        homeStyles.brandScroll,
+        { backgroundColor: colors.elevation.level2 },
+      ]}
+    >
       <FlatList
         data={themeMode === "dark" ? brandLogo : brandLogodark}
         renderItem={renderBrand}
