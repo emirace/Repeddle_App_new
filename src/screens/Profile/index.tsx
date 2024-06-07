@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
 import { Appbar, Avatar, List, Text, useTheme } from "react-native-paper";
+import Balance from "../../section/profile/Balances";
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { colors } = useTheme();
@@ -21,10 +22,11 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
             <Text style={styles.welcome}>Welcome, let's make payments!</Text>
           </View>
         </View>
-        <Appbar.Action icon="calendar" onPress={() => {}} />
-        <Appbar.Action icon="magnify" onPress={() => {}} />
+        <Appbar.Action icon="face-agent" onPress={() => {}} />
+        <Appbar.Action icon="bell-outline" onPress={() => {}} />
       </Appbar.Header>
       <View>
+        <Balance navigation={navigation} />
         <List.Section>
           <List.Subheader>General</List.Subheader>
 

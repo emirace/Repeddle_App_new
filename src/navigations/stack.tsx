@@ -1,13 +1,16 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { RootStackParamList } from "../types/navigation/stack"
-import MainBottomNav from "./bottom"
-import Appearance from "../screens/Profile/Appearance"
-import Sell from "../screens/Sell"
-import Search from "../screens/Search"
-import Product from "../screens/Product"
-import Chat from "../screens/chat/Chat"
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types/navigation/stack";
+import MainBottomNav from "./bottom";
+import Sell from "../screens/Sell";
+import Search from "../screens/Search";
+import Product from "../screens/Product";
+import Chat from "../screens/chat/Chat";
+import Appearance from "../screens/profile/Appearance";
+import Wallet from "../screens/wallet/Fund";
+import Fund from "../screens/wallet/Fund";
+import Withdraw from "../screens/wallet/Withdraw";
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function MainStackNav() {
   return (
@@ -42,8 +45,18 @@ function MainStackNav() {
         component={Chat}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="Fund"
+        component={Fund}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Withdraw"
+        component={Withdraw}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
-  )
+  );
 }
 
-export default MainStackNav
+export default MainStackNav;
