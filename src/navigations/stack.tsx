@@ -19,6 +19,12 @@ import Checkout from "../screens/Checkout"
 import PaymentMethod from "../screens/PaymentMethod"
 import CreateProduct from "../screens/CreateProduct"
 import SellerReview from "../screens/SellerReview"
+import Wishlist from "../screens/Dashboard/Wishlist"
+import ReturnDetail from "../screens/Dashboard/ReturnDetail"
+import ReturnForm from "../screens/ReturnForm"
+import Return from "../screens/Dashboard/Return"
+import Transaction from "../screens/Dashboard/Transaction"
+import TransactionDetail from "../screens/Dashboard/TransactionDetail"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -120,6 +126,37 @@ function MainStackNav() {
       <Stack.Screen
         name="SellerReview"
         component={SellerReview}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Wishlist"
+        component={Wishlist}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ReturnDetail"
+        component={ReturnDetail}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ReturnForm"
+        component={ReturnForm}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Return"
+        component={Return}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Transaction"
+        component={Transaction}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="TransactionDetail"
+        component={TransactionDetail}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

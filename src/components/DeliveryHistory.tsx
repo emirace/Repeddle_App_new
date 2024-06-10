@@ -12,7 +12,7 @@ import { normaliseH } from "../utils/normalize"
 import { Ionicons } from "@expo/vector-icons"
 
 type Props = {
-  setShowDeliveryHistory: (val: boolean) => void
+  setShowDeliveryHistory?: (val: boolean) => void
   status: number
 }
 

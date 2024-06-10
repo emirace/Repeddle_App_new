@@ -70,7 +70,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   }, [fetchProd])
 
   const formatData = (data: IProduct[]) => {
-    const isEven = data.length % 2 === 0
+    const isEven = data.length % numColumns === 0
 
     if (!isEven) {
       const empty = { ...data[0], empty: true }
