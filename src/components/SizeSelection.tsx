@@ -27,10 +27,7 @@ const SizeSelection = ({ selectedSize, symbol, sizeHandler }: Props) => {
         style={[
           styles.circletext,
           {
-            color:
-              selectedSize === symbol
-                ? colors.elevation.level0
-                : colors.onBackground,
+            color: selectedSize === symbol ? "white" : colors.onBackground,
           },
         ]}
       >

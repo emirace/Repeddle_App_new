@@ -22,6 +22,7 @@ import QuantitySelector from "../components/QuantitySelector"
 import DeliveryOptions from "../components/DeliveryOptions"
 import CustomAlert from "../components/CustomAlert"
 import { normaliseW } from "../utils/normalize"
+import { baseURL } from "../services/api"
 
 type Props = CartNavigationProp
 
@@ -36,7 +37,7 @@ const Cart = ({ navigation }: Props) => {
     if (!user) {
       // TODO: show toast
       Alert.alert("Login to continue")
-      navigation.navigate("SignIn")
+      navigation.navigate("Auth")
       return
     }
     if (!checkDeliverySelect(cart)) {
@@ -68,10 +69,10 @@ const Cart = ({ navigation }: Props) => {
         }}
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
+        <Appbar.Content title="Cart" />
         <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          icon="heart"
+          onPress={() => navigation.navigate("Wishlist")}
         />
       </Appbar.Header>
       <Text style={styles.description}>
@@ -194,7 +195,10 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
         </Text>
       </View>
       <View style={[styles.item, { backgroundColor: colors.elevation.level2 }]}>
-        <Image source={{ uri: item.images[0] }} style={styles.image} />
+        <Image
+          source={{ uri: baseURL + item.images[0] }}
+          style={styles.image}
+        />
         <View style={{ flex: 1, paddingLeft: 15 }}>
           <View style={styles.subRow}>
             <View style={styles.detail}>

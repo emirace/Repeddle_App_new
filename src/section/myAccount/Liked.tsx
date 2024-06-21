@@ -26,22 +26,26 @@ const Liked = ({ navigation, products }: Props) => {
     return data
   }
 
+  console.log(products.length)
+
   return (
-    <View>
-      {!products.length ? (
-        <View style={styles.continueCont}>
-          <View style={styles.frsttext}>
-            <Text
-              style={{ color: colors.onBackground }}
-              onPress={() => navigation.navigate("Main")}
-            >
-              No product found{" "}
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Main")}>
-              <Text style={styles.secondtext}>Go Shopping</Text>
-            </TouchableOpacity>
+    <>
+      {products.length === 0 ? (
+        <Tabs.ScrollView>
+          <View style={styles.continueCont}>
+            <View style={styles.frsttext}>
+              <Text
+                style={{ color: colors.onBackground }}
+                onPress={() => navigation.navigate("Main")}
+              >
+                No product found{" "}
+              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Main")}>
+                <Text style={styles.secondtext}>Go Shopping</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </Tabs.ScrollView>
       ) : (
         <Tabs.FlatList
           data={formatData(products)}
@@ -53,7 +57,7 @@ const Liked = ({ navigation, products }: Props) => {
           showsVerticalScrollIndicator={false}
         />
       )}
-    </View>
+    </>
   )
 }
 
@@ -101,7 +105,7 @@ const styles = StyleSheet.create({
   continueCont: {
     justifyContent: "center",
     alignItems: "center",
-    height: "100%",
+    marginTop: 50,
   },
   frsttext: { justifyContent: "center", flexDirection: "row" },
   secondtext: { fontWeight: "500", fontSize: 15, color: "#8a1719" },

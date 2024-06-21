@@ -19,6 +19,7 @@ import ProductItem from "../components/ProductItem"
 import useProducts from "../hooks/useProducts"
 import useUser from "../hooks/useUser"
 import SearchBar from "../components/SearchBar"
+import Announcement from "../components/Announcement"
 
 const WIDTH = Dimensions.get("screen").width
 
@@ -157,8 +158,23 @@ const Home = ({ navigation }: any) => {
     }),
   }
 
+  // const headerAnimation = {
+  //   transform: [
+  //     {
+  //       translateY: animatedValue.interpolate({
+  //         inputRange: [0, 50],
+  //         outputRange: [0, -20],
+  //         extrapolate: "clamp",
+  //       }),
+  //     },
+  //   ],
+  // }
+
   return (
     <View>
+      <Animated.View>
+        <Announcement navigation={navigation} />
+      </Animated.View>
       <Appbar.Header
         mode="small"
         style={{
@@ -203,7 +219,7 @@ const Home = ({ navigation }: any) => {
             logo2Animation,
           ]}
         />
-        <IconButton icon="cart" />
+        <IconButton icon="cart" onPress={() => navigation.navigate("Cart")} />
       </Appbar.Header>
       <View style={styles.content}>
         <Animated.View

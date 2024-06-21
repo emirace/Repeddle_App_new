@@ -191,7 +191,7 @@ const Product = ({ navigation, route }: Props) => {
 
     addToCart({
       ...product,
-      quantity: 1,
+      quantity,
       selectedSize,
       deliverySelect: {},
       // selectedColor?: string;
@@ -719,7 +719,7 @@ const Product = ({ navigation, route }: Props) => {
             </Text>
           </View>
         </View>
-
+        <Text style={styles.recentText}>Recently Viewed</Text>
         <View style={styles.section}>
           <FlatList
             data={recentlyViewed}
@@ -900,6 +900,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     textTransform: "capitalize",
     marginRight: normaliseW(10),
+  },
+  recentText: {
+    fontSize: 20,
+    marginTop: 20,
+    marginBottom: 10,
+    marginHorizontal: 20,
+    fontWeight: "bold",
   },
   ratingText: { fontSize: 15, marginHorizontal: 5, fontWeight: "bold" },
   ratingCount: { color: "grey" },

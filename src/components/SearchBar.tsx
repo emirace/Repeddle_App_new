@@ -39,6 +39,7 @@ const SearchBar = ({ onPress }: Props) => {
           onChangeText={(text) => {
             setQuery(text)
           }}
+          selectionColor={colors.primary}
         />
         {query ? (
           <TouchableOpacity onPress={() => setQuery("")}>
