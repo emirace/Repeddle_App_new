@@ -1,6 +1,7 @@
-import { ScrollView, View } from "react-native"
-import React from "react"
-import { Appbar, List, useTheme } from "react-native-paper"
+import { StyleSheet, ScrollView,View } from "react-native";
+import React from "react";
+import { Appbar, Avatar, List, Text, useTheme } from "react-native-paper";
+import Balance from "../../section/profile/Balances";
 import { RootStackParamList } from "../../types/navigation/stack"
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
@@ -11,15 +12,25 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
       style={{
         flex: 1,
         backgroundColor: colors.background,
+        paddingHorizontal: 20,
       }}
       contentContainerStyle={{
         paddingBottom: 130,
       }}
     >
       <Appbar.Header>
-        <Appbar.Content title="Profile" />
+        <View style={styles.userInfo}>
+          <Avatar.Icon size={48} icon="account" />
+          <View style={{ marginLeft: 10 }}>
+            <Text style={styles.greeting}>Hi, Emmanuel</Text>
+            <Text style={styles.welcome}>Welcome, let's make payments!</Text>
+          </View>
+        </View>
+        <Appbar.Action icon="face-agent" onPress={() => {}} />
+        <Appbar.Action icon="bell-outline" onPress={() => {}} />
       </Appbar.Header>
-      <View style={{ paddingHorizontal: 20 }}>
+      <View>
+        <Balance navigation={navigation} />
         <List.Section>
           <List.Subheader>General</List.Subheader>
 
@@ -121,4 +132,20 @@ const dashboardItems: {
   },
 ]
 
-export default Profile
+const styles = StyleSheet.create({
+  userInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  greeting: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  welcome: {
+    fontSize: 16,
+    color: "gray",
+  },
+});
+
+export default Profile;

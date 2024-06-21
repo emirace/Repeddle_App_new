@@ -25,8 +25,12 @@ import ReturnForm from "../screens/ReturnForm"
 import Return from "../screens/Dashboard/Return"
 import Transaction from "../screens/Dashboard/Transaction"
 import TransactionDetail from "../screens/Dashboard/TransactionDetail"
+import Wallet from "../screens/wallet/Fund";
+import Fund from "../screens/wallet/Fund";
+import Withdraw from "../screens/wallet/Withdraw";
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function MainStackNav() {
   return (
@@ -61,6 +65,17 @@ function MainStackNav() {
         component={Chat}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+
+        name="Fund"
+        component={Fund}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Withdraw"
+        component={Withdraw}
+        options={{ headerShown: false }}
+/>
       <Stack.Screen
         name="Profile"
         component={ProfileSettings}
@@ -160,7 +175,7 @@ function MainStackNav() {
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
-  )
+  );
 }
 
-export default MainStackNav
+export default MainStackNav;
