@@ -1,4 +1,4 @@
-import { IOrder, Order } from "../types/order"
+import { IOrder, IReturn, Order } from "../types/order"
 import { IProduct, Seller } from "../types/product"
 import { IUser } from "../types/user"
 
@@ -120,6 +120,7 @@ export const productDetails: IProduct = {
     {
       size: "XL",
       quantity: 0,
+      _id: "skfdkf",
     },
   ],
   slug: "summer-shirt",
@@ -212,3 +213,238 @@ export const orderData: IOrder = {
   createdAt: "2023-01-24T08:43:36.887Z",
   updatedAt: "2023-01-24T08:43:36.887Z",
 }
+
+export const returns: IReturn[] = [
+  {
+    comfirmDelivery: undefined,
+    _id: "65607466e24a3d31d7a860db",
+    orderId: {
+      _id: "6560742ae24a3d31d7a85fde",
+      orderItems: [
+        {
+          _id: "654b76048698d309f6f767fd",
+          name: "Loop Band",
+          sellerName: "KendoMash",
+          seller: {
+            address: {
+              street: "1 Fagba Street",
+              state: "Lagos",
+              zipcode: 1234,
+            },
+            rebundle: {
+              status: true,
+              count: 1,
+            },
+            _id: "63cf9a386f44b86e44e3b31e",
+            username: "KendoMash",
+            firstName: "Repeddle",
+            lastName: "Nigeria",
+            image:
+              "https://res.cloudinary.com/emirace/image/upload/v1692275468/mcph4bdajocqwg4dnxmz.jpg",
+            email: "repeddleng@gmail.com",
+            followers: [],
+            sold: ["654b7a7a8698d309f6f768bc"],
+            rating: 0,
+            numReviews: 0,
+            badge: false,
+            region: "NGN",
+          },
+          slug: "loop-band",
+          image:
+            "https://res.cloudinary.com/emirace/image/upload/v1699443945/zzuvfnrotgljox6hjsm7.jpg",
+          images: [
+            "https://res.cloudinary.com/emirace/image/upload/v1699443992/uu1zzrxxwcdqevdet0xx.jpg",
+            "https://res.cloudinary.com/emirace/image/upload/v1699444037/ug8stlfagzkseaktmb22.jpg",
+            "https://res.cloudinary.com/emirace/image/upload/v1699444070/rffnacbwbifflfvhl15c.jpg",
+          ],
+          tags: ["Gift", "Homeworkout", "Workout", "Outdoors"],
+          video: "",
+          brand: "Civvio",
+          color: "multiculour",
+          category: "gifts",
+          product: "654b76048698d309f6f767fd",
+          subCategory: "Home",
+          material: "other",
+          description:
+            "Restoration & Strength Building effective & versatile training tool.",
+          sizes: [],
+          userBuy: [],
+          deliveryOption: [
+            {
+              name: "Pick up from Seller",
+              value: 0,
+            },
+            {
+              name: "GIG Logistics",
+              value: 0,
+            },
+          ],
+          condition: "Good Condition",
+          shippingLocation: "Nigeria",
+          keyFeatures: "",
+          price: 800,
+          actualPrice: 800,
+          rating: 0,
+          currency: "N ",
+          numReviews: 0,
+          likes: [],
+          sold: false,
+          soldAll: false,
+          meta: {
+            lat: -25.9735997,
+            lng: 28.1100373,
+            name: "Kendo",
+            address: "1 Folashibo Street, Lekki",
+            phone: "0869782826",
+            stationId: 4,
+          },
+          active: true,
+          countInStock: 1,
+          region: "NGN",
+          isAvailable: true,
+          shares: [],
+          viewcount: [
+            {
+              hashed: "c0b2f9e4cc9ba3087bfe873fa00664e6",
+              time: "2023-11-21T08:29:14.035Z",
+              _id: "655c6a5aa797a1b7439a50e0",
+            },
+            {
+              hashed: "c0574527ebec7ee6042b669c195ae304",
+              time: "2023-11-21T08:29:33.742Z",
+              _id: "655c6a6da797a1b7439a51ae",
+            },
+          ],
+          reviews: [],
+          createdAt: "2023-11-08T11:50:28.009Z",
+          updatedAt: "2023-11-21T08:29:33.743Z",
+
+          productId: "654b76048698d309f6f767fd",
+          quantity: 1,
+          selectSize: "",
+          deliverySelect: {
+            "delivery Option": "Pick up from Seller",
+            cost: 0,
+            total: {
+              status: true,
+              cost: 0,
+            },
+          },
+          deliveryStatus: "Return Declined",
+          deliveredAt: 1700820102657,
+          notifications: [
+            "65607449e24a3d31d7a860b3",
+            "65607449e24a3d31d7a860b4",
+            "65607449e24a3d31d7a860b5",
+            "65607449e24a3d31d7a860b6",
+            "65607449e24a3d31d7a860b7",
+            "65607449e24a3d31d7a860b8",
+            "65607449e24a3d31d7a860b9",
+          ],
+          trackingNumber: "null",
+          returnTrackingNumber: null,
+        },
+      ],
+      user: {
+        _id: "63c9cde6b677973f8c09dec8",
+        username: "Emirace",
+      },
+    },
+    productId: {
+      _id: "654b76048698d309f6f767fd",
+      name: "Loop Band",
+      seller,
+      slug: "loop-band",
+      mainCategory: "home",
+      buyers: [],
+      costPriceHistory: [],
+      sellingPriceHistory: [],
+      images: [
+        "https://res.cloudinary.com/emirace/image/upload/v1699443945/zzuvfnrotgljox6hjsm7.jpg",
+        "https://res.cloudinary.com/emirace/image/upload/v1699443992/uu1zzrxxwcdqevdet0xx.jpg",
+        "https://res.cloudinary.com/emirace/image/upload/v1699444037/ug8stlfagzkseaktmb22.jpg",
+        "https://res.cloudinary.com/emirace/image/upload/v1699444070/rffnacbwbifflfvhl15c.jpg",
+      ],
+      tags: ["Gift", "Homeworkout", "Workout", "Outdoors"],
+      video: "",
+      brand: "Civvio",
+      color: "multiculour",
+      category: "gifts",
+      subCategory: "Home",
+      material: "other",
+      description:
+        "Restoration & Strength Building effective & versatile training tool.",
+      sizes: [],
+      deliveryOption: [
+        {
+          name: "Pick up from Seller",
+          value: 0,
+        },
+        {
+          name: "GIG Logistics",
+          value: 0,
+        },
+      ],
+      condition: "Good Condition",
+      // shippingLocation: "Nigeria",
+      keyFeatures: "",
+      sellingPrice: 800,
+      costPrice: 800,
+      rating: 0,
+      // currency: "N ",
+      // reviews: 0,
+      likes: [],
+      sold: true,
+      // soldAll: true,
+      meta: {
+        lat: -25.9735997,
+        lng: 28.1100373,
+        name: "Kendo",
+        address: "1 Folashibo Street, Lekki",
+        phone: "0869782826",
+        stationId: 4,
+      },
+      active: true,
+      countInStock: 0,
+      region: "NGN",
+      isAvailable: true,
+      shares: [],
+      viewcount: [
+        {
+          hashed: "c0b2f9e4cc9ba3087bfe873fa00664e6",
+          time: "2023-11-21T08:29:14.035Z",
+        },
+        {
+          hashed: "c0574527ebec7ee6042b669c195ae304",
+          time: "2023-11-21T08:29:33.742Z",
+        },
+      ],
+      reviews: [],
+      createdAt: "2023-11-08T11:50:28.009Z",
+      updatedAt: "2024-04-20T18:59:43.391Z",
+
+      // productId: "654b76048698d309f6f767fd",
+    },
+    sellerId: "63cf9a386f44b86e44e3b31e",
+    buyerId: "63c9cde6b677973f8c09dec8",
+    reason: "Missing or wrong product, not what i ordered",
+    sending: {
+      "delivery Option": "Pick up from Seller",
+      cost: 0,
+      total: {
+        status: true,
+        cost: 0,
+      },
+    },
+    refund: "Credit my Repeddle wallet",
+    image: "",
+    others: "G Fb gracing fd",
+    region: "NGN",
+    status: "Decline",
+    returnId: "65607466e24a3d31d7a860db",
+    createdAt: "2023-11-24T10:01:10.533Z",
+    updatedAt: "2023-11-24T10:01:41.752Z",
+
+    adminReason: "Return testing ",
+  },
+]

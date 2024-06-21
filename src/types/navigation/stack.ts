@@ -1,5 +1,7 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SearchOptions } from "../search";
+import { OrderItem } from "../order";
+import { ITransaction } from "../transactions";
 
 export type RootStackParamList = {
   Auth: undefined;
@@ -22,6 +24,16 @@ export type RootStackParamList = {
   PaymentMethod: undefined;
   CreateProduct: undefined;
   SellerReview: { id: string };
+  Wishlist: undefined;
+  ReturnDetail: { id: string };
+  ReturnForm: {
+    orderItems: OrderItem[];
+    orderId: string;
+    waybillNumber?: string;
+  };
+  Return: undefined;
+  Transaction: undefined;
+  TransactionDetail: { transaction: ITransaction };
   Fund: undefined;
   Withdraw: undefined;
 };
@@ -132,4 +144,33 @@ export type CreateProductNavigationProp = NativeStackScreenProps<
 export type SellerReviewNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "SellerReview"
+>;
+export type WishlistNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Wishlist"
+>;
+
+export type ReturnDetailNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "ReturnDetail"
+>;
+
+export type ReturnFormNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "ReturnForm"
+>;
+
+export type ReturnNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Return"
+>;
+
+export type TransactionNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Transaction"
+>;
+
+export type TransactionDetailNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "TransactionDetail"
 >;
