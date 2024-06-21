@@ -25,7 +25,7 @@ const Token: React.FC<TokenComponentProps> = ({
   setToken,
   token,
 }) => {
-  const { sendVerifyOtp, verifyEmail, error } = useAuth();
+  const { sendVerifyEmail, verifyEmail, error } = useAuth();
   const { colors } = useTheme();
   const { shouldHandleKeyboardEvents } = useBottomSheetInternal();
   const [loading, setLoading] = useState(false);
@@ -97,7 +97,7 @@ const Token: React.FC<TokenComponentProps> = ({
 
   const handleResend = async () => {
     setSendingOtp(true);
-    const result = await sendVerifyOtp({ email });
+    const result = await sendVerifyEmail({ email });
     if (result) {
       setResendTimer(60);
     }

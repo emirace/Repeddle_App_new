@@ -213,6 +213,7 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
         <LinearGradient
           colors={["transparent", "#000000"]}
           style={styles.gradient}
+          end={{ x: 0, y: 1 }}
         />
 
         <Image

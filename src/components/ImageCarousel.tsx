@@ -8,43 +8,44 @@ import {
   TouchableOpacity,
   View,
   ViewToken,
-} from "react-native"
-import React, { useCallback, useMemo, useRef, useState } from "react"
-import ImageViewer from "react-native-image-zoom-viewer"
-import { Ionicons } from "@expo/vector-icons"
-import { normaliseW } from "../utils/normalize"
-import { useTheme } from "react-native-paper"
+} from "react-native";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import ImageViewer from "react-native-image-zoom-viewer";
+import { Ionicons } from "@expo/vector-icons";
+import { normaliseW } from "../utils/normalize";
+import { useTheme } from "react-native-paper";
+import { baseURL } from "../services/api";
 
 type Props = {
-  images: string[]
-}
+  images: string[];
+};
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window")
-const { width } = Dimensions.get("screen")
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const { width } = Dimensions.get("screen");
 
 const ImageCarousel = ({ images }: Props) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
-  const [activeImageIndex, setActiveImageIndex] = useState(0)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 })
+  const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
   const onViewRef = useRef(
     ({ viewableItems }: { viewableItems: ViewToken<string>[] }) => {
       if (viewableItems.length > 0) {
-        setActiveImageIndex(viewableItems[0].index ?? 0)
+        setActiveImageIndex(viewableItems[0].index ?? 0);
       }
     }
-  )
+  );
 
   const imagesForViewer = useMemo(
-    () => images.map((image) => ({ url: image })),
+    () => images.map((image) => ({ url: baseURL + image })),
     [images]
-  )
+  );
 
   const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false)
-  }, [])
+    setIsModalOpen(false);
+  }, []);
 
   const renderFooter = (currentIndex: number) => (
     <View
@@ -63,7 +64,7 @@ const ImageCarousel = ({ images }: Props) => {
         ))}
       </View>
     </View>
-  )
+  );
 
   return (
     <SafeAreaView>
@@ -99,7 +100,7 @@ const ImageCarousel = ({ images }: Props) => {
         transparent={true}
         visible={isModalOpen}
         onRequestClose={() => {
-          handleCloseModal()
+          handleCloseModal();
         }}
         style={styles.modalContainer}
       >
@@ -117,7 +118,7 @@ const ImageCarousel = ({ images }: Props) => {
           style={{
             position: "absolute",
             right: 20,
-            top: 20,
+            top: 50,
           }}
           onPress={handleCloseModal}
         >
@@ -125,17 +126,17 @@ const ImageCarousel = ({ images }: Props) => {
         </TouchableOpacity>
       </Modal>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default ImageCarousel
+export default ImageCarousel;
 
 type RenderProps = {
-  setActiveImageIndex: (val: number) => void
-  setIsModalOpen: (val: boolean) => void
-  index: number
-  item: string
-}
+  setActiveImageIndex: (val: number) => void;
+  setIsModalOpen: (val: boolean) => void;
+  index: number;
+  item: string;
+};
 
 const RenderItem = ({
   item,
@@ -144,16 +145,20 @@ const RenderItem = ({
   setIsModalOpen,
 }: RenderProps) => {
   const handleImagePress = () => {
-    setActiveImageIndex(index)
-    setIsModalOpen(true)
-  }
+    setActiveImageIndex(index);
+    setIsModalOpen(true);
+  };
 
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={handleImagePress}>
-      <Image source={{ uri: item }} style={styles.image} resizeMode="cover" />
+      <Image
+        source={{ uri: baseURL + item }}
+        style={styles.image}
+        resizeMode="cover"
+      />
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   image: {
@@ -178,4 +183,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   modalContainer: { justifyContent: "center", alignItems: "center" },
-})
+});
