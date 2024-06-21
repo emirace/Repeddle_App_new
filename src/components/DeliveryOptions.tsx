@@ -10,10 +10,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import React, { PropsWithChildren, useState } from "react"
-import { Appbar, IconButton, Text, useTheme } from "react-native-paper"
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react"
+import { Appbar, Text, useTheme } from "react-native-paper"
 import { CartItem } from "../contexts/CartContext"
-import { Meta } from "../types/product"
+import { Meta, Stations } from "../types/product"
 import RebundlePoster from "./RebundlePoster"
 import { IRebundle } from "../types/user"
 import { currency, goto, region } from "../utils/common"
@@ -21,6 +21,7 @@ import WebView from "react-native-webview"
 import { Picker } from "@react-native-picker/picker"
 import { postnet, pudo, states } from "../utils/constants"
 import SelectDropdown from "react-native-select-dropdown"
+import { fetchStations } from "../services/others"
 
 type Props = {
   setShowModel: (val: boolean) => void
@@ -39,9 +40,12 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
   const location1 = { error: "", coordinates: { lat: "", lng: "" } }
   const [locationerror, setLocationerror] = useState("")
   const [loadingGig, setLoadingGig] = useState(false)
+  const [loadingStations, setLoadingStations] = useState(false)
+  const [stations, setStations] = useState<Stations[]>([])
 
-  const validation = (e) => {
-    e.preventDefault()
+  const selectRefProvince = useRef(null)
+
+  const validation = () => {
     var valid = true
     if (!deliveryOption) {
       valid = false
@@ -217,6 +221,18 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
     email: "",
     stationId: "",
   })
+
+  useEffect(() => {
+    const getStations = async () => {
+      setLoadingStations(true)
+      const data = await fetchStations()
+      if (data) setStations(data)
+
+      setLoadingStations(false)
+    }
+
+    getStations()
+  }, [])
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -913,7 +929,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                         )}
                       </View>
                       <View style={styles.plan}>
-                        {/* <SelectDropdown
+                        <SelectDropdown
                           ref={selectRefProvince}
                           data={
                             loadingStations
@@ -945,7 +961,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             backgroundColor: colors.elevation.level2,
                             borderRadius: 5,
                           }}
-                        /> */}
+                        />
                         {validationError.stationId?.length > 0 && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.stationId}

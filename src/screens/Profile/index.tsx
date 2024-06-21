@@ -114,20 +114,20 @@ const dashboardItems: {
   },
   {
     name: "My Wishlist",
-    link: "Profile",
-    leftIcon: "account",
+    link: "Wishlist",
+    leftIcon: "cards-heart",
     description: "View saved products",
   },
   {
     name: "Returns",
-    link: "Profile",
-    leftIcon: "account",
+    link: "Return",
+    leftIcon: "arrow-u-left-top-bold",
     description: "View returns history",
   },
   {
     name: "All Transactions",
-    link: "Profile",
-    leftIcon: "account",
+    link: "Transaction",
+    leftIcon: "cash",
     description: "View all your transactions",
   },
 ]

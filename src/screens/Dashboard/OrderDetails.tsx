@@ -41,7 +41,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const { colors, dark } = useTheme()
   const { loading, fetchOrderById, error } = useOrder()
   const { user } = useAuth()
-  const { params } = route
+  const { id } = route.params
 
   const viewShotRef = useRef<ViewShot>(null)
 
@@ -57,12 +57,12 @@ const OrderDetails = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     const fetchOrder = async () => {
-      const res = await fetchOrderById(params.id)
+      const res = await fetchOrderById(id)
       if (res) setOrder(res)
     }
 
     fetchOrder()
-  }, [params.id])
+  }, [id])
 
   const comfirmWaybill = async (order: OrderItem) => {
     if (!waybillNumber) return
@@ -155,7 +155,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                 },
               ]}
             >
-              <Text1 style={styles.heading}>Order number {params.id}</Text1>
+              <Text1 style={styles.heading}>Order number {id}</Text1>
               <Text1>
                 {order.items.length} Item
                 {order.items.length > 1 ? "s" : ""}
@@ -195,7 +195,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                     onPress={() =>
                       navigation.navigate("ReturnForm", {
                         orderItems: order.items,
-                        orderId,
+                        orderId: id,
                         waybillNumber,
                       })
                     }
@@ -324,14 +324,13 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                 </Text1>
                               )}
 
-                              {/* TODO:  */}
-                              {/* <SelectDropdown
+                              <SelectDropdown
                                 // ref={selectRefProvince}
-                                disabled={
-                                  order.deliveryStatus === "Hold" ||
-                                  order.deliveryStatus === "Received" ||
-                                  order.deliveryStatus === "Return Logged"
-                                }
+                                // disabled={
+                                //   order.deliveryStatus === "Hold" ||
+                                //   order.deliveryStatus === "Received" ||
+                                //   order.deliveryStatus === "Return Logged"
+                                // }
                                 data={
                                   deliveryNumber(
                                     orderitem.deliveryTracking.currentStatus
@@ -398,7 +397,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                   borderRadius: 5,
                                   backgroundColor: colors.background,
                                 }}
-                              /> */}
+                              />
                             </>
                           )}
                         </View>
@@ -771,8 +770,8 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                     onPress={() => {
                                       navigation.navigate("ReturnForm", {
                                         orderItems: order.items,
-                                        deliveryMethod: order.deliveryMethod,
-                                        orderId,
+                                        // deliveryMethod: order.deliveryMethod,
+                                        orderId: id,
                                       })
                                       setAfterAction(false)
                                     }}

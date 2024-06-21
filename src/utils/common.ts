@@ -114,3 +114,15 @@ export const couponDiscount = (coupon: Coupon, price: number) => {
     return 0
   }
 }
+
+export const createSearchParam = (params: [string, string][] | string[][]) => {
+  let string = ""
+
+  params = params.filter((param) => param[1] !== "")
+
+  if (params.length) {
+    string = new URLSearchParams(params).toString()
+  }
+
+  return string
+}
