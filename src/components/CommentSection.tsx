@@ -13,29 +13,34 @@ import { normaliseH, normaliseW } from "../utils/normalize"
 import { Text, useTheme } from "react-native-paper"
 import { Ionicons } from "@expo/vector-icons"
 import MyButton from "./MyButton"
-import { IProduct } from "../types/product"
+import { IComment, IProduct } from "../types/product"
 import FullScreenImage from "./FullScreenImage"
 import useAuth from "../hooks/useAuth"
 import { useNavigation } from "@react-navigation/native"
 import { ProductNavigationProp } from "../types/navigation/stack"
 import * as ImagePicker from "expo-image-picker"
 import { uploadImage } from "../utils/common"
+import Comment from "./Comment"
+import useProducts from "../hooks/useProducts"
 
 type Props = {
+  comments?: IComment[]
   product: IProduct
+  setProduct: (val: IProduct) => void
 }
 
-const CommentSection = (props: Props) => {
+const CommentSection = ({ product, setProduct, comments }: Props) => {
   const { colors } = useTheme()
   const { user } = useAuth()
+  const { commentProduct, error } = useProducts()
 
-  const { navigate } = useNavigation<ProductNavigationProp["navigation"]>()
+  const { push } = useNavigation<ProductNavigationProp["navigation"]>()
 
-  const [comment, setComment] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
   const [newComment, setNewComment] = useState("")
   const [image, setImage] = useState("")
   const [loadingUpload, setLoadingUpload] = useState(false)
+  const [loadingCreateReview, setLoadingCreateReview] = useState(false)
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -72,8 +77,27 @@ const CommentSection = (props: Props) => {
     }
   }
 
-  //   TODO:
-  const submitCommentHandler = async () => {}
+  const submitCommentHandler = async () => {
+    if (!newComment) {
+      // TODO: add notification
+      Alert.alert("Enter a comment")
+      return
+    }
+    setLoadingCreateReview(true)
+
+    const res = await commentProduct(product._id, newComment)
+
+    if (res) {
+      const newProd = product
+      newProd.comments = [...(newProd.comments ?? []), res.comment]
+      setProduct(newProd)
+      // TODO: add notification
+      Alert.alert("Comment added to product")
+    } // TODO: add notification
+    else Alert.alert(error)
+
+    setLoadingCreateReview(false)
+  }
 
   return (
     <View style={styles.container}>
@@ -81,8 +105,15 @@ const CommentSection = (props: Props) => {
         <Text style={styles.header}>Comments</Text>
       </View>
       <View>
-        {comment &&
-          comment.map((item, index) => <Comment comment={item} key={index} />)}
+        {comments &&
+          comments.map((item, index) => (
+            <Comment
+              product={product}
+              setProduct={setProduct}
+              comment={item}
+              key={index}
+            />
+          ))}
       </View>
       <Modal
         animationType="slide"
@@ -130,7 +161,11 @@ const CommentSection = (props: Props) => {
                 <Text>Add Image</Text>
               </Pressable>
             )}
-            <MyButton text="Submit" onPress={submitCommentHandler} />
+            <MyButton
+              text="Submit"
+              disable={loadingCreateReview}
+              onPress={submitCommentHandler}
+            />
           </View>
         </View>
       </Modal>
@@ -147,7 +182,7 @@ const CommentSection = (props: Props) => {
             Please{" "}
             <Text
               style={{ color: colors.secondary }}
-              onPress={() => navigate("SignIn")}
+              onPress={() => push("Auth")}
             >
               Sign in
             </Text>{" "}

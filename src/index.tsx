@@ -56,23 +56,25 @@ const Main = () => {
           <StoreProvider>
             <ProductProvider>
               <UserProvider>
-                <BrandProvider>
-                  <AuthProvider>
-                    <CategoryProvider>
-                      <CartProvider>
-                        <NewsletterProvider>
-                          <OrderProvider>
-                            <TransactionProvider>
-                              <MessageProvider>
-                                <MainStackNav />
-                              </MessageProvider>
-                            </TransactionProvider>
-                          </OrderProvider>
-                        </NewsletterProvider>
-                      </CartProvider>
-                    </CategoryProvider>
-                  </AuthProvider>
-                </BrandProvider>
+                <StoreProvider>
+                  <BrandProvider>
+                    <AuthProvider>
+                      <CategoryProvider>
+                        <CartProvider>
+                          <NewsletterProvider>
+                            <OrderProvider>
+                              <TransactionProvider>
+                                <MessageProvider>
+                                  <MainStackNav />
+                                </MessageProvider>
+                              </TransactionProvider>
+                            </OrderProvider>
+                          </NewsletterProvider>
+                        </CartProvider>
+                      </CategoryProvider>
+                    </AuthProvider>
+                  </BrandProvider>
+                </StoreProvider>
               </UserProvider>
             </ProductProvider>
           </StoreProvider>

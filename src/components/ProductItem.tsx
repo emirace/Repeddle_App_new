@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Pressable,
   StyleSheet,
@@ -12,6 +13,8 @@ import { IUser } from "../types/user"
 import { currency } from "../utils/common"
 import { lightTheme } from "../constant/theme"
 import { Text } from "react-native-paper"
+import useAuth from "../hooks/useAuth"
+import useProducts from "../hooks/useProducts"
 
 type Props = {
   navigate: (slug: string) => void
@@ -19,14 +22,17 @@ type Props = {
 }
 
 const ProductItem = ({ navigate, product }: Props) => {
-  const [user, setUser] = useState<IUser | null>(null)
+  const { user, addToWishlist, error: wishlistError } = useAuth()
+  const { likeProduct, unlikeProduct, error } = useProducts()
 
-  const liked = useMemo(
-    () => user && product.likes.find((x) => x === user._id),
-    [product, user]
-  )
+  const [liking, setLiking] = useState(false)
+  const [addToWish, setAddToWish] = useState(false)
+
+  const liked = useMemo(() => {
+    return !!product?.likes.find((like) => like === user?._id)
+  }, [product?.likes, user?._id])
   const saved = useMemo(
-    () => user && user.wishlist.find((x) => x._id === product._id),
+    () => user && user.wishlist.find((x) => x === product._id),
     [product, user]
   )
 
@@ -38,9 +44,68 @@ const ProductItem = ({ navigate, product }: Props) => {
     )
   }
 
-  const toggleLikes = () => {}
+  const toggleLikes = async () => {
+    if (!user) {
+      // TODO: add notification
+      Alert.alert("Sign in /  Sign Up to like")
+      return
+    }
 
-  const saveItem = () => {}
+    if (!product) return
+
+    if (product.seller._id === user._id) {
+      // TODO: add notification
+      Alert.alert("You can't like your product")
+      return
+    }
+
+    setLiking(true)
+
+    if (liked) {
+      const res = await unlikeProduct(product._id)
+      if (res)
+        // TODO: add notification
+        Alert.alert(res.message)
+      // TODO: add notification
+      else Alert.alert(error)
+    } else {
+      const res = await likeProduct(product._id)
+      if (res)
+        // TODO: add notification
+        Alert.alert(res.message)
+      // TODO: add notification
+      else Alert.alert(error)
+    }
+
+    setLiking(false)
+  }
+
+  const saveItem = async () => {
+    if (!product) return
+
+    if (!user) {
+      // TODO: add notification
+      Alert.alert("Sign In/ Sign Up to add an item to wishlist")
+      return
+    }
+
+    if (product.seller._id === user._id) {
+      // TODO: add notification
+      Alert.alert("You can't add your product to wishlist")
+      return
+    }
+
+    setAddToWish(true)
+
+    const res = await addToWishlist(product._id)
+    if (res)
+      // TODO: add notification
+      Alert.alert(res)
+    // TODO: add notification
+    else Alert.alert(wishlistError ?? "Failed to add to wishlist")
+
+    setAddToWish(false)
+  }
 
   return (
     <Pressable
@@ -48,14 +113,22 @@ const ProductItem = ({ navigate, product }: Props) => {
       style={[styles.container]}
     >
       <Image source={{ uri: product.images[0] }} style={styles.image} />
-      <TouchableOpacity style={styles.likeButton} onPress={toggleLikes}>
+      <TouchableOpacity
+        style={styles.likeButton}
+        onPress={toggleLikes}
+        disabled={liking}
+      >
         <FontAwesome
           name={liked ? "thumbs-up" : "thumbs-o-up"}
           size={24}
           color={liked ? "red" : "white"}
         />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.wishlistButton} onPress={saveItem}>
+      <TouchableOpacity
+        style={styles.wishlistButton}
+        onPress={saveItem}
+        disabled={addToWish}
+      >
         <FontAwesome
           name={saved ? "heart" : "heart-o"}
           size={24}

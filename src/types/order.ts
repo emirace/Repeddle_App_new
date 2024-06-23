@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // TODO: remove the lint above
-import { IProduct, Meta } from "./product"
+import { IDeliveryOption, IProduct } from "./product"
 import { IUser } from "./user"
 
 export type DeliverStatus =
@@ -93,9 +93,9 @@ export type ICreateOrder = {
   items: {
     _id: string
     quantity: number
-    selectedSize: string
-    selectedColor: string
-    deliveryOption: string
+    selectedSize?: string
+    selectedColor?: string
+    deliveryOption?: IDeliveryOption[]
   }[]
   totalAmount: number
   paymentMethod: string
@@ -112,12 +112,12 @@ export type IOrderSummary = {
     numSales: number
   }
   dailyPurchasedOrders: {
-    date: string
+    _id: string
     orders: number
     sales: number
   }[]
   dailySoldOrders: {
-    date: string
+    _id: string
     orders: number
     sales: number
   }[]
@@ -215,7 +215,14 @@ export type IReturn = {
       likes: Array<any>
       sold: boolean
       soldAll: boolean
-      meta?: Meta
+      meta?: {
+        lat: number
+        lng: number
+        name: string
+        address: string
+        phone: string
+        stationId: number
+      }
       active: boolean
       countInStock: number
       region: "NGN" | "ZAR"
@@ -282,4 +289,23 @@ export type IReturn = {
     "delivery Option": string
     cost: any
   }
+}
+
+export type IDeliveryMeta = {
+  lat?: number | string
+  lng?: number | string
+  name?: string
+  email?: string
+  phone?: string
+  company?: string
+  stationId?: string
+  shortName?: string
+  address?: string
+  province?: string
+  city?: string
+  suburb?: string
+  postalcode?: string
+  pickUp?: string
+  "delivery Option"?: string
+  cost?: number
 }

@@ -1,6 +1,9 @@
 import {
+  IComment,
+  ICommentReply,
   ICreateProduct,
   IProduct,
+  IReview,
   ProductWithPagination,
 } from "../types/product"
 import { getBackendErrorMessage } from "../utils/error"
@@ -183,6 +186,233 @@ export const deleteProductService = async (
     // Handle network errors or other exceptions
     // You can log the error or perform other error-handling actions
     console.error("Delete product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const likeProductService = async (id: string) => {
+  try {
+    const data: { message: string; likes: string[] } = await api.post(
+      `/products/${id}/like`
+    )
+
+    // if (!data.status) {
+    //   // Handle Like product error, e.g., display an error message to the user
+    //   throw new Error("Like product failed: " + getBackendErrorMessage(data))
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Like product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const unlikeProductService = async (id: string) => {
+  try {
+    const data: { message: string; likes: string[] } = await api.post(
+      `/products/${id}/unlike`
+    )
+
+    // if (!data.status) {
+    //   // Handle Unlike product error, e.g., display an error message to the user
+    //   throw new Error("Unlike product failed: " + getBackendErrorMessage(data))
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Unlike product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const commentProductService = async (id: string, comment: string) => {
+  try {
+    const data: { comment: IComment } = await api.post(
+      `/products/${id}/comments`,
+      { comment }
+    )
+
+    // if (!data.status) {
+    //   // Handle comment product error, e.g., display an error message to the user
+    //   throw new Error("comment product failed: " + getBackendErrorMessage(data))
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Unlike product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const likeProductCommentService = async (
+  id: string,
+  commentId: string
+) => {
+  try {
+    const data: { message: string; comment: IComment } = await api.post(
+      `/products/${id}/comments/${commentId}/like`
+    )
+
+    // if (!data.status) {
+    //   // Handle Like product error, e.g., display an error message to the user
+    //   throw new Error("Like product failed: " + getBackendErrorMessage(data))
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Like product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const unlikeProductCommentService = async (
+  id: string,
+  commentId: string
+) => {
+  try {
+    const data: { message: string; comment: IComment } = await api.post(
+      `/products/${id}/comments/${commentId}/unlike`
+    )
+
+    // if (!data.status) {
+    //   // Handle Unlike product error, e.g., display an error message to the user
+    //   throw new Error("Unlike product failed: " + getBackendErrorMessage(data))
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Unlike product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const replyProductCommentService = async (
+  id: string,
+  commentId: string,
+  comment: string
+) => {
+  try {
+    const data: { message: string; comment: IComment } = await api.post(
+      `/products/${id}/comments/${commentId}/unlike`,
+      { comment }
+    )
+
+    // if (!data.status) {
+    //   // Handle reply comment product error, e.g., display an error message to the user
+    //   throw new Error("reply comment product failed: " + getBackendErrorMessage(data))
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("reply comment product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const likeProductCommentReplyService = async (
+  id: string,
+  commentId: string,
+  replyId: string
+) => {
+  try {
+    const data: { message: string; reply: ICommentReply } = await api.post(
+      `/products/${id}/comments/${commentId}/replies/${replyId}/like`
+    )
+
+    // if (!data.status) {
+    //   // Handle Like product comment error, e.g., display an error message to the user
+    //   throw new Error("Like product comment failed: " + getBackendErrorMessage(data))
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Like product comment error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const unlikeProductCommentReplyService = async (
+  id: string,
+  commentId: string,
+  replyId: string
+) => {
+  try {
+    const data: { message: string; reply: ICommentReply } = await api.post(
+      `/products/${id}/comments/${commentId}/replies/${replyId}/like`
+    )
+
+    // if (!data.status) {
+    //   // Handle Unlike product comment error, e.g., display an error message to the user
+    //   throw new Error("Unlike product comment failed: " + getBackendErrorMessage(data))
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error(
+      "Unlike product comment error:",
+      getBackendErrorMessage(error)
+    )
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const createProductReviewService = async (
+  id: string,
+  review: { comment: string; rating: number; like: boolean }
+) => {
+  try {
+    const data: { message: string; review: IReview } = await api.post(
+      `/products/${id}/reviews`,
+      review
+    )
+
+    // if (!data.status) {
+    //   // Handle Create review product error, e.g., display an error message to the user
+    //   throw new Error(
+    //     "Create review product failed: " + getBackendErrorMessage(data)
+    //   )
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Create review product error:", getBackendErrorMessage(error))
 
     // Re-throw the error to propagate it up the call stack if needed
     throw getBackendErrorMessage(error)

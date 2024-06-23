@@ -231,7 +231,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
               style={{ marginLeft: 20 }}
               onPress={() => setModalVisible(true)}
             >
-              {item.deliverySelect["delivery Option"] ? (
+              {item?.deliverySelect?.["delivery Option"] ? (
                 <Text style={{ fontSize: 14, color: colors.secondary }}>
                   {item.deliverySelect["delivery Option"]}
                 </Text>

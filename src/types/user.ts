@@ -24,11 +24,12 @@ export interface IUser {
   followers: string[]
   following: string[]
   likes: IProduct[]
-  wishlist: IProduct[]
+  wishlist: string[]
   sold: string[]
   buyers: string[]
   rating: number
   phone?: string
+  isSeller: boolean
   allowNewsletter: boolean
   numReviews: number
   active: boolean
@@ -54,6 +55,8 @@ export interface IUser {
   balance?: number
 }
 
+export type Wishlist = IProduct
+
 export interface UpdateFields {
   // TODO: ask about username
   // username: string
@@ -69,7 +72,7 @@ export interface UpdateFields {
     state: string
     zipcode: number
   }
-  rebundle?: {
+  rebundle: {
     status: boolean
     count: number
   }
@@ -91,7 +94,6 @@ export type TopSellers = {
   lastName: string
   image: string
   sold: number
-  badge?: string
 }
 
 export type UserByUsername = {

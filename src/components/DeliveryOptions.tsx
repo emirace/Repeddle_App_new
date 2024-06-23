@@ -13,7 +13,7 @@ import {
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react"
 import { Appbar, Text, useTheme } from "react-native-paper"
 import { CartItem } from "../contexts/CartContext"
-import { Meta, Stations } from "../types/product"
+import { IDeliveryOption, Stations } from "../types/product"
 import RebundlePoster from "./RebundlePoster"
 import { IRebundle } from "../types/user"
 import { currency, goto, region } from "../utils/common"
@@ -22,6 +22,7 @@ import { Picker } from "@react-native-picker/picker"
 import { postnet, pudo, states } from "../utils/constants"
 import SelectDropdown from "react-native-select-dropdown"
 import { fetchStations } from "../services/others"
+import { IDeliveryMeta } from "../types/order"
 
 type Props = {
   setShowModel: (val: boolean) => void
@@ -33,7 +34,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
 
   const [deliveryOption, setDeliveryOption] = useState("")
   const [showMap, setShowMap] = useState(false)
-  const [meta, setMeta] = useState<Meta>({})
+  const [meta, setMeta] = useState<IDeliveryMeta>({})
   const [value, setValue] = useState<number>()
   const [token, setToken] = useState("")
   const [isRebundle, setIsRebundle] = useState<IRebundle>()
@@ -54,7 +55,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
       if (!meta.shortName) {
         setValidationError({
           ...validationError,
-          point: "Select a pick up point ",
+          shortName: "Select a pick up point ",
         })
         valid = false
       }
@@ -207,20 +208,9 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
     // }
   }
 
-  const [validationError, setValidationError] = useState({
-    name: "",
-    point: "",
-    phone: "",
-    province: "",
-    shortName: "",
-    pickUp: "",
-    postalcode: "",
-    city: "",
-    suburb: "",
-    address: "",
-    email: "",
-    stationId: "",
-  })
+  const [validationError, setValidationError] = useState<{
+    [key in keyof IDeliveryMeta]: string
+  }>({})
 
   useEffect(() => {
     const getStations = async () => {
@@ -271,7 +261,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                     })
                     setDeliveryOption(x.name)
                     setValue(x.value)
-                    setMeta("")
+                    setMeta({})
                   }}
                   style={styles.option}
                 >
@@ -326,7 +316,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                               "Choose the closest pick up point"}
                           </Text>
                         </Pressable>
-                        {validationError.shortName?.length > 0 && (
+                        {validationError?.shortName && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.shortName}
                           </Text1>
@@ -354,7 +344,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Phone number"
                           value={meta.phone}
                         />
-                        {validationError.phone?.length > 0 && (
+                        {validationError.phone && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.phone}
                           </Text1>
@@ -422,7 +412,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                                 />
                               ))}
                         </Picker>
-                        {validationError.province?.length > 0 && (
+                        {validationError.province && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.province}
                           </Text1>
@@ -463,20 +453,22 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             label={"-- select locker --"}
                             value={""}
                           />
-                          {pudo[meta.province] &&
-                            pudo[meta.province].map((name, index) => (
-                              <Picker.Item
-                                style={{
-                                  backgroundColor: colors.elevation.level2,
-                                  color: colors.onBackground,
-                                }}
-                                key={index}
-                                label={name}
-                                value={name}
-                              />
-                            ))}
+                          {pudo[meta.province as keyof typeof pudo] &&
+                            pudo[meta.province as keyof typeof pudo].map(
+                              (name, index) => (
+                                <Picker.Item
+                                  style={{
+                                    backgroundColor: colors.elevation.level2,
+                                    color: colors.onBackground,
+                                  }}
+                                  key={index}
+                                  label={name}
+                                  value={name}
+                                />
+                              )
+                            )}
                         </Picker>
-                        {validationError.shortName?.length > 0 && (
+                        {validationError.shortName && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.shortName}
                           </Text1>
@@ -494,7 +486,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Phone"
                           value={meta.phone}
                         />
-                        {validationError.phone?.length > 0 && (
+                        {validationError.phone && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.phone}
                           </Text1>
@@ -568,7 +560,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                                 />
                               ))}
                         </Picker>
-                        {validationError.province?.length > 0 && (
+                        {validationError.province && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.province}
                           </Text1>
@@ -606,21 +598,23 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             label={"-- select locker --"}
                             value={""}
                           />
-                          {postnet[meta.province] &&
-                            postnet[meta.province].map((name, index) => (
-                              <Picker.Item
-                                style={{
-                                  backgroundColor: colors.elevation.level2,
-                                  color: colors.onBackground,
-                                }}
-                                key={index}
-                                label={name}
-                                value={name}
-                              />
-                            ))}
+                          {postnet[meta.province as keyof typeof postnet] &&
+                            postnet[meta.province as keyof typeof postnet].map(
+                              (name, index) => (
+                                <Picker.Item
+                                  style={{
+                                    backgroundColor: colors.elevation.level2,
+                                    color: colors.onBackground,
+                                  }}
+                                  key={index}
+                                  label={name}
+                                  value={name}
+                                />
+                              )
+                            )}
                         </Picker>
 
-                        {validationError.pickUp?.length > 0 && (
+                        {validationError.pickUp && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.pickUp}
                           </Text1>
@@ -638,7 +632,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Phone"
                           value={meta.phone}
                         />
-                        {validationError.phone?.length > 0 && (
+                        {validationError.phone && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.phone}
                           </Text1>
@@ -669,7 +663,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Name"
                           value={meta.name}
                         />
-                        {validationError.name?.length > 0 && (
+                        {validationError.name && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.name}
                           </Text1>
@@ -688,7 +682,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Phone"
                           value={meta.phone}
                         />
-                        {validationError.phone?.length > 0 && (
+                        {validationError.phone && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.phone}
                           </Text1>
@@ -706,7 +700,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="E-mail"
                           value={meta.email}
                         />
-                        {validationError.email?.length > 0 && (
+                        {validationError.email && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.email}
                           </Text1>
@@ -724,7 +718,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Company name (if applicable)"
                           value={meta.company}
                         />
-                        {validationError.company?.length > 0 && (
+                        {validationError.company && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.company}
                           </Text1>
@@ -742,7 +736,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Address (P.O. box not accepted"
                           value={meta.address}
                         />
-                        {validationError.address?.length > 0 && (
+                        {validationError.address && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.address}
                           </Text1>
@@ -760,7 +754,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Suburb"
                           value={meta.suburb}
                         />
-                        {validationError.suburb?.length > 0 && (
+                        {validationError.suburb && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.suburb}
                           </Text1>
@@ -778,7 +772,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="City/Town"
                           value={meta.city}
                         />
-                        {validationError.city?.length > 0 && (
+                        {validationError.city && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.city}
                           </Text1>
@@ -798,7 +792,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Postal Code"
                           value={meta.postalcode}
                         />
-                        {validationError.postalcode?.length > 0 && (
+                        {validationError.postalcode && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.postalcode}
                           </Text1>
@@ -852,7 +846,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                                 />
                               ))}
                         </Picker>
-                        {validationError.province?.length > 0 && (
+                        {validationError.province && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.province}
                           </Text1>
@@ -869,7 +863,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                     </View>
                   ) : deliveryOption === "GIG Logistics" ? (
                     <View style={styles.plans}>
-                      {locationerror?.length > 0 && (
+                      {locationerror && (
                         <Text1 style={{ color: "red", textAlign: "center" }}>
                           {locationerror}
                         </Text1>
@@ -886,7 +880,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Name"
                           value={meta.name}
                         />
-                        {validationError.name?.length > 0 && (
+                        {validationError.name && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.name}
                           </Text1>
@@ -904,7 +898,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Phone"
                           value={meta.phone}
                         />
-                        {validationError.phone?.length > 0 && (
+                        {validationError.phone && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.phone}
                           </Text1>
@@ -922,7 +916,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                           placeholder="Address"
                           value={meta.address}
                         />
-                        {validationError.address?.length > 0 && (
+                        {validationError.address && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.address}
                           </Text1>
@@ -962,7 +956,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             borderRadius: 5,
                           }}
                         />
-                        {validationError.stationId?.length > 0 && (
+                        {validationError.stationId && (
                           <Text1 style={{ color: "red" }}>
                             {validationError.stationId}
                           </Text1>
@@ -1026,9 +1020,12 @@ const Input = (props: TextInputProps) => {
   )
 }
 
-type RadioProps = {}
+type RadioProps = {
+  deliveryOption: string
+  x: IDeliveryOption
+}
 
-const Radio = ({ x, deliveryOption }) => {
+const Radio = ({ x, deliveryOption }: RadioProps) => {
   const { colors } = useTheme()
   return (
     <View

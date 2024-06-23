@@ -4,8 +4,10 @@ export interface IReview {
   user: IUser
   comment: string
   rating: number
-  like?: string
+  like: boolean
   _id: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Share {
@@ -20,7 +22,6 @@ export interface ViewCount {
 }
 
 export interface ISize {
-  _id: string
   size: string
   quantity: number
 }
@@ -28,14 +29,13 @@ export interface ISize {
 export interface IProduct {
   _id: string
   name: string
-  // seller: string;
   seller: Seller
   slug: string
   images: string[]
   tags: string[]
   video?: string
   brand?: string
-  color?: string
+  color?: string[]
   mainCategory: string
   category?: string
   subCategory?: string
@@ -54,10 +54,11 @@ export interface IProduct {
   likes: string[]
   shares: Share[]
   viewcount: ViewCount[]
-  reviews: Review[]
+  reviews: IReview[]
+  comments?: IComment[]
   sold?: boolean
   badge?: boolean
-  meta: Meta
+  meta: ProductMeta
   active?: boolean
   vintage?: boolean
   luxury?: boolean
@@ -73,11 +74,30 @@ export interface IProduct {
 
 export type ProductWithPagination = Pagination & { products: IProduct[] }
 
+export type IComment = {
+  _id: string
+  comment: string
+  userId: IUser
+  replies: ICommentReply[]
+  likes: string[]
+  createdAt: string
+  updatedAt: string
+}
+export type ICommentReply = {
+  _id: string
+  comment: string
+  userId: IUser
+  likes: string[]
+  createdAt: string
+  updatedAt: string
+}
+
 export interface Seller {
   address: {
     street: string
     state: string
     zipcode: number
+    region?: string
   }
   rebundle: {
     status: boolean
@@ -88,15 +108,14 @@ export interface Seller {
   firstName: string
   lastName: string
   image: string
-  rating?: number
   email: string
   followers: string[]
   sold: string[]
   numReviews: number
   badge: boolean
-  region?: "NGN" | "ZAR"
   createdAt: string
   updatedAt: string
+  rating: number
 }
 
 export interface Pagination {
@@ -124,30 +143,13 @@ export interface Stations {
   StateName: string
 }
 
-export interface Review {
-  user: IUser
-  comment: string
-  rating: number
-  like: string
-  createdAt?: string
-  _id: string
-}
-
-export interface Meta {
-  lat?: number
-  lng?: number
-  name: string
-  address: string
-  phone: string
-  stationId: number
-  point?: string
-  province?: string
-  shortName?: string
-  pickUp?: string
-  postalcode?: string
-  city?: string
-  suburb?: string
-  email?: string
+export interface ProductMeta {
+  name?: string
+  address?: string
+  phone?: string
+  stationId?: string | number
+  lat?: string | number
+  lng?: string | number
 }
 
 export interface SellingPriceHistory {
@@ -213,3 +215,21 @@ export type Coupon =
       type: "percent"
       percentOff: number
     }
+
+export type InputData = {
+  name: string
+  product: string
+  category: string
+  subCategory: string
+  condition: string
+  material: string
+  description: string
+  price: string
+  color: string[] | string
+  keyFeatures: string
+  image: string
+  selectedSize: string
+  specification: string
+  brand: string
+  tag: string
+}
