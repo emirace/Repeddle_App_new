@@ -39,7 +39,7 @@ const Selling = ({ navigation, products }: Props) => {
               <TouchableOpacity>
                 <Text
                   style={styles.secondtext}
-                  onPress={() => navigation.navigate("Main")}
+                  onPress={() => navigation.push("Main")}
                 >
                   Go Shopping
                 </Text>
@@ -80,7 +80,7 @@ const RenderItem = ({
       <Pressable style={itemStyles}>
         <ProductItem
           product={item}
-          navigate={(slug: string) => navigation.navigate("Product", { slug })}
+          navigate={(slug: string) => navigation.push("Product", { slug })}
         />
       </Pressable>
     )

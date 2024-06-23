@@ -378,7 +378,7 @@ const EditProduct = ({ navigation, route }: Props) => {
 
     if (res) {
       if (navigation.canGoBack()) return navigation.goBack()
-      navigation.navigate("ProductList")
+      navigation.push("ProductList")
     } else {
       // TODO: toast notification
       Alert.alert(error)
@@ -398,7 +398,7 @@ const EditProduct = ({ navigation, route }: Props) => {
         <Appbar.Content title="Edit Product" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
       {!categories && loading ? (

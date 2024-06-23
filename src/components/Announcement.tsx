@@ -30,7 +30,7 @@ const Announcement = ({ navigation }: Props) => {
 
   const action = (value: string) => {
     if (value === "SIGN UP") {
-      navigation.navigate("Auth")
+      navigation.push("Auth")
     }
   }
 

@@ -37,7 +37,7 @@ const Cart = ({ navigation }: Props) => {
     if (!user) {
       // TODO: show toast
       Alert.alert("Login to continue")
-      navigation.navigate("Auth")
+      navigation.push("Auth")
       return
     }
     if (!checkDeliverySelect(cart)) {
@@ -50,9 +50,9 @@ const Cart = ({ navigation }: Props) => {
       Alert.alert("Cart is empty")
     } else {
       if (user.isVerifiedEmail) {
-        navigation.navigate("PaymentMethod")
+        navigation.push("PaymentMethod")
       } else {
-        navigation.navigate("PaymentMethod")
+        navigation.push("PaymentMethod")
       }
     }
   }
@@ -72,7 +72,7 @@ const Cart = ({ navigation }: Props) => {
         <Appbar.Content title="Cart" />
         <Appbar.Action
           icon="heart"
-          onPress={() => navigation.navigate("Wishlist")}
+          onPress={() => navigation.push("Wishlist")}
         />
       </Appbar.Header>
       <Text style={styles.description}>
@@ -84,7 +84,7 @@ const Cart = ({ navigation }: Props) => {
         <View style={styles.continueCont}>
           <View style={styles.frsttext}>
             <Text>Cart is empty.</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Main")}>
+            <TouchableOpacity onPress={() => navigation.push("Main")}>
               <Text
                 style={[styles.goShoppingText, { color: colors.secondary }]}
               >
@@ -187,7 +187,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
         />
         <Text
           onPress={() =>
-            navigation.navigate("MyAccount", { username: item.seller.username })
+            navigation.push("MyAccount", { username: item.seller.username })
           }
           style={{ color: colors.secondary }}
         >

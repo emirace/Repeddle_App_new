@@ -38,7 +38,7 @@ const Wishlist = ({ navigation }: Props) => {
         <Appbar.Content title="Wishlist" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
 
@@ -65,7 +65,7 @@ const Wishlist = ({ navigation }: Props) => {
         >
           <Text style={{ textAlign: "center" }}>No item in Wishlist 😍 </Text>
 
-          <Pressable onPress={() => navigation.navigate("Main")}>
+          <Pressable onPress={() => navigation.push("Main")}>
             <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
               Go Shopping
             </Text>
@@ -90,7 +90,7 @@ const RenderItem = ({
   return (
     <View style={itemStyles}>
       <ProductItem
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
         product={item}
       />
     </View>

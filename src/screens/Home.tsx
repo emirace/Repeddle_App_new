@@ -76,7 +76,7 @@ const Home = ({ navigation }: any) => {
   }
 
   const handleSearch = (val: string) => {
-    navigation.navigate("Search", { query: val })
+    navigation.push("Search", { query: val })
   }
 
   const animatedValue = useRef(new Animated.Value(0)).current
@@ -219,7 +219,7 @@ const Home = ({ navigation }: any) => {
             logo2Animation,
           ]}
         />
-        <IconButton icon="cart" onPress={() => navigation.navigate("Cart")} />
+        <IconButton icon="cart" onPress={() => navigation.push("Cart")} />
       </Appbar.Header>
       <View style={styles.content}>
         <Animated.View
@@ -277,7 +277,7 @@ const RenderItem = ({
   return (
     <View style={itemStyles}>
       <ProductItem
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
         product={item}
       />
     </View>

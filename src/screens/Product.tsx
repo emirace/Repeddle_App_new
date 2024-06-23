@@ -401,7 +401,7 @@ const Product = ({ navigation, route }: Props) => {
             {product.tags.map((t) => (
               <Text
                 key={t}
-                onPress={() => navigation.navigate("Search", { query: t })}
+                onPress={() => navigation.push("Search", { query: t })}
                 style={[styles.tag, { borderColor: colors.onBackground }]}
               >
                 {t}
@@ -450,7 +450,7 @@ const Product = ({ navigation, route }: Props) => {
                   <View>
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate("MyAccount", {
+                        navigation.push("MyAccount", {
                           username: product.seller.username,
                         })
                       }
@@ -486,7 +486,7 @@ const Product = ({ navigation, route }: Props) => {
                 </View>
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("SellerReview", {
+                    navigation.push("SellerReview", {
                       id: product.seller._id,
                     })
                   }
@@ -563,7 +563,7 @@ const Product = ({ navigation, route }: Props) => {
                 )}
 
                 <Pressable
-                  onPress={() => navigation.navigate("SizeChart")}
+                  onPress={() => navigation.push("SizeChart")}
                   style={{ marginLeft: 20 }}
                 >
                   <Text
@@ -618,7 +618,7 @@ const Product = ({ navigation, route }: Props) => {
           </CollapsibleSection> */}
 
           <TouchableOpacity
-            onPress={() => navigation.navigate("BuyersProtection")}
+            onPress={() => navigation.push("BuyersProtection")}
             style={[
               styles.protection,
               { backgroundColor: colors.elevation.level3 },
@@ -651,7 +651,7 @@ const Product = ({ navigation, route }: Props) => {
             <Text style={{ marginBottom: 10 }}>
               By buying and{" "}
               <Text
-                onPress={() => navigation.navigate("Sell")}
+                onPress={() => navigation.push("Sell")}
                 style={{
                   textDecorationLine: "underline",
                   color: colors.secondary,
@@ -767,7 +767,7 @@ const Product = ({ navigation, route }: Props) => {
               backgroundColor: colors.elevation.level2,
             },
           ]}
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         >
           <Ionicons
             name="cart-outline"
@@ -848,7 +848,7 @@ const RenderItem = ({
   return (
     <View style={itemStyles}>
       <ProductItem
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
         product={item.product}
       />
     </View>

@@ -36,11 +36,11 @@ const Liked = ({ navigation, products }: Props) => {
             <View style={styles.frsttext}>
               <Text
                 style={{ color: colors.onBackground }}
-                onPress={() => navigation.navigate("Main")}
+                onPress={() => navigation.push("Main")}
               >
                 No product found{" "}
               </Text>
-              <TouchableOpacity onPress={() => navigation.navigate("Main")}>
+              <TouchableOpacity onPress={() => navigation.push("Main")}>
                 <Text style={styles.secondtext}>Go Shopping</Text>
               </TouchableOpacity>
             </View>
@@ -76,7 +76,7 @@ const RenderItem = ({
     <Pressable style={itemStyles}>
       <ProductItem
         product={item}
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
       />
     </Pressable>
   )

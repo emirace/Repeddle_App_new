@@ -109,7 +109,7 @@ const MyAccount = ({ navigation, route }: Props) => {
             icon={({ color, size }) => (
               <Feather name="edit" size={size} color={color} />
             )}
-            onPress={() => navigation.navigate("Profile")}
+            onPress={() => navigation.push("Profile")}
           />
         )}
       </Appbar.Header>
@@ -251,7 +251,7 @@ const RenderHeader = ({
         </View>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("SellerReview", {
+            navigation.push("SellerReview", {
               id: user._id,
             })
           }

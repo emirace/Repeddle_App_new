@@ -22,7 +22,7 @@ const BuyersProtection = ({ navigation }: Props) => {
         <Appbar.Content title="Buyers Protection" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
       <View style={styles.body}>

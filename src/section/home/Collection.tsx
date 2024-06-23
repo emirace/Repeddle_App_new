@@ -20,7 +20,7 @@ const Collection = ({ navigation }: Props) => {
           />
         </View>
         <TouchableOpacity
-        // onPress={() => navigation.navigate("CategoryStack")}
+        // onPress={() => navigation.push("CategoryStack")}
         >
           <Text style={homeStyles.seeAll}>see all</Text>
         </TouchableOpacity>
@@ -56,7 +56,7 @@ const Collection = ({ navigation }: Props) => {
           <Text style={homeStyles.classicText}>Classic Men Wears</Text>
           <TouchableOpacity
             style={homeStyles.classicButton}
-            onPress={() => navigation.navigate("Search", { query: "men" })}
+            onPress={() => navigation.push("Search", { query: "men" })}
           >
             <Text
               style={[
@@ -81,7 +81,7 @@ const Collection = ({ navigation }: Props) => {
           <Text style={homeStyles.classicText}>Smart Kid's Wears</Text>
           <TouchableOpacity
             style={homeStyles.classicButton}
-            onPress={() => navigation.navigate("Search", { query: "kid" })}
+            onPress={() => navigation.push("Search", { query: "kid" })}
           >
             <Text
               style={[
@@ -106,7 +106,7 @@ const Collection = ({ navigation }: Props) => {
           <Text style={homeStyles.classicText}>High Taste Women Wears</Text>
           <TouchableOpacity
             style={homeStyles.classicButton}
-            onPress={() => navigation.navigate("Search", { query: "women" })}
+            onPress={() => navigation.push("Search", { query: "women" })}
           >
             <Text
               style={[
@@ -163,7 +163,7 @@ const RenderItemcat = ({
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Search", { query: item.text })}
+      onPress={() => navigation.push("Search", { query: item.text })}
       style={homeStyles.catStyles}
     >
       <Image

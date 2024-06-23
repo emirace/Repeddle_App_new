@@ -35,7 +35,7 @@ const Sold = ({ navigation, products }: Props) => {
             <View style={styles.frsttext}>
               <Text
                 style={{ color: colors.onBackground }}
-                onPress={() => navigation.navigate("Main")}
+                onPress={() => navigation.push("Main")}
               >
                 No product found.{" "}
               </Text>
@@ -75,7 +75,7 @@ const RenderItem = ({
     <Pressable style={itemStyles}>
       <ProductItem
         product={item}
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
       />
     </Pressable>
   )

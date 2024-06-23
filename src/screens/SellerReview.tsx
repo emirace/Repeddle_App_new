@@ -99,7 +99,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
       <Pressable
         style={styles.reviewerInfoContainer}
         onPress={() =>
-          navigation.navigate("MyAccount", {
+          navigation.push("MyAccount", {
             username: currentReview.buyerId._id,
           })
         }
@@ -150,7 +150,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
             <Pressable
               style={styles.sellerContainer}
               onPress={() =>
-                navigation.navigate("MyAccount", {
+                navigation.push("MyAccount", {
                   username: currentReview.sellerId._id,
                 })
               }

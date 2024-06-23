@@ -180,7 +180,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
                 style={[styles.option]}
                 onPress={() =>
                   current &&
-                  navigation.navigate("EditProduct", {
+                  navigation.push("EditProduct", {
                     id: current.product._id,
                   })
                 }
@@ -458,7 +458,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
         <Appbar.Content title="Wishlist" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
 

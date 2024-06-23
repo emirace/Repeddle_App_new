@@ -93,7 +93,7 @@ const Checkout = ({ navigation }: Props) => {
       //       }
       //       sendPushNotification(message, s)
       //     })
-      //     navigation.navigate("OrderDetails", { id: order1.order._id })
+      //     navigation.push("OrderDetails", { id: order1.order._id })
       //     // navigate(`/order/${data.order._id}`);
       //   } catch (err) {
       //     dispatch({ type: "PAY_FAIL", payload: getError(err) })
@@ -273,7 +273,7 @@ const Checkout = ({ navigation }: Props) => {
               ) : null}
             </View>
           ))}
-          <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+          <TouchableOpacity onPress={() => navigation.push("Cart")}>
             <Text style={[styles.edit, { color: colors.secondary }]}>Edit</Text>
           </TouchableOpacity>
         </View>
@@ -284,9 +284,7 @@ const Checkout = ({ navigation }: Props) => {
             Payment method
           </Text>
           <Text>{cart.paymentMethod}</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("PaymentMethod")}
-          >
+          <TouchableOpacity onPress={() => navigation.push("PaymentMethod")}>
             <Text style={[styles.edit, { color: colors.secondary }]}>Edit</Text>
           </TouchableOpacity>
         </View>

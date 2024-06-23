@@ -235,7 +235,7 @@ const CreateProduct = ({ navigation }: Props) => {
     })
 
     if (res) {
-      navigation.navigate("MyAccount", { username: user!.username })
+      navigation.push("MyAccount", { username: user!.username })
     } else {
       // TODO: toast notification
       Alert.alert(error)
@@ -357,7 +357,7 @@ const CreateProduct = ({ navigation }: Props) => {
         <Appbar.Content title="My Orders" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
 

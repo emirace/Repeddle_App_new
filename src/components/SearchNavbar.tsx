@@ -21,7 +21,7 @@ const SearchNavbar = ({ navigation, gotoCart, back, onPress }: Props) => {
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() =>
-            back ? navigation.goBack() : navigation.navigate("HomeScreen")
+            back ? navigation.goBack() : navigation.push("HomeScreen")
           }
         >
           {back ? (
@@ -41,7 +41,7 @@ const SearchNavbar = ({ navigation, gotoCart, back, onPress }: Props) => {
         <View style={styles.search}>
           <Searchbar onPress={onPress} value="" />
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+        <TouchableOpacity onPress={() => navigation.push("Cart")}>
           {/* TODO:  */}
           {/* <IconButton icon="cart-outline" action={gotoCart} isCart /> */}
         </TouchableOpacity>

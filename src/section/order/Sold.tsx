@@ -39,7 +39,7 @@ const Sold = (props: Props) => {
           <Text style={{ fontSize: 15, fontWeight: "500" }}>
             You have not sold any item 💰{" "}
             <Text
-              onPress={() => navigation.navigate("Sell")}
+              onPress={() => navigation.push("Sell")}
               style={{ color: colors.secondary, fontWeight: "bold" }}
             >
               Sell
@@ -111,7 +111,7 @@ const RenderItem = ({
         </View>
       </View>
       <TouchableOpacity
-        onPress={() => navigation.navigate("OrderDetails", { id: item._id })}
+        onPress={() => navigation.push("OrderDetails", { id: item._id })}
       >
         <Text style={[styles.orderDetail, { color: colors.primary }]}>
           See Details
@@ -191,7 +191,7 @@ const RenderProductItem = ({
   return (
     <TouchableOpacity
       style={[styles.productItem, { backgroundColor }]}
-      onPress={() => navigation.navigate("OrderDetails", { id: item._id })}
+      onPress={() => navigation.push("OrderDetails", { id: item._id })}
     >
       <Text>{item.items[0].product.name}</Text>
       <Text>

@@ -233,7 +233,7 @@ const Sell = ({ navigation }: any) => {
     })
 
     if (res) {
-      navigation.navigate("MyAccount", { username: user!.username })
+      navigation.push("MyAccount", { username: user!.username })
     } else {
       // TODO: toast notification
       Alert.alert(error)
@@ -355,7 +355,7 @@ const Sell = ({ navigation }: any) => {
         <Appbar.Content title="Sell" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
 

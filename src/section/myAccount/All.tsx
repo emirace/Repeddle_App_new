@@ -32,12 +32,12 @@ const All = ({ navigation, products }: Props) => {
         <View style={styles.frsttext}>
           <Text
             style={{ color: colors.onBackground }}
-            onPress={() => navigation.navigate("Main")}
+            onPress={() => navigation.push("Main")}
           >
             No product found.{" "}
           </Text>
 
-          <TouchableOpacity onPress={() => navigation.navigate("Sell")}>
+          <TouchableOpacity onPress={() => navigation.push("Sell")}>
             <Text style={styles.secondtext}>Add product</Text>
           </TouchableOpacity>
         </View>
@@ -65,7 +65,7 @@ const RenderHeader = ({ navigation }: HeaderProps) => {
   return (
     <TouchableOpacity
       style={styles.buttonContainer}
-      onPress={() => navigation.navigate("Sell")}
+      onPress={() => navigation.push("Sell")}
     >
       <Text style={styles.buttonText}>Add Product</Text>
     </TouchableOpacity>
@@ -86,7 +86,7 @@ const RenderItem = ({
   return (
     <View style={itemStyles}>
       <ProductItem
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
         product={item}
       />
     </View>

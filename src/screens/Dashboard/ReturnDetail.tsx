@@ -75,7 +75,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
         <Appbar.Content title="My Orders" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
       <ScrollView style={styles.content}>
@@ -90,7 +90,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
             <TouchableOpacity
               onPress={() => {
                 // navigate to product details screen
-                navigation.navigate("Product", {
+                navigation.push("Product", {
                   slug: returned.productId.slug,
                 })
               }}
@@ -106,7 +106,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           <TouchableOpacity
             onPress={() => {
               // navigate to order details screen
-              navigation.navigate("OrderDetails", {
+              navigation.push("OrderDetails", {
                 id: returned.orderId._id,
               })
             }}
@@ -125,7 +125,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           <TouchableOpacity
             onPress={() => {
               // navigate to order details screen
-              navigation.navigate("MyAccount", {
+              navigation.push("MyAccount", {
                 username: returned.orderId.user._id,
               })
             }}
@@ -138,7 +138,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           <Text style={styles.name}>Seller</Text>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("MyAccount", {
+              navigation.push("MyAccount", {
                 username: returned.productId.seller._id,
               })
             }}
