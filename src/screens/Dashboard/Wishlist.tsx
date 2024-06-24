@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, View } from "react-native"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Appbar, Text, useTheme } from "react-native-paper"
 import { FlatList } from "react-native-gesture-handler"
 import useAuth from "../../hooks/useAuth"
@@ -13,7 +13,20 @@ const numColumns = 2
 const Wishlist = ({ navigation }: Props) => {
   const { colors } = useTheme()
 
-  const { user } = useAuth()
+  const { removeFromWishlist, user, error, getWishlist } = useAuth()
+  const [wishlist, setWishlist] = useState<WishlistType[]>([])
+
+  useEffect(() => {
+    const getList = async () => {
+      setLoading(true)
+      const res = await getWishlist()
+      if (res) setWishlist(res)
+      else addNotification(error ?? "An error occurred")
+      setLoading(false)
+    }
+
+    getList()
+  }, [refresh])
 
   const formatData = (data: IProduct[]) => {
     const totalRows = Math.floor(data.length / numColumns)
