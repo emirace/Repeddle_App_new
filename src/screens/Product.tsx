@@ -11,43 +11,45 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Badge, Chip, IconButton, Text, useTheme } from "react-native-paper";
-import { normaliseH, normaliseW } from "../utils/normalize";
-import { IProduct, RecentProduct } from "../types/product";
-import ProductItem from "../components/ProductItem";
-import { ProductNavigationProp } from "../types/navigation/stack";
-import useProducts from "../hooks/useProducts";
-import useAuth from "../hooks/useAuth";
+} from "react-native"
+import React, { useEffect, useMemo, useRef, useState } from "react"
+import { Badge, Chip, IconButton, Text, useTheme } from "react-native-paper"
+import { normaliseH, normaliseW } from "../utils/normalize"
+import { IProduct, RecentProduct } from "../types/product"
+import ProductItem from "../components/ProductItem"
+import { ProductNavigationProp } from "../types/navigation/stack"
+import useProducts from "../hooks/useProducts"
+import useAuth from "../hooks/useAuth"
 import {
   AntDesign,
   FontAwesome,
   FontAwesome5,
   Ionicons,
-} from "@expo/vector-icons";
-import RebundlePoster from "../components/RebundlePoster";
-import moment from "moment";
+} from "@expo/vector-icons"
+import RebundlePoster from "../components/RebundlePoster"
+import moment from "moment"
 import {
   conditionDetails,
   currency,
   currentAddress,
   goto,
   region,
-} from "../utils/common";
-import Rating from "../components/Rating";
-import MyButton from "../components/MyButton";
-import ImageCarousel from "../components/ImageCarousel";
-import RebundleLabel from "../components/RebundleLabel";
-import CollapsibleSection from "../components/CollapsibleSection";
-import useCart from "../hooks/useCart";
-import ProductReview from "../components/ProductReview";
-import CommentSection from "../components/CommentSection";
-import SizeSelection from "../components/SizeSelection";
-import useStore from "../hooks/useStore";
-import { baseURL } from "../services/api";
+} from "../utils/common"
+import Rating from "../components/Rating"
+import MyButton from "../components/MyButton"
+import ImageCarousel from "../components/ImageCarousel"
+import RebundleLabel from "../components/RebundleLabel"
+import CollapsibleSection from "../components/CollapsibleSection"
+import useCart from "../hooks/useCart"
+import ProductReview from "../components/ProductReview"
+import CommentSection from "../components/CommentSection"
+import SizeSelection from "../components/SizeSelection"
+import useStore from "../hooks/useStore"
+import { baseURL } from "../services/api"
+import { Asset } from "expo-asset"
+import * as Sharing from "expo-sharing"
 
-type Props = ProductNavigationProp;
+type Props = ProductNavigationProp
 
 const Product = ({ navigation, route }: Props) => {
   const { colors } = useTheme()
@@ -57,7 +59,7 @@ const Product = ({ navigation, route }: Props) => {
   const { getRecently, storeRecently } = useStore()
   const { user, addToWishlist, error: wishListError } = useAuth()
 
-  const { params } = route;
+  const { params } = route
 
   const [product, setProduct] = useState<IProduct>()
   const [recentlyViewed, setRecentlyViewed] = useState<RecentProduct[]>([])
@@ -70,31 +72,30 @@ const Product = ({ navigation, route }: Props) => {
   const [liking, setLiking] = useState(false)
   const [addToWish, setAddToWish] = useState(false)
 
-
   useEffect(() => {
     const fetchProd = async () => {
-      setProductError("");
-      const res = await fetchProductBySlug(params.slug);
+      setProductError("")
+      const res = await fetchProductBySlug(params.slug)
       if (res) {
-        setProduct(res);
-        storeRecently(res);
+        setProduct(res)
+        storeRecently(res)
       } else {
-        setProductError(error);
+        setProductError(error)
       }
-    };
+    }
 
-    fetchProd();
-  }, []);
+    fetchProd()
+  }, [])
 
   useEffect(() => {
     const getRecent = async () => {
-      const data = await getRecently();
+      const data = await getRecently()
 
-      setRecentlyViewed(data);
-    };
+      setRecentlyViewed(data)
+    }
 
-    getRecent();
-  }, []);
+    getRecent()
+  }, [])
 
   const isOnlineCon = (c: string) => {
     // if (onlineUser.length > 0) {
@@ -105,10 +106,10 @@ const Product = ({ navigation, route }: Props) => {
     //   } else return false;
     // }
 
-    return true;
-  };
+    return true
+  }
 
-  const animatedValue = useRef(new Animated.Value(0)).current;
+  const animatedValue = useRef(new Animated.Value(0)).current
 
   const headerAnimation = {
     transform: [
@@ -130,7 +131,7 @@ const Product = ({ navigation, route }: Props) => {
     //   outputRange: [0, 55],
     //   extrapolate: "clamp",
     // }),
-  };
+  }
 
   const nameAnimation = {
     transform: [
@@ -147,7 +148,7 @@ const Product = ({ navigation, route }: Props) => {
       outputRange: [0, 1],
       extrapolate: "clamp",
     }),
-  };
+  }
 
   const discount = useMemo(() => {
     if (!product?.costPrice || product.sellingPrice) {
@@ -163,30 +164,30 @@ const Product = ({ navigation, route }: Props) => {
   }, [product?.costPrice, product?.sellingPrice])
 
   const sizeHandler = (item: string) => {
-    if (!product) return;
-    const current = product.sizes.filter((s) => s.size === item);
+    if (!product) return
+    const current = product.sizes.filter((s) => s.size === item)
     if (current.length > 0) {
-      setSize(`${item} ( ${current[0].quantity} left)`);
-      setSelectSize(item);
+      setSize(`${item} ( ${current[0].quantity} left)`)
+      setSelectSize(item)
     } else {
-      setSize("Out of stock");
-      setSelectSize("");
+      setSize("Out of stock")
+      setSelectSize("")
     }
-  };
+  }
 
   const addToCartHandler = async () => {
-    if (!product) return;
+    if (!product) return
 
-    const existItem = cart.find((x) => x._id === product._id);
-    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const existItem = cart.find((x) => x._id === product._id)
+    const quantity = existItem ? existItem.quantity + 1 : 1
 
     if (!selectedSize && product.sizes.length > 0) {
-      Alert.alert("Select Size");
-      return;
+      Alert.alert("Select Size")
+      return
     }
 
     if (user && product.seller._id === user._id) {
-      Alert.alert("You can't buy your product");
+      Alert.alert("You can't buy your product")
     }
 
     const data = await fetchProductBySlug(product.slug)
@@ -200,15 +201,16 @@ const Product = ({ navigation, route }: Props) => {
       quantity,
       selectedSize,
       // selectedColor?: string;
-    });
-  };
+    })
+  }
 
   const onShare = async () => {
-    // const asset = Asset.fromModule(product.image)
-    // await asset.downloadAsync()
-    // try {
-    //   await Sharing.shareAsync(product.image, {})
-    // } catch (error) {}
+    if (!product) return
+    const asset = Asset.fromModule(product.images[0])
+    await asset.downloadAsync()
+    try {
+      await Sharing.shareAsync(product.images[0], {})
+    } catch (error) {}
   }
 
   const toggleLikes = async () => {
@@ -254,7 +256,7 @@ const Product = ({ navigation, route }: Props) => {
   }
 
   // TODO:
-  const addConversation = async (id: string, id2: string) => {};
+  const addConversation = async (id: string, id2: string) => {}
 
   const saveItem = async () => {
     if (!product) return
@@ -327,8 +329,8 @@ const Product = ({ navigation, route }: Props) => {
         alwaysBounceVertical={true}
         showsVerticalScrollIndicator={false}
         onScroll={(e) => {
-          const offsetY = e.nativeEvent.contentOffset.y;
-          animatedValue.setValue(offsetY);
+          const offsetY = e.nativeEvent.contentOffset.y
+          animatedValue.setValue(offsetY)
         }}
       >
         <View style={styles.love}>
@@ -417,7 +419,7 @@ const Product = ({ navigation, route }: Props) => {
             transparent={true}
             visible={modalProductReview}
             onRequestClose={() => {
-              setModalProductReview(!modalProductReview);
+              setModalProductReview(!modalProductReview)
             }}
           >
             <ProductReview
@@ -917,17 +919,17 @@ const Product = ({ navigation, route }: Props) => {
         </View>
       </View>
     </View>
-  ) : null;
-};
+  ) : null
+}
 
 const RenderItem = ({
   item,
   navigation,
 }: {
-  item: RecentProduct;
-  navigation: ProductNavigationProp["navigation"];
+  item: RecentProduct
+  navigation: ProductNavigationProp["navigation"]
 }) => {
-  let { itemStyles } = styles;
+  let { itemStyles } = styles
 
   return (
     <View style={itemStyles}>
@@ -936,12 +938,12 @@ const RenderItem = ({
         product={item.product}
       />
     </View>
-  );
-};
+  )
+}
 
-export default Product;
+export default Product
 
-const { width } = Dimensions.get("screen");
+const { width } = Dimensions.get("screen")
 
 const styles = StyleSheet.create({
   container: {
@@ -1162,4 +1164,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 11,
   },
-});
+})
