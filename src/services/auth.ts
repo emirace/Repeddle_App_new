@@ -117,9 +117,8 @@ export async function loginUser(credentials: {
       // Handle login error, e.g., display an error message to the user
       throw new Error("Login failed: " + getBackendErrorMessage(data.data));
     }
-    console.log(data.token);
 
-    await SecureStore.setItemAsync("authToken", data.accessToken);
+    await SecureStore.setItemAsync("authToken", data.token);
 
     return data.token;
   } catch (error) {
