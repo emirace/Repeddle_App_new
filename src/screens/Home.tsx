@@ -185,7 +185,7 @@ const Home = ({ navigation }: any) => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              // paddingBottom: 10,
+              paddingBottom: 10,
             }}
           >
             <Animated.Image
@@ -214,9 +214,9 @@ const Home = ({ navigation }: any) => {
               }}
               style={[
                 {
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
+                  // position: "absolute",
+                  // top: 0,
+                  // left: 0,
                   width: 60,
                   marginLeft: 10,
                   height: 60,
