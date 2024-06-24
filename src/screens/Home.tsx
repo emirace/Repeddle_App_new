@@ -93,7 +93,7 @@ const Home = ({ navigation }: any) => {
       {
         translateY: animatedValue.interpolate({
           inputRange: [0, 50],
-          outputRange: [0, -70],
+          outputRange: [0, -50],
           extrapolate: "clamp",
         }),
       },
@@ -172,101 +172,78 @@ const Home = ({ navigation }: any) => {
 
   return (
     <View>
-      <Animated.View>
-        <Announcement navigation={navigation} />
-      </Animated.View>
       <Appbar.Header
         mode="small"
         style={{
-          position: "absolute",
           zIndex: 20,
-          left: 0,
-          width: WIDTH,
         }}
       >
-        {/* <Appbar.Header
-          mode="small"
-          // style={{
-          //   justifyContent: "space-between",
-          //   marginBottom: 20,
-          // }}
-          style={[
-            {
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: 60,
-              marginLeft: 10,
-              height: 60,
-              // resizeMode: "contain",
-            },
-            logo2Animation,
-          ]}
-        /> */}
-        <IconButton icon="cart" onPress={() => navigation.push("Cart")} />
-      </Appbar.Header>
-      <View style={styles.content}>
-        <Animated.View
-          style={[
-            styles.bottomHeader,
-            searchAnimation,
-            { backgroundColor: "transparent" },
-          ]}
-        >
-          <Animated.Image
-            source={{
-              uri:
-                themeMode === "dark"
-                  ? "https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif"
-                  : "https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif",
+        <View>
+          <Announcement navigation={navigation} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingBottom: 10,
             }}
-            style={[
-              {
-                width: WIDTH * 0.5,
-                height: 40,
-                objectFit: "contain",
-              },
-              logoAnimation,
-            ]}
-            alt="logo"
-          />
-          <Animated.Image
-            source={{
-              uri:
-                themeMode === "dark"
-                  ? "https://res.cloudinary.com/emirace/image/upload/v1658136004/Reppedle_Black_ebqmot.gif"
-                  : "https://res.cloudinary.com/emirace/image/upload/v1658136003/Reppedle_White_d56cic.gif",
-            }}
-            style={[
-              {
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: 60,
-                marginLeft: 10,
-                height: 60,
-                resizeMode: "contain",
-              },
-              logo2Animation,
-            ]}
-          />
-          <View style={{ flexDirection: "row" }}>
-            <IconButton icon="bell" />
-            <IconButton icon="cart" onPress={() => navigation.push("Cart")} />
-          </View>
-        </Animated.View>
-        <View style={styles.content}>
-          <Animated.View
-            style={[
-              styles.bottomHeader,
-              searchAnimation,
-              { backgroundColor: "transparent" },
-            ]}
           >
-            <SearchBar onPress={handleSearch} />
-          </Animated.View>
+            <Animated.Image
+              source={{
+                uri:
+                  themeMode === "dark"
+                    ? "https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif"
+                    : "https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif",
+              }}
+              style={[
+                {
+                  width: WIDTH * 0.5,
+                  height: 40,
+                  objectFit: "contain",
+                },
+                logoAnimation,
+              ]}
+              alt="logo"
+            />
+            <Animated.Image
+              source={{
+                uri:
+                  themeMode === "dark"
+                    ? "https://res.cloudinary.com/emirace/image/upload/v1658136004/Reppedle_Black_ebqmot.gif"
+                    : "https://res.cloudinary.com/emirace/image/upload/v1658136003/Reppedle_White_d56cic.gif",
+              }}
+              style={[
+                {
+                  // position: "absolute",
+                  // top: 0,
+                  // left: 0,
+                  width: 60,
+                  marginLeft: 10,
+                  height: 60,
+                  resizeMode: "contain",
+                },
+                logo2Animation,
+              ]}
+            />
+            <View style={{ flexDirection: "row" }}>
+              <IconButton icon="bell" />
+              <IconButton icon="cart" onPress={() => navigation.push("Cart")} />
+            </View>
+          </View>
+          <View style={styles.content}>
+            <Animated.View
+              style={[
+                styles.bottomHeader,
+                searchAnimation,
+                { backgroundColor: "transparent" },
+              ]}
+            >
+              <SearchBar onPress={handleSearch} />
+            </Animated.View>
+          </View>
         </View>
-      </View>
+      </Appbar.Header>
+
       <FlatList
         data={formatData(products.products)}
         renderItem={({ item }) => (
@@ -345,6 +322,9 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
+    zIndex: 20,
+    position: "absolute",
+    bottom: -50,
   },
   bottomHeader: {
     // height: 1,
