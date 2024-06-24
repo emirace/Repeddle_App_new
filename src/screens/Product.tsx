@@ -11,42 +11,43 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { useEffect, useMemo, useRef, useState } from "react"
-import { Badge, Text, useTheme } from "react-native-paper"
-import { normaliseH, normaliseW } from "../utils/normalize"
-import { IProduct, RecentProduct } from "../types/product"
-import ProductItem from "../components/ProductItem"
-import { ProductNavigationProp } from "../types/navigation/stack"
-import useProducts from "../hooks/useProducts"
-import useAuth from "../hooks/useAuth"
+} from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Badge, Chip, IconButton, Text, useTheme } from "react-native-paper";
+import { normaliseH, normaliseW } from "../utils/normalize";
+import { IProduct, RecentProduct } from "../types/product";
+import ProductItem from "../components/ProductItem";
+import { ProductNavigationProp } from "../types/navigation/stack";
+import useProducts from "../hooks/useProducts";
+import useAuth from "../hooks/useAuth";
 import {
   AntDesign,
   FontAwesome,
   FontAwesome5,
   Ionicons,
-} from "@expo/vector-icons"
-import RebundlePoster from "../components/RebundlePoster"
-import moment from "moment"
+} from "@expo/vector-icons";
+import RebundlePoster from "../components/RebundlePoster";
+import moment from "moment";
 import {
   conditionDetails,
   currency,
   currentAddress,
   goto,
   region,
-} from "../utils/common"
-import Rating from "../components/Rating"
-import MyButton from "../components/MyButton"
-import ImageCarousel from "../components/ImageCarousel"
-import RebundleLabel from "../components/RebundleLabel"
-import CollapsibleSection from "../components/CollapsibleSection"
-import useCart from "../hooks/useCart"
-import ProductReview from "../components/ProductReview"
-import CommentSection from "../components/CommentSection"
-import SizeSelection from "../components/SizeSelection"
-import useStore from "../hooks/useStore"
+} from "../utils/common";
+import Rating from "../components/Rating";
+import MyButton from "../components/MyButton";
+import ImageCarousel from "../components/ImageCarousel";
+import RebundleLabel from "../components/RebundleLabel";
+import CollapsibleSection from "../components/CollapsibleSection";
+import useCart from "../hooks/useCart";
+import ProductReview from "../components/ProductReview";
+import CommentSection from "../components/CommentSection";
+import SizeSelection from "../components/SizeSelection";
+import useStore from "../hooks/useStore";
+import { baseURL } from "../services/api";
 
-type Props = ProductNavigationProp
+type Props = ProductNavigationProp;
 
 const Product = ({ navigation, route }: Props) => {
   const { colors } = useTheme()
@@ -56,7 +57,7 @@ const Product = ({ navigation, route }: Props) => {
   const { getRecently, storeRecently } = useStore()
   const { user, addToWishlist, error: wishListError } = useAuth()
 
-  const { params } = route
+  const { params } = route;
 
   const [product, setProduct] = useState<IProduct>()
   const [recentlyViewed, setRecentlyViewed] = useState<RecentProduct[]>([])
@@ -69,30 +70,31 @@ const Product = ({ navigation, route }: Props) => {
   const [liking, setLiking] = useState(false)
   const [addToWish, setAddToWish] = useState(false)
 
+
   useEffect(() => {
     const fetchProd = async () => {
-      setProductError("")
-      const res = await fetchProductBySlug(params.slug)
+      setProductError("");
+      const res = await fetchProductBySlug(params.slug);
       if (res) {
-        setProduct(res)
-        storeRecently(res)
+        setProduct(res);
+        storeRecently(res);
       } else {
-        setProductError(error)
+        setProductError(error);
       }
-    }
+    };
 
-    fetchProd()
-  }, [])
+    fetchProd();
+  }, []);
 
   useEffect(() => {
     const getRecent = async () => {
-      const data = await getRecently()
+      const data = await getRecently();
 
-      setRecentlyViewed(data)
-    }
+      setRecentlyViewed(data);
+    };
 
-    getRecent()
-  }, [])
+    getRecent();
+  }, []);
 
   const isOnlineCon = (c: string) => {
     // if (onlineUser.length > 0) {
@@ -103,10 +105,10 @@ const Product = ({ navigation, route }: Props) => {
     //   } else return false;
     // }
 
-    return true
-  }
+    return true;
+  };
 
-  const animatedValue = useRef(new Animated.Value(0)).current
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
   const headerAnimation = {
     transform: [
@@ -128,7 +130,7 @@ const Product = ({ navigation, route }: Props) => {
     //   outputRange: [0, 55],
     //   extrapolate: "clamp",
     // }),
-  }
+  };
 
   const nameAnimation = {
     transform: [
@@ -145,7 +147,7 @@ const Product = ({ navigation, route }: Props) => {
       outputRange: [0, 1],
       extrapolate: "clamp",
     }),
-  }
+  };
 
   const discount = useMemo(() => {
     if (!product?.costPrice || product.sellingPrice) {
@@ -161,30 +163,30 @@ const Product = ({ navigation, route }: Props) => {
   }, [product?.costPrice, product?.sellingPrice])
 
   const sizeHandler = (item: string) => {
-    if (!product) return
-    const current = product.sizes.filter((s) => s.size === item)
+    if (!product) return;
+    const current = product.sizes.filter((s) => s.size === item);
     if (current.length > 0) {
-      setSize(`${item} ( ${current[0].quantity} left)`)
-      setSelectSize(item)
+      setSize(`${item} ( ${current[0].quantity} left)`);
+      setSelectSize(item);
     } else {
-      setSize("Out of stock")
-      setSelectSize("")
+      setSize("Out of stock");
+      setSelectSize("");
     }
-  }
+  };
 
   const addToCartHandler = async () => {
-    if (!product) return
+    if (!product) return;
 
-    const existItem = cart.find((x) => x._id === product._id)
-    const quantity = existItem ? existItem.quantity + 1 : 1
+    const existItem = cart.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
 
     if (!selectedSize && product.sizes.length > 0) {
-      Alert.alert("Select Size")
-      return
+      Alert.alert("Select Size");
+      return;
     }
 
     if (user && product.seller._id === user._id) {
-      Alert.alert("You can't buy your product")
+      Alert.alert("You can't buy your product");
     }
 
     const data = await fetchProductBySlug(product.slug)
@@ -198,8 +200,8 @@ const Product = ({ navigation, route }: Props) => {
       quantity,
       selectedSize,
       // selectedColor?: string;
-    })
-  }
+    });
+  };
 
   const onShare = async () => {
     // const asset = Asset.fromModule(product.image)
@@ -252,7 +254,7 @@ const Product = ({ navigation, route }: Props) => {
   }
 
   // TODO:
-  const addConversation = async (id: string, id2: string) => {}
+  const addConversation = async (id: string, id2: string) => {};
 
   const saveItem = async () => {
     if (!product) return
@@ -325,8 +327,8 @@ const Product = ({ navigation, route }: Props) => {
         alwaysBounceVertical={true}
         showsVerticalScrollIndicator={false}
         onScroll={(e) => {
-          const offsetY = e.nativeEvent.contentOffset.y
-          animatedValue.setValue(offsetY)
+          const offsetY = e.nativeEvent.contentOffset.y;
+          animatedValue.setValue(offsetY);
         }}
       >
         <View style={styles.love}>
@@ -338,10 +340,9 @@ const Product = ({ navigation, route }: Props) => {
               style={styles.loveIcon}
               disabled={liking}
             >
-              <AntDesign
-                name={liked ? "like1" : "like2"}
-                size={18}
-                color="red"
+              <IconButton
+                icon={liked ? "thumb-up" : "thumb-up-outline"}
+                iconColor="red"
               />
             </TouchableOpacity>
             {product.likes.length ? (
@@ -353,18 +354,32 @@ const Product = ({ navigation, route }: Props) => {
             ) : null}
           </View>
 
-          <TouchableOpacity onPress={onShare} style={styles.share}>
-            <Ionicons size={20} color={"black"} name="share-social-outline" />
-            {product.shares.length ? (
-              <Text
-                style={[
-                  styles.shareCount,
-                  { backgroundColor: "red", color: "white" },
-                ]}
-              >
-                {product.shares.length}
-              </Text>
-            ) : null}
+          <TouchableOpacity
+            onPress={onShare}
+            style={[styles.share, { backgroundColor: colors.elevation.level2 }]}
+          >
+            <IconButton icon="share-variant" />
+
+            {
+              product.shares.length ? (
+                <View style={styles.badge}>
+                  <Badge
+                    theme={{ colors: { background: "red" } }}
+                    children={cart.length}
+                  />
+                </View>
+              ) : null
+              // (
+              //   <Text
+              //     style={[
+              //       styles.shareCount,
+              //       { backgroundColor: "red", color: "white" },
+              //     ]}
+              //   >
+              //     {product.shares.length}
+              //   </Text>
+              // ) : null
+            }
           </TouchableOpacity>
         </View>
 
@@ -402,7 +417,7 @@ const Product = ({ navigation, route }: Props) => {
             transparent={true}
             visible={modalProductReview}
             onRequestClose={() => {
-              setModalProductReview(!modalProductReview)
+              setModalProductReview(!modalProductReview);
             }}
           >
             <ProductReview
@@ -463,18 +478,25 @@ const Product = ({ navigation, route }: Props) => {
           <View
             style={[
               styles.section,
-              { flexDirection: "row", gap: 8, flexWrap: "wrap" },
+              {
+                flexDirection: "row",
+                gap: 8,
+                flexWrap: "wrap",
+                alignItems: "center",
+              },
             ]}
           >
             <Text>Tags:</Text>
             {product.tags.map((t) => (
-              <Text
-                key={t}
+              <Chip
+                icon="tag"
+                mode="outlined"
+                textStyle={{ color: colors.primary }}
+                style={{ borderColor: colors.primary }}
                 onPress={() => navigation.push("Search", { query: t })}
-                style={[styles.tag, { borderColor: colors.onBackground }]}
               >
                 {t}
-              </Text>
+              </Chip>
             ))}
           </View>
           <View style={styles.section}>
@@ -489,7 +511,7 @@ const Product = ({ navigation, route }: Props) => {
             >
               <View style={{ position: "relative" }}>
                 <Image
-                  source={{ uri: product.seller.image }}
+                  source={{ uri: baseURL + product.seller.image }}
                   style={styles.userImage}
                 />
                 {product.seller.badge && (
@@ -808,11 +830,7 @@ const Product = ({ navigation, route }: Props) => {
           onPress={() => navigation.goBack()}
           style={[styles.back, { backgroundColor: colors.elevation.level2 }]}
         >
-          <FontAwesome
-            name="angle-left"
-            size={18}
-            color={colors.onBackground}
-          />
+          <IconButton icon="chevron-left" />
         </TouchableOpacity>
         <Animated.Text
           style={[
@@ -821,6 +839,7 @@ const Product = ({ navigation, route }: Props) => {
               fontWeight: "bold",
               textTransform: "capitalize",
               color: "white",
+              textAlign: "center",
             },
             nameAnimation,
           ]}
@@ -838,12 +857,7 @@ const Product = ({ navigation, route }: Props) => {
           ]}
           onPress={() => navigation.push("Cart")}
         >
-          <Ionicons
-            name="cart-outline"
-            size={24}
-            style={{ padding: 0 }}
-            color={colors.onBackground}
-          />
+          <IconButton icon="cart" />
 
           {cart.length > 0 && (
             <View style={styles.badge}>
@@ -903,17 +917,17 @@ const Product = ({ navigation, route }: Props) => {
         </View>
       </View>
     </View>
-  ) : null
-}
+  ) : null;
+};
 
 const RenderItem = ({
   item,
   navigation,
 }: {
-  item: RecentProduct
-  navigation: ProductNavigationProp["navigation"]
+  item: RecentProduct;
+  navigation: ProductNavigationProp["navigation"];
 }) => {
-  let { itemStyles } = styles
+  let { itemStyles } = styles;
 
   return (
     <View style={itemStyles}>
@@ -922,12 +936,12 @@ const RenderItem = ({
         product={item.product}
       />
     </View>
-  )
-}
+  );
+};
 
-export default Product
+export default Product;
 
-const { width } = Dimensions.get("screen")
+const { width } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
   container: {
@@ -940,7 +954,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     position: "absolute",
-    top: normaliseH(40),
+    top: normaliseH(30),
     left: 0,
     right: 0,
     zIndex: 10,
@@ -1037,14 +1051,10 @@ const styles = StyleSheet.create({
   like: {
     width: normaliseW(40),
     height: normaliseW(40),
-    backgroundColor: "white",
     borderRadius: 50,
     overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
-    position: "absolute",
-    right: 5,
-    top: "30%",
   },
   love: {
     position: "relative",
@@ -1122,9 +1132,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 40,
     left: 15,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 5,
+    borderRadius: 50,
   },
   tag: {
     borderWidth: 1,
@@ -1154,4 +1162,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 11,
   },
-})
+});

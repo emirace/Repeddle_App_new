@@ -15,11 +15,12 @@ import { lightTheme } from "../constant/theme"
 import { Text } from "react-native-paper"
 import useAuth from "../hooks/useAuth"
 import useProducts from "../hooks/useProducts"
+import { baseURL } from "../services/api";
 
 type Props = {
-  navigate: (slug: string) => void
-  product: IProduct
-}
+  navigate: (slug: string) => void;
+  product: IProduct;
+};
 
 const ProductItem = ({ navigate, product }: Props) => {
   const { user, addToWishlist, error: wishlistError } = useAuth()
@@ -31,18 +32,20 @@ const ProductItem = ({ navigate, product }: Props) => {
   const liked = useMemo(() => {
     return !!product?.likes.find((like) => like === user?._id)
   }, [product?.likes, user?._id])
+
   const saved = useMemo(
     () => user && user.wishlist.find((x) => x === product._id),
     [product, user]
-  )
+  );
 
   const discount = () => {
+    if (product.costPrice === product.sellingPrice) {
+      return null;
+    }
     return (
-      ((product.sellingPrice - (product.costPrice ?? 0)) /
-        product.sellingPrice) *
-      100
-    )
-  }
+      ((product.costPrice - product.sellingPrice) / product.costPrice) * 100
+    );
+  };
 
   const toggleLikes = async () => {
     if (!user) {
@@ -112,7 +115,7 @@ const ProductItem = ({ navigate, product }: Props) => {
       onPress={() => navigate(product.slug)}
       style={[styles.container]}
     >
-      <Image source={{ uri: product.images[0] }} style={styles.image} />
+      <Image source={{ uri:baseURL +  product.images[0] }} style={styles.image} />
       <TouchableOpacity
         style={styles.likeButton}
         onPress={toggleLikes}
@@ -140,13 +143,11 @@ const ProductItem = ({ navigate, product }: Props) => {
           <View style={[styles.shades, { backgroundColor: "grey" }]}>
             <Text style={styles.shadesText}>SOLD</Text>
           </View>
-        ) : (
+        ) : discount() ? (
           <View style={styles.shades}>
-            {discount() ? (
-              <Text style={styles.shadesText}>{discount()}% Discount</Text>
-            ) : null}
+            <Text style={styles.shadesText}>{discount()}% OFF</Text>
           </View>
-        )}
+        ) : null}
         <Text numberOfLines={1} style={styles.name}>
           {product.name}
         </Text>
@@ -166,10 +167,10 @@ const ProductItem = ({ navigate, product }: Props) => {
         </View>
       </View>
     </Pressable>
-  )
-}
+  );
+};
 
-export default ProductItem
+export default ProductItem;
 
 const styles = StyleSheet.create({
   container: {
@@ -232,4 +233,4 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 11,
   },
-})
+});

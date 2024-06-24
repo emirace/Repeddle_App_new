@@ -1,15 +1,15 @@
-import { Ionicons } from "@expo/vector-icons"
-import React, { useState } from "react"
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
-import { useTheme } from "react-native-paper"
+import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { useTheme } from "react-native-paper";
 
 type Props = {
-  onPress: (val: string) => void
-}
+  onPress: (val: string) => void;
+};
 
 const SearchBar = ({ onPress }: Props) => {
-  const [query, setQuery] = useState("")
-  const { colors } = useTheme()
+  const [query, setQuery] = useState("");
+  const { colors } = useTheme();
   return (
     <View
       style={[
@@ -31,13 +31,14 @@ const SearchBar = ({ onPress }: Props) => {
           value={query}
           placeholder={"Search anything"}
           placeholderTextColor={colors.onBackground}
-          //   color={colors.onBackground}
-          style={styles.TextInput}
+          style={[styles.TextInput, { color: colors.onBackground }]}
+          cursorColor={colors.onBackground}
+          selectionColor={colors.onBackground}
           keyboardType="web-search"
           returnKeyType="search"
           onSubmitEditing={() => onPress(query)}
           onChangeText={(text) => {
-            setQuery(text)
+            setQuery(text);
           }}
           selectionColor={colors.primary}
         />
@@ -52,8 +53,8 @@ const SearchBar = ({ onPress }: Props) => {
         )}
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -74,6 +75,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-})
+});
 
-export default SearchBar
+export default SearchBar;
