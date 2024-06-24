@@ -51,7 +51,7 @@ const Login: React.FC<
       setLoading(true);
       const result = await login({ email, password });
       if (result) {
-        // navigation.navigate('HomeMain');
+        navigation.navigate("Main");
       } else {
         setError(loginError || "");
       }

@@ -6,20 +6,20 @@ import {
   FlatList,
   ActivityIndicator,
   Animated,
-} from "react-native"
-import React, { useEffect, useRef, useState } from "react"
-import { Appbar, IconButton, Searchbar, useTheme } from "react-native-paper"
-import useThemeContext from "../hooks/useTheme"
-import { MainScreenNavigationProp } from "../types/navigation/stack"
-import { TopSellers } from "../types/user"
-import HomeContents from "../section/home/HomeContents"
-import { IProduct } from "../types/product"
-import homeStyles from "../section/home/homeStyles"
-import ProductItem from "../components/ProductItem"
-import useProducts from "../hooks/useProducts"
-import useUser from "../hooks/useUser"
-import SearchBar from "../components/SearchBar"
-import Announcement from "../components/Announcement"
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Appbar, IconButton, Searchbar, useTheme } from "react-native-paper";
+import useThemeContext from "../hooks/useTheme";
+import { MainScreenNavigationProp } from "../types/navigation/stack";
+import { TopSellers } from "../types/user";
+import HomeContents from "../section/home/HomeContents";
+import { IProduct } from "../types/product";
+import homeStyles from "../section/home/homeStyles";
+import ProductItem from "../components/ProductItem";
+import useProducts from "../hooks/useProducts";
+import useUser from "../hooks/useUser";
+import SearchBar from "../components/SearchBar";
+import Announcement from "../components/Announcement";
 
 const WIDTH = Dimensions.get("screen").width;
 
@@ -76,8 +76,8 @@ const Home = ({ navigation }: any) => {
   };
 
   const handleSearch = (val: string) => {
-    navigation.push("Search", { query: val })
-  }
+    navigation.push("Search", { query: val });
+  };
 
   const animatedValue = useRef(new Animated.Value(0)).current;
 
@@ -184,12 +184,12 @@ const Home = ({ navigation }: any) => {
           width: WIDTH,
         }}
       >
-        <Appbar.Header
+        {/* <Appbar.Header
           mode="small"
-          style={{
-            justifyContent: "space-between",
-            marginBottom: 20,
-          }}
+          // style={{
+          //   justifyContent: "space-between",
+          //   marginBottom: 20,
+          // }}
           style={[
             {
               position: "absolute",
@@ -198,11 +198,11 @@ const Home = ({ navigation }: any) => {
               width: 60,
               marginLeft: 10,
               height: 60,
-              resizeMode: "contain",
+              // resizeMode: "contain",
             },
             logo2Animation,
           ]}
-        />
+        /> */}
         <IconButton icon="cart" onPress={() => navigation.push("Cart")} />
       </Appbar.Header>
       <View style={styles.content}>
@@ -254,7 +254,7 @@ const Home = ({ navigation }: any) => {
             <IconButton icon="bell" />
             <IconButton icon="cart" onPress={() => navigation.push("Cart")} />
           </View>
-        </Appbar.Header>
+        </Animated.View>
         <View style={styles.content}>
           <Animated.View
             style={[
