@@ -217,7 +217,7 @@ const RenderItem = ({
   return (
     <View style={itemStyles}>
       <ProductItem
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
         product={item}
       />
     </View>

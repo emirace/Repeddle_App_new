@@ -114,7 +114,7 @@ const AddAddress = ({ isFocused, navigation }: Props) => {
       visible={showAddress}
       onRequestClose={() => {
         setShowAddress(false)
-        navigation.navigate("Main")
+        navigation.push("Main")
       }}
     >
       <View style={[styles.centeredView]}>

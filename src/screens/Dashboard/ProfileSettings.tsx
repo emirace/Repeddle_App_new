@@ -51,7 +51,7 @@ const ProfileSettings = ({ navigation }: Props) => {
 
   const [image, setImage] = useState("")
 
-  moment.locale()
+  // moment.locale()
 
   const [input, setInput] = useState({
     email: user?.email,

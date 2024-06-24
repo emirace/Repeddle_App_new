@@ -1,7 +1,7 @@
-import { StyleSheet, ScrollView,View } from "react-native";
-import React from "react";
-import { Appbar, Avatar, List, Text, useTheme } from "react-native-paper";
-import Balance from "../../section/profile/Balances";
+import { StyleSheet, ScrollView, View } from "react-native"
+import React from "react"
+import { Appbar, Avatar, List, Text, useTheme } from "react-native-paper"
+import Balance from "../../section/profile/Balances"
 import { RootStackParamList } from "../../types/navigation/stack"
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
@@ -57,7 +57,7 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
             left={() => <List.Icon icon="theme-light-dark" />}
             right={() => <List.Icon icon="chevron-right" />}
             descriptionStyle={{ fontSize: 18 }}
-            onPress={() => navigation.navigate("Appearance")}
+            onPress={() => navigation.push("Appearance")}
           />
         </List.Section>
         <List.Section>
@@ -146,6 +146,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "gray",
   },
-});
+})
 
-export default Profile;
+export default Profile

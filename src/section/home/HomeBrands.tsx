@@ -18,7 +18,7 @@ const HomeBrands = ({ navigation }: Props) => {
         </View>
         <TouchableOpacity
         // TODO:
-        // onPress={() => navigation.navigate("BrandScreen")}
+        // onPress={() => navigation.push("BrandScreen")}
         >
           <Text style={homeStyles.seeAll}>see all</Text>
         </TouchableOpacity>
@@ -64,7 +64,7 @@ const RenderItemcat = ({
   const { colors } = useTheme()
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Search", { query: item.text })}
+      onPress={() => navigation.push("Search", { query: item.text })}
       style={[homeStyles.catStyles]}
     >
       <Image

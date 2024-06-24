@@ -88,10 +88,10 @@ const SizeChart = ({ navigation }: Props) => {
         }}
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
+        <Appbar.Content title="Size Chart" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
 

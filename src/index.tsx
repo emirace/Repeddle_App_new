@@ -52,31 +52,34 @@ const Main = () => {
       <NavigationContainer
         theme={themeMode === "dark" ? CombinedDarkTheme : CombinedDefaultTheme}
       >
-        <AuthProvider>
-          <BrandProvider>
-            <BottomSheetModalProvider>
-              <StoreProvider>
-                <ProductProvider>
-                  <UserProvider>
-                    <CategoryProvider>
-                      <CartProvider>
-                        <NewsletterProvider>
-                          <OrderProvider>
-                            <TransactionProvider>
-                              <MessageProvider>
-                                <MainStackNav />
-                              </MessageProvider>
-                            </TransactionProvider>
-                          </OrderProvider>
-                        </NewsletterProvider>
-                      </CartProvider>
-                    </CategoryProvider>
-                  </UserProvider>
-                </ProductProvider>
-              </StoreProvider>
-            </BottomSheetModalProvider>
-          </BrandProvider>
-        </AuthProvider>
+        <BottomSheetModalProvider>
+          <StoreProvider>
+            <ProductProvider>
+              <UserProvider>
+                <StoreProvider>
+                  <BrandProvider>
+                    <AuthProvider>
+                      <CategoryProvider>
+                        <CartProvider>
+                          <NewsletterProvider>
+                            <OrderProvider>
+                              <TransactionProvider>
+                                <MessageProvider>
+                                  <MainStackNav />
+                                </MessageProvider>
+                              </TransactionProvider>
+                            </OrderProvider>
+                          </NewsletterProvider>
+                        </CartProvider>
+                      </CategoryProvider>
+                    </AuthProvider>
+                  </BrandProvider>
+                </StoreProvider>
+              </UserProvider>
+            </ProductProvider>
+          </StoreProvider>
+        </BottomSheetModalProvider>
+
       </NavigationContainer>
     </PaperProvider>
   );

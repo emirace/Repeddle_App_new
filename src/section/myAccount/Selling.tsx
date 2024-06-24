@@ -30,21 +30,23 @@ const Selling = ({ navigation, products }: Props) => {
   return (
     <View>
       {!products.length ? (
-        <View style={styles.continueCont}>
-          <View style={styles.frsttext}>
-            <Text style={{ color: colors.onBackground }}>
-              No product found.{" "}
-            </Text>
-            <TouchableOpacity>
-              <Text
-                style={styles.secondtext}
-                onPress={() => navigation.navigate("Main")}
-              >
-                Go Shopping
+        <Tabs.ScrollView>
+          <View style={styles.continueCont}>
+            <View style={styles.frsttext}>
+              <Text style={{ color: colors.onBackground }}>
+                No product found.{" "}
               </Text>
-            </TouchableOpacity>
+              <TouchableOpacity>
+                <Text
+                  style={styles.secondtext}
+                  onPress={() => navigation.push("Main")}
+                >
+                  Go Shopping
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </Tabs.ScrollView>
       ) : (
         <Tabs.FlatList
           data={formatData(products)}
@@ -78,7 +80,7 @@ const RenderItem = ({
       <Pressable style={itemStyles}>
         <ProductItem
           product={item}
-          navigate={(slug: string) => navigation.navigate("Product", { slug })}
+          navigate={(slug: string) => navigation.push("Product", { slug })}
         />
       </Pressable>
     )
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
   continueCont: {
     justifyContent: "center",
     alignItems: "center",
-    height: "100%",
+    marginTop: 50,
   },
   frsttext: { justifyContent: "center", flexDirection: "row" },
   secondtext: { fontWeight: "500", fontSize: 15, color: "#8a1719" },

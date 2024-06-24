@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Image,
   StyleSheet,
@@ -6,30 +7,177 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { normaliseH, normaliseW } from "../utils/normalize"
 import { Ionicons } from "@expo/vector-icons"
 import { Text, useTheme } from "react-native-paper"
 import moment from "moment"
 import FullScreenImage from "./FullScreenImage"
 import useAuth from "../hooks/useAuth"
+import useProducts from "../hooks/useProducts"
+import { IComment, ICommentReply, IProduct } from "../types/product"
 
-type Props = {}
+type Props = {
+  comment: IComment
+  product: IProduct
+  setProduct: (val: IProduct) => void
+}
 
-const Comment = (props: Props) => {
+const Comment = ({ comment, product, setProduct }: Props) => {
   const { user } = useAuth()
+  const {
+    likeProductComment,
+    unlikeProductComment,
+    replyProductComment,
+    likeProductCommentReply,
+    unlikeProductCommentReply,
+    error,
+  } = useProducts()
   const { colors } = useTheme()
 
-  const [comment, setComment] = useState(comment1)
   const [replyArea, setReplyArea] = useState(false)
   const [reply, setReply] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  //   TODO:
-  const likeComment = async (id: string) => {}
+  const liked = useMemo(
+    () => !!comment.likes.find((like) => like === user?._id),
+    [comment.likes, user?._id]
+  )
 
-  const likeReplyHandler = async (reply: string) => {}
+  const likeComment = async () => {
+    if (!user) return
 
-  const submitReplyHandler = async () => {}
+    if (comment.userId._id === user._id) {
+      // TODO: add notification
+      Alert.alert("You can't like your comment")
+      return
+    }
+
+    setLoading(true)
+
+    if (liked) {
+      const res = await unlikeProductComment(product._id, comment._id)
+
+      if (res) {
+        const newProd = product
+        newProd.comments = newProd.comments?.map((com) =>
+          com._id === res.comment._id ? res.comment : com
+        )
+        setProduct(newProd)
+        // TODO: add notification
+        Alert.alert(res.message)
+      } // TODO: add notification
+      else Alert.alert(error)
+    } else {
+      const res = await likeProductComment(product._id, comment._id)
+
+      if (res) {
+        const newProd = product
+        newProd.comments = newProd.comments?.map((com) =>
+          com._id === res.comment._id ? res.comment : com
+        )
+        setProduct(newProd)
+        // TODO: add notification
+        Alert.alert(res.message)
+      } // TODO: add notification
+      else Alert.alert(error)
+    }
+
+    setLoading(false)
+  }
+
+  const likeReplyHandler = async (reply: ICommentReply) => {
+    if (!user) return
+
+    if (reply.userId._id === user._id) {
+      // TODO: add notification
+      Alert.alert("You can't like your reply")
+      return
+    }
+
+    setLoading(true)
+
+    if (reply.likes.find((x) => x === user._id)) {
+      const res = await unlikeProductCommentReply(
+        product._id,
+        comment._id,
+        reply._id
+      )
+
+      if (res) {
+        const newProd = product
+        newProd.comments = newProd.comments?.map((com) => {
+          if (com._id === comment._id) {
+            const newComment = com
+            com.replies = com.replies.map((rep) =>
+              rep._id === res.reply._id ? res.reply : rep
+            )
+            return newComment
+          }
+          return com
+        })
+        setProduct(newProd)
+        // TODO: add notification
+        Alert.alert(res.message)
+      } // TODO: add notification
+      else Alert.alert(error)
+    } else {
+      const res = await likeProductCommentReply(
+        product._id,
+        comment._id,
+        reply._id
+      )
+
+      if (res) {
+        const newProd = product
+        newProd.comments = newProd.comments?.map((com) => {
+          if (com._id === comment._id) {
+            const newComment = com
+            com.replies = com.replies.map((rep) =>
+              rep._id === res.reply._id ? res.reply : rep
+            )
+            return newComment
+          }
+          return com
+        })
+        setProduct(newProd)
+        // TODO: add notification
+        Alert.alert(res.message)
+      } // TODO: add notification
+      else Alert.alert(error)
+    }
+
+    setLoading(false)
+  }
+
+  const submitReplyHandler = async () => {
+    if (!reply) {
+      // TODO: add notification
+      Alert.alert("Enter a reply")
+      return
+    }
+
+    setLoading(true)
+
+    const res = await replyProductComment(product._id, comment._id, reply)
+
+    if (res) {
+      const newProd = product
+      newProd.comments = newProd.comments?.map((com) => {
+        if (com._id === comment._id) {
+          const newComment = com
+          com.replies = [...com.replies, res.comment]
+          return newComment
+        }
+        return com
+      })
+      setProduct(newProd)
+      setReply("")
+    } // TODO: add notification
+    else Alert.alert(error)
+
+    setLoading(false)
+  }
 
   return (
     <>
@@ -50,22 +198,23 @@ const Comment = (props: Props) => {
           ]}
         ></View>
         <View style={styles.row}>
-          <Image source={{ uri: comment.userImage }} style={styles.image} />
+          <Image source={{ uri: comment.userId.image }} style={styles.image} />
 
           <View style={styles.content}>
             <View style={{ flexDirection: "row" }}>
-              <Text style={[styles.username]}>{comment.name}</Text>
+              <Text style={[styles.username]}>{comment.userId.username}</Text>
               <Text style={styles.time}>
                 {moment(comment.createdAt).fromNow()}
               </Text>
             </View>
             <Text>{comment.comment}</Text>
-            {comment.image ? (
+            {/* TODO: comment image  */}
+            {/* {comment.image ? (
               <FullScreenImage
                 source={comment.image}
                 style={styles.commentImage}
               />
-            ) : null}
+            ) : null} */}
             <View style={styles.row}>
               <Text
                 style={{
@@ -79,7 +228,7 @@ const Comment = (props: Props) => {
               <Text style={{ marginRight: normaliseW(20) }}>
                 {comment.likes.length} Like
               </Text>
-              <TouchableOpacity onPress={() => likeComment(comment._id)}>
+              <TouchableOpacity onPress={() => likeComment()}>
                 {user && comment.likes.find((x) => x === user._id) ? (
                   <Ionicons name={"heart"} size={20} color={colors.primary} />
                 ) : (
@@ -97,11 +246,14 @@ const Comment = (props: Props) => {
       {replyArea && (
         <>
           {comment.replies.map((r) => (
-            <View key={r.id} style={styles.subCont}>
-              <Image source={{ uri: r.userImage }} style={styles.smallImage} />
+            <View key={r._id} style={styles.subCont}>
+              <Image
+                source={{ uri: r.userId.image }}
+                style={styles.smallImage}
+              />
               <View style={styles.content}>
                 <View style={styles.top}>
-                  <Text style={styles.name}>{r.name}</Text>
+                  <Text style={styles.name}>{r.userId.username}</Text>
                   <Text style={styles.time}>
                     {moment(r.createdAt).fromNow()}
                   </Text>
@@ -135,6 +287,7 @@ const Comment = (props: Props) => {
               title="Submit"
               color={colors.primary}
               onPress={submitReplyHandler}
+              disabled={loading}
             />
           </View>
         </>

@@ -40,7 +40,7 @@ const OrderList = ({ navigation }: Props) => {
         <Appbar.Content title="My Orders" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
       <TopNavigation tabs={tabs} />

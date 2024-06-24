@@ -50,21 +50,26 @@ import { baseURL } from "../services/api";
 type Props = ProductNavigationProp;
 
 const Product = ({ navigation, route }: Props) => {
-  const { colors } = useTheme();
-  const { fetchProductBySlug, error, loading } = useProducts();
-  const { cart, addToCart } = useCart();
-  const { getRecently, storeRecently } = useStore();
-  const { user } = useAuth();
+  const { colors } = useTheme()
+  const { fetchProductBySlug, error, likeProduct, unlikeProduct } =
+    useProducts()
+  const { cart, addToCart } = useCart()
+  const { getRecently, storeRecently } = useStore()
+  const { user, addToWishlist, error: wishListError } = useAuth()
 
   const { params } = route;
 
-  const [product, setProduct] = useState<IProduct>();
-  const [recentlyViewed, setRecentlyViewed] = useState<RecentProduct[]>([]);
-  const [productError, setProductError] = useState("");
-  const [size, setSize] = useState("");
-  const [selectedSize, setSelectSize] = useState("");
-  const [quantity1, setQuantity] = useState(1);
-  const [modalProductReview, setModalProductReview] = useState(false);
+  const [product, setProduct] = useState<IProduct>()
+  const [recentlyViewed, setRecentlyViewed] = useState<RecentProduct[]>([])
+  const [productError, setProductError] = useState("")
+  const [size, setSize] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [selectedSize, setSelectSize] = useState("")
+  const [quantity1, setQuantity] = useState(1)
+  const [modalProductReview, setModalProductReview] = useState(false)
+  const [liking, setLiking] = useState(false)
+  const [addToWish, setAddToWish] = useState(false)
+
 
   useEffect(() => {
     const fetchProd = async () => {
@@ -145,17 +150,17 @@ const Product = ({ navigation, route }: Props) => {
   };
 
   const discount = useMemo(() => {
-    if (product)
-      return (
-        ((product.sellingPrice - (product?.costPrice ?? 0)) /
-          product.sellingPrice) *
-        100
-      );
+    if (!product?.costPrice || product.sellingPrice) {
+      return null
+    }
+    if (product.costPrice < product.sellingPrice) {
+      return null
+    }
 
-    return 0;
-  }, []);
-
-  console.log(product);
+    return (
+      ((product.costPrice - product.sellingPrice) / product.costPrice) * 100
+    )
+  }, [product?.costPrice, product?.sellingPrice])
 
   const sizeHandler = (item: string) => {
     if (!product) return;
@@ -184,17 +189,16 @@ const Product = ({ navigation, route }: Props) => {
       Alert.alert("You can't buy your product");
     }
 
-    const data = await fetchProductBySlug(product.slug);
-    if (data?.countInStock ?? 0 < quantity) {
-      Alert.alert("Sorry. Product is out of stock");
-      return;
+    const data = await fetchProductBySlug(product.slug)
+    if (!data?.countInStock || data?.countInStock < quantity) {
+      Alert.alert("Sorry. Product is out of stock")
+      return
     }
 
     addToCart({
       ...product,
-      quantity: 1,
+      quantity,
       selectedSize,
-      deliverySelect: {},
       // selectedColor?: string;
     });
   };
@@ -205,22 +209,87 @@ const Product = ({ navigation, route }: Props) => {
     // try {
     //   await Sharing.shareAsync(product.image, {})
     // } catch (error) {}
-  };
-  const toggleLikes = async () => {};
+  }
+
+  const toggleLikes = async () => {
+    if (!user) {
+      // TODO: add notification
+      Alert.alert("Sign in /  Sign Up to like")
+      return
+    }
+
+    if (!product) return
+
+    if (product.seller._id === user._id) {
+      // TODO: add notification
+      Alert.alert("You can't like your product")
+      return
+    }
+
+    setLiking(true)
+
+    if (liked) {
+      const res = await unlikeProduct(product._id)
+      if (res) {
+        const newProd = product
+        newProd.likes = res.likes
+        setProduct(newProd)
+        // TODO: add notification
+        Alert.alert(res.message)
+      } // TODO: add notification
+      else Alert.alert(error)
+    } else {
+      const res = await likeProduct(product._id)
+      if (res) {
+        const newProd = product
+        newProd.likes = res.likes
+        setProduct(newProd)
+        // TODO: add notification
+        Alert.alert(res.message)
+      } // TODO: add notification
+      else Alert.alert(error)
+    }
+
+    setLiking(false)
+  }
+
   // TODO:
   const addConversation = async (id: string, id2: string) => {};
 
-  const saveItem = async () => {};
+  const saveItem = async () => {
+    if (!product) return
 
-  const liked = useMemo(
-    () => !!product?.likes.find((x) => x === user?._id),
-    [user, product]
-  );
+    if (!user) {
+      // TODO: add notification
+      Alert.alert("Sign In/ Sign Up to add an item to wishlist")
+      return
+    }
 
-  const saved = useMemo(
-    () => !!user?.wishlist.find((x) => x._id === product?._id),
-    [user, product]
-  );
+    if (product.seller._id === user._id) {
+      // TODO: add notification
+      Alert.alert("You can't add your product to wishlist")
+      return
+    }
+
+    setAddToWish(true)
+
+    const res = await addToWishlist(product._id)
+    if (res)
+      // TODO: add notification
+      Alert.alert(res)
+    // TODO: add notification
+    else Alert.alert(wishListError ?? "Failed to add to wishlist")
+
+    setAddToWish(false)
+  }
+
+  const liked = useMemo(() => {
+    return !!product?.likes.find((like) => like === user?._id)
+  }, [product?.likes, user?._id])
+
+  const saved = useMemo(() => {
+    return !!(user?.wishlist && user.wishlist.find((x) => x === product?._id))
+  }, [product, user])
 
   return !product && loading ? (
     <View style={styles.loading}>
@@ -269,6 +338,7 @@ const Product = ({ navigation, route }: Props) => {
             <TouchableOpacity
               onPress={() => toggleLikes()}
               style={styles.loveIcon}
+              disabled={liking}
             >
               <IconButton
                 icon={liked ? "thumb-up" : "thumb-up-outline"}
@@ -471,7 +541,7 @@ const Product = ({ navigation, route }: Props) => {
                   <View>
                     <TouchableOpacity
                       onPress={() =>
-                        navigation.navigate("MyAccount", {
+                        navigation.push("MyAccount", {
                           username: product.seller.username,
                         })
                       }
@@ -507,7 +577,7 @@ const Product = ({ navigation, route }: Props) => {
                 </View>
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("SellerReview", {
+                    navigation.push("SellerReview", {
                       id: product.seller._id,
                     })
                   }
@@ -575,7 +645,7 @@ const Product = ({ navigation, route }: Props) => {
                   (size) =>
                     size.quantity > 0 && (
                       <SizeSelection
-                        key={size._id}
+                        key={size.size}
                         selectedSize={selectedSize}
                         symbol={size.size}
                         sizeHandler={sizeHandler}
@@ -584,7 +654,7 @@ const Product = ({ navigation, route }: Props) => {
                 )}
 
                 <Pressable
-                  onPress={() => navigation.navigate("SizeChart")}
+                  onPress={() => navigation.push("SizeChart")}
                   style={{ marginLeft: 20 }}
                 >
                   <Text
@@ -639,7 +709,7 @@ const Product = ({ navigation, route }: Props) => {
           </CollapsibleSection> */}
 
           <TouchableOpacity
-            onPress={() => navigation.navigate("BuyersProtection")}
+            onPress={() => navigation.push("BuyersProtection")}
             style={[
               styles.protection,
               { backgroundColor: colors.elevation.level3 },
@@ -672,7 +742,7 @@ const Product = ({ navigation, route }: Props) => {
             <Text style={{ marginBottom: 10 }}>
               By buying and{" "}
               <Text
-                onPress={() => navigation.navigate("Sell")}
+                onPress={() => navigation.push("Sell")}
                 style={{
                   textDecorationLine: "underline",
                   color: colors.secondary,
@@ -740,7 +810,7 @@ const Product = ({ navigation, route }: Props) => {
             </Text>
           </View>
         </View>
-
+        <Text style={styles.recentText}>Recently Viewed</Text>
         <View style={styles.section}>
           <FlatList
             data={recentlyViewed}
@@ -753,7 +823,7 @@ const Product = ({ navigation, route }: Props) => {
           />
         </View>
 
-        <CommentSection product={product} />
+        <CommentSection setProduct={setProduct} product={product} />
       </ScrollView>
       <View style={styles.header}>
         <TouchableOpacity
@@ -785,7 +855,7 @@ const Product = ({ navigation, route }: Props) => {
               backgroundColor: colors.elevation.level2,
             },
           ]}
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         >
           <IconButton icon="cart" />
 
@@ -820,6 +890,7 @@ const Product = ({ navigation, route }: Props) => {
           <TouchableOpacity
             onPress={saveItem}
             style={[styles.saved, { backgroundColor: colors.onBackground }]}
+            disabled={addToWish}
           >
             <Ionicons
               size={25}
@@ -861,7 +932,7 @@ const RenderItem = ({
   return (
     <View style={itemStyles}>
       <ProductItem
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
         product={item.product}
       />
     </View>
@@ -913,6 +984,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     textTransform: "capitalize",
     marginRight: normaliseW(10),
+  },
+  recentText: {
+    fontSize: 20,
+    marginTop: 20,
+    marginBottom: 10,
+    marginHorizontal: 20,
+    fontWeight: "bold",
   },
   ratingText: { fontSize: 15, marginHorizontal: 5, fontWeight: "bold" },
   ratingCount: { color: "grey" },

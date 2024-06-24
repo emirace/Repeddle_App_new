@@ -6,19 +6,20 @@ import {
   FlatList,
   ActivityIndicator,
   Animated,
-} from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { Appbar, IconButton, Searchbar, useTheme } from "react-native-paper";
-import useThemeContext from "../hooks/useTheme";
-import { MainScreenNavigationProp } from "../types/navigation/stack";
-import { TopSellers } from "../types/user";
-import HomeContents from "../section/home/HomeContents";
-import { IProduct } from "../types/product";
-import homeStyles from "../section/home/homeStyles";
-import ProductItem from "../components/ProductItem";
-import useProducts from "../hooks/useProducts";
-import useUser from "../hooks/useUser";
-import SearchBar from "../components/SearchBar";
+} from "react-native"
+import React, { useEffect, useRef, useState } from "react"
+import { Appbar, IconButton, Searchbar, useTheme } from "react-native-paper"
+import useThemeContext from "../hooks/useTheme"
+import { MainScreenNavigationProp } from "../types/navigation/stack"
+import { TopSellers } from "../types/user"
+import HomeContents from "../section/home/HomeContents"
+import { IProduct } from "../types/product"
+import homeStyles from "../section/home/homeStyles"
+import ProductItem from "../components/ProductItem"
+import useProducts from "../hooks/useProducts"
+import useUser from "../hooks/useUser"
+import SearchBar from "../components/SearchBar"
+import Announcement from "../components/Announcement"
 
 const WIDTH = Dimensions.get("screen").width;
 
@@ -75,8 +76,8 @@ const Home = ({ navigation }: any) => {
   };
 
   const handleSearch = (val: string) => {
-    navigation.navigate("Search", { query: val });
-  };
+    navigation.push("Search", { query: val })
+  }
 
   const animatedValue = useRef(new Animated.Value(0)).current;
 
@@ -157,9 +158,25 @@ const Home = ({ navigation }: any) => {
     }),
   };
 
+  // const headerAnimation = {
+  //   transform: [
+  //     {
+  //       translateY: animatedValue.interpolate({
+  //         inputRange: [0, 50],
+  //         outputRange: [0, -20],
+  //         extrapolate: "clamp",
+  //       }),
+  //     },
+  //   ],
+  // }
+
   return (
     <View>
-      <View
+      <Animated.View>
+        <Announcement navigation={navigation} />
+      </Animated.View>
+      <Appbar.Header
+        mode="small"
         style={{
           position: "absolute",
           zIndex: 20,
@@ -173,6 +190,28 @@ const Home = ({ navigation }: any) => {
             justifyContent: "space-between",
             marginBottom: 20,
           }}
+          style={[
+            {
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 60,
+              marginLeft: 10,
+              height: 60,
+              resizeMode: "contain",
+            },
+            logo2Animation,
+          ]}
+        />
+        <IconButton icon="cart" onPress={() => navigation.push("Cart")} />
+      </Appbar.Header>
+      <View style={styles.content}>
+        <Animated.View
+          style={[
+            styles.bottomHeader,
+            searchAnimation,
+            { backgroundColor: "transparent" },
+          ]}
         >
           <Animated.Image
             source={{
@@ -274,7 +313,7 @@ const RenderItem = ({
   return (
     <View style={itemStyles}>
       <ProductItem
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
         product={item}
       />
     </View>
