@@ -4,50 +4,55 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { useMemo, useState } from "react"
-import { IProduct } from "../types/product"
-import { FontAwesome } from "@expo/vector-icons"
-import { IUser } from "../types/user"
-import { currency } from "../utils/common"
-import { lightTheme } from "../constant/theme"
-import { Text } from "react-native-paper"
+} from "react-native";
+import React, { useMemo, useState } from "react";
+import { IProduct } from "../types/product";
+import { FontAwesome } from "@expo/vector-icons";
+import { IUser } from "../types/user";
+import { currency } from "../utils/common";
+import { lightTheme } from "../constant/theme";
+import { Text } from "react-native-paper";
+import { baseURL } from "../services/api";
 
 type Props = {
-  navigate: (slug: string) => void
-  product: IProduct
-}
+  navigate: (slug: string) => void;
+  product: IProduct;
+};
 
 const ProductItem = ({ navigate, product }: Props) => {
-  const [user, setUser] = useState<IUser | null>(null)
+  const [user, setUser] = useState<IUser | null>(null);
 
   const liked = useMemo(
     () => user && product.likes.find((x) => x === user._id),
     [product, user]
-  )
+  );
   const saved = useMemo(
     () => user && user.wishlist.find((x) => x._id === product._id),
     [product, user]
-  )
+  );
 
   const discount = () => {
+    if (product.costPrice === product.sellingPrice) {
+      return null;
+    }
     return (
-      ((product.sellingPrice - (product.costPrice ?? 0)) /
-        product.sellingPrice) *
-      100
-    )
-  }
+      ((product.costPrice - product.sellingPrice) / product.costPrice) * 100
+    );
+  };
 
-  const toggleLikes = () => {}
+  const toggleLikes = () => {};
 
-  const saveItem = () => {}
+  const saveItem = () => {};
 
   return (
     <Pressable
       onPress={() => navigate(product.slug)}
       style={[styles.container]}
     >
-      <Image source={{ uri: product.images[0] }} style={styles.image} />
+      <Image
+        source={{ uri: baseURL + product.images[0] }}
+        style={styles.image}
+      />
       <TouchableOpacity style={styles.likeButton} onPress={toggleLikes}>
         <FontAwesome
           name={liked ? "thumbs-up" : "thumbs-o-up"}
@@ -67,13 +72,11 @@ const ProductItem = ({ navigate, product }: Props) => {
           <View style={[styles.shades, { backgroundColor: "grey" }]}>
             <Text style={styles.shadesText}>SOLD</Text>
           </View>
-        ) : (
+        ) : discount() ? (
           <View style={styles.shades}>
-            {discount() ? (
-              <Text style={styles.shadesText}>{discount()}% Discount</Text>
-            ) : null}
+            <Text style={styles.shadesText}>{discount()}% OFF</Text>
           </View>
-        )}
+        ) : null}
         <Text numberOfLines={1} style={styles.name}>
           {product.name}
         </Text>
@@ -93,10 +96,10 @@ const ProductItem = ({ navigate, product }: Props) => {
         </View>
       </View>
     </Pressable>
-  )
-}
+  );
+};
 
-export default ProductItem
+export default ProductItem;
 
 const styles = StyleSheet.create({
   container: {
@@ -159,4 +162,4 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 11,
   },
-})
+});

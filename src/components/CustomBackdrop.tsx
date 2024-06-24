@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
-import { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
+import React, { useMemo } from "react";
+import { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import Animated, {
   Extrapolation,
   interpolate,
   useAnimatedStyle,
-} from 'react-native-reanimated';
-import { useTheme } from 'react-native-paper';
+} from "react-native-reanimated";
+import { useTheme } from "react-native-paper";
 
 const CustomBackdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => {
   const { colors } = useTheme();
@@ -24,7 +24,7 @@ const CustomBackdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => {
     () => [
       style,
       {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
       },
       containerAnimatedStyle,
     ],
