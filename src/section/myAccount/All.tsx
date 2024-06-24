@@ -27,20 +27,22 @@ const All = ({ navigation, products }: Props) => {
   }
 
   return !products.length ? (
-    <View style={styles.continueCont}>
-      <View style={styles.frsttext}>
-        <Text
-          style={{ color: colors.onBackground }}
-          onPress={() => navigation.navigate("Main")}
-        >
-          No product found.{" "}
-        </Text>
+    <Tabs.ScrollView>
+      <View style={styles.continueCont}>
+        <View style={styles.frsttext}>
+          <Text
+            style={{ color: colors.onBackground }}
+            onPress={() => navigation.push("Main")}
+          >
+            No product found.{" "}
+          </Text>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Sell")}>
-          <Text style={styles.secondtext}>Add product</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.push("Sell")}>
+            <Text style={styles.secondtext}>Add product</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </Tabs.ScrollView>
   ) : (
     <Tabs.FlatList
       data={formatData(products)}
@@ -63,7 +65,7 @@ const RenderHeader = ({ navigation }: HeaderProps) => {
   return (
     <TouchableOpacity
       style={styles.buttonContainer}
-      onPress={() => navigation.navigate("Sell")}
+      onPress={() => navigation.push("Sell")}
     >
       <Text style={styles.buttonText}>Add Product</Text>
     </TouchableOpacity>
@@ -84,7 +86,7 @@ const RenderItem = ({
   return (
     <View style={itemStyles}>
       <ProductItem
-        navigate={(slug: string) => navigation.navigate("Product", { slug })}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
         product={item}
       />
     </View>
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
   continueCont: {
     justifyContent: "center",
     alignItems: "center",
-    height: "100%",
+    marginTop: 50,
   },
   frsttext: { justifyContent: "center", flexDirection: "row" },
   secondtext: { fontWeight: "500", fontSize: 15, color: "#8a1719" },

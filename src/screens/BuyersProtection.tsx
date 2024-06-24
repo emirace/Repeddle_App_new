@@ -19,10 +19,10 @@ const BuyersProtection = ({ navigation }: Props) => {
         }}
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
+        <Appbar.Content title="Buyers Protection" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
       <View style={styles.body}>
@@ -34,12 +34,11 @@ const BuyersProtection = ({ navigation }: Props) => {
           arrive as a result of seller not sending your product or seller’s
           negligent (and not yours), we will refund you in full including
           delivery fee, otherwise all sale is final. Please have a look at our
-          refund policy
+          refund policy{" "}
           <Text
             style={{ color: colors.primary }}
             onPress={() => goto("https://repeddle.com/returns")}
           >
-            {" "}
             here.
           </Text>{" "}
           Any payment made outside our App or Website will not be covered by the

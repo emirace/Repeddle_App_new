@@ -17,31 +17,34 @@ const Sold = ({ navigation, products }: Props) => {
   const { colors } = useTheme()
 
   const formatData = (data: IProduct[]) => {
-    const totalRows = Math.floor(data.length / numColumns)
-    let totalLastRow = data.length - totalRows * numColumns
-    if (totalLastRow !== 0 && totalLastRow !== numColumns) {
+    const isEven = data.length % numColumns === 0
+
+    if (!isEven) {
       const empty = { ...data[0], empty: true }
       data.push(empty)
     }
+
     return data
   }
 
   return (
-    <View>
+    <>
       {!products.length ? (
-        <View style={styles.continueCont}>
-          <View style={styles.frsttext}>
-            <Text
-              style={{ color: colors.onBackground }}
-              onPress={() => navigation.navigate("Main")}
-            >
-              No product found.{" "}
-            </Text>
-            <TouchableOpacity>
-              <Text style={styles.secondtext}>Go Shopping</Text>
-            </TouchableOpacity>
+        <Tabs.ScrollView>
+          <View style={styles.continueCont}>
+            <View style={styles.frsttext}>
+              <Text
+                style={{ color: colors.onBackground }}
+                onPress={() => navigation.push("Main")}
+              >
+                No product found.{" "}
+              </Text>
+              <TouchableOpacity>
+                <Text style={styles.secondtext}>Go Shopping</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </Tabs.ScrollView>
       ) : (
         <Tabs.FlatList
           data={formatData(products)}
@@ -53,7 +56,7 @@ const Sold = ({ navigation, products }: Props) => {
           showsVerticalScrollIndicator={false}
         />
       )}
-    </View>
+    </>
   )
 }
 
@@ -69,14 +72,12 @@ const RenderItem = ({
     return <View style={[itemStyles, invisible]} />
   }
   return (
-    item.sold && (
-      <Pressable style={itemStyles}>
-        <ProductItem
-          product={item}
-          navigate={(slug: string) => navigation.navigate("Product", { slug })}
-        />
-      </Pressable>
-    )
+    <Pressable style={itemStyles}>
+      <ProductItem
+        product={item}
+        navigate={(slug: string) => navigation.push("Product", { slug })}
+      />
+    </Pressable>
   )
 }
 
@@ -104,6 +105,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: "100%",
+    marginTop: 50,
   },
   frsttext: { justifyContent: "center", flexDirection: "row" },
   secondtext: { fontWeight: "500", fontSize: 15, color: "#8a1719" },

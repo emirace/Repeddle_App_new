@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IUser, UpdateUser } from "../types/user"
+import { IUser, UpdateUser, Wishlist } from "../types/user"
 import { getBackendErrorMessage } from "../utils/error"
 import api from "./api"
-import * as SecureStore from "expo-secure-store"
 
 export async function sendVerifyEmailService(userData: {
   email: string
@@ -31,6 +30,7 @@ export async function forgetPasswordService(userData: {
   email: string
 }): Promise<any> {
   try {
+    console.log(userData, "body")
     const data = await api.post("/users/forgot-password", userData)
 
     if (!data.status) {
@@ -56,6 +56,7 @@ export async function verifyEmailService(tokenData: {
 }): Promise<any> {
   try {
     const data = await api.get(`/users/verify-email/${tokenData.token}`)
+    console.log(data)
 
     if (!data.status) {
       const errorMessage = getBackendErrorMessage(data.data)
@@ -115,8 +116,9 @@ export async function loginUser(credentials: {
       // Handle login error, e.g., display an error message to the user
       throw new Error("Login failed: " + getBackendErrorMessage(data.data))
     }
+    console.log(data.token)
 
-    await SecureStore.setItemAsync("authToken", data.token)
+    localStorage.setItem("authToken", data.token)
 
     return data.token
   } catch (error) {
@@ -138,8 +140,8 @@ export async function getUserService(): Promise<IUser> {
       throw new Error("Login failed: " + getBackendErrorMessage(data.data))
     }
 
-    await SecureStore.setItemAsync("email", data.user.email)
-    await SecureStore.setItemAsync("username", data.user.username)
+    localStorage.setItem("email", data.user.email)
+    localStorage.setItem("username", data.user.username)
     return data.user
   } catch (error) {
     // Handle network errors or other exceptions
@@ -149,10 +151,6 @@ export async function getUserService(): Promise<IUser> {
     // Re-throw the error to propagate it up the call stack if needed
     throw getBackendErrorMessage(error)
   }
-}
-
-export async function getAllUserService(): Promise<IUser[]> {
-  return []
 }
 
 export async function getSuggestUsernameService(body: {
@@ -190,10 +188,10 @@ export async function unFollowUserService(userId: string): Promise<string> {
       `/users/unfollow/${userId}`
     )
 
-    if (!data.status) {
-      // Handle unfollow user error, e.g., display an error message to the user
-      throw new Error("unFollow user failed: " + getBackendErrorMessage(data))
-    }
+    // if (!data.status) {
+    //   // Handle unfollow user error, e.g., display an error message to the user
+    //   throw new Error("unFollow user failed: " + getBackendErrorMessage(data));
+    // }
 
     return data.message
   } catch (error) {
@@ -230,8 +228,9 @@ export async function followUserService(userId: string): Promise<string> {
 
 export async function updateUserService(userData: UpdateUser): Promise<IUser> {
   try {
-    const response: any = await api.put("/users/update-profile", userData)
+    const response: any = await api.put("/users/profile", userData)
 
+    console.log(response)
     if (!response.status) {
       // Handle login error, e.g., display an error message to the user
       throw new Error("Update failed: " + getBackendErrorMessage(response.data))
@@ -257,7 +256,7 @@ export async function logoutUser(): Promise<void> {
       throw new Error("Logout failed: " + getBackendErrorMessage(data.data))
     }
 
-    await SecureStore.deleteItemAsync("authToken")
+    localStorage.removeItem("authToken")
   } catch (error) {
     // Handle network errors or other exceptions
     // You can log the error or perform other error-handling actions
@@ -294,7 +293,7 @@ export async function resetUserPasswordService(
   token: string
 ): Promise<void | boolean> {
   try {
-    const { data } = await api.post(`/users/reset-password/${token}`, {
+    const data = await api.post(`/users/reset-password/${token}`, {
       password,
     })
 
@@ -315,4 +314,76 @@ export async function resetUserPasswordService(
   }
 }
 
+export async function addToWishlistService(productId: string) {
+  try {
+    const data: {
+      status: boolean
+      message: string
+      wishlist: IUser["wishlist"]
+    } = await api.post(`/users/wishlist`, {
+      productId,
+    })
+
+    if (!data.status) {
+      // Handle add to wishlist error, e.g., display an error message to the user
+      throw new Error("add to wishlist failed: " + getBackendErrorMessage(data))
+    }
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("add to wishlist error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export async function removeFromWishlistService(productId: string) {
+  try {
+    const data: {
+      status: boolean
+      message: string
+      wishlist: IUser["wishlist"]
+    } = await api.delete(`/users/wishlist/${productId}`)
+
+    if (!data.status) {
+      // Handle add to wishlist error, e.g., display an error message to the user
+      throw new Error("add to wishlist failed: " + getBackendErrorMessage(data))
+    }
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("add to wishlist error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
 // You can add more authentication-related functions here, such as checking the user's authentication status, resetting passwords, etc.
+
+export async function getWishlistService() {
+  try {
+    const data: { wishlist: Wishlist[]; status: boolean } = await api.get(
+      `/users/users/wishlist`
+    )
+
+    if (!data.status) {
+      // Handle all users wishlist error, e.g., display an error message to the user
+      throw new Error(
+        "Get all wishlist failed: " + getBackendErrorMessage(data)
+      )
+    }
+
+    return data.wishlist
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Get user wishlist error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}

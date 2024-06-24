@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -28,8 +29,8 @@ type Props = CheckoutNavigationProp
 
 const Checkout = ({ navigation }: Props) => {
   const { colors } = useTheme()
-  const { cart, subtotal, total } = useCart()
-  const { createOrder } = useOrder()
+  const { cart, subtotal, total, paymentMethod, clearCart } = useCart()
+  const { createOrder, error } = useOrder()
   const { user } = useAuth()
 
   const [showDelivery, setShowDelivery] = useState("")
@@ -46,67 +47,11 @@ const Checkout = ({ navigation }: Props) => {
   const handleSubmit = () => {}
 
   const onApprove = async (response: RedirectParams) => {
-    const order1 = await placeOrderHandler({ paymentMethod: "flutterwave" })
+    const order1 = await placeOrderHandler({
+      paymentMethod: "flutterwave",
+      transId: response.transaction_id ?? response.tx_ref,
+    })
     if (order1) {
-      //   try {
-      //     dispatch({ type: "PAY_REQUEST" })
-      //     const { data } = await axios.put(
-      //       `${baseUrl}/api/orders/${region}/${order1.order._id}/pay`,
-      //       response,
-      //       { headers: { authorization: `Bearer ${userInfo.token}` } }
-      //     )
-      //     dispatch({ type: "PAY_SUCCESS", payload: data })
-      //     order1.order.seller.map(async (x) => {
-      //       await axios.put(`${baseUrl}api/bestsellers/${region}/${x}`)
-      //     })
-      //     ctxDispatch({
-      //       type: "SHOW_TOAST",
-      //       payload: {
-      //         message: "Order is paid",
-      //         showStatus: true,
-      //         state1: "visible1 success",
-      //       },
-      //     })
-      //     removeValue("cartItems")
-      //     ctxDispatch({ type: "CART_CLEAR" })
-      //     if (userInfo) {
-      //       await axios.delete(`${baseUrl}/api/cartItems/`, {
-      //         headers: {
-      //           Authorization: `Bearer ${userInfo.token}`,
-      //         },
-      //       })
-      //     }
-      //     order1.order.seller.map((s) => {
-      //       socket.emit("post_data", {
-      //         userId: s,
-      //         itemId: order1.order._id,
-      //         notifyType: "sold",
-      //         msg: `${userInfo.username} ordered your product`,
-      //         link: `/order/${order1.order._id}`,
-      //         userImage: userInfo.image,
-      //         mobile: { path: "OrderScreen", id: order1.order._id },
-      //       })
-      //       const message = {
-      //         title: "Sold Order",
-      //         body: `${userInfo.username} ordered your product`,
-      //         data: {},
-      //       }
-      //       sendPushNotification(message, s)
-      //     })
-      //     navigation.navigate("OrderDetails", { id: order1.order._id })
-      //     // navigate(`/order/${data.order._id}`);
-      //   } catch (err) {
-      //     dispatch({ type: "PAY_FAIL", payload: getError(err) })
-      //     console.log(err, getError(err))
-      //     ctxDispatch({
-      //       type: "SHOW_TOAST",
-      //       payload: {
-      //         message: `${getError(err)}`,
-      //         showStatus: true,
-      //         state1: "visible1 error",
-      //       },
-      //     })
-      //   }
     } else {
       console.log("no order found")
     }
@@ -126,54 +71,26 @@ const Checkout = ({ navigation }: Props) => {
 
   const placeOrderHandler = async ({
     paymentMethod,
+    transId,
   }: {
     paymentMethod: string
+    transId: string
   }) => {
-    const res = createOrder({
+    const res = await createOrder({
       items: cart,
       paymentMethod,
       totalAmount: total,
-      transactionId: "",
+      transactionId: transId,
     })
 
-    // try {
-    //   dispatch({ type: "CREATE_REQUEST" })
-    //   const { data } = await axios.post(
-    //     `${baseUrl}/api/orders/${region}`,
-    //     {
-    //       orderItems: cart.cartItems,
-    //       paymentMethod: cart.paymentMethod,
-    //       itemsPrice: cart.itemsPrice,
-    //       shippingPrice: cart.shippingPrice,
-    //       taxPrice: cart.taxPrice,
-    //       totalPrice: cart.totalPrice,
-    //       deliveryMethod: cart.deliveryMethod,
-    //     },
-    //     { headers: { authorization: `Bearer ${userInfo.token}` } }
-    //   )
-    //   dispatch({ type: "CREATE_SUCCESS", payload: data })
-    //   cart.cartItems.map(async (x) => {
-    //     await axios.put(
-    //       `${baseUrl}/api/products/${x._id}/unsave`,
-    //       {},
-    //       {
-    //         headers: { Authorization: `Bearer ${userInfo.token}` },
-    //       }
-    //     )
-    //   })
-    //   return data
-    // } catch (err) {
-    //   dispatch({ type: "CREATE_FAIL" })
-    //   ctxDispatch({
-    //     type: "SHOW_TOAST",
-    //     payload: {
-    //       message: getError(err),
-    //       showStatus: true,
-    //       state1: "visible1 error",
-    //     },
-    //   })
-    //   console.log(getError(err))
-    // }
+    if (res) {
+      // TODO: add notification
+      Alert.alert(res.message)
+      return res.order
+    } else {
+      // TODO: add notification
+      Alert.alert(error)
+    }
   }
 
   return (
@@ -246,34 +163,35 @@ const Checkout = ({ navigation }: Props) => {
               </View>
               {showDelivery === item._id ? (
                 <View style={styles.delivery}>
-                  {Object.entries(item.deliverySelect).map(([key, value]) =>
-                    key === "total" ? null : (
-                      <View style={{ flexDirection: "row" }} key={key}>
-                        <Text
-                          style={{
-                            flex: 3,
-                            textTransform: "capitalize",
-                            fontSize: 13,
-                          }}
-                        >
-                          {key}:
-                        </Text>
-                        {key === "cost" ? (
-                          <Text style={{ flex: 5, fontSize: 13 }}>
-                            {currencyVal}
-                            {value}
+                  {item.deliverySelect &&
+                    Object.entries(item.deliverySelect).map(([key, value]) =>
+                      key === "total" ? null : (
+                        <View style={{ flexDirection: "row" }} key={key}>
+                          <Text
+                            style={{
+                              flex: 3,
+                              textTransform: "capitalize",
+                              fontSize: 13,
+                            }}
+                          >
+                            {key}:
                           </Text>
-                        ) : (
-                          <Text style={{ flex: 5 }}>{value}</Text>
-                        )}
-                      </View>
-                    )
-                  )}
+                          {key === "cost" ? (
+                            <Text style={{ flex: 5, fontSize: 13 }}>
+                              {currencyVal}
+                              {value}
+                            </Text>
+                          ) : (
+                            <Text style={{ flex: 5 }}>{value}</Text>
+                          )}
+                        </View>
+                      )
+                    )}
                 </View>
               ) : null}
             </View>
           ))}
-          <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+          <TouchableOpacity onPress={() => navigation.push("Cart")}>
             <Text style={[styles.edit, { color: colors.secondary }]}>Edit</Text>
           </TouchableOpacity>
         </View>
@@ -283,10 +201,8 @@ const Checkout = ({ navigation }: Props) => {
           <Text style={[styles.sectionTitle, { color: colors.onBackground }]}>
             Payment method
           </Text>
-          <Text>{cart.paymentMethod}</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("PaymentMethod")}
-          >
+          <Text>{paymentMethod}</Text>
+          <TouchableOpacity onPress={() => navigation.push("PaymentMethod")}>
             <Text style={[styles.edit, { color: colors.secondary }]}>Edit</Text>
           </TouchableOpacity>
         </View>
@@ -403,7 +319,7 @@ const Checkout = ({ navigation }: Props) => {
 
         {loadingPay ? (
           <ActivityIndicator size={"large"} color={colors.primary} />
-        ) : cart.paymentMethod === "Wallet" ? (
+        ) : paymentMethod === "Wallet" ? (
           <TouchableOpacity
             style={[
               styles.button,
@@ -415,7 +331,7 @@ const Checkout = ({ navigation }: Props) => {
               Proceed to Payment
             </Text>
           </TouchableOpacity>
-        ) : cart.paymentMethod === "Credit/Debit card" ? (
+        ) : paymentMethod === "Card" ? (
           region() !== "NGN" ? (
             <Payfast placeOrderHandler={placeOrderHandler} totalPrice={total} />
           ) : (

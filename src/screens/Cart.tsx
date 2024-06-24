@@ -22,6 +22,7 @@ import QuantitySelector from "../components/QuantitySelector"
 import DeliveryOptions from "../components/DeliveryOptions"
 import CustomAlert from "../components/CustomAlert"
 import { normaliseW } from "../utils/normalize"
+import { baseURL } from "../services/api"
 
 type Props = CartNavigationProp
 
@@ -36,7 +37,7 @@ const Cart = ({ navigation }: Props) => {
     if (!user) {
       // TODO: show toast
       Alert.alert("Login to continue")
-      navigation.navigate("SignIn")
+      navigation.push("Auth")
       return
     }
     if (!checkDeliverySelect(cart)) {
@@ -49,9 +50,9 @@ const Cart = ({ navigation }: Props) => {
       Alert.alert("Cart is empty")
     } else {
       if (user.isVerifiedEmail) {
-        navigation.navigate("PaymentMethod")
+        navigation.push("PaymentMethod")
       } else {
-        navigation.navigate("PaymentMethod")
+        navigation.push("PaymentMethod")
       }
     }
   }
@@ -68,10 +69,10 @@ const Cart = ({ navigation }: Props) => {
         }}
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
+        <Appbar.Content title="Cart" />
         <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          icon="heart"
+          onPress={() => navigation.push("Wishlist")}
         />
       </Appbar.Header>
       <Text style={styles.description}>
@@ -83,7 +84,7 @@ const Cart = ({ navigation }: Props) => {
         <View style={styles.continueCont}>
           <View style={styles.frsttext}>
             <Text>Cart is empty.</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Main")}>
+            <TouchableOpacity onPress={() => navigation.push("Main")}>
               <Text
                 style={[styles.goShoppingText, { color: colors.secondary }]}
               >
@@ -186,7 +187,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
         />
         <Text
           onPress={() =>
-            navigation.navigate("MyAccount", { username: item.seller.username })
+            navigation.push("MyAccount", { username: item.seller.username })
           }
           style={{ color: colors.secondary }}
         >
@@ -194,7 +195,10 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
         </Text>
       </View>
       <View style={[styles.item, { backgroundColor: colors.elevation.level2 }]}>
-        <Image source={{ uri: item.images[0] }} style={styles.image} />
+        <Image
+          source={{ uri: baseURL + item.images[0] }}
+          style={styles.image}
+        />
         <View style={{ flex: 1, paddingLeft: 15 }}>
           <View style={styles.subRow}>
             <View style={styles.detail}>
@@ -227,7 +231,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
               style={{ marginLeft: 20 }}
               onPress={() => setModalVisible(true)}
             >
-              {item.deliverySelect["delivery Option"] ? (
+              {item?.deliverySelect?.["delivery Option"] ? (
                 <Text style={{ fontSize: 14, color: colors.secondary }}>
                   {item.deliverySelect["delivery Option"]}
                 </Text>

@@ -128,7 +128,7 @@ const ProductList = ({ navigation }: Props) => {
 
       <TouchableOpacity
         style={styles.buttonContainer}
-        onPress={() => navigation.navigate("Sell")}
+        onPress={() => navigation.push("Sell")}
       >
         <Text style={styles.buttonText}>Add Product</Text>
       </TouchableOpacity>
@@ -175,7 +175,7 @@ const RenderItem = ({ item, navigation, confirmDelete }: RenderItemProps) => {
   return (
     <View style={styles.itemContainer}>
       <Pressable
-        onPress={() => navigation.navigate("Product", { slug: item.slug })}
+        onPress={() => navigation.push("Product", { slug: item.slug })}
         style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
       >
         <Image style={styles.itemImage} source={{ uri: item.images[0] }} />
@@ -190,13 +190,13 @@ const RenderItem = ({ item, navigation, confirmDelete }: RenderItemProps) => {
       </Pressable>
       <TouchableOpacity
         style={styles.iconButton}
-        onPress={() => navigation.navigate("Product", { slug: item.slug })}
+        onPress={() => navigation.push("Product", { slug: item.slug })}
       >
         <Ionicons name="eye" size={20} color={colors.onBackground} />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.iconButton}
-        onPress={() => navigation.navigate("EditProduct", { id: item.slug })}
+        onPress={() => navigation.push("EditProduct", { id: item.slug })}
       >
         <Ionicons name="create" size={20} color={colors.primary} />
       </TouchableOpacity>
@@ -225,7 +225,7 @@ const RenderProductItem = ({
   return (
     <TouchableOpacity
       style={[styles.productItem, { backgroundColor }]}
-      onPress={() => navigation.navigate("Product", { slug: item.slug })}
+      onPress={() => navigation.push("Product", { slug: item.slug })}
     >
       <Text>{item.name}</Text>
       <Text>{item.sellingPrice}</Text>

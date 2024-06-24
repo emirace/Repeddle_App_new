@@ -135,7 +135,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
         <Appbar.Content title="My Orders" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
 
@@ -193,7 +193,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                 ) > 3 && (
                   <Pressable
                     onPress={() =>
-                      navigation.navigate("ReturnForm", {
+                      navigation.push("ReturnForm", {
                         orderItems: order.items,
                         orderId: id,
                         waybillNumber,
@@ -430,7 +430,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                       <View style={styles.actionButton}>
                         <Pressable
                           onPress={() => {
-                            navigation.navigate("Product", {
+                            navigation.push("Product", {
                               slug: orderitem.product.slug,
                             })
                           }}
@@ -578,7 +578,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                             <View>
                               <Pressable
                                 onPress={() =>
-                                  navigation.navigate("MyAccount", {
+                                  navigation.push("MyAccount", {
                                     username: order.buyer.username,
                                   })
                                 }
@@ -604,7 +604,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                               <View>
                                 <Pressable
                                   onPress={() =>
-                                    navigation.navigate("MyAccount", {
+                                    navigation.push("MyAccount", {
                                       username: orderitem.seller.username,
                                     })
                                   }
@@ -768,7 +768,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                       },
                                     ]}
                                     onPress={() => {
-                                      navigation.navigate("ReturnForm", {
+                                      navigation.push("ReturnForm", {
                                         orderItems: order.items,
                                         // deliveryMethod: order.deliveryMethod,
                                         orderId: id,
@@ -838,7 +838,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           { backgroundColor: colors.primary },
                         ]}
                         onPress={() => {
-                          navigation.navigate("Product", {
+                          navigation.push("Product", {
                             slug: orderitem.product.slug,
                           })
                         }}
@@ -938,7 +938,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           <View>
                             <Pressable
                               onPress={() =>
-                                navigation.navigate("MyAccount", {
+                                navigation.push("MyAccount", {
                                   username: orderitem.seller.username,
                                 })
                               }
@@ -965,7 +965,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                             <View>
                               <Pressable
                                 onPress={() =>
-                                  navigation.navigate("MyAccount", {
+                                  navigation.push("MyAccount", {
                                     username: order.buyer.username,
                                   })
                                 }

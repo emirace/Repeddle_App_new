@@ -55,7 +55,7 @@ const Transaction = ({ navigation }: Props) => {
         <Appbar.Content title="Transactions" />
         <Appbar.Action
           icon="cart-outline"
-          onPress={() => navigation.navigate("Cart")}
+          onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
       {loading ? (
@@ -94,7 +94,7 @@ const RenderItem = ({ item }: { item: ITransaction }) => {
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() =>
-        navigation.navigate("TransactionDetail", { transaction: item })
+        navigation.push("TransactionDetail", { transaction: item })
       }
     >
       {item.type === "Deposit" ? (

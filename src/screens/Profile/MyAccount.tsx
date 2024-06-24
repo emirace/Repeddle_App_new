@@ -20,11 +20,35 @@ import Selling from "../../section/myAccount/Selling"
 import Liked from "../../section/myAccount/Liked"
 import Saved from "../../section/myAccount/Saved"
 import Sold from "../../section/myAccount/Sold"
-import { Tabs } from "react-native-collapsible-tab-view"
+import {
+  Tabs,
+  MaterialTabBar,
+  TabBarProps,
+} from "react-native-collapsible-tab-view"
 import RebundlePoster from "../../components/RebundlePoster"
 import Rating from "../../components/Rating"
+import { baseURL } from "../../services/api"
+import { lightTheme } from "../../constant/theme"
 
 type Props = MyAccountNavigationProp
+
+const TabBar = (props: TabBarProps<string>) => {
+  const { colors } = useTheme()
+  return (
+    <MaterialTabBar
+      {...props}
+      indicatorStyle={{ backgroundColor: lightTheme.colors.primary }}
+      // style={{ backgroundColor: "pink" }}
+      labelStyle={{
+        textTransform: "capitalize",
+        fontWeight: "bold",
+        color: colors.onBackground,
+      }}
+      activeColor={colors.onBackground}
+      inactiveColor={colors.onBackground}
+    />
+  )
+}
 
 const MyAccount = ({ navigation, route }: Props) => {
   const { colors } = useTheme()
@@ -76,13 +100,16 @@ const MyAccount = ({ navigation, route }: Props) => {
         }}
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title={userData.user.username} />
+        <Appbar.Content
+          title={userData.user.username}
+          titleStyle={{ textTransform: "capitalize" }}
+        />
         {userInfo?._id === userData.user._id && (
           <Appbar.Action
             icon={({ color, size }) => (
               <Feather name="edit" size={size} color={color} />
             )}
-            onPress={() => navigation.navigate("Profile")}
+            onPress={() => navigation.push("Profile")}
           />
         )}
       </Appbar.Header>
@@ -99,6 +126,7 @@ const MyAccount = ({ navigation, route }: Props) => {
             userInfo={userInfo}
           />
         )}
+        renderTabBar={(props) => <TabBar {...props} />}
       >
         <Tabs.Tab name="All">
           <All products={userData.products.all} navigation={navigation} />
@@ -115,10 +143,12 @@ const MyAccount = ({ navigation, route }: Props) => {
         <Tabs.Tab name="Liked">
           <Liked products={userData.products.liked} navigation={navigation} />
         </Tabs.Tab>
-        {/* TODO: no saved  */}
-        <Tabs.Tab name="Saved">
-          <Saved products={[]} navigation={navigation} />
-        </Tabs.Tab>
+        {/* TODO: fix or ignore  */}
+        {userInfo?._id === userData.user._id ? (
+          <Tabs.Tab name="Wishlist">
+            <Saved products={[]} navigation={navigation} />
+          </Tabs.Tab>
+        ) : undefined}
       </Tabs.Container>
     </View>
   ) : null
@@ -178,7 +208,7 @@ const RenderHeader = ({
   return (
     <View
       pointerEvents="box-none"
-      style={{ backgroundColor: colors.elevation.level3 }}
+      // style={{ backgroundColor: colors.elevation.level2 }}
     >
       <View
         pointerEvents="box-none"
@@ -205,7 +235,7 @@ const RenderHeader = ({
             </Text>
           )}
         </View>
-        <Image source={{ uri: user.image }} style={styles.image} />
+        <Image source={{ uri: baseURL + user.image }} style={styles.image} />
         <Text style={styles.username}>@{user.username}</Text>
         <View style={styles.followCont}>
           <Text>{user.followers.length} Follower</Text>
@@ -221,8 +251,8 @@ const RenderHeader = ({
         </View>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("SellerReview", {
-              userId: user._id,
+            navigation.push("SellerReview", {
+              id: user._id,
             })
           }
         >
@@ -310,7 +340,7 @@ const RenderHeader = ({
         <Text style={{ fontWeight: "bold", marginBottom: 5 }}>About</Text>
         <Text>{user.about}</Text>
       </View>
-      <View pointerEvents="box-none" style={{ margin: 10 }}>
+      <View pointerEvents="box-none" style={{ margin: 10, marginBottom: 20 }}>
         <TouchableOpacity
           style={[styles.buttonOutline, { borderColor: colors.secondary }]}
           onPress={() => handlereport(user._id)}
@@ -360,7 +390,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   image: { width: 150, height: 150, borderRadius: 80 },
-  username: { fontWeight: "bold", marginVertical: 10 },
+  username: {
+    fontWeight: "bold",
+    marginVertical: 10,
+  },
   followCont: {
     flexDirection: "row",
     justifyContent: "space-around",

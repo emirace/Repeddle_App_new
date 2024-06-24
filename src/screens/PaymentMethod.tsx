@@ -17,7 +17,7 @@ const PaymentMethod = ({ navigation }: Props) => {
 
   const handleSubmit = () => {
     // TODO: save payment method
-    navigation.navigate("Checkout")
+    navigation.push("Checkout")
   }
 
   return (

@@ -75,7 +75,7 @@ const RenderItem = ({ item }: { item: IReturn }) => {
 
       <TouchableOpacity
         style={styles.viewDetailsButton}
-        onPress={() => navigation.navigate("ReturnDetail", { id: item._id })}
+        onPress={() => navigation.push("ReturnDetail", { id: item._id })}
       >
         <Text style={styles.viewDetailsButtonText}>View Details</Text>
       </TouchableOpacity>

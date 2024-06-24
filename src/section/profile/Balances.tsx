@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { Text, Button, IconButton, useTheme } from "react-native-paper";
+import { useState } from "react"
+import { View, StyleSheet } from "react-native"
+import { Text, Button, IconButton, useTheme } from "react-native-paper"
 
 const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { colors } = useTheme();
-  const [show, setShow] = useState(true);
+  const { colors } = useTheme()
+  const [show, setShow] = useState(true)
   return (
     <View
       style={[styles.container, { backgroundColor: colors.elevation.level2 }]}
@@ -33,7 +33,7 @@ const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
       <View style={styles.buttonCont}>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate("Fund")}
+          onPress={() => navigation.push("Fund")}
           style={styles.addButton}
           textColor="white"
         >
@@ -41,7 +41,7 @@ const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
         </Button>
         <Button
           mode="contained"
-          onPress={() => navigation.navigate("Withdraw")}
+          onPress={() => navigation.push("Withdraw")}
           style={[styles.addButton, { backgroundColor: colors.secondary }]}
           textColor="white"
         >
@@ -49,8 +49,8 @@ const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
         </Button>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -84,6 +84,6 @@ const styles = StyleSheet.create({
   addButton: {
     flex: 1,
   },
-});
+})
 
-export default Balance;
+export default Balance

@@ -105,7 +105,7 @@ const AddAccount = ({ isFocused, navigation }: Props) => {
       visible={showAccount}
       onRequestClose={() => {
         setShowAccount(!showAccount)
-        navigation.navigate("Main")
+        navigation.push("Main")
       }}
     >
       <View style={[styles.centeredView]}>
