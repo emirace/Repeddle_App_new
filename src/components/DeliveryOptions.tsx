@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Alert,
   Pressable,
   ScrollView,
   StyleProp,
@@ -21,8 +22,9 @@ import WebView from "react-native-webview"
 import { Picker } from "@react-native-picker/picker"
 import { postnet, pudo, states } from "../utils/constants"
 import SelectDropdown from "react-native-select-dropdown"
-import { fetchStations } from "../services/others"
+import { fetchStations, getGigPrice } from "../services/others"
 import { IDeliveryMeta } from "../types/order"
+import useCart from "../hooks/useCart"
 
 type Props = {
   setShowModel: (val: boolean) => void
@@ -31,13 +33,15 @@ type Props = {
 
 const DeliveryOptions = ({ item, setShowModel }: Props) => {
   const { colors } = useTheme()
+  const { addToCart } = useCart()
 
   const [deliveryOption, setDeliveryOption] = useState("")
   const [showMap, setShowMap] = useState(false)
   const [meta, setMeta] = useState<IDeliveryMeta>({})
   const [value, setValue] = useState<number>()
-  const [token, setToken] = useState("")
+  const [token, setToken] = useState({ userId: "", token: "", username: "" })
   const [isRebundle, setIsRebundle] = useState<IRebundle>()
+  // TODO: location
   const location1 = { error: "", coordinates: { lat: "", lng: "" } }
   const [locationerror, setLocationerror] = useState("")
   const [loadingGig, setLoadingGig] = useState(false)
@@ -203,9 +207,76 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
       }
     }
 
-    // if (valid) {
-    //   submitHandler();
+    if (valid) {
+      submitHandler()
+    }
+  }
+
+  const submitHandler = async () => {
+    let deliverySelect = {}
+
+    if (deliveryOption === "GIG Logistics") {
+      if (location1.error) {
+        setLocationerror("Location is require for proper delivery")
+        // TODO: show toast
+        Alert.alert("Location is require for proper delivery")
+        return
+      }
+      try {
+        setLoadingGig(true)
+
+        const data = await getGigPrice(item, meta, location1.coordinates, token)
+
+        console.log(data)
+        if (data) {
+          deliverySelect = {
+            "delivery Option": deliveryOption,
+            cost: data.DeliveryPrice,
+            ...meta,
+            lat: location1.coordinates.lat,
+            lng: location1.coordinates.lng,
+            total: { status: true, cost: data.DeliveryPrice },
+          }
+        } else {
+          setLoadingGig(false)
+          setLocationerror(
+            "Error selecting delivery method, try again later or try other delivery method"
+          )
+          return
+        }
+      } catch (err) {
+        setLoadingGig(false)
+        console.log(err)
+      }
+    } else {
+      deliverySelect = {
+        "delivery Option": deliveryOption,
+        cost: value,
+        ...meta,
+        total: { status: true, cost: value },
+      }
+    }
+
+    // const valid = true
+    // TODO:
+    // const allowData = await rebundleIsActive(user, item.seller._id, cart, valid)
+    // console.log("allow", allowData, deliveryOption)
+    // if (
+    //   allowData?.countAllow > 0 &&
+    //   allowData?.seller?.deliveryMethod === deliveryOption
+    // ) {
+    //   deliverySelect = {
+    //     ...deliverySelect,
+    //     total: { status: true, cost: 0 },
+    //   }
     // }
+    addToCart({
+      ...item,
+      deliverySelect,
+    })
+    setShowModel(false)
+    // navigate("/placeorder");
+    setLoadingGig(false)
   }
 
   const [validationError, setValidationError] = useState<{
@@ -216,7 +287,10 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
     const getStations = async () => {
       setLoadingStations(true)
       const data = await fetchStations()
-      if (data) setStations(data)
+      if (data) {
+        setStations(data.stations)
+        setToken(data.token)
+      }
 
       setLoadingStations(false)
     }

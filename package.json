@@ -47,7 +47,9 @@
     "react-native-select-dropdown": "^3.3.0",
     "react-native-view-shot": "3.8.0",
     "react-native-webview": "13.8.6",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "expo-asset": "~10.0.9",
+    "expo-sharing": "~12.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

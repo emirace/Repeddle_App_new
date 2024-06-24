@@ -1,7 +1,7 @@
-import { Stations } from "./../types/product"
+import { DeliveryMeta, Stations } from "./../types/product"
 import axios from "axios"
 import api from "./api"
-import { getBackendErrorMessage } from "../utils/error"
+import { CartItem } from "../contexts/CartContext"
 
 export const loginGig = async () => {
   const { data } = await api.post(
@@ -30,22 +30,65 @@ export const fetchStations = async () => {
       }
     )
 
-    return data.Object
+    return { stations: data.Object, token }
   } catch (error) {
-    console.error(error)
+    throw new Error(error as string)
   }
 }
 
-export const makePayFastPaymentService = async (myData: {
-  [val: string]: string | number
-}) => {
+export const getGigPrice = async (
+  item: CartItem,
+  meta: DeliveryMeta,
+  coordinates: { lat: string; lng: string },
+  token: { userId: string; token: string; username: string }
+) => {
   try {
-    const { data } = await axios.post("https://www.payfast.co.za/eng/process", {
-      myData,
-    })
-    console.log(data)
-  } catch (err) {
-    // Re-throw the error to propagate it up the call stack if needed
-    throw getBackendErrorMessage(err)
+    const { data } = await axios.post(
+      "https://thirdparty.gigl-go.com/api/thirdparty/price",
+      {
+        ReceiverAddress: meta.address,
+        CustomerCode: token.username,
+        SenderLocality: item.meta.address,
+        SenderAddress: item.meta.address,
+        ReceiverPhoneNumber: meta.phone,
+        VehicleType: "BIKE",
+        SenderPhoneNumber: item.meta.phone,
+        SenderName: item.meta.name,
+        ReceiverName: meta.name,
+        UserId: token.userId,
+        ReceiverStationId: meta.stationId,
+        SenderStationId: item.meta.stationId,
+        ReceiverLocation: {
+          Latitude: coordinates.lat,
+          Longitude: coordinates.lng,
+        },
+        SenderLocation: {
+          Latitude: item.meta.lat,
+          Longitude: item.meta.lng,
+        },
+        PreShipmentItems: [
+          {
+            SpecialPackageId: "0",
+            Quantity: item.quantity,
+            Weight: 1,
+            ItemType: "Normal",
+            ItemName: item.name,
+            Value: item.sellingPrice,
+            ShipmentType: "Regular",
+            Description: item.description,
+            ImageUrl: item.images[0],
+          },
+        ],
+      },
+      {
+        headers: { Authorization: `Bearer ${token.token}` },
+      }
+    )
+
+    return data.Object
+  } catch (error) {
+    throw new Error(
+      "Error selecting delivery method, try again later or try other delivery method"
+    )
   }
 }

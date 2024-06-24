@@ -265,7 +265,7 @@ const Checkout = ({ navigation }: Props) => {
             <Text style={{ marginTop: 5 }}>Shipping</Text>
             <Text style={{ marginTop: 5 }}>
               {currencyVal}
-              {cart.shippingPrice.toFixed(2)}
+              {/* {cart.shippingPrice.toFixed(2)} */}0
             </Text>
           </View>
           <View
@@ -278,7 +278,7 @@ const Checkout = ({ navigation }: Props) => {
             <Text style={{ marginTop: 5 }}>Tax</Text>
             <Text style={{ marginTop: 5 }}>
               {currencyVal}
-              {cart.taxPrice.toFixed(2)}
+              {/* {cart.taxPrice.toFixed(2)} */}0
             </Text>
           </View>
           <View
