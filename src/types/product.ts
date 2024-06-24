@@ -1,4 +1,4 @@
-import { IUser } from "./user";
+import { IUser } from "./user"
 
 export interface IReview {
   user: IUser
@@ -8,18 +8,17 @@ export interface IReview {
   _id: string
   createdAt: string
   updatedAt: string
-
 }
 
 export interface Share {
-  user: string | null;
-  hashed: string;
-  time: Date | null;
+  user: string | null
+  hashed: string
+  time: Date | null
 }
 
 export interface ViewCount {
-  hashed: string;
-  time: Date | string;
+  hashed: string
+  time: Date | string
 }
 
 export interface ISize {
@@ -75,8 +74,6 @@ export interface IProduct {
 
 export type ProductWithPagination = Pagination & { products: IProduct[] }
 
-  
-
 export type IComment = {
   _id: string
   comment: string
@@ -122,28 +119,28 @@ export interface Seller {
 }
 
 export interface Pagination {
-  totalCount: number;
-  currentPage: number;
-  totalPages: number;
+  totalCount: number
+  currentPage: number
+  totalPages: number
 }
 
 export interface IDeliveryOption {
-  name: string;
-  value: number;
+  name: string
+  value: number
 }
 
 export interface DeliveryMeta {
-  name?: string;
-  address?: string;
-  phone?: string;
-  lat?: number | string;
-  lng?: number | string;
-  stationId?: string;
+  name?: string
+  address?: string
+  phone?: string
+  lat?: number | string
+  lng?: number | string
+  stationId?: string
 }
 
 export interface Stations {
-  stationId: string;
-  StateName: string;
+  stationId: string
+  StateName: string
 }
 
 export interface ProductMeta {
@@ -156,13 +153,13 @@ export interface ProductMeta {
 }
 
 export interface SellingPriceHistory {
-  value: number;
-  updatedAt: string;
+  value: number
+  updatedAt: string
 }
 
 export interface CostPriceHistory {
-  value: number;
-  updatedAt: string;
+  value: number
+  updatedAt: string
 }
 
 export type ICreateProduct = Omit<
@@ -185,34 +182,36 @@ export type ICreateProduct = Omit<
   | "createdAt"
   | "updatedAt"
   | "reviews"
->;
+>
+
+export type Wishlist = IProduct
 
 export type IBrand = {
-  name: string;
-  alpha: string;
-  type: "SYSTEM" | "USER";
-  published: boolean;
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
-};
+  name: string
+  alpha: string
+  type: "SYSTEM" | "USER"
+  published: boolean
+  _id: string
+  createdAt: string
+  updatedAt: string
+}
 
 export type ICreateBrand = {
-  published: boolean;
-  name: string;
-};
+  published: boolean
+  name: string
+}
 
 export type RecentProduct = {
-  score: number;
-  numViews: number;
-  productId: string;
-  product: IProduct;
-};
+  score: number
+  numViews: number
+  productId: string
+  product: IProduct
+}
 
 export type Coupon =
   | {
-      type: "fixed";
-      value: number;
+      type: "fixed"
+      value: number
     }
   | {
       type: "percent"

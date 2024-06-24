@@ -315,8 +315,8 @@ export const replyProductCommentService = async (
   comment: string
 ) => {
   try {
-    const data: { message: string; comment: IComment } = await api.post(
-      `/products/${id}/comments/${commentId}/unlike`,
+    const data: { message: string; comment: ICommentReply } = await api.post(
+      `/products/${id}/comments/${commentId}/reply`,
       { comment }
     )
 
@@ -369,7 +369,7 @@ export const unlikeProductCommentReplyService = async (
 ) => {
   try {
     const data: { message: string; reply: ICommentReply } = await api.post(
-      `/products/${id}/comments/${commentId}/replies/${replyId}/like`
+      `/products/${id}/comments/${commentId}/replies/${replyId}/unlike`
     )
 
     // if (!data.status) {

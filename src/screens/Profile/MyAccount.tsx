@@ -3,12 +3,13 @@ import {
   Alert,
   Dimensions,
   Image,
+  Share,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native"
 import React, { useEffect, useMemo, useState } from "react"
-import { Appbar, Text, useTheme } from "react-native-paper"
+import { Appbar, IconButton, Text, useTheme } from "react-native-paper"
 import { Feather, Ionicons } from "@expo/vector-icons"
 import { normaliseH } from "../../utils/normalize"
 import useAuth from "../../hooks/useAuth"
@@ -29,6 +30,7 @@ import RebundlePoster from "../../components/RebundlePoster"
 import Rating from "../../components/Rating"
 import { baseURL } from "../../services/api"
 import { lightTheme } from "../../constant/theme"
+import Loader from "../../components/ui/Loader"
 
 type Props = MyAccountNavigationProp
 
@@ -89,7 +91,7 @@ const MyAccount = ({ navigation, route }: Props) => {
   )
 
   return loadingUser ? (
-    <ActivityIndicator size={"large"} color={colors.primary} />
+    <Loader />
   ) : userData ? (
     <View style={styles.container}>
       <Appbar.Header
@@ -205,6 +207,12 @@ const RenderHeader = ({
 
   const handlereport = async (id: string) => {}
 
+  const onShare = async () => {
+    try {
+      Share.share({ message: user.username })
+    } catch (error) {}
+  }
+
   return (
     <View
       pointerEvents="box-none"
@@ -236,7 +244,20 @@ const RenderHeader = ({
           )}
         </View>
         <Image source={{ uri: baseURL + user.image }} style={styles.image} />
-        <Text style={styles.username}>@{user.username}</Text>
+        <View style={{ flexDirection: "row", gap: 2, alignItems: "center" }}>
+          <Text style={styles.username}>@{user.username}</Text>
+          <TouchableOpacity
+            onPress={onShare}
+            style={[styles.share, { backgroundColor: colors.elevation.level2 }]}
+          >
+            <IconButton
+              style={{ margin: 0 }}
+              size={16}
+              iconColor={colors.secondary}
+              icon="share-variant"
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.followCont}>
           <Text>{user.followers.length} Follower</Text>
           <Text>{user.following.length} Following</Text>
@@ -383,6 +404,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 20,
   },
+  share: {},
   topCont: {
     alignItems: "center",
     padding: 10,

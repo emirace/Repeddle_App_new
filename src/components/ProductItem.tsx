@@ -12,19 +12,26 @@ import { FontAwesome } from "@expo/vector-icons"
 import { IUser } from "../types/user"
 import { currency } from "../utils/common"
 import { lightTheme } from "../constant/theme"
-import { Text } from "react-native-paper"
+import { IconButton, Text } from "react-native-paper"
 import useAuth from "../hooks/useAuth"
 import useProducts from "../hooks/useProducts"
-import { baseURL } from "../services/api";
+import { baseURL } from "../services/api"
 
 type Props = {
-  navigate: (slug: string) => void;
-  product: IProduct;
-};
+  navigate: (slug: string) => void
+  product: IProduct
+}
 
-const ProductItem = ({ navigate, product }: Props) => {
-  const { user, addToWishlist, error: wishlistError } = useAuth()
+const ProductItem = ({ navigate, product: product1 }: Props) => {
+  const {
+    user,
+    addToWishlist,
+    error: wishlistError,
+    removeFromWishlist,
+  } = useAuth()
   const { likeProduct, unlikeProduct, error } = useProducts()
+
+  const [product, setProduct] = useState(product1)
 
   const [liking, setLiking] = useState(false)
   const [addToWish, setAddToWish] = useState(false)
@@ -34,18 +41,19 @@ const ProductItem = ({ navigate, product }: Props) => {
   }, [product?.likes, user?._id])
 
   const saved = useMemo(
-    () => user && user.wishlist.find((x) => x === product._id),
+    () => !!user?.wishlist.find((x) => x === product._id),
     [product, user]
-  );
+  )
 
   const discount = () => {
+    if (!product.costPrice) return null
     if (product.costPrice === product.sellingPrice) {
-      return null;
+      return null
     }
     return (
       ((product.costPrice - product.sellingPrice) / product.costPrice) * 100
-    );
-  };
+    )
+  }
 
   const toggleLikes = async () => {
     if (!user) {
@@ -66,16 +74,24 @@ const ProductItem = ({ navigate, product }: Props) => {
 
     if (liked) {
       const res = await unlikeProduct(product._id)
-      if (res)
+      if (res) {
+        const newProd = product
+        newProd.likes = res.likes
+        setProduct(newProd)
         // TODO: add notification
         Alert.alert(res.message)
+      }
       // TODO: add notification
       else Alert.alert(error)
     } else {
       const res = await likeProduct(product._id)
-      if (res)
+      if (res) {
+        const newProd = product
+        newProd.likes = res.likes
+        setProduct(newProd)
         // TODO: add notification
         Alert.alert(res.message)
+      }
       // TODO: add notification
       else Alert.alert(error)
     }
@@ -85,6 +101,8 @@ const ProductItem = ({ navigate, product }: Props) => {
 
   const saveItem = async () => {
     if (!product) return
+
+    console.log(product._id)
 
     if (!user) {
       // TODO: add notification
@@ -99,13 +117,21 @@ const ProductItem = ({ navigate, product }: Props) => {
     }
 
     setAddToWish(true)
-
-    const res = await addToWishlist(product._id)
-    if (res)
+    if (saved) {
+      const res = await removeFromWishlist(product._id)
+      if (res)
+        // TODO: add notification
+        Alert.alert(res)
       // TODO: add notification
-      Alert.alert(res)
-    // TODO: add notification
-    else Alert.alert(wishlistError ?? "Failed to add to wishlist")
+      else Alert.alert(wishlistError ?? "Failed to add to wishlist")
+    } else {
+      const res = await addToWishlist(product._id)
+      if (res)
+        // TODO: add notification
+        Alert.alert(res)
+      // TODO: add notification
+      else Alert.alert(wishlistError ?? "Failed to add to wishlist")
+    }
 
     setAddToWish(false)
   }
@@ -115,16 +141,20 @@ const ProductItem = ({ navigate, product }: Props) => {
       onPress={() => navigate(product.slug)}
       style={[styles.container]}
     >
-      <Image source={{ uri:baseURL +  product.images[0] }} style={styles.image} />
+      <Image
+        source={{ uri: baseURL + product.images[0] }}
+        style={styles.image}
+      />
       <TouchableOpacity
         style={styles.likeButton}
         onPress={toggleLikes}
         disabled={liking}
       >
-        <FontAwesome
-          name={liked ? "thumbs-up" : "thumbs-o-up"}
+        <IconButton
+          icon={liked ? "thumb-up" : "thumb-up-outline"}
+          iconColor={liked ? "red" : "white"}
           size={24}
-          color={liked ? "red" : "white"}
+          style={{ margin: 0 }}
         />
       </TouchableOpacity>
       <TouchableOpacity
@@ -132,10 +162,11 @@ const ProductItem = ({ navigate, product }: Props) => {
         onPress={saveItem}
         disabled={addToWish}
       >
-        <FontAwesome
-          name={saved ? "heart" : "heart-o"}
+        <IconButton
+          icon={saved ? "cards-heart" : "cards-heart-outline"}
+          iconColor={saved ? lightTheme.colors.primary : "#fff"}
           size={24}
-          color={saved ? lightTheme.colors.primary : "#fff"}
+          style={{ margin: 0 }}
         />
       </TouchableOpacity>
       <View style={styles.detailsContainer}>
@@ -167,10 +198,10 @@ const ProductItem = ({ navigate, product }: Props) => {
         </View>
       </View>
     </Pressable>
-  );
-};
+  )
+}
 
-export default ProductItem;
+export default ProductItem
 
 const styles = StyleSheet.create({
   container: {
@@ -188,7 +219,7 @@ const styles = StyleSheet.create({
     top: 16,
     right: 16,
     backgroundColor: "rgba(0, 0, 0, 0.4)",
-    padding: 8,
+    // padding: 8,
     borderRadius: 50,
   },
   wishlistButton: {
@@ -196,7 +227,7 @@ const styles = StyleSheet.create({
     top: 16,
     left: 16,
     backgroundColor: "rgba(0, 0, 0, 0.4)",
-    padding: 8,
+    // padding: 8,
     borderRadius: 50,
   },
   detailsContainer: {
@@ -233,4 +264,4 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 11,
   },
-});
+})

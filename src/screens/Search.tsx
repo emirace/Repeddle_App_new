@@ -4,111 +4,111 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { Ionicons } from "@expo/vector-icons";
-import { IProduct } from "../types/product";
-import { normaliseH } from "../utils/normalize";
-import { SearchOptionsKey, SearchOptionsObject } from "../types/search";
-import MyButton from "../components/MyButton";
-import { SearchScreenNavigationProp } from "../types/navigation/stack";
-import ProductItem from "../components/ProductItem";
-import { Appbar, IconButton, Text, useTheme } from "react-native-paper";
-import SearchNavbar from "../components/SearchNavbar";
-import Filters from "../components/Filters";
-import useProducts from "../hooks/useProducts";
-import SearchBar from "../components/SearchBar";
-import CustomBackdrop from "../components/CustomBackdrop";
-import { lightTheme } from "../constant/theme";
+} from "react-native"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet"
+import { Ionicons } from "@expo/vector-icons"
+import { IProduct } from "../types/product"
+import { normaliseH } from "../utils/normalize"
+import { SearchOptionsKey, SearchOptionsObject } from "../types/search"
+import MyButton from "../components/MyButton"
+import { SearchScreenNavigationProp } from "../types/navigation/stack"
+import ProductItem from "../components/ProductItem"
+import { Appbar, IconButton, Text, useTheme } from "react-native-paper"
+import Filters from "../components/Filters"
+import useProducts from "../hooks/useProducts"
+import SearchBar from "../components/SearchBar"
+import CustomBackdrop from "../components/CustomBackdrop"
+import { lightTheme } from "../constant/theme"
+import useCategory from "../hooks/useCategory"
+import Loader from "../components/ui/Loader"
 
-const numColumns = 2;
+const numColumns = 2
 
 const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["87%"], []);
+  const bottomSheetRef = useRef<BottomSheetModal>(null)
+  const snapPoints = useMemo(() => ["87%"], [])
 
-  const { fetchProducts, loading, products: productData } = useProducts();
-  const { colors } = useTheme();
+  const { fetchProducts, loading, products: productData } = useProducts()
+  const { categories, fetchCategories } = useCategory()
+  const { colors } = useTheme()
 
-  const [hasResult, setHasResult] = useState(true);
-  const [products, setProducts] = useState<IProduct[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [hasResult, setHasResult] = useState(true)
+  const [products, setProducts] = useState<IProduct[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const [filters, setFilters] = useState<SearchOptionsObject>(route.params);
+  const [filters, setFilters] = useState<SearchOptionsObject>(route.params)
   const [tempFilters, setTempFilters] = useState<SearchOptionsObject>(
     route.params
-  );
+  )
 
   const fetchProd = useCallback(async () => {
-    setHasResult(true);
-    const params: string[][] = [];
+    setHasResult(true)
+    const params: string[][] = []
 
     Object.entries(filters).forEach((val) =>
       params.push([val[0], val[1].toString()])
-    );
+    )
 
-    const string = new URLSearchParams(params).toString();
+    const string = new URLSearchParams(params).toString()
 
-    return await fetchProducts(string);
-  }, [filters]);
+    return await fetchProducts(string)
+  }, [filters])
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await fetchProd();
+      const res = await fetchProd()
 
       // check if there are products for query
       if (res && productData.totalCount !== 0) {
-        setProducts(productData.products);
-        return;
+        setProducts(productData.products)
+        return
       }
 
-      await fetchProducts();
-      setHasResult(false);
-    };
-
-    fetch();
-  }, [fetchProd]);
-
-  const formatData = (data: IProduct[]) => {
-    const isEven = data.length % numColumns === 0;
-
-    if (!isEven) {
-      const empty = { ...data[0], empty: true };
-      data.push(empty);
+      await fetchProducts()
+      setHasResult(false)
     }
 
-    return data;
-  };
+    fetch()
+  }, [fetchProd])
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const formatData = (data: IProduct[]) => {
+    const isEven = data.length % numColumns === 0
+
+    if (!isEven) {
+      const empty = { ...data[0], empty: true }
+      data.push(empty)
+    }
+
+    return data
+  }
 
   const handleSearch = async (query: string) => {
-    handleTempFilters("query", query);
-    setCurrentPage(1);
-  };
+    handleTempFilters("query", query)
+    setCurrentPage(1)
+  }
 
   const handleFilter = async () => {
-    setProducts([]);
-    setFilters({ ...filters, page: 1 });
-  };
+    setProducts([])
+    setFilters({ ...filters, page: 1 })
+  }
 
   const handleTempFilters = async (
     filterType: SearchOptionsKey,
     filterValue: string | number
   ) => {
-    setTempFilters({ ...filters, [filterType]: filterValue });
-  };
+    setTempFilters({ ...filters, [filterType]: filterValue })
+  }
 
   const handleMore = () => {
     if (currentPage < productData.totalPages) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage(currentPage + 1)
     }
-  };
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -185,6 +185,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
             <Filters
               tempFilters={tempFilters}
               handleTempFilter={handleTempFilters}
+              categories={categories}
             />
           </BottomSheetScrollView>
 
@@ -192,27 +193,27 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
             <MyButton
               text={`Apply filter (${Object.keys(tempFilters).length})`}
               onPress={() => {
-                handleFilter();
-                bottomSheetRef.current?.close();
+                handleFilter()
+                bottomSheetRef.current?.close()
               }}
             />
           </View>
         </BottomSheetModal>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const RenderItem = ({
   item,
   navigation,
 }: {
-  item: IProduct & { empty?: boolean };
-  navigation: SearchScreenNavigationProp["navigation"];
+  item: IProduct & { empty?: boolean }
+  navigation: SearchScreenNavigationProp["navigation"]
 }) => {
-  let { itemStyles, invisible } = styles;
+  let { itemStyles, invisible } = styles
 
-  if (item.empty) return <View style={[itemStyles, invisible]}></View>;
+  if (item.empty) return <View style={[itemStyles, invisible]}></View>
 
   return (
     <View style={itemStyles}>
@@ -221,25 +222,17 @@ const RenderItem = ({
         product={item}
       />
     </View>
-  );
-};
+  )
+}
 
 const Footer = ({ loading }: { loading: boolean }) => {
-  if (!loading) return null;
-  const { colors } = useTheme();
+  if (!loading) return null
+  const { colors } = useTheme()
 
-  return (
-    <View
-      style={{
-        backgroundColor: colors.background,
-      }}
-    >
-      <ActivityIndicator size="large" color={colors.primary} />
-    </View>
-  );
-};
+  return <Loader />
+}
 
-export default Search;
+export default Search
 
 const styles = StyleSheet.create({
   container: {
@@ -282,4 +275,4 @@ const styles = StyleSheet.create({
     shadowRadius: 3.5,
     elevation: 5,
   },
-});
+})

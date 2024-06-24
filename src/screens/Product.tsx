@@ -8,6 +8,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -48,6 +49,7 @@ import useStore from "../hooks/useStore"
 import { baseURL } from "../services/api"
 import { Asset } from "expo-asset"
 import * as Sharing from "expo-sharing"
+import Loader from "../components/ui/Loader"
 
 type Props = ProductNavigationProp
 
@@ -57,7 +59,12 @@ const Product = ({ navigation, route }: Props) => {
     useProducts()
   const { cart, addToCart } = useCart()
   const { getRecently, storeRecently } = useStore()
-  const { user, addToWishlist, error: wishListError } = useAuth()
+  const {
+    user,
+    addToWishlist,
+    error: wishListError,
+    removeFromWishlist,
+  } = useAuth()
 
   const { params } = route
 
@@ -96,6 +103,10 @@ const Product = ({ navigation, route }: Props) => {
 
     getRecent()
   }, [])
+
+  const changeProduct = (val: IProduct) => {
+    setProduct(val)
+  }
 
   const isOnlineCon = (c: string) => {
     // if (onlineUser.length > 0) {
@@ -206,10 +217,9 @@ const Product = ({ navigation, route }: Props) => {
 
   const onShare = async () => {
     if (!product) return
-    const asset = Asset.fromModule(product.images[0])
-    await asset.downloadAsync()
+
     try {
-      await Sharing.shareAsync(product.images[0], {})
+      Share.share({ message: product.description })
     } catch (error) {}
   }
 
@@ -274,13 +284,21 @@ const Product = ({ navigation, route }: Props) => {
     }
 
     setAddToWish(true)
-
-    const res = await addToWishlist(product._id)
-    if (res)
+    if (saved) {
+      const res = await removeFromWishlist(product._id)
+      if (res)
+        // TODO: add notification
+        Alert.alert(res)
       // TODO: add notification
-      Alert.alert(res)
-    // TODO: add notification
-    else Alert.alert(wishListError ?? "Failed to add to wishlist")
+      else Alert.alert(wishListError ?? "Failed to remove from wishlist")
+    } else {
+      const res = await addToWishlist(product._id)
+      if (res)
+        // TODO: add notification
+        Alert.alert(res)
+      // TODO: add notification
+      else Alert.alert(wishListError ?? "Failed to add to wishlist")
+    }
 
     setAddToWish(false)
   }
@@ -294,9 +312,7 @@ const Product = ({ navigation, route }: Props) => {
   }, [product, user])
 
   return !product && loading ? (
-    <View style={styles.loading}>
-      <ActivityIndicator size={"large"} color={colors.primary} />
-    </View>
+    <Loader />
   ) : productError ? (
     <View style={styles.loading}>
       <Text style={{ color: colors.error }}>{productError}</Text>
@@ -491,6 +507,7 @@ const Product = ({ navigation, route }: Props) => {
             <Text>Tags:</Text>
             {product.tags.map((t) => (
               <Chip
+                key={t}
                 icon="tag"
                 mode="outlined"
                 textStyle={{ color: colors.primary }}
@@ -817,7 +834,9 @@ const Product = ({ navigation, route }: Props) => {
           <FlatList
             data={recentlyViewed}
             renderItem={({ item }) => (
-              <RenderItem item={item} navigation={navigation} />
+              <View style={{ width: 175 }}>
+                <RenderItem item={item} navigation={navigation} />
+              </View>
             )}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.productId}
@@ -825,7 +844,7 @@ const Product = ({ navigation, route }: Props) => {
           />
         </View>
 
-        <CommentSection setProduct={setProduct} product={product} />
+        <CommentSection setProduct={changeProduct} product={product} />
       </ScrollView>
       <View style={styles.header}>
         <TouchableOpacity
@@ -894,10 +913,11 @@ const Product = ({ navigation, route }: Props) => {
             style={[styles.saved, { backgroundColor: colors.onBackground }]}
             disabled={addToWish}
           >
-            <Ionicons
+            <IconButton
+              icon={saved ? "cards-heart" : "cards-heart-outline"}
+              iconColor={saved ? colors.primary : colors.background}
               size={25}
-              color={saved ? colors.primary : colors.background}
-              name={saved ? "heart" : "heart-outline"}
+              style={{ margin: 0 }}
             />
           </TouchableOpacity>
           <View style={styles.button}>
@@ -1093,7 +1113,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 30,
     alignSelf: "center",
-    padding: 10,
+    padding: 2,
   },
   button: { flex: 1 },
   userImage: { width: 50, height: 50, borderRadius: 50, marginRight: 20 },

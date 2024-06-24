@@ -4,35 +4,35 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useState } from "react";
-import { Text, Tooltip, useTheme } from "react-native-paper";
-import Carousel from "react-native-reanimated-carousel";
-import { MainScreenNavigationProp } from "../types/navigation/stack";
+} from "react-native"
+import React, { useState } from "react"
+import { Text, Tooltip, useTheme } from "react-native-paper"
+import Carousel from "react-native-reanimated-carousel"
+import { MainScreenNavigationProp } from "../types/navigation/stack"
 
 type Props = {
-  navigation: MainScreenNavigationProp["navigation"];
-};
+  navigation: MainScreenNavigationProp["navigation"]
+}
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get("window")
 const data = [
   { textButton: "SIGN UP", text: "List All Item For Free" },
   {
     textButton: "DETAILS",
     text: "No Selling Fees, Hurry, Start Selling, Limited Offer!!",
   },
-];
+]
 
 const Announcement = ({ navigation }: Props) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
-  const [autoplay, setAutoplay] = useState(true);
+  const [autoplay, setAutoplay] = useState(true)
 
   const action = (value: string) => {
     if (value === "SIGN UP") {
-      navigation.push("Auth");
+      navigation.push("Auth")
     }
-  };
+  }
 
   return (
     <Carousel
@@ -66,6 +66,7 @@ const Announcement = ({ navigation }: Props) => {
             <Tooltip
               title="Sell more than 10,400 brand names you love. To give you unmatched user experiencd and support the growth of your business as part of our thrift secondhand community, you will not be charge Repeddle seller's commision fee."
               // position="top"
+              enterTouchDelay={1}
             >
               <Text
                 style={{
@@ -98,9 +99,9 @@ const Announcement = ({ navigation }: Props) => {
         </View>
       )}
     />
-  );
-};
+  )
+}
 
-export default Announcement;
+export default Announcement
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})

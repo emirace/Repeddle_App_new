@@ -72,7 +72,7 @@ type ContextType = {
     comment: string
   ) => Promise<{
     message: string
-    comment: IComment
+    comment: ICommentReply
   } | null>
   likeProductCommentReply: (
     id: string,

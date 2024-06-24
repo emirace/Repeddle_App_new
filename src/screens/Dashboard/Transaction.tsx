@@ -21,7 +21,8 @@ type Props = TransactionNavigationProp
 
 const Transaction = ({ navigation }: Props) => {
   const { colors } = useTheme()
-  const { error, transactions, loading, fetchTransactions } = useTransactions()
+  const { error, transactions, loading, fetchUserTransactions } =
+    useTransactions()
 
   const [page, setPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
@@ -32,7 +33,7 @@ const Transaction = ({ navigation }: Props) => {
       ["transactionId", searchQuery],
     ])
 
-    fetchTransactions(string)
+    fetchUserTransactions(string)
   }, [page, searchQuery])
 
   const handleMore = () => {

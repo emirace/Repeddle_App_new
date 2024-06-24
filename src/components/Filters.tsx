@@ -5,13 +5,13 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { lightTheme } from "../constant/theme";
-import { Ionicons } from "@expo/vector-icons";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import { currency } from "../utils/common";
-import { SearchOptionsKey, SearchOptionsObject } from "../types/search";
+} from "react-native"
+import React, { useEffect, useState } from "react"
+import { lightTheme } from "../constant/theme"
+import { Ionicons } from "@expo/vector-icons"
+import MultiSlider from "@ptomasroos/react-native-multi-slider"
+import { currency } from "../utils/common"
+import { SearchOptionsKey, SearchOptionsObject } from "../types/search"
 import {
   availabilitylist,
   color1,
@@ -21,34 +21,35 @@ import {
   shippinglist,
   sizelist,
   typelist,
-} from "../utils/constants";
-import { Text, useTheme } from "react-native-paper";
-import { ICategory } from "../types/category";
-import useBrands from "../hooks/useBrand";
+} from "../utils/constants"
+import { Text, useTheme } from "react-native-paper"
+import { ICategory } from "../types/category"
+import useBrands from "../hooks/useBrand"
 
 type Props = {
-  tempFilters: SearchOptionsObject;
-  handleTempFilter: (key: SearchOptionsKey, val: string | number) => void;
-};
+  tempFilters: SearchOptionsObject
+  handleTempFilter: (key: SearchOptionsKey, val: string | number) => void
+  categories: ICategory[]
+}
 
-const Filters = ({ handleTempFilter, tempFilters }: Props) => {
-  const { colors } = useTheme();
-  const { brands, fetchBrands } = useBrands();
+const Filters = ({ handleTempFilter, tempFilters, categories }: Props) => {
+  const { colors } = useTheme()
+  const { brands, fetchBrands } = useBrands()
 
   const [priceRange, setPriceRange] = useState([
     +(tempFilters.minPrice ?? 0),
     +(tempFilters.maxPrice ?? 500000),
-  ]);
+  ])
 
-  const [queryBrand, setQueryBrand] = useState<string>("");
+  const [queryBrand, setQueryBrand] = useState<string>("")
 
   useEffect(() => {
-    const params = [["search", queryBrand]];
+    const params = [["search", queryBrand]]
 
-    const string = new URLSearchParams(params).toString();
+    const string = new URLSearchParams(params).toString()
 
-    fetchBrands(string);
-  }, []);
+    fetchBrands(string)
+  }, [])
 
   const [collapse, setCollapse] = useState({
     category: true,
@@ -63,26 +64,24 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
     availability: true,
     type: true,
     pattern: true,
-  });
+  })
 
   const toggleCollapse = (key: keyof typeof collapse, val: boolean) => {
-    setCollapse({ ...collapse, [key]: val });
-  };
+    setCollapse({ ...collapse, [key]: val })
+  }
 
   const handleAfterPriceChange = (values: number[]) => {
-    const [newMinValue, newMaxValue] = values;
+    const [newMinValue, newMaxValue] = values
     if (tempFilters.minPrice !== newMinValue) {
-      handleTempFilter("minPrice", newMinValue);
+      handleTempFilter("minPrice", newMinValue)
     }
     if (tempFilters.maxPrice !== newMaxValue) {
-      handleTempFilter("maxPrice", newMaxValue);
+      handleTempFilter("maxPrice", newMaxValue)
     }
-    setPriceRange(values);
-  };
+    setPriceRange(values)
+  }
 
-  const region = "NGN";
-
-  const categories: ICategory[] = [];
+  const region = "NGN"
 
   return (
     <View style={styles.container}>
@@ -175,8 +174,8 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
               placeholderTextColor="grey"
               value={queryBrand ?? tempFilters.brand?.toString()}
               onChangeText={(text) => {
-                handleTempFilter("brand", "");
-                setQueryBrand(text);
+                handleTempFilter("brand", "")
+                setQueryBrand(text)
               }}
               style={[styles.textInput, { color: colors.onBackground }]}
               cursorColor={colors.onBackground}
@@ -208,9 +207,9 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                   <TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
-                        handleTempFilter("brand", p.name);
-                        setQueryBrand("");
-                        Keyboard.dismiss();
+                        handleTempFilter("brand", p.name)
+                        setQueryBrand("")
+                        Keyboard.dismiss()
                       }}
                       style={styles.listItem}
                     >
@@ -587,7 +586,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                       : {},
                   ]}
                 >
-                  All Product
+                  All
                 </Text>
               </View>
             </TouchableOpacity>
@@ -659,7 +658,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             </TouchableOpacity>
             {conditionlist.map((c, i) => (
               <TouchableOpacity
-                key={c.id}
+                key={c._id}
                 onPress={() => handleTempFilter("price", c.name)}
               >
                 <View style={styles.listItem}>
@@ -884,10 +883,10 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default Filters;
+export default Filters
 
 const styles = StyleSheet.create({
   container: {
@@ -948,4 +947,4 @@ const styles = StyleSheet.create({
   },
   rating: { flexDirection: "row", marginHorizontal: 5, marginVertical: 5 },
   selected: { fontWeight: "bold", color: lightTheme.colors.primary },
-});
+})

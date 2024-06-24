@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from "react-native"
+import { Alert, Pressable, StyleSheet, View } from "react-native"
 import React, { useEffect, useState } from "react"
 import { Appbar, Text, useTheme } from "react-native-paper"
 import { FlatList } from "react-native-gesture-handler"
@@ -6,6 +6,7 @@ import useAuth from "../../hooks/useAuth"
 import ProductItem from "../../components/ProductItem"
 import { IProduct } from "../../types/product"
 import { WishlistNavigationProp } from "../../types/navigation/stack"
+import { Wishlist as WishlistType } from "../../types/user"
 
 type Props = WishlistNavigationProp
 const numColumns = 2
@@ -15,13 +16,16 @@ const Wishlist = ({ navigation }: Props) => {
 
   const { removeFromWishlist, user, error, getWishlist } = useAuth()
   const [wishlist, setWishlist] = useState<WishlistType[]>([])
+  const [refresh, setRefresh] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const getList = async () => {
       setLoading(true)
       const res = await getWishlist()
       if (res) setWishlist(res)
-      else addNotification(error ?? "An error occurred")
+      // TODO: show toast
+      else Alert.alert(error ?? "An error occurred")
       setLoading(false)
     }
 
@@ -58,7 +62,7 @@ const Wishlist = ({ navigation }: Props) => {
       {user?.wishlist && user.wishlist.length > 0 ? (
         <View style={styles.cartList}>
           <FlatList
-            data={formatData(user.wishlist)}
+            data={formatData(wishlist)}
             renderItem={({ item }) => (
               <RenderItem item={item} navigation={navigation} />
             )}

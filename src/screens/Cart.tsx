@@ -181,7 +181,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
       >
         <Image
           source={{
-            uri: item.seller.image,
+            uri: baseURL + item.seller.image,
           }}
           style={[styles.image, { width: 30, height: 30, marginRight: 10 }]}
         />
