@@ -52,13 +52,13 @@ const Main = () => {
       <NavigationContainer
         theme={themeMode === "dark" ? CombinedDarkTheme : CombinedDefaultTheme}
       >
-        <BottomSheetModalProvider>
-          <StoreProvider>
-            <ProductProvider>
-              <UserProvider>
-                <StoreProvider>
-                  <BrandProvider>
-                    <AuthProvider>
+        <AuthProvider>
+          <BottomSheetModalProvider>
+            <StoreProvider>
+              <ProductProvider>
+                <UserProvider>
+                  <StoreProvider>
+                    <BrandProvider>
                       <CategoryProvider>
                         <CartProvider>
                           <NewsletterProvider>
@@ -72,14 +72,13 @@ const Main = () => {
                           </NewsletterProvider>
                         </CartProvider>
                       </CategoryProvider>
-                    </AuthProvider>
-                  </BrandProvider>
-                </StoreProvider>
-              </UserProvider>
-            </ProductProvider>
-          </StoreProvider>
-        </BottomSheetModalProvider>
-
+                    </BrandProvider>
+                  </StoreProvider>
+                </UserProvider>
+              </ProductProvider>
+            </StoreProvider>
+          </BottomSheetModalProvider>
+        </AuthProvider>
       </NavigationContainer>
     </PaperProvider>
   );

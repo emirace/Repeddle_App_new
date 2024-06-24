@@ -38,7 +38,7 @@
     "react-native-countdown-component": "^2.7.1",
     "react-native-gesture-handler": "^2.16.2",
     "react-native-image-zoom-viewer": "^3.0.1",
-    "react-native-pager-view": "^6.3.3",
+    "react-native-pager-view": "6.3.0",
     "react-native-paper": "^5.12.3",
     "react-native-reanimated": "~3.10.1",
     "react-native-reanimated-carousel": "^3.5.1",
@@ -47,8 +47,7 @@
     "react-native-select-dropdown": "^3.3.0",
     "react-native-view-shot": "3.8.0",
     "react-native-webview": "13.8.6",
-    "socket.io-client": "^4.7.5",
-    "react-native-pager-view": "6.3.0"
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

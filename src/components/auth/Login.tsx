@@ -27,12 +27,12 @@ const Login: React.FC<
     setShowPassword(!showPassword);
   };
 
-  useEffect(() => {
-    return () => {
-      // Reset the flag on unmount
-      shouldHandleKeyboardEvents.value = false;
-    };
-  }, [shouldHandleKeyboardEvents]);
+  // useEffect(() => {
+  //   return () => {
+  //     // Reset the flag on unmount
+  //     shouldHandleKeyboardEvents.value = false;
+  //   };
+  // }, [shouldHandleKeyboardEvents]);
 
   const handleOnFocus = useCallback(() => {
     shouldHandleKeyboardEvents.value = true;
@@ -51,7 +51,7 @@ const Login: React.FC<
       setLoading(true);
       const result = await login({ email, password });
       if (result) {
-        // navigation.navigate('HomeMain');
+        navigation.navigate("Main");
       } else {
         setError(loginError || "");
       }
@@ -85,8 +85,8 @@ const Login: React.FC<
         style={styles.input}
         autoCapitalize="none"
         keyboardType="email-address"
-        onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
+        // onFocus={handleOnFocus}
+        // onBlur={handleOnBlur}
       />
       <TextInput
         label="Password"
@@ -103,8 +103,8 @@ const Login: React.FC<
         }
         style={styles.input}
         secureTextEntry={!showPassword}
-        onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
+        // onFocus={handleOnFocus}
+        // onBlur={handleOnBlur}
       />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <Button
