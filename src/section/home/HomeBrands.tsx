@@ -16,10 +16,7 @@ const HomeBrands = ({ navigation }: Props) => {
           <Text style={homeStyles.category}>Brands</Text>
           <View style={homeStyles.dash} />
         </View>
-        <TouchableOpacity
-        // TODO:
-        // onPress={() => navigation.push("BrandScreen")}
-        >
+        <TouchableOpacity onPress={() => navigation.push("Brand")}>
           <Text style={homeStyles.seeAll}>see all</Text>
         </TouchableOpacity>
       </View>

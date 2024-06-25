@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   FlatList,
   StyleSheet,
   TextInput,
@@ -9,13 +8,13 @@ import {
 import React, { useEffect, useState } from "react"
 import { Appbar, Divider, Text, useTheme } from "react-native-paper"
 import useTransactions from "../../hooks/useTransaction"
-import MyButton from "../../components/MyButton"
 import { useNavigation } from "@react-navigation/native"
 import { TransactionNavigationProp } from "../../types/navigation/stack"
 import { ITransaction } from "../../types/transactions"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import moment from "moment"
 import { createSearchParam, currency, region } from "../../utils/common"
+import Loader from "../../components/ui/Loader"
 
 type Props = TransactionNavigationProp
 
@@ -60,7 +59,7 @@ const Transaction = ({ navigation }: Props) => {
         />
       </Appbar.Header>
       {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
+        <Loader />
       ) : error ? (
         <Text>{error}</Text>
       ) : !transactions.length ? (

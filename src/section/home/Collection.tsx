@@ -19,9 +19,7 @@ const Collection = ({ navigation }: Props) => {
             style={[homeStyles.dash, { backgroundColor: colors.tertiary }]}
           />
         </View>
-        <TouchableOpacity
-        // onPress={() => navigation.push("CategoryStack")}
-        >
+        <TouchableOpacity onPress={() => navigation.push("Categories")}>
           <Text style={homeStyles.seeAll}>see all</Text>
         </TouchableOpacity>
       </View>

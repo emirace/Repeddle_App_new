@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Alert,
   Dimensions,
   Image,
@@ -11,7 +10,6 @@ import {
 import React, { useEffect, useMemo, useState } from "react"
 import { Appbar, IconButton, Text, useTheme } from "react-native-paper"
 import { Feather, Ionicons } from "@expo/vector-icons"
-import { normaliseH } from "../../utils/normalize"
 import useAuth from "../../hooks/useAuth"
 import { MyAccountNavigationProp } from "../../types/navigation/stack"
 import useUser from "../../hooks/useUser"
@@ -145,7 +143,7 @@ const MyAccount = ({ navigation, route }: Props) => {
         <Tabs.Tab name="Liked">
           <Liked products={userData.products.liked} navigation={navigation} />
         </Tabs.Tab>
-        {/* TODO: fix or ignore  */}
+        {/* @ts-ignore TODO: fix or ignore  */}
         {userInfo?._id === userData.user._id ? (
           <Tabs.Tab name="Wishlist">
             <Saved products={[]} navigation={navigation} />

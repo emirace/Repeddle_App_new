@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Alert,
   Modal,
   Pressable,
@@ -161,13 +160,12 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
               />
             )}
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {loadingUpload ? (
-                <ActivityIndicator />
-              ) : (
-                <Pressable style={styles.addimage} onPress={pickImage}>
-                  <IconButton icon="file-image-plus-outline" />
-                </Pressable>
-              )}
+              <IconButton
+                onPress={pickImage}
+                icon="file-image-plus-outline"
+                loading={loadingUpload}
+              />
+
               <Button
                 children="Submit"
                 mode="contained"

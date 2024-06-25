@@ -1,5 +1,5 @@
 import {
-  ActivityIndicator,
+  Dimensions,
   FlatList,
   StyleSheet,
   TouchableOpacity,
@@ -10,14 +10,19 @@ import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet"
 import { Ionicons } from "@expo/vector-icons"
 import { IProduct } from "../types/product"
 import { normaliseH } from "../utils/normalize"
-import { SearchOptionsKey, SearchOptionsObject } from "../types/search"
-import MyButton from "../components/MyButton"
+import { FilterOptions } from "../types/search"
 import { SearchScreenNavigationProp } from "../types/navigation/stack"
 import ProductItem from "../components/ProductItem"
-import { Appbar, IconButton, Text, useTheme } from "react-native-paper"
+import {
+  Appbar,
+  Button,
+  IconButton,
+  Searchbar,
+  Text,
+  useTheme,
+} from "react-native-paper"
 import Filters from "../components/Filters"
 import useProducts from "../hooks/useProducts"
-import SearchBar from "../components/SearchBar"
 import CustomBackdrop from "../components/CustomBackdrop"
 import { lightTheme } from "../constant/theme"
 import useCategory from "../hooks/useCategory"
@@ -36,41 +41,53 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   const [hasResult, setHasResult] = useState(true)
   const [products, setProducts] = useState<IProduct[]>([])
   const [currentPage, setCurrentPage] = useState(1)
+  const [query, setQuery] = useState("")
 
-  const [filters, setFilters] = useState<SearchOptionsObject>(route.params)
-  const [tempFilters, setTempFilters] = useState<SearchOptionsObject>(
-    route.params
-  )
+  const [filters, setFilters] = useState<FilterOptions>({})
 
-  const fetchProd = useCallback(async () => {
+  const fetchProd = async () => {
     setHasResult(true)
     const params: string[][] = []
 
-    Object.entries(filters).forEach((val) =>
-      params.push([val[0], val[1].toString()])
-    )
+    if (filters && Object.keys(filters).length) {
+      const filterParam = joinFilterParm(filters)
+      if (filterParam.length) params.push(["filter", filterParam])
+    }
+
+    if (currentPage) params.push(["page", currentPage.toString()])
+
+    if (query) params.push(["search", query])
 
     const string = new URLSearchParams(params).toString()
 
-    return await fetchProducts(string)
-  }, [filters])
+    console.log(string)
 
-  useEffect(() => {
-    const fetch = async () => {
-      const res = await fetchProd()
+    const res = await fetchProducts(string)
+    console.log(res)
 
-      // check if there are products for query
-      if (res && productData.totalCount !== 0) {
-        setProducts(productData.products)
-        return
-      }
-
-      await fetchProducts()
-      setHasResult(false)
+    // check if there are products return from query
+    if (res && productData.totalCount !== 0) {
+      setProducts(productData.products)
+      return
     }
 
-    fetch()
-  }, [fetchProd])
+    console.log("no result")
+
+    await fetchProducts()
+    setHasResult(false)
+  }
+
+  const joinFilterParm = (param: { [key: string]: string }) => {
+    const params = Object.keys(param)
+      .map((obj) => `${obj}:${param[obj]}`)
+      .join(",")
+    return params
+  }
+
+  useEffect(() => {
+    fetchProd()
+  }, [currentPage])
+  // fetch when current page changes
 
   useEffect(() => {
     fetchCategories()
@@ -87,21 +104,14 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
     return data
   }
 
-  const handleSearch = async (query: string) => {
-    handleTempFilters("query", query)
-    setCurrentPage(1)
-  }
-
-  const handleFilter = async () => {
+  const applyFilter = async () => {
     setProducts([])
-    setFilters({ ...filters, page: 1 })
+    setCurrentPage(1)
+    await fetchProd()
   }
 
-  const handleTempFilters = async (
-    filterType: SearchOptionsKey,
-    filterValue: string | number
-  ) => {
-    setTempFilters({ ...filters, [filterType]: filterValue })
+  const handleFilter = (key: keyof FilterOptions, value: string | number) => {
+    setFilters({ ...filters, [key]: value })
   }
 
   const handleMore = () => {
@@ -123,7 +133,13 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
           onPress={() => navigation.goBack()}
           color={colors.background}
         />
-        <SearchBar onPress={handleSearch} />
+        <Searchbar
+          style={styles.searchbar}
+          inputStyle={{ minHeight: 0 }}
+          value={query}
+          onChangeText={setQuery}
+          onIconPress={applyFilter}
+        />
         <IconButton icon="cart-outline" iconColor={colors.background} />
       </Appbar.Header>
       <View style={styles.container}>
@@ -135,9 +151,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
             <Ionicons name="filter" color={colors.onBackground} size={24} />
           </TouchableOpacity>
           <View style={styles.resultCont}>
-            <Text style={[styles.result]}>
-              {productData.totalCount} results
-            </Text>
+            <Text style={[styles.result]}>{products.length} results</Text>
           </View>
         </View>
         {!hasResult && !loading && (
@@ -183,17 +197,20 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
             keyboardShouldPersistTaps={"always"}
           >
             <Filters
-              tempFilters={tempFilters}
-              handleTempFilter={handleTempFilters}
               categories={categories}
+              filters={filters}
+              handleFilter={handleFilter}
+              setFilters={setFilters}
             />
           </BottomSheetScrollView>
 
           <View style={styles.button}>
-            <MyButton
-              text={`Apply filter (${Object.keys(tempFilters).length})`}
+            <Button
+              mode="contained"
+              style={{ borderRadius: 5, height: 50, padding: 5 }}
+              children={`Apply filter (${Object.keys(filters).length})`}
               onPress={() => {
-                handleFilter()
+                applyFilter()
                 bottomSheetRef.current?.close()
               }}
             />
@@ -238,6 +255,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "relative",
+  },
+  searchbar: {
+    width: Dimensions.get("screen").width * 0.6,
+    borderRadius: 5,
+    height: 40,
   },
   filterCont: {
     flexDirection: "row",
