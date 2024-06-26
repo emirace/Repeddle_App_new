@@ -23,8 +23,8 @@ type ContextType = {
   updateOrderItemTracking: (
     orderId: string,
     itemId: string,
-    body: { status: string }
-  ) => Promise<boolean>
+    body: { status: string; trackingNumber?: string }
+  ) => Promise<IOrder | null>
   getOrdersSummary: (val: {
     endDate?: string
     startDate?: string
@@ -119,7 +119,7 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
   const updateOrderItemTracking = async (
     orderId: string,
     itemId: string,
-    body: { status: string }
+    body: { status: string; trackingNumber?: string }
   ) => {
     try {
       setError("")
@@ -129,11 +129,11 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
         prevOrders.map((p) => (p._id === orderId ? result : p))
       )
       setLoading(false)
-      return true
+      return result
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return false
+      return null
     }
   }
 
