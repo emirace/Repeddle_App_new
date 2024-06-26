@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   FlatList,
   Image,
   StyleSheet,
@@ -14,6 +13,7 @@ import moment from "moment"
 import { useNavigation } from "@react-navigation/native"
 import { ReturnNavigationProp } from "../../types/navigation/stack"
 import { Ionicons } from "@expo/vector-icons"
+import Loader from "../../components/ui/Loader"
 
 type Props = {
   loading: boolean
@@ -27,7 +27,7 @@ const ReturnComp = ({ loading, returns, error }: Props) => {
   return (
     <View>
       {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
+        <Loader />
       ) : error ? (
         <Text>{error}</Text>
       ) : !returns.length ? (

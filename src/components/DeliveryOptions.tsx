@@ -307,9 +307,12 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.Action icon="arrow-left" onPress={() => setShowModel(false)} />
+        <Appbar.Action
+          iconColor={colors.onBackground}
+          icon="arrow-left"
+          onPress={() => setShowModel(false)}
+        />
         <Appbar.Content title="Select Delivery option" />
-        <Appbar.Action icon="cart-outline" />
       </Appbar.Header>
       {/* <View style={styles.header}>
         <TouchableOpacity onPress={() => setShowModel(false)}>

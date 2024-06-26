@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Button,
   Image,
   ScrollView,
@@ -18,6 +17,7 @@ import { deliveryNumber } from "../../utils/common"
 import { ReturnDetailNavigationProp } from "../../types/navigation/stack"
 import { returns } from "../../utils/data"
 import { IReturn } from "../../types/order"
+import Loader from "../../components/ui/Loader"
 
 type Props = ReturnDetailNavigationProp
 
@@ -59,9 +59,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
   }
 
   return loading ? (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator color={colors.primary} />
-    </View>
+    <Loader />
   ) : (
     <View style={styles.container}>
       <Appbar.Header

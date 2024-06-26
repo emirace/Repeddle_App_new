@@ -1,35 +1,35 @@
 import { Pressable, StyleSheet } from "react-native"
 import React from "react"
 import { Badge, IconButton, useTheme } from "react-native-paper"
-import useCart from "../../hooks/useCart"
+import useAuth from "../../hooks/useAuth"
 
 type Props = {
   onPress?: () => void
   iconColor?: string
 }
 
-const CartIcon = ({ onPress, iconColor }: Props) => {
-  const { cart } = useCart()
+const WishlistIcon = ({ onPress, iconColor }: Props) => {
+  const { user } = useAuth()
   const { colors } = useTheme()
 
   return (
     <Pressable onPress={onPress} style={styles.item}>
       <IconButton
-        icon="cart-outline"
-        iconColor={iconColor ?? colors.onBackground}
+        icon="heart-outline"
+        iconColor={iconColor ?? colors.background}
       />
       <Badge
-        visible={cart.length > 0}
+        visible={user?.wishlist && user.wishlist.length > 0}
         style={styles.badge}
         theme={{ colors: { background: "red" } }}
       >
-        {cart.length}
+        {user?.wishlist.length}
       </Badge>
     </Pressable>
   )
 }
 
-export default CartIcon
+export default WishlistIcon
 
 const styles = StyleSheet.create({
   badge: {
@@ -39,6 +39,6 @@ const styles = StyleSheet.create({
   },
   item: {
     position: "relative",
-    // marginLeft: "auto",
+    marginLeft: "auto",
   },
 })

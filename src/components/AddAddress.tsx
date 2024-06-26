@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Alert,
   Modal,
   StyleProp,
@@ -9,9 +8,8 @@ import {
   View,
 } from "react-native"
 import React, { PropsWithChildren, useEffect, useState } from "react"
-import { Text, useTheme } from "react-native-paper"
+import { Button, Text, useTheme } from "react-native-paper"
 import { currentAddress, goto, region } from "../utils/common"
-import MyButton from "./MyButton"
 import Input from "./Input"
 import { states } from "../utils/constants"
 import { Picker } from "@react-native-picker/picker"
@@ -239,11 +237,13 @@ const AddAddress = ({ isFocused, navigation }: Props) => {
               </Text>
             </View>
 
-            {loading ? (
-              <ActivityIndicator size={"large"} color={colors.primary} />
-            ) : (
-              <MyButton text="Submit" onPress={validate} />
-            )}
+            <Button
+              mode="contained"
+              style={{ borderRadius: 5 }}
+              children="Submit"
+              loading={loading}
+              onPress={validate}
+            />
           </View>
         </View>
       </View>

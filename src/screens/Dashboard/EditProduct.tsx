@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Alert,
   Image,
   Modal,
@@ -33,6 +32,8 @@ import AddDeliveryOption from "../../components/AddDeliveryOption"
 import Condition from "../../components/Condition"
 import useBrands from "../../hooks/useBrand"
 import * as ImagePicker from "expo-image-picker"
+import Loader from "../../components/ui/Loader"
+import { baseURL } from "../../services/api"
 
 type Props = EditProductNavigationProp
 
@@ -92,8 +93,9 @@ const EditProduct = ({ navigation, route }: Props) => {
   const [deliveryOption, setDeliveryOption] = useState([
     { name: "Pick up from Seller", value: 0 },
   ])
-  let tags: string[] = []
-  let sizesInputCounts = [1]
+  const [tags, setTags] = useState<string[]>([])
+  const [colorsVal, setColorsVal] = useState<string[]>([])
+  const [sizesInputCounts, setSizesInputCounts] = useState([1])
 
   const [queryBrand, setQueryBrand] = useState("")
   const [searchBrand, setSearchBrand] = useState<IBrand[]>([])
@@ -128,7 +130,12 @@ const EditProduct = ({ navigation, route }: Props) => {
 
   const removeTags = (tag: string) => {
     const newtags = tags.filter((data) => data != tag)
-    tags = newtags
+    setTags(newtags)
+  }
+
+  const removeColor = (color: string) => {
+    const newColor = colorsVal.filter((data) => data != color)
+    setColorsVal(newColor)
   }
 
   const discountCalc = () => {
@@ -218,18 +225,20 @@ const EditProduct = ({ navigation, route }: Props) => {
           keyFeatures: res.keyFeatures ?? input.keyFeatures,
           video: res.video ?? input.video,
           material: res.material ?? input.material,
-          // TODO:
-          tag: res.tags[0],
-          color: res.color ?? input.color,
           luxuryImage: res.luxuryImage ?? input.luxuryImage,
           luxury: res.luxury ?? input.luxury,
           vintage: res.vintage ?? input.vintage,
-          image1: "",
-          image2: "",
-          image3: "",
-          image4: "",
+          image1: res.images[0],
+          image2: res.images[1],
+          image3: res.images[2],
+          image4: res.images[3],
+          tag: "",
+          color: "",
           image: "",
         })
+
+        setTags(tags)
+        setColorsVal(res.color ?? colorsVal)
       } else {
         // TODO: toast notification
         Alert.alert(res)
@@ -310,8 +319,8 @@ const EditProduct = ({ navigation, route }: Props) => {
       handleError("Select features", "keyFeatures")
       valid = false
     }
-    if (!input.color) {
-      handleError("Select color", "color")
+    if (!colorsVal.length) {
+      handleError("Select at least one color", "color")
       valid = false
     }
 
@@ -370,7 +379,7 @@ const EditProduct = ({ navigation, route }: Props) => {
       luxury: input.luxury,
       vintage: input.vintage,
       material: input.material,
-      color: input.color,
+      color: colorsVal,
       luxuryImage: input.luxuryImage,
       // addSize,
       countInStock,
@@ -401,8 +410,8 @@ const EditProduct = ({ navigation, route }: Props) => {
           onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
-      {!categories && loading ? (
-        <ActivityIndicator size={"large"} color={colors.primary} />
+      {loading ? (
+        <Loader />
       ) : (
         <ScrollView style={styles.form} showsVerticalScrollIndicator={false}>
           <Text style={styles.info}>
@@ -773,9 +782,10 @@ const EditProduct = ({ navigation, route }: Props) => {
                 padding: 5,
                 color: "grey",
               }}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "color")
-              }
+                setColorsVal((val) => [...new Set([...colorsVal, itemValue])])
+              }}
             >
               <Picker.Item
                 style={{
@@ -797,6 +807,26 @@ const EditProduct = ({ navigation, route }: Props) => {
                 />
               ))}
             </Picker>
+          </View>
+          <View style={styles.tagList}>
+            {colorsVal.map((t, i) => (
+              <View
+                style={[
+                  styles.tagItem,
+                  { backgroundColor: colors.elevation.level2 },
+                ]}
+                key={i}
+              >
+                <Text style={styles.tagText}>{t}</Text>
+                <TouchableOpacity onPress={() => removeColor(t)}>
+                  <Ionicons
+                    name={"close"}
+                    style={styles.removeIcon}
+                    color={colors.onBackground}
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
           </View>
           {validationError.color && (
             <Text style={{ color: "red", fontSize: 12 }}>
@@ -831,7 +861,10 @@ const EditProduct = ({ navigation, route }: Props) => {
               ]}
             >
               {input.image1 ? (
-                <Image source={{ uri: input.image1 }} style={styles.image} />
+                <Image
+                  source={{ uri: baseURL + input.image1 }}
+                  style={styles.image}
+                />
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -848,7 +881,10 @@ const EditProduct = ({ navigation, route }: Props) => {
               ]}
             >
               {input.image2 ? (
-                <Image source={{ uri: input.image2 }} style={styles.image} />
+                <Image
+                  source={{ uri: baseURL + input.image2 }}
+                  style={styles.image}
+                />
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -865,7 +901,10 @@ const EditProduct = ({ navigation, route }: Props) => {
               ]}
             >
               {input.image3 ? (
-                <Image source={{ uri: input.image3 }} style={styles.image} />
+                <Image
+                  source={{ uri: baseURL + input.image3 }}
+                  style={styles.image}
+                />
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -882,7 +921,10 @@ const EditProduct = ({ navigation, route }: Props) => {
               ]}
             >
               {input.image4 ? (
-                <Image source={{ uri: input.image4 }} style={styles.image} />
+                <Image
+                  source={{ uri: baseURL + input.image4 }}
+                  style={styles.image}
+                />
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -1415,6 +1457,7 @@ const styles = StyleSheet.create({
   textarea: {
     borderRadius: 5,
     marginVertical: normaliseH(10),
+    padding: 5,
   },
   price: {
     marginHorizontal: 5,

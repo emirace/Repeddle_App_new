@@ -20,6 +20,7 @@ import useProducts from "../hooks/useProducts";
 import useUser from "../hooks/useUser";
 import SearchBar from "../components/SearchBar";
 import Announcement from "../components/Announcement";
+import CartIcon from "../components/ui/cartIcon";
 
 const WIDTH = Dimensions.get("screen").width;
 
@@ -29,6 +30,7 @@ const numColumns = 2;
 
 const Home = ({ navigation }: any) => {
   const { themeMode } = useThemeContext();
+  const { colors } = useTheme();
 
   const { products, fetchProducts, loading } = useProducts();
   const { getTopSellers } = useUser();
@@ -93,7 +95,7 @@ const Home = ({ navigation }: any) => {
       {
         translateY: animatedValue.interpolate({
           inputRange: [0, 50],
-          outputRange: [0, -50],
+          outputRange: [0, -65],
           extrapolate: "clamp",
         }),
       },
@@ -176,7 +178,7 @@ const Home = ({ navigation }: any) => {
         mode="small"
         style={{
           zIndex: 20,
-          marginBottom: 10,
+          paddingTop: 13,
         }}
       >
         <View>
@@ -186,7 +188,8 @@ const Home = ({ navigation }: any) => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              position: "relative",
+              paddingBottom: 10,
+              marginTop: 15,
             }}
           >
             <Animated.Image
@@ -226,9 +229,13 @@ const Home = ({ navigation }: any) => {
                 logo2Animation,
               ]}
             />
-            <View style={{ flexDirection: "row" }}>
-              <IconButton icon="bell" />
-              <IconButton icon="cart" onPress={() => navigation.push("Cart")} />
+            <View style={{ flexDirection: "row", marginRight: 6 }}>
+              <IconButton icon="bell-outline" iconColor={colors.onBackground} />
+
+              <CartIcon
+                iconColor={colors.onBackground}
+                onPress={() => navigation.push("Cart")}
+              />
             </View>
           </View>
           <View style={styles.content}>
@@ -271,7 +278,7 @@ const Home = ({ navigation }: any) => {
         onEndReached={handleMore}
         onEndReachedThreshold={0}
         ListFooterComponent={() => <Footer isLoading={loading} />}
-        style={{ paddingTop: 40 }}
+        style={{ paddingTop: 60, marginTop: 10 }}
       />
     </View>
   );

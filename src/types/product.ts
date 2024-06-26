@@ -185,6 +185,8 @@ export type ICreateProduct = Omit<
   | "reviews"
 >;
 
+export type Wishlist = IProduct;
+
 export type IBrand = {
   name: string;
   alpha: string;

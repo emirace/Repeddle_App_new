@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   FlatList,
   Modal,
   StyleSheet,
@@ -16,6 +15,7 @@ import { OrderListNavigationProp } from "../../types/navigation/stack"
 import { IOrder } from "../../types/order"
 import { currency, region } from "../../utils/common"
 import moment from "moment"
+import Loader from "../../components/ui/Loader"
 
 type Props = {}
 
@@ -33,7 +33,7 @@ const Purchase = (props: Props) => {
   return (
     <View>
       {loading ? (
-        <ActivityIndicator size={"large"} color={colors.primary} />
+        <Loader />
       ) : !orders.length ? (
         <View style={{ alignItems: "center", paddingVertical: 20 }}>
           <Text

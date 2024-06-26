@@ -24,6 +24,7 @@ import PayWithFlutterwave from "flutterwave-react-native"
 import Payfast from "../components/paymentMethod/Payfast"
 import useOrder from "../hooks/useOrder"
 import { RedirectParams } from "flutterwave-react-native/dist/PayWithFlutterwave"
+import { baseURL } from "../services/api"
 
 type Props = CheckoutNavigationProp
 
@@ -58,8 +59,10 @@ const Checkout = ({ navigation }: Props) => {
   }
 
   const handleOnRedirect = async (result: RedirectParams) => {
+    console.log(result, "res")
     try {
       if (result.status !== "successful") {
+        console.log("unsuccessfull")
         setIsLoading(false)
         return
       }
@@ -67,6 +70,10 @@ const Checkout = ({ navigation }: Props) => {
     } catch (err) {
       console.log(err)
     }
+  }
+
+  const onError = () => {
+    setIsLoading(false)
   }
 
   const placeOrderHandler = async ({
@@ -103,7 +110,7 @@ const Checkout = ({ navigation }: Props) => {
         }}
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
+        <Appbar.Content title="Checkout" />
         <Appbar.Action icon="magnify" />
       </Appbar.Header>
       <ScrollView style={styles.content}>
@@ -117,7 +124,10 @@ const Checkout = ({ navigation }: Props) => {
           {cart.map((item) => (
             <View style={styles.itemCont} key={item._id}>
               <View style={styles.item}>
-                <Image source={{ uri: item.images[0] }} style={styles.image} />
+                <Image
+                  source={{ uri: baseURL + item.images[0] }}
+                  style={styles.image}
+                />
                 <View style={styles.details}>
                   <Text
                     style={styles.name}
@@ -337,16 +347,19 @@ const Checkout = ({ navigation }: Props) => {
           ) : (
             <PayWithFlutterwave
               onRedirect={handleOnRedirect}
+              onInitializeError={onError}
+              onAbort={onError}
               options={{
                 tx_ref: generateTransactionRef(10),
-                authorization: API_KEY,
+                authorization:
+                  "FLWPUBK_TEST-6a1e30713a8c6962ecb7d6cfbda2df69-X",
                 customer: {
                   email: user?.email ?? "",
                   name: `${user?.firstName} ${user?.lastName}`,
                 },
                 amount: total,
                 currency: "NGN",
-                // payment_options: "card",
+                payment_options: "card",
                 customizations: {
                   title: "Repeddle",
                   description: "Payment for order",

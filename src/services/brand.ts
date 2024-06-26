@@ -11,6 +11,7 @@ export const fetchBrandsService = async (
     if (params && params.length) {
       url = url + `?${params}`;
     }
+
     const resp: { brands: IBrand[]; status: boolean } = await api.get(url);
 
     if (!resp.status) {

@@ -18,6 +18,8 @@ import { Ionicons } from "@expo/vector-icons"
 import moment from "moment"
 import useProducts from "../../hooks/useProducts"
 import { IProduct } from "../../types/product"
+import Loader from "../../components/ui/Loader"
+import { baseURL } from "../../services/api"
 
 type Props = ProductListNavigationProp
 
@@ -133,7 +135,7 @@ const ProductList = ({ navigation }: Props) => {
         <Text style={styles.buttonText}>Add Product</Text>
       </TouchableOpacity>
       {loading ? (
-        <ActivityIndicator color={colors.primary} size={"large"} />
+        <Loader />
       ) : error ? (
         <Text style={{ color: "red" }}>{error}</Text>
       ) : products.products.length > 0 ? (
@@ -178,7 +180,10 @@ const RenderItem = ({ item, navigation, confirmDelete }: RenderItemProps) => {
         onPress={() => navigation.push("Product", { slug: item.slug })}
         style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
       >
-        <Image style={styles.itemImage} source={{ uri: item.images[0] }} />
+        <Image
+          style={styles.itemImage}
+          source={{ uri: baseURL + item.images[0] }}
+        />
         <View style={styles.itemDetailsContainer}>
           <Text style={styles.itemName} numberOfLines={1}>
             {item.name}
@@ -196,7 +201,7 @@ const RenderItem = ({ item, navigation, confirmDelete }: RenderItemProps) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.iconButton}
-        onPress={() => navigation.push("EditProduct", { id: item.slug })}
+        onPress={() => navigation.push("EditProduct", { id: item._id })}
       >
         <Ionicons name="create" size={20} color={colors.primary} />
       </TouchableOpacity>

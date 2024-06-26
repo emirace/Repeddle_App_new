@@ -23,6 +23,7 @@ import DeliveryOptions from "../components/DeliveryOptions"
 import CustomAlert from "../components/CustomAlert"
 import { normaliseW } from "../utils/normalize"
 import { baseURL } from "../services/api"
+import WishlistIcon from "../components/ui/WishlistIcon"
 
 type Props = CartNavigationProp
 
@@ -70,9 +71,13 @@ const Cart = ({ navigation }: Props) => {
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Cart" />
-        <Appbar.Action
-          icon="heart"
-          onPress={() => navigation.push("Wishlist")}
+        <Appbar.Content
+          title={
+            <WishlistIcon
+              iconColor={colors.onBackground}
+              onPress={() => navigation.push("Wishlist")}
+            />
+          }
         />
       </Appbar.Header>
       <Text style={styles.description}>
@@ -136,11 +141,12 @@ type RenderProps = {
 
 const RenderItem = ({ item, navigation }: RenderProps) => {
   const { colors } = useTheme()
-  const { user } = useAuth()
+  const { user, addToWishlist, error } = useAuth()
   const { removeFromCart } = useCart()
 
   const [modalVisible, setModalVisible] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
+  const [addToWish, setAddToWish] = useState(false)
 
   const handleConfirm = async () => {
     // do something when Confirm button is pressed
@@ -164,7 +170,19 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
       Alert.alert("You can't add your product to wishlist")
       return
     }
-    // TODO: add to wishlist
+    setAddToWish(true)
+
+    const res = await addToWishlist(item._id)
+    if (res) {
+      // TODO: add alert
+      Alert.alert(res)
+      removeFromCart(item._id)
+      setShowAlert(false)
+    }
+    // TODO: add alert
+    else Alert.alert(error ?? "Failed to add to wishlist")
+
+    setAddToWish(false)
   }
 
   return (
@@ -181,7 +199,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
       >
         <Image
           source={{
-            uri: item.seller.image,
+            uri: baseURL + item.seller.image,
           }}
           style={[styles.image, { width: 30, height: 30, marginRight: 10 }]}
         />

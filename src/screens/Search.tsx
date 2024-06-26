@@ -1,114 +1,118 @@
 import {
-  ActivityIndicator,
+  Dimensions,
   FlatList,
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { Ionicons } from "@expo/vector-icons";
-import { IProduct } from "../types/product";
-import { normaliseH } from "../utils/normalize";
-import { SearchOptionsKey, SearchOptionsObject } from "../types/search";
-import MyButton from "../components/MyButton";
-import { SearchScreenNavigationProp } from "../types/navigation/stack";
-import ProductItem from "../components/ProductItem";
-import { Appbar, IconButton, Text, useTheme } from "react-native-paper";
-import SearchNavbar from "../components/SearchNavbar";
-import Filters from "../components/Filters";
-import useProducts from "../hooks/useProducts";
-import SearchBar from "../components/SearchBar";
-import CustomBackdrop from "../components/CustomBackdrop";
-import { lightTheme } from "../constant/theme";
+} from "react-native"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet"
+import { Ionicons } from "@expo/vector-icons"
+import { IProduct } from "../types/product"
+import { normaliseH } from "../utils/normalize"
+import { FilterOptions } from "../types/search"
+import { SearchScreenNavigationProp } from "../types/navigation/stack"
+import ProductItem from "../components/ProductItem"
+import { Appbar, Button, Searchbar, Text, useTheme } from "react-native-paper"
+import Filters from "../components/Filters"
+import useProducts from "../hooks/useProducts"
+import CustomBackdrop from "../components/CustomBackdrop"
+import { lightTheme } from "../constant/theme"
+import useCategory from "../hooks/useCategory"
+import Loader from "../components/ui/Loader"
+import CartIcon from "../components/ui/cartIcon"
 
-const numColumns = 2;
+const numColumns = 2
 
 const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["87%"], []);
+  const bottomSheetRef = useRef<BottomSheetModal>(null)
+  const snapPoints = useMemo(() => ["87%"], [])
 
-  const { fetchProducts, loading, products: productData } = useProducts();
-  const { colors } = useTheme();
+  const { fetchProducts, loading, products: productData } = useProducts()
+  const { categories, fetchCategories } = useCategory()
+  const { colors } = useTheme()
 
-  const [hasResult, setHasResult] = useState(true);
-  const [products, setProducts] = useState<IProduct[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [hasResult, setHasResult] = useState(true)
+  const [products, setProducts] = useState<IProduct[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [query, setQuery] = useState("")
 
-  const [filters, setFilters] = useState<SearchOptionsObject>(route.params);
-  const [tempFilters, setTempFilters] = useState<SearchOptionsObject>(
-    route.params
-  );
+  const [filters, setFilters] = useState<FilterOptions>({})
 
-  const fetchProd = useCallback(async () => {
-    setHasResult(true);
-    const params: string[][] = [];
+  const fetchProd = async () => {
+    setHasResult(true)
+    const params: string[][] = []
 
-    Object.entries(filters).forEach((val) =>
-      params.push([val[0], val[1].toString()])
-    );
-
-    const string = new URLSearchParams(params).toString();
-
-    return await fetchProducts(string);
-  }, [filters]);
-
-  useEffect(() => {
-    const fetch = async () => {
-      const res = await fetchProd();
-
-      // check if there are products for query
-      if (res && productData.totalCount !== 0) {
-        setProducts(productData.products);
-        return;
-      }
-
-      await fetchProducts();
-      setHasResult(false);
-    };
-
-    fetch();
-  }, [fetchProd]);
-
-  const formatData = (data: IProduct[]) => {
-    const isEven = data.length % numColumns === 0;
-
-    if (!isEven) {
-      const empty = { ...data[0], empty: true };
-      data.push(empty);
+    if (filters && Object.keys(filters).length) {
+      const filterParam = joinFilterParm(filters)
+      if (filterParam.length) params.push(["filter", filterParam])
     }
 
-    return data;
-  };
+    if (currentPage) params.push(["page", currentPage.toString()])
 
-  const handleSearch = async (query: string) => {
-    handleTempFilters("query", query);
-    setCurrentPage(1);
-  };
+    if (query) params.push(["search", query])
 
-  const handleFilter = async () => {
-    setProducts([]);
-    setFilters({ ...filters, page: 1 });
-  };
+    const string = new URLSearchParams(params).toString()
 
-  const handleTempFilters = async (
-    filterType: SearchOptionsKey,
-    filterValue: string | number
-  ) => {
-    setTempFilters({ ...filters, [filterType]: filterValue });
-  };
+    console.log(string)
+
+    const res = await fetchProducts(string)
+    console.log(res)
+
+    // check if there are products return from query
+    if (res && productData.totalCount !== 0) {
+      setProducts(productData.products)
+      return
+    }
+
+    console.log("no result")
+
+    await fetchProducts()
+    setHasResult(false)
+  }
+
+  const joinFilterParm = (param: { [key: string]: string }) => {
+    const params = Object.keys(param)
+      .map((obj) => `${obj}:${param[obj]}`)
+      .join(",")
+    return params
+  }
+
+  useEffect(() => {
+    fetchProd()
+  }, [currentPage])
+  // fetch when current page changes
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const formatData = (data: IProduct[]) => {
+    const isEven = data.length % numColumns === 0
+
+    if (!isEven) {
+      const empty = { ...data[0], empty: true }
+      data.push(empty)
+    }
+
+    return data
+  }
+
+  const applyFilter = async () => {
+    setProducts([])
+    setCurrentPage(1)
+    await fetchProd()
+  }
+
+  const handleFilter = (key: keyof FilterOptions, value: string | number) => {
+    setFilters({ ...filters, [key]: value })
+  }
 
   const handleMore = () => {
     if (currentPage < productData.totalPages) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage(currentPage + 1)
     }
-  };
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -121,10 +125,18 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
       >
         <Appbar.BackAction
           onPress={() => navigation.goBack()}
-          color={colors.background}
+          color={colors.onBackground}
         />
-        <SearchBar onPress={handleSearch} />
-        <IconButton icon="cart-outline" iconColor={colors.background} />
+        <Searchbar
+          style={styles.searchbar}
+          inputStyle={{ minHeight: 0 }}
+          value={query}
+          onChangeText={setQuery}
+          onIconPress={applyFilter}
+        />
+        <Appbar.Content
+          title={<CartIcon onPress={() => navigation.push("Cart")} />}
+        />
       </Appbar.Header>
       <View style={styles.container}>
         <View style={styles.filterCont}>
@@ -135,9 +147,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
             <Ionicons name="filter" color={colors.onBackground} size={24} />
           </TouchableOpacity>
           <View style={styles.resultCont}>
-            <Text style={[styles.result]}>
-              {productData.totalCount} results
-            </Text>
+            <Text style={[styles.result]}>{products.length} results</Text>
           </View>
         </View>
         {!hasResult && !loading && (
@@ -183,36 +193,40 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
             keyboardShouldPersistTaps={"always"}
           >
             <Filters
-              tempFilters={tempFilters}
-              handleTempFilter={handleTempFilters}
+              categories={categories}
+              filters={filters}
+              handleFilter={handleFilter}
+              setFilters={setFilters}
             />
           </BottomSheetScrollView>
 
           <View style={styles.button}>
-            <MyButton
-              text={`Apply filter (${Object.keys(tempFilters).length})`}
+            <Button
+              mode="contained"
+              style={{ borderRadius: 5, height: 50, padding: 5 }}
+              children={`Apply filter (${Object.keys(filters).length})`}
               onPress={() => {
-                handleFilter();
-                bottomSheetRef.current?.close();
+                applyFilter()
+                bottomSheetRef.current?.close()
               }}
             />
           </View>
         </BottomSheetModal>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const RenderItem = ({
   item,
   navigation,
 }: {
-  item: IProduct & { empty?: boolean };
-  navigation: SearchScreenNavigationProp["navigation"];
+  item: IProduct & { empty?: boolean }
+  navigation: SearchScreenNavigationProp["navigation"]
 }) => {
-  let { itemStyles, invisible } = styles;
+  let { itemStyles, invisible } = styles
 
-  if (item.empty) return <View style={[itemStyles, invisible]}></View>;
+  if (item.empty) return <View style={[itemStyles, invisible]}></View>
 
   return (
     <View style={itemStyles}>
@@ -221,30 +235,28 @@ const RenderItem = ({
         product={item}
       />
     </View>
-  );
-};
+  )
+}
 
 const Footer = ({ loading }: { loading: boolean }) => {
-  if (!loading) return null;
-  const { colors } = useTheme();
+  if (!loading) return null
+  const { colors } = useTheme()
 
-  return (
-    <View
-      style={{
-        backgroundColor: colors.background,
-      }}
-    >
-      <ActivityIndicator size="large" color={colors.primary} />
-    </View>
-  );
-};
+  return <Loader />
+}
 
-export default Search;
+export default Search
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "relative",
+  },
+  searchbar: {
+    width: Dimensions.get("screen").width * 0.65,
+    borderRadius: 5,
+    height: 40,
+    marginHorizontal: "auto",
   },
   filterCont: {
     flexDirection: "row",
@@ -282,4 +294,4 @@ const styles = StyleSheet.create({
     shadowRadius: 3.5,
     elevation: 5,
   },
-});
+})

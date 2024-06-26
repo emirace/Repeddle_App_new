@@ -12,7 +12,7 @@ import { makePayFastPaymentService } from "../../services/others"
 
 type Props = {
   totalPrice: number
-  placeOrderHandler: () => IOrder | null
+  placeOrderHandler: () => Promise<IOrder | undefined>
 }
 
 const Payfast = ({ placeOrderHandler, totalPrice }: Props) => {
