@@ -10,14 +10,16 @@ import homeStyles from "./homeStyles"
 import { TopSellers } from "../../types/user"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Text, useTheme } from "react-native-paper"
+import { MainScreenNavigationProp } from "../../types/navigation/stack"
 
 type Props = {
   isLoading?: boolean
   error?: string
   seller: TopSellers[]
+  navigation: MainScreenNavigationProp["navigation"]
 }
 
-const TopSellersHome = ({ isLoading, seller, error }: Props) => {
+const TopSellersHome = ({ isLoading, seller, error, navigation }: Props) => {
   const { colors } = useTheme()
 
   return (
@@ -39,7 +41,9 @@ const TopSellersHome = ({ isLoading, seller, error }: Props) => {
         <View style={homeStyles.categoryScroll}>
           <FlatList
             data={seller}
-            renderItem={({ item }) => <RenderTopSeller item={item} />}
+            renderItem={({ item }) => (
+              <RenderTopSeller navigation={navigation} item={item} />
+            )}
             horizontal
             showsHorizontalScrollIndicator={false}
             snapToInterval={260}
@@ -53,10 +57,17 @@ const TopSellersHome = ({ isLoading, seller, error }: Props) => {
   )
 }
 
-const RenderTopSeller = ({ item }: { item: TopSellers }) => (
+const RenderTopSeller = ({
+  item,
+  navigation,
+}: {
+  item: TopSellers
+  navigation: MainScreenNavigationProp["navigation"]
+}) => (
   <TouchableOpacity
-  // TODO:
-  //   onPress={() => navigation.navigate('MyAccount', { id: item.userId._id })}
+    onPress={() =>
+      navigation.navigate("MyAccount", { username: item.username })
+    }
   >
     <ImageBackground
       imageStyle={homeStyles.sellerCont}
@@ -64,7 +75,7 @@ const RenderTopSeller = ({ item }: { item: TopSellers }) => (
       resizeMode="cover"
       style={homeStyles.sellerCont}
     >
-      {item.badge && (
+      {item?.badge && (
         <Image
           resizeMode="contain"
           source={{

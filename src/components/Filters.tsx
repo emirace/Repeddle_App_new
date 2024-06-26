@@ -5,13 +5,17 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { lightTheme } from "../constant/theme";
-import { Ionicons } from "@expo/vector-icons";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import { currency } from "../utils/common";
-import { SearchOptionsKey, SearchOptionsObject } from "../types/search";
+} from "react-native"
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { lightTheme } from "../constant/theme"
+import { Ionicons } from "@expo/vector-icons"
+import MultiSlider from "@ptomasroos/react-native-multi-slider"
+import { currency } from "../utils/common"
+import {
+  FilterOptions,
+  SearchOptionsKey,
+  SearchOptionsObject,
+} from "../types/search"
 import {
   availabilitylist,
   color1,
@@ -21,34 +25,36 @@ import {
   shippinglist,
   sizelist,
   typelist,
-} from "../utils/constants";
-import { Text, useTheme } from "react-native-paper";
-import { ICategory } from "../types/category";
-import useBrands from "../hooks/useBrand";
+} from "../utils/constants"
+import { Text, useTheme } from "react-native-paper"
+import { ICategory } from "../types/category"
+import useBrands from "../hooks/useBrand"
 
 type Props = {
-  tempFilters: SearchOptionsObject;
-  handleTempFilter: (key: SearchOptionsKey, val: string | number) => void;
-};
+  filters: FilterOptions
+  handleFilter: (key: keyof FilterOptions, val: string | number) => void
+  setFilters: Dispatch<SetStateAction<FilterOptions>>
+  categories: ICategory[]
+}
 
-const Filters = ({ handleTempFilter, tempFilters }: Props) => {
-  const { colors } = useTheme();
-  const { brands, fetchBrands } = useBrands();
+const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
+  const { colors } = useTheme()
+  const { brands, fetchBrands } = useBrands()
+
+  const [queryBrand, setQueryBrand] = useState<string>("")
 
   const [priceRange, setPriceRange] = useState([
-    +(tempFilters.minPrice ?? 0),
-    +(tempFilters.maxPrice ?? 500000),
-  ]);
-
-  const [queryBrand, setQueryBrand] = useState<string>("");
+    +(filters.minPrice ?? 0),
+    +(filters.maxPrice ?? 500000),
+  ])
 
   useEffect(() => {
-    const params = [["search", queryBrand]];
+    const params = [["search", queryBrand]]
 
-    const string = new URLSearchParams(params).toString();
+    const string = new URLSearchParams(params).toString()
 
-    fetchBrands(string);
-  }, []);
+    fetchBrands(string)
+  }, [])
 
   const [collapse, setCollapse] = useState({
     category: true,
@@ -63,26 +69,24 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
     availability: true,
     type: true,
     pattern: true,
-  });
+  })
 
   const toggleCollapse = (key: keyof typeof collapse, val: boolean) => {
-    setCollapse({ ...collapse, [key]: val });
-  };
+    setCollapse({ ...collapse, [key]: val })
+  }
 
   const handleAfterPriceChange = (values: number[]) => {
-    const [newMinValue, newMaxValue] = values;
-    if (tempFilters.minPrice !== newMinValue) {
-      handleTempFilter("minPrice", newMinValue);
+    const [newMinValue, newMaxValue] = values
+    if (+(filters?.minPrice ?? 0) !== newMinValue) {
+      handleFilter("minPrice", newMinValue)
     }
-    if (tempFilters.maxPrice !== newMaxValue) {
-      handleTempFilter("maxPrice", newMaxValue);
+    if (+(filters?.maxPrice ?? 0) !== newMaxValue) {
+      handleFilter("maxPrice", newMaxValue)
     }
-    setPriceRange(values);
-  };
+    setPriceRange(values)
+  }
 
-  const region = "NGN";
-
-  const categories: ICategory[] = [];
+  const region = "NGN"
 
   return (
     <View style={styles.container}>
@@ -106,9 +110,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
           <View
             style={[styles.list, collapse.category ? {} : styles.inactivate]}
           >
-            <TouchableOpacity
-              onPress={() => handleTempFilter("category", "all")}
-            >
+            <TouchableOpacity onPress={() => handleFilter("category", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
@@ -119,7 +121,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.category || "all" === tempFilters.category
+                    !filters.category || "all" === filters.category
                       ? styles.selected
                       : {},
                   ]}
@@ -131,7 +133,8 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             {categories.length > 0 &&
               categories.map((c) => (
                 <TouchableOpacity
-                  onPress={() => handleTempFilter("category", c.name)}
+                  key={c._id}
+                  onPress={() => handleFilter("category", c.name)}
                 >
                   <View style={styles.listItem}>
                     <Ionicons
@@ -143,7 +146,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                     <Text
                       style={[
                         styles.itemText,
-                        c.name === tempFilters.category ? styles.selected : {},
+                        c.name === filters.category ? styles.selected : {},
                       ]}
                     >
                       {c.name}
@@ -173,15 +176,18 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             <TextInput
               placeholder="Search brands"
               placeholderTextColor="grey"
-              value={queryBrand ?? tempFilters.brand?.toString()}
+              value={queryBrand ?? filters.brand?.toString()}
               onChangeText={(text) => {
-                handleTempFilter("brand", "");
-                setQueryBrand(text);
+                setFilters((prev) => {
+                  delete prev.brand
+                  return prev
+                })
+                setQueryBrand(text)
               }}
               style={[styles.textInput, { color: colors.onBackground }]}
               cursorColor={colors.onBackground}
             />
-            <TouchableOpacity onPress={() => handleTempFilter("brand", "all")}>
+            <TouchableOpacity onPress={() => handleFilter("brand", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
@@ -192,7 +198,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.brand || "all" === tempFilters.brand
+                    !filters.brand || "all" === filters.brand
                       ? styles.selected
                       : {},
                   ]}
@@ -208,9 +214,9 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                   <TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
-                        handleTempFilter("brand", p.name);
-                        setQueryBrand("");
-                        Keyboard.dismiss();
+                        handleFilter("brand", p.name)
+                        setQueryBrand(p.name)
+                        Keyboard.dismiss()
                       }}
                       style={styles.listItem}
                     >
@@ -223,7 +229,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                       <Text
                         style={[
                           styles.itemText,
-                          p.name === tempFilters.brand ? styles.selected : {},
+                          p.name === filters.brand ? styles.selected : {},
                         ]}
                       >
                         {p.name}
@@ -289,7 +295,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
           </TouchableOpacity>
 
           <View style={[styles.list, collapse.deal ? {} : styles.inactivate]}>
-            <TouchableOpacity onPress={() => handleTempFilter("deal", "all")}>
+            <TouchableOpacity onPress={() => handleFilter("deal", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
@@ -300,7 +306,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.deal || "all" === tempFilters.deal
+                    !filters.deal || "all" === filters.deal
                       ? styles.selected
                       : {},
                   ]}
@@ -311,9 +317,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             </TouchableOpacity>
             {deals.map((p) => (
               <View key={p.id}>
-                <TouchableOpacity
-                  onPress={() => handleTempFilter("deal", p.value)}
-                >
+                <TouchableOpacity onPress={() => handleFilter("deal", p.value)}>
                   <View style={styles.listItem}>
                     <Ionicons
                       style={{ marginRight: 5 }}
@@ -324,7 +328,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                     <Text
                       style={[
                         styles.itemText,
-                        p.value === tempFilters.deal ? styles.selected : {},
+                        p.value === filters.deal ? styles.selected : {},
                       ]}
                     >
                       {p.name}
@@ -356,52 +360,42 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
           <View
             style={[styles.rating, collapse.review ? {} : styles.inactivate]}
           >
-            <TouchableOpacity onPress={() => handleTempFilter("rating", 1)}>
+            <TouchableOpacity onPress={() => handleFilter("rating", 1)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={
-                  +(tempFilters?.rating ?? 0) >= 1 ? "star" : "star-outline"
-                }
+                name={+(filters?.rating ?? 0) >= 1 ? "star" : "star-outline"}
                 size={26}
                 color={lightTheme.colors.primary}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleTempFilter("rating", 2)}>
+            <TouchableOpacity onPress={() => handleFilter("rating", 2)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={
-                  +(tempFilters?.rating ?? 0) >= 2 ? "star" : "star-outline"
-                }
+                name={+(filters?.rating ?? 0) >= 2 ? "star" : "star-outline"}
                 size={26}
                 color={lightTheme.colors.primary}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleTempFilter("rating", 3)}>
+            <TouchableOpacity onPress={() => handleFilter("rating", 3)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={
-                  +(tempFilters?.rating ?? 0) >= 3 ? "star" : "star-outline"
-                }
+                name={+(filters?.rating ?? 0) >= 3 ? "star" : "star-outline"}
                 size={26}
                 color={lightTheme.colors.primary}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleTempFilter("rating", 4)}>
+            <TouchableOpacity onPress={() => handleFilter("rating", 4)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={
-                  +(tempFilters?.rating ?? 0) >= 4 ? "star" : "star-outline"
-                }
+                name={+(filters?.rating ?? 0) >= 4 ? "star" : "star-outline"}
                 size={26}
                 color={lightTheme.colors.primary}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleTempFilter("rating", 5)}>
+            <TouchableOpacity onPress={() => handleFilter("rating", 5)}>
               <Ionicons
                 style={{ marginRight: 20 }}
-                name={
-                  +(tempFilters?.rating ?? 0) >= 5 ? "star" : "star-outline"
-                }
+                name={+(filters?.rating ?? 0) >= 5 ? "star" : "star-outline"}
                 size={26}
                 color={lightTheme.colors.primary}
               />
@@ -425,12 +419,12 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.color ? {} : styles.inactivate]}>
-            <TouchableOpacity onPress={() => handleTempFilter("color", "all")}>
+            <TouchableOpacity onPress={() => handleFilter("color", "all")}>
               <View style={styles.listItem}>
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.color || "all" === tempFilters.color
+                    !filters.color || "all" === filters.color
                       ? styles.selected
                       : {},
                   ]}
@@ -443,7 +437,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
               {color1.map((c, i) => (
                 <TouchableOpacity
                   style={[
-                    c.name === tempFilters.color
+                    c.name === filters.color
                       ? {
                           borderWidth: 2,
                           borderColor: lightTheme.colors.primary,
@@ -451,7 +445,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                       : {},
                   ]}
                   key={c.id}
-                  onPress={() => handleTempFilter("color", c.name)}
+                  onPress={() => handleFilter("color", c.name)}
                 >
                   <View style={styles.listItem}>
                     {c.name === "multiculour" ? (
@@ -497,12 +491,12 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.size ? {} : styles.inactivate]}>
-            <TouchableOpacity onPress={() => handleTempFilter("size", "all")}>
+            <TouchableOpacity onPress={() => handleFilter("size", "all")}>
               <View style={styles.listItem}>
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.size || "all" === tempFilters.size
+                    !filters.size || "all" === filters.size
                       ? styles.selected
                       : {},
                   ]}
@@ -515,7 +509,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
               {sizelist.map((c, i) => (
                 <TouchableOpacity
                   key={c.id}
-                  onPress={() => handleTempFilter("size", c.name)}
+                  onPress={() => handleFilter("size", c.name)}
                 >
                   <View style={styles.listItem}>
                     <View
@@ -527,7 +521,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                         height: 20,
                         borderRadius: 5,
                         borderColor:
-                          c.name === tempFilters.size
+                          c.name === filters.size
                             ? lightTheme.colors.primary
                             : colors.onBackground,
                       }}
@@ -536,7 +530,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                         style={[
                           [
                             styles.itemText,
-                            c.name === tempFilters.size ? styles.selected : {},
+                            c.name === filters.size ? styles.selected : {},
                           ],
                           { textTransform: "uppercase" },
                         ]}
@@ -569,9 +563,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
           <View
             style={[styles.list, collapse.shipping ? {} : styles.inactivate]}
           >
-            <TouchableOpacity
-              onPress={() => handleTempFilter("shipping", "all")}
-            >
+            <TouchableOpacity onPress={() => handleFilter("shipping", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
@@ -582,19 +574,19 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.shipping || "all" === tempFilters.shipping
+                    !filters.shipping || "all" === filters.shipping
                       ? styles.selected
                       : {},
                   ]}
                 >
-                  All Product
+                  All
                 </Text>
               </View>
             </TouchableOpacity>
             {shippinglist.map((c, i) => (
               <TouchableOpacity
                 key={c.id}
-                onPress={() => handleTempFilter("shipping", c.name)}
+                onPress={() => handleFilter("shipping", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
@@ -606,7 +598,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === tempFilters.shipping ? styles.selected : {},
+                      c.name === filters.shipping ? styles.selected : {},
                     ]}
                   >
                     {c.name}
@@ -635,9 +627,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
           <View
             style={[styles.list, collapse.condition ? {} : styles.inactivate]}
           >
-            <TouchableOpacity
-              onPress={() => handleTempFilter("condition", "all")}
-            >
+            <TouchableOpacity onPress={() => handleFilter("condition", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
@@ -648,7 +638,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.condition || "all" === tempFilters.condition
+                    !filters.condition || "all" === filters.condition
                       ? styles.selected
                       : {},
                   ]}
@@ -659,8 +649,8 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             </TouchableOpacity>
             {conditionlist.map((c, i) => (
               <TouchableOpacity
-                key={c.id}
-                onPress={() => handleTempFilter("price", c.name)}
+                key={c._id}
+                onPress={() => handleFilter("condition", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
@@ -672,7 +662,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === tempFilters.condition ? styles.selected : {},
+                      c.name === filters.condition ? styles.selected : {},
                     ]}
                   >
                     {c.name}
@@ -707,7 +697,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             ]}
           >
             <TouchableOpacity
-              onPress={() => handleTempFilter("availability", "all")}
+              onPress={() => handleFilter("availability", "all")}
             >
               <View style={styles.listItem}>
                 <Ionicons
@@ -719,8 +709,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.availability ||
-                    "all" === tempFilters.availability
+                    !filters.availability || "all" === filters.availability
                       ? styles.selected
                       : {},
                   ]}
@@ -732,7 +721,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             {availabilitylist.map((c, i) => (
               <TouchableOpacity
                 key={c.id}
-                onPress={() => handleTempFilter("availability", c.name)}
+                onPress={() => handleFilter("availability", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
@@ -744,9 +733,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === tempFilters.availability
-                        ? styles.selected
-                        : {},
+                      c.name === filters.availability ? styles.selected : {},
                     ]}
                   >
                     {c.name}
@@ -771,7 +758,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             />
           </TouchableOpacity>
           <View style={[styles.list, collapse.type ? {} : styles.inactivate]}>
-            <TouchableOpacity onPress={() => handleTempFilter("type", "all")}>
+            <TouchableOpacity onPress={() => handleFilter("type", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
@@ -782,7 +769,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.type || "all" === tempFilters.type
+                    !filters.type || "all" === filters.type
                       ? styles.selected
                       : {},
                   ]}
@@ -794,7 +781,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             {typelist.map((c, i) => (
               <TouchableOpacity
                 key={c.id}
-                onPress={() => handleTempFilter("type", c.name)}
+                onPress={() => handleFilter("type", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
@@ -806,7 +793,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === tempFilters.type ? styles.selected : {},
+                      c.name === filters.type ? styles.selected : {},
                     ]}
                   >
                     {c.name}
@@ -835,9 +822,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
           <View
             style={[styles.list, collapse.pattern ? {} : styles.inactivate]}
           >
-            <TouchableOpacity
-              onPress={() => handleTempFilter("pattern", "all")}
-            >
+            <TouchableOpacity onPress={() => handleFilter("pattern", "all")}>
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
@@ -848,7 +833,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                 <Text
                   style={[
                     styles.itemText,
-                    !tempFilters.pattern || "all" === tempFilters.pattern
+                    !filters.pattern || "all" === filters.pattern
                       ? styles.selected
                       : {},
                   ]}
@@ -860,7 +845,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
             {patternlist.map((c, i) => (
               <TouchableOpacity
                 key={c.id}
-                onPress={() => handleTempFilter("pattern", c.name)}
+                onPress={() => handleFilter("pattern", c.name)}
               >
                 <View style={styles.listItem}>
                   <Ionicons
@@ -872,7 +857,7 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                   <Text
                     style={[
                       styles.itemText,
-                      c.name === tempFilters.pattern ? styles.selected : {},
+                      c.name === filters.pattern ? styles.selected : {},
                     ]}
                   >
                     {c.name}
@@ -884,10 +869,10 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
         </View>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default Filters;
+export default Filters
 
 const styles = StyleSheet.create({
   container: {
@@ -948,4 +933,4 @@ const styles = StyleSheet.create({
   },
   rating: { flexDirection: "row", marginHorizontal: 5, marginVertical: 5 },
   selected: { fontWeight: "bold", color: lightTheme.colors.primary },
-});
+})

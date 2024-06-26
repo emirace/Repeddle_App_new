@@ -1,19 +1,7 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons"
 import React, { useState } from "react"
-import {
-  StyleSheet,
-  Switch,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native"
-import {
-  ActivityIndicator,
-  IconButton,
-  Text,
-  Tooltip,
-  useTheme,
-} from "react-native-paper"
+import { StyleSheet, Switch, TextInput, View } from "react-native"
+import { Button, IconButton, Text, Tooltip, useTheme } from "react-native-paper"
 import { IRebundle } from "../types/user"
 import { currentAddress, goto, region } from "../utils/common"
 import { getBackendErrorMessage } from "../utils/error"
@@ -114,7 +102,6 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
               <TextInput
                 style={{
                   backgroundColor: colors.elevation.level2,
-
                   flex: 1,
                   height: 40,
                   borderTopLeftRadius: 5,
@@ -126,18 +113,17 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
                   setRebundleError("")
                 }}
               />
-              {loadingRebundle ? (
-                <ActivityIndicator size={"large"} color={colors.primary} />
-              ) : (
-                <TouchableOpacity
-                  onPress={() => handleRebundle()}
-                  style={[styles.button, { backgroundColor: colors.primary }]}
-                >
-                  <Text style={{ color: "white", fontWeight: "bold" }}>
-                    Activate
-                  </Text>
-                </TouchableOpacity>
-              )}
+
+              <Button
+                mode="contained"
+                onPress={() => handleRebundle()}
+                loading={loadingRebundle}
+                style={[styles.button, { backgroundColor: colors.primary }]}
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  Activate
+                </Text>
+              </Button>
             </View>
             {rebundleError ? (
               <Text style={{ color: "red" }}>{rebundleError}</Text>

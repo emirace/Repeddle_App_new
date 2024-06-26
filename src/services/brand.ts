@@ -12,14 +12,14 @@ export const fetchBrandsService = async (
       url = url + `?${params}`
     }
 
-    const resp: { data: IBrand[]; status: boolean } = await api.get(url)
+    const resp: { brands: IBrand[]; status: boolean } = await api.get(url)
 
     if (!resp.status) {
       // Handle Fetch brands error, e.g., display an error message to the user
       throw new Error("Fetch brands failed: " + getBackendErrorMessage(resp))
     }
 
-    return resp.data
+    return resp.brands
   } catch (error) {
     // Handle network errors or other exceptions
     // You can log the error or perform other error-handling actions

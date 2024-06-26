@@ -1,6 +1,4 @@
 import {
-  ActivityIndicator,
-  Alert,
   Image,
   Modal,
   Pressable,
@@ -34,6 +32,7 @@ import SelectDropdown from "react-native-select-dropdown"
 import { displayDeliveryStatus } from "../../utils/render"
 import { normaliseH } from "../../utils/normalize"
 import DeliveryHistory from "../../components/DeliveryHistory"
+import Loader from "../../components/ui/Loader"
 
 type Props = OrderDetailsNavigationProp
 
@@ -140,7 +139,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
       </Appbar.Header>
 
       {loading ? (
-        <ActivityIndicator size={"large"} color={colors.primary} />
+        <Loader />
       ) : error ? (
         <Text1 style={{ color: "red" }}>{error}</Text1>
       ) : order ? (

@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Alert,
   Modal,
   Pressable,
@@ -7,10 +6,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Dimensions,
 } from "react-native"
 import React, { useState } from "react"
 import { normaliseH, normaliseW } from "../utils/normalize"
-import { Text, useTheme } from "react-native-paper"
+import { Button, IconButton, Text, useTheme } from "react-native-paper"
 import { Ionicons } from "@expo/vector-icons"
 import MyButton from "./MyButton"
 import { IComment, IProduct } from "../types/product"
@@ -93,11 +93,14 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
       setProduct(newProd)
       // TODO: add notification
       Alert.alert("Comment added to product")
+      setModalVisible(false)
     } // TODO: add notification
     else Alert.alert(error)
 
     setLoadingCreateReview(false)
   }
+
+  console.log(product.comments)
 
   return (
     <View style={styles.container}>
@@ -105,15 +108,17 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
         <Text style={styles.header}>Comments</Text>
       </View>
       <View>
-        {comments &&
-          comments.map((item, index) => (
-            <Comment
-              product={product}
-              setProduct={setProduct}
-              comment={item}
-              key={index}
-            />
-          ))}
+        {product.comments &&
+          product.comments
+            .reverse()
+            .map((item, index) => (
+              <Comment
+                product={product}
+                setProduct={setProduct}
+                comment={item}
+                key={index}
+              />
+            ))}
       </View>
       <Modal
         animationType="slide"
@@ -154,18 +159,22 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
                 style={{ width: 100, height: 100 }}
               />
             )}
-            {loadingUpload ? (
-              <ActivityIndicator />
-            ) : (
-              <Pressable style={styles.addimage} onPress={pickImage}>
-                <Text>Add Image</Text>
-              </Pressable>
-            )}
-            <MyButton
-              text="Submit"
-              disable={loadingCreateReview}
-              onPress={submitCommentHandler}
-            />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <IconButton
+                onPress={pickImage}
+                icon="file-image-plus-outline"
+                loading={loadingUpload}
+              />
+
+              <Button
+                children="Submit"
+                mode="contained"
+                disabled={loadingCreateReview}
+                onPress={submitCommentHandler}
+                loading={loadingCreateReview}
+                style={{ flex: 1 }}
+              />
+            </View>
           </View>
         </View>
       </Modal>
@@ -197,7 +206,7 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
 export default CommentSection
 
 const styles = StyleSheet.create({
-  container: { marginHorizontal: 10 },
+  container: { marginHorizontal: 10, marginBottom: 20 },
   headerCont: { marginBottom: 20 },
   header: {
     fontWeight: "bold",
@@ -209,6 +218,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 2,
+    marginTop: 10,
   },
   buttonText: { color: "#fff", fontWeight: "bold" },
   centeredView: {
@@ -221,6 +231,7 @@ const styles = StyleSheet.create({
     paddingVertical: normaliseH(20),
     paddingHorizontal: normaliseW(20),
     borderRadius: 5,
+    width: Dimensions.get("screen").width * 0.9,
   },
   modalTitle: { fontWeight: "bold", fontSize: 20 },
   heading: {
@@ -233,13 +244,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 5,
     marginVertical: normaliseH(20),
+    padding: 6,
   },
   addimage: {
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 5,
-    margin: 5,
-    width: 100,
-    alignItems: "center",
+    // borderWidth: 1,
+    // borderRadius: 5,
+    // padding: 5,
+    // margin: 5,
+    // width: 100,
+    // alignItems: "center",
   },
 })

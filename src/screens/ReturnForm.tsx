@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native"
 import React, { useState } from "react"
-import { Appbar, Text, useTheme } from "react-native-paper"
+import { Appbar, Button, Text, useTheme } from "react-native-paper"
 import { ReturnFormNavigationProp } from "../types/navigation/stack"
 import SelectDropdown from "react-native-select-dropdown"
 import { Entypo, Ionicons } from "@expo/vector-icons"
@@ -424,19 +424,17 @@ const ReturnForm = ({ navigation, route }: Props) => {
                   width: "100%",
                 }}
               >
-                <TouchableOpacity
+                <Button
+                  mode="contained"
                   style={[styles.button, { backgroundColor: colors.primary }]}
                   onPress={loading ? undefined : handleReturn}
+                  loading={loading}
                 >
                   <Text style={{ color: "white", fontWeight: "600" }}>
                     Submit
                   </Text>
-                </TouchableOpacity>
+                </Button>
               </View>
-
-              {loading ? (
-                <ActivityIndicator size={"large"} color={colors.primary} />
-              ) : null}
             </View>
           </View>
         )

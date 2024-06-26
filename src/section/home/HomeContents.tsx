@@ -32,7 +32,12 @@ const HomeContents = ({
       <BrandImages />
       <Collection navigation={navigation} />
       <HomeBrands navigation={navigation} />
-      <TopSellersHome isLoading={isLoading} seller={seller} error={error} />
+      <TopSellersHome
+        isLoading={isLoading}
+        seller={seller}
+        error={error}
+        navigation={navigation}
+      />
 
       <View style={homeStyles.catTitle}>
         <View>

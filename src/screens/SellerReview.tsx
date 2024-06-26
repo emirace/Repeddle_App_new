@@ -34,7 +34,6 @@ const SellerReview = ({ navigation }: Props) => {
       >
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Reviews" />
-        <Appbar.Action icon="magnify" />
       </Appbar.Header>
       {!reviews.length && (
         <View
@@ -100,17 +99,17 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
         style={styles.reviewerInfoContainer}
         onPress={() =>
           navigation.push("MyAccount", {
-            username: currentReview.buyerId._id,
+            username: currentReview.user._id,
           })
         }
       >
         <Image
-          source={{ uri: currentReview?.buyerId?.image }}
+          source={{ uri: currentReview?.user?.image }}
           style={styles.reviewerImage}
         />
         <View style={styles.reviewerInfo}>
           <Text style={[styles.reviewerName, { color: colors.secondary }]}>
-            {currentReview.buyerId?.username}
+            {currentReview.user?.username}
           </Text>
           <Text style={styles.reviewTime}>
             {moment(currentReview.createdAt).fromNow()}
@@ -140,7 +139,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
           />
         </View>
         <Text style={styles.reviewText}>{currentReview.comment}</Text>
-        {currentReview.sellerReply && (
+        {currentReview?.sellerReply && (
           <View
             style={[
               styles.sellerReplyContainer,
