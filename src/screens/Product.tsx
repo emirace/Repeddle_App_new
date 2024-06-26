@@ -49,6 +49,7 @@ import { baseURL } from "../services/api"
 import { Asset } from "expo-asset"
 import * as Sharing from "expo-sharing"
 import Loader from "../components/ui/Loader"
+import CartIcon from "../components/ui/cartIcon"
 
 type Props = ProductNavigationProp
 
@@ -875,18 +876,8 @@ const Product = ({ navigation, route }: Props) => {
               backgroundColor: colors.elevation.level2,
             },
           ]}
-          onPress={() => navigation.push("Cart")}
         >
-          <IconButton icon="cart" />
-
-          {cart.length > 0 && (
-            <View style={styles.badge}>
-              <Badge
-                theme={{ colors: { background: "red" } }}
-                children={cart.length}
-              />
-            </View>
-          )}
+          <CartIcon onPress={() => navigation.push("Cart")} />
         </TouchableOpacity>
       </View>
 
@@ -975,7 +966,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     position: "absolute",
-    top: normaliseH(30),
+    top: normaliseH(35),
     left: 0,
     right: 0,
     zIndex: 10,
@@ -1073,7 +1064,7 @@ const styles = StyleSheet.create({
     width: normaliseW(40),
     height: normaliseW(40),
     borderRadius: 50,
-    overflow: "hidden",
+    // overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
   },
