@@ -46,9 +46,8 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
     const params = [["search", queryBrand]];
 
     const string = new URLSearchParams(params).toString();
-
     fetchBrands(string);
-  }, []);
+  }, [queryBrand]);
 
   const [collapse, setCollapse] = useState({
     category: true,
@@ -232,6 +231,19 @@ const Filters = ({ handleTempFilter, tempFilters }: Props) => {
                   </TouchableOpacity>
                 </View>
               ))}
+            {queryBrand && (
+              <TouchableOpacity>
+                <TouchableOpacity onPress={() => {}} style={styles.listItem}>
+                  <Ionicons
+                    style={{ marginRight: 5 }}
+                    name="stop-circle-sharp"
+                    size={10}
+                    color={lightTheme.colors.secondary}
+                  />
+                  <Text style={[styles.itemText]}>Others</Text>
+                </TouchableOpacity>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <View style={styles.menu}>

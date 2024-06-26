@@ -176,6 +176,7 @@ const Home = ({ navigation }: any) => {
         mode="small"
         style={{
           zIndex: 20,
+          marginBottom: 10,
         }}
       >
         <View>
@@ -185,7 +186,7 @@ const Home = ({ navigation }: any) => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              paddingBottom: 10,
+              position: "relative",
             }}
           >
             <Animated.Image
@@ -214,9 +215,9 @@ const Home = ({ navigation }: any) => {
               }}
               style={[
                 {
-                  // position: "absolute",
-                  // top: 0,
-                  // left: 0,
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
                   width: 60,
                   marginLeft: 10,
                   height: 60,
@@ -270,7 +271,7 @@ const Home = ({ navigation }: any) => {
         onEndReached={handleMore}
         onEndReachedThreshold={0}
         ListFooterComponent={() => <Footer isLoading={loading} />}
-        style={{ paddingTop: 180 }}
+        style={{ paddingTop: 40 }}
       />
     </View>
   );

@@ -5,17 +5,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { useMemo, useState } from "react"
-import { IProduct } from "../types/product"
-import { FontAwesome } from "@expo/vector-icons"
-import { IUser } from "../types/user"
-import { currency } from "../utils/common"
-import { lightTheme } from "../constant/theme"
-import { Text } from "react-native-paper"
-import useAuth from "../hooks/useAuth"
-import useProducts from "../hooks/useProducts"
+} from "react-native";
+import React, { useMemo, useState } from "react";
+import { IProduct } from "../types/product";
+import { FontAwesome } from "@expo/vector-icons";
+import { IUser } from "../types/user";
+import { currency } from "../utils/common";
+import { lightTheme } from "../constant/theme";
+import { Text } from "react-native-paper";
+import useAuth from "../hooks/useAuth";
+import useProducts from "../hooks/useProducts";
 import { baseURL } from "../services/api";
+import useToastNotification from "../hooks/useToastNotification";
 
 type Props = {
   navigate: (slug: string) => void;
@@ -23,15 +24,16 @@ type Props = {
 };
 
 const ProductItem = ({ navigate, product }: Props) => {
-  const { user, addToWishlist, error: wishlistError } = useAuth()
-  const { likeProduct, unlikeProduct, error } = useProducts()
+  const { user, addToWishlist, error: wishlistError } = useAuth();
+  const { likeProduct, unlikeProduct, error } = useProducts();
+  const { addNotification } = useToastNotification();
 
-  const [liking, setLiking] = useState(false)
-  const [addToWish, setAddToWish] = useState(false)
+  const [liking, setLiking] = useState(false);
+  const [addToWish, setAddToWish] = useState(false);
 
   const liked = useMemo(() => {
-    return !!product?.likes.find((like) => like === user?._id)
-  }, [product?.likes, user?._id])
+    return !!product?.likes.find((like) => like === user?._id);
+  }, [product?.likes, user?._id]);
 
   const saved = useMemo(
     () => user && user.wishlist.find((x) => x === product._id),
@@ -50,72 +52,76 @@ const ProductItem = ({ navigate, product }: Props) => {
   const toggleLikes = async () => {
     if (!user) {
       // TODO: add notification
-      Alert.alert("Sign in /  Sign Up to like")
-      return
+      // Alert.alert("Sign in /  Sign Up to like");
+      addNotification({ message: "Sign in /  Sign Up to like" });
+      return;
     }
 
-    if (!product) return
+    if (!product) return;
 
     if (product.seller._id === user._id) {
       // TODO: add notification
-      Alert.alert("You can't like your product")
-      return
+      Alert.alert("You can't like your product");
+      return;
     }
 
-    setLiking(true)
+    setLiking(true);
 
     if (liked) {
-      const res = await unlikeProduct(product._id)
+      const res = await unlikeProduct(product._id);
       if (res)
         // TODO: add notification
-        Alert.alert(res.message)
+        Alert.alert(res.message);
       // TODO: add notification
-      else Alert.alert(error)
+      else Alert.alert(error);
     } else {
-      const res = await likeProduct(product._id)
+      const res = await likeProduct(product._id);
       if (res)
         // TODO: add notification
-        Alert.alert(res.message)
+        Alert.alert(res.message);
       // TODO: add notification
-      else Alert.alert(error)
+      else Alert.alert(error);
     }
 
-    setLiking(false)
-  }
+    setLiking(false);
+  };
 
   const saveItem = async () => {
-    if (!product) return
+    if (!product) return;
 
     if (!user) {
       // TODO: add notification
-      Alert.alert("Sign In/ Sign Up to add an item to wishlist")
-      return
+      Alert.alert("Sign In/ Sign Up to add an item to wishlist");
+      return;
     }
 
     if (product.seller._id === user._id) {
       // TODO: add notification
-      Alert.alert("You can't add your product to wishlist")
-      return
+      Alert.alert("You can't add your product to wishlist");
+      return;
     }
 
-    setAddToWish(true)
+    setAddToWish(true);
 
-    const res = await addToWishlist(product._id)
+    const res = await addToWishlist(product._id);
     if (res)
       // TODO: add notification
-      Alert.alert(res)
+      Alert.alert(res);
     // TODO: add notification
-    else Alert.alert(wishlistError ?? "Failed to add to wishlist")
+    else Alert.alert(wishlistError ?? "Failed to add to wishlist");
 
-    setAddToWish(false)
-  }
+    setAddToWish(false);
+  };
 
   return (
     <Pressable
       onPress={() => navigate(product.slug)}
       style={[styles.container]}
     >
-      <Image source={{ uri:baseURL +  product.images[0] }} style={styles.image} />
+      <Image
+        source={{ uri: baseURL + product.images[0] }}
+        style={styles.image}
+      />
       <TouchableOpacity
         style={styles.likeButton}
         onPress={toggleLikes}
