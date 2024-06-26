@@ -13,20 +13,14 @@ import { normaliseH } from "../utils/normalize"
 import { FilterOptions } from "../types/search"
 import { SearchScreenNavigationProp } from "../types/navigation/stack"
 import ProductItem from "../components/ProductItem"
-import {
-  Appbar,
-  Button,
-  IconButton,
-  Searchbar,
-  Text,
-  useTheme,
-} from "react-native-paper"
+import { Appbar, Button, Searchbar, Text, useTheme } from "react-native-paper"
 import Filters from "../components/Filters"
 import useProducts from "../hooks/useProducts"
 import CustomBackdrop from "../components/CustomBackdrop"
 import { lightTheme } from "../constant/theme"
 import useCategory from "../hooks/useCategory"
 import Loader from "../components/ui/Loader"
+import CartIcon from "../components/ui/cartIcon"
 
 const numColumns = 2
 
@@ -131,7 +125,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
       >
         <Appbar.BackAction
           onPress={() => navigation.goBack()}
-          color={colors.background}
+          color={colors.onBackground}
         />
         <Searchbar
           style={styles.searchbar}
@@ -140,7 +134,9 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
           onChangeText={setQuery}
           onIconPress={applyFilter}
         />
-        <IconButton icon="cart-outline" iconColor={colors.background} />
+        <Appbar.Content
+          title={<CartIcon onPress={() => navigation.push("Cart")} />}
+        />
       </Appbar.Header>
       <View style={styles.container}>
         <View style={styles.filterCont}>
@@ -257,9 +253,10 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   searchbar: {
-    width: Dimensions.get("screen").width * 0.6,
+    width: Dimensions.get("screen").width * 0.65,
     borderRadius: 5,
     height: 40,
+    marginHorizontal: "auto",
   },
   filterCont: {
     flexDirection: "row",
