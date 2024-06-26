@@ -8,17 +8,26 @@ import React from "react"
 import CarouselItem from "react-native-reanimated-carousel"
 import { LinearGradient } from "expo-linear-gradient"
 import homeStyles from "./homeStyles"
-import { MainScreenNavigationProp } from "../../types/navigation/stack"
+import {
+  MainScreenNavigationProp,
+  RootStackParamList,
+} from "../../types/navigation/stack"
 import { Text, useTheme } from "react-native-paper"
 
-const entries = [
+const entries: {
+  title: string
+  subtitle: string
+  illustration: string
+  button: string
+  screen: keyof RootStackParamList
+}[] = [
   {
     title:
       " AFRICA’S MILLENNIALS & GEN-Z ONLINE COMMUNITY FOR SECONHAND FASHION.",
     subtitle: "Lorem ipsum dolor sit amet et nuncat mergitur",
     illustration: "https://repeddle.com/images/ezgif.com-gif-maker.webp",
     button: "join us",
-    screen: "SignUp",
+    screen: "Auth",
   },
   {
     title: "BUY-SELL-CHAT-CASH OUT-REPEAT",
@@ -39,8 +48,6 @@ const entries = [
 ]
 
 type Entry = typeof entries
-
-type Screens = keyof MainScreenNavigationProp
 
 const RenderItemSlider = ({
   item,
@@ -65,10 +72,7 @@ const RenderItemSlider = ({
           </Text>
           <TouchableOpacity
             style={[homeStyles.classicButton, { marginLeft: 15 }]}
-            // TODO: after we add next screen
-            // onPress={() =>
-            //   navigation.navigate(`${item.screen}`, { query1: "2" })
-            // }
+            onPress={() => navigation.push(`${item.screen}`)}
           >
             <Text
               style={[

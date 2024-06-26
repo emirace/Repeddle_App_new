@@ -1,6 +1,5 @@
 import {
   Alert,
-  Button,
   Image,
   StyleSheet,
   TextInput,
@@ -10,12 +9,13 @@ import {
 import React, { useMemo, useState } from "react"
 import { normaliseH, normaliseW } from "../utils/normalize"
 import { Ionicons } from "@expo/vector-icons"
-import { Text, useTheme } from "react-native-paper"
+import { Button, Text, useTheme } from "react-native-paper"
 import moment from "moment"
 import FullScreenImage from "./FullScreenImage"
 import useAuth from "../hooks/useAuth"
 import useProducts from "../hooks/useProducts"
 import { IComment, ICommentReply, IProduct } from "../types/product"
+import { baseURL } from "../services/api"
 
 type Props = {
   comment: IComment
@@ -163,16 +163,23 @@ const Comment = ({ comment, product, setProduct }: Props) => {
 
     if (res) {
       const newProd = product
+      console.log(res)
       newProd.comments = newProd.comments?.map((com) => {
         if (com._id === comment._id) {
+          console.log("here")
+          console.log(res.comment, "comment")
           const newComment = com
-          com.replies = [...com.replies, res.comment]
+          newComment.replies = [...newComment.replies, res.comment]
+          console.log(newComment.replies)
           return newComment
         }
         return com
       })
       setProduct(newProd)
       setReply("")
+      setReplyArea(false)
+
+      Alert.alert(res.message)
     } // TODO: add notification
     else Alert.alert(error)
 
@@ -198,7 +205,11 @@ const Comment = ({ comment, product, setProduct }: Props) => {
           ]}
         ></View>
         <View style={styles.row}>
-          <Image source={{ uri: comment.userId.image }} style={styles.image} />
+          <Image
+            source={{ uri: baseURL + comment.userId.image }}
+            style={styles.image}
+            resizeMode="cover"
+          />
 
           <View style={styles.content}>
             <View style={{ flexDirection: "row" }}>
@@ -248,7 +259,7 @@ const Comment = ({ comment, product, setProduct }: Props) => {
           {comment.replies.map((r) => (
             <View key={r._id} style={styles.subCont}>
               <Image
-                source={{ uri: r.userId.image }}
+                source={{ uri: baseURL + r.userId.image }}
                 style={styles.smallImage}
               />
               <View style={styles.content}>
@@ -284,10 +295,12 @@ const Comment = ({ comment, product, setProduct }: Props) => {
               onChangeText={setReply}
             />
             <Button
-              title="Submit"
-              color={colors.primary}
+              children="Submit"
               onPress={submitReplyHandler}
               disabled={loading}
+              loading={loading}
+              mode="contained"
+              style={{ borderRadius: 5 }}
             />
           </View>
         </>

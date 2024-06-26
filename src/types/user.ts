@@ -94,6 +94,7 @@ export type TopSellers = {
   lastName: string
   image: string
   sold: number
+  badge?: boolean
 }
 
 export type UserByUsername = {

@@ -1,12 +1,6 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native"
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
 import React, { useState } from "react"
-import { Text, useTheme } from "react-native-paper"
+import { Button, Text, useTheme } from "react-native-paper"
 import { Ionicons } from "@expo/vector-icons"
 import useBrands from "../hooks/useBrand"
 import useAuth from "../hooks/useAuth"
@@ -60,16 +54,13 @@ const AddOtherBrands = ({ setShowOtherBrand, handleOnChange }: Props) => {
           />
         </View>
         {err && <Text style={styles.error}>{err}</Text>}
-        {loading ? (
-          <ActivityIndicator color={colors.primary} />
-        ) : (
-          <TouchableOpacity
-            style={[styles.uploadButton, { backgroundColor: colors.primary }]}
-            onPress={addOtherBrand}
-          >
-            <Text style={styles.buttonText}>Add</Text>
-          </TouchableOpacity>
-        )}
+        <Button
+          loading={loading}
+          style={[styles.uploadButton, { backgroundColor: colors.primary }]}
+          mode="contained"
+          children="Add"
+          onPress={addOtherBrand}
+        />
       </View>
     </View>
   )

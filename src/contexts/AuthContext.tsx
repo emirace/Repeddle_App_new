@@ -280,6 +280,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       setError("")
       const result = await addToWishlistService(productId)
       const newUser = { ...user, wishlist: result.wishlist }
+      console.log(result)
 
       setUser(newUser)
       return result.message
@@ -295,6 +296,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       setError("")
       const result = await removeFromWishlistService(productId)
       const newUser = { ...user, wishlist: result.wishlist }
+      console.log(result)
 
       setUser(newUser)
       return result.message
