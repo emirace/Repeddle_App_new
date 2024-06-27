@@ -6,82 +6,82 @@ import {
   FlatList,
   ActivityIndicator,
   Animated,
-} from "react-native"
-import React, { useEffect, useRef, useState } from "react"
-import { Appbar, IconButton, Searchbar, useTheme } from "react-native-paper"
-import useThemeContext from "../hooks/useTheme"
-import { MainScreenNavigationProp } from "../types/navigation/stack"
-import { TopSellers } from "../types/user"
-import HomeContents from "../section/home/HomeContents"
-import { IProduct } from "../types/product"
-import homeStyles from "../section/home/homeStyles"
-import ProductItem from "../components/ProductItem"
-import useProducts from "../hooks/useProducts"
-import useUser from "../hooks/useUser"
-import SearchBar from "../components/SearchBar"
-import Announcement from "../components/Announcement"
-import CartIcon from "../components/ui/cartIcon"
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Appbar, IconButton, Searchbar, useTheme } from "react-native-paper";
+import useThemeContext from "../hooks/useTheme";
+import { MainScreenNavigationProp } from "../types/navigation/stack";
+import { TopSellers } from "../types/user";
+import HomeContents from "../section/home/HomeContents";
+import { IProduct } from "../types/product";
+import homeStyles from "../section/home/homeStyles";
+import ProductItem from "../components/ProductItem";
+import useProducts from "../hooks/useProducts";
+import useUser from "../hooks/useUser";
+import SearchBar from "../components/SearchBar";
+import Announcement from "../components/Announcement";
+import CartIcon from "../components/ui/cartIcon";
 
-const WIDTH = Dimensions.get("screen").width
+const WIDTH = Dimensions.get("screen").width;
 
-type Props = MainScreenNavigationProp
+type Props = MainScreenNavigationProp;
 
-const numColumns = 2
+const numColumns = 2;
 
 const Home = ({ navigation }: any) => {
-  const { themeMode } = useThemeContext()
-  const { colors } = useTheme()
+  const { themeMode } = useThemeContext();
+  const { colors } = useTheme();
 
-  const { products, fetchProducts, loading } = useProducts()
-  const { getTopSellers } = useUser()
+  const { products, fetchProducts, loading } = useProducts();
+  const { getTopSellers } = useUser();
 
-  const [sellers, setSellers] = useState<TopSellers[]>([])
-  const [sellerLoading, setSellerLoading] = useState(false)
-  const [sellerError, setSellerError] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
+  const [sellers, setSellers] = useState<TopSellers[]>([]);
+  const [sellerLoading, setSellerLoading] = useState(false);
+  const [sellerError, setSellerError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetchProducts(`page=${currentPage}`)
-  }, [])
+    fetchProducts(`page=${currentPage}`);
+  }, []);
 
   useEffect(() => {
     const fetchSellers = async () => {
-      setSellerLoading(true)
-      const res = await getTopSellers()
+      setSellerLoading(true);
+      const res = await getTopSellers();
       if (typeof res === "string") {
-        setSellerError(res)
+        setSellerError(res);
       } else {
-        setSellers(res)
+        setSellers(res);
       }
 
-      setSellerLoading(false)
-    }
+      setSellerLoading(false);
+    };
 
-    fetchSellers()
-  }, [])
+    fetchSellers();
+  }, []);
 
   const formatData = (data: IProduct[]) => {
-    const isEven = data.length % numColumns === 0
+    const isEven = data.length % numColumns === 0;
 
     if (!isEven) {
-      const empty = { ...data[0], empty: true }
-      data.push(empty)
+      const empty = { ...data[0], empty: true };
+      data.push(empty);
     }
 
-    return data
-  }
+    return data;
+  };
 
   const handleMore = () => {
     if (currentPage < products.totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handleSearch = (val: string) => {
-    navigation.push("Search", { query: val })
-  }
+    navigation.push("Search", { query: val });
+  };
 
-  const animatedValue = useRef(new Animated.Value(0)).current
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
   const searchAnimation = {
     transform: [
@@ -110,7 +110,7 @@ const Home = ({ navigation }: any) => {
     //   outputRange: [55, 1],
     //   extrapolate: "clamp",
     // }),
-  }
+  };
 
   const logoAnimation = {
     transform: [
@@ -134,7 +134,7 @@ const Home = ({ navigation }: any) => {
       outputRange: [1, 0],
       extrapolate: "clamp",
     }),
-  }
+  };
 
   const logo2Animation = {
     transform: [
@@ -158,7 +158,7 @@ const Home = ({ navigation }: any) => {
       outputRange: [0, 1],
       extrapolate: "clamp",
     }),
-  }
+  };
 
   // const headerAnimation = {
   //   transform: [
@@ -271,8 +271,8 @@ const Home = ({ navigation }: any) => {
           />
         )}
         onScroll={(e) => {
-          const offsetY = e.nativeEvent.contentOffset.y
-          animatedValue.setValue(offsetY)
+          const offsetY = e.nativeEvent.contentOffset.y;
+          animatedValue.setValue(offsetY);
         }}
         scrollEventThrottle={16}
         onEndReached={handleMore}
@@ -281,19 +281,19 @@ const Home = ({ navigation }: any) => {
         style={{ paddingTop: 60, marginTop: 10 }}
       />
     </View>
-  )
-}
+  );
+};
 
 const RenderItem = ({
   item,
   navigation,
 }: {
-  item: IProduct & { empty?: boolean }
-  navigation: MainScreenNavigationProp["navigation"]
+  item: IProduct & { empty?: boolean };
+  navigation: MainScreenNavigationProp["navigation"];
 }) => {
-  let { itemStyles, invisible } = homeStyles
+  let { itemStyles, invisible } = homeStyles;
 
-  if (item.empty) return <View style={[itemStyles, invisible]}></View>
+  if (item.empty) return <View style={[itemStyles, invisible]}></View>;
 
   return (
     <View style={itemStyles}>
@@ -302,11 +302,11 @@ const RenderItem = ({
         product={item}
       />
     </View>
-  )
-}
+  );
+};
 
 const Footer = ({ isLoading }: { isLoading?: boolean }) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return (
     <View
@@ -319,10 +319,10 @@ const Footer = ({ isLoading }: { isLoading?: boolean }) => {
         <ActivityIndicator size="large" color={colors.primary} />
       ) : null}
     </View>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
 
 const styles = StyleSheet.create({
   container: {
@@ -338,4 +338,4 @@ const styles = StyleSheet.create({
     // height: 1,
     paddingHorizontal: 10,
   },
-})
+});

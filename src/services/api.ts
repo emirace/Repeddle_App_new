@@ -19,7 +19,9 @@ const api = axios.create({
 api.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     // You can modify the request config here (e.g., add authentication headers)
-    const token = await SecureStore.getItemAsync("authToken");
+    // const token = await SecureStore.getItemAsync("authToken");
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFkMjdhMDRiOTlmNGQ1OTg0Mjk4ZDIiLCJlbWFpbCI6ImVtbWFudWVsYWt3dWJhNTdAZ21haWwuY29tIiwidmVyc2lvbiI6MTAsImlhdCI6MTcxOTM5MTI4MywiZXhwIjoxNzIxOTgzMjgzfQ.K7k2L-nR6W6ZigE_7rV6V_57hCcRfq0cCLdeYhppd6E";
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

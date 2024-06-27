@@ -5,22 +5,23 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { useMemo, useState } from "react"
-import { IProduct } from "../types/product"
-import { FontAwesome } from "@expo/vector-icons"
-import { IUser } from "../types/user"
-import { currency } from "../utils/common"
-import { lightTheme } from "../constant/theme"
-import { IconButton, Text } from "react-native-paper"
-import useAuth from "../hooks/useAuth"
-import useProducts from "../hooks/useProducts"
-import { baseURL } from "../services/api"
+} from "react-native";
+import React, { useMemo, useState } from "react";
+import { IProduct } from "../types/product";
+import { FontAwesome } from "@expo/vector-icons";
+import { IUser } from "../types/user";
+import { currency } from "../utils/common";
+import { lightTheme } from "../constant/theme";
+import { IconButton, Text } from "react-native-paper";
+import useAuth from "../hooks/useAuth";
+import useProducts from "../hooks/useProducts";
+import { baseURL } from "../services/api";
+import useToastNotification from "../hooks/useToastNotification";
 
 type Props = {
-  navigate: (slug: string) => void
-  product: IProduct
-}
+  navigate: (slug: string) => void;
+  product: IProduct;
+};
 
 const ProductItem = ({ navigate, product: product1 }: Props) => {
   const {
@@ -28,113 +29,112 @@ const ProductItem = ({ navigate, product: product1 }: Props) => {
     addToWishlist,
     error: wishlistError,
     removeFromWishlist,
-  } = useAuth()
-  const { likeProduct, unlikeProduct, error } = useProducts()
+  } = useAuth();
+  const { likeProduct, unlikeProduct, error } = useProducts();
+  const { addNotification } = useToastNotification();
+  const [product, setProduct] = useState(product1);
 
-  const [product, setProduct] = useState(product1)
-
-  const [liking, setLiking] = useState(false)
-  const [addToWish, setAddToWish] = useState(false)
+  const [liking, setLiking] = useState(false);
+  const [addToWish, setAddToWish] = useState(false);
 
   const liked = useMemo(() => {
-    return !!product?.likes.find((like) => like === user?._id)
-  }, [product?.likes, user?._id])
+    return !!product?.likes.find((like) => like === user?._id);
+  }, [product?.likes, user?._id]);
 
   const saved = useMemo(
     () => !!user?.wishlist.find((x) => x === product._id),
     [product, user]
-  )
+  );
 
   const discount = () => {
-    if (!product.costPrice) return null
+    if (!product.costPrice) return null;
     if (product.costPrice === product.sellingPrice) {
-      return null
+      return null;
     }
     return (
       ((product.costPrice - product.sellingPrice) / product.costPrice) * 100
-    )
-  }
+    );
+  };
 
   const toggleLikes = async () => {
     if (!user) {
       // TODO: add notification
-      Alert.alert("Sign in /  Sign Up to like")
-      return
+      // Alert.alert("Sign in /  Sign Up to like");
+      addNotification({ message: "Sign in /  Sign Up to like" });
+      return;
     }
 
-    if (!product) return
+    if (!product) return;
 
     if (product.seller._id === user._id) {
       // TODO: add notification
-      Alert.alert("You can't like your product")
-      return
+      Alert.alert("You can't like your product");
+      return;
     }
 
-    setLiking(true)
+    setLiking(true);
 
     if (liked) {
-      const res = await unlikeProduct(product._id)
+      const res = await unlikeProduct(product._id);
       if (res) {
-        const newProd = product
-        newProd.likes = res.likes
-        setProduct(newProd)
+        const newProd = product;
+        newProd.likes = res.likes;
+        setProduct(newProd);
         // TODO: add notification
-        Alert.alert(res.message)
+        Alert.alert(res.message);
       }
       // TODO: add notification
-      else Alert.alert(error)
+      else Alert.alert(error);
     } else {
-      const res = await likeProduct(product._id)
+      const res = await likeProduct(product._id);
       if (res) {
-        const newProd = product
-        newProd.likes = res.likes
-        setProduct(newProd)
+        const newProd = product;
+        newProd.likes = res.likes;
+        setProduct(newProd);
         // TODO: add notification
-        Alert.alert(res.message)
+        Alert.alert(res.message);
       }
       // TODO: add notification
-      else Alert.alert(error)
+      else Alert.alert(error);
     }
 
-    setLiking(false)
-  }
+    setLiking(false);
+  };
 
   const saveItem = async () => {
-    if (!product) return
-
-    console.log(product._id)
+    if (!product) return;
 
     if (!user) {
       // TODO: add notification
-      Alert.alert("Sign In/ Sign Up to add an item to wishlist")
-      return
+      Alert.alert("Sign In/ Sign Up to add an item to wishlist");
+      return;
     }
 
     if (product.seller._id === user._id) {
       // TODO: add notification
-      Alert.alert("You can't add your product to wishlist")
-      return
+      Alert.alert("You can't add your product to wishlist");
+      return;
     }
 
-    setAddToWish(true)
+    setAddToWish(true);
     if (saved) {
-      const res = await removeFromWishlist(product._id)
+      const res = await removeFromWishlist(product._id);
       if (res)
         // TODO: add notification
-        Alert.alert(res)
+        Alert.alert(res);
       // TODO: add notification
-      else Alert.alert(wishlistError ?? "Failed to add to wishlist")
+      else Alert.alert(wishlistError ?? "Failed to add to wishlist");
     } else {
-      const res = await addToWishlist(product._id)
+      const res = await addToWishlist(product._id);
       if (res)
         // TODO: add notification
-        Alert.alert(res)
+        Alert.alert(res);
       // TODO: add notification
-      else Alert.alert(wishlistError ?? "Failed to add to wishlist")
+      else Alert.alert(wishlistError ?? "Failed to add to wishlist");
     }
 
-    setAddToWish(false)
-  }
+    setAddToWish(false);
+  };
 
   return (
     <Pressable
@@ -198,10 +198,10 @@ const ProductItem = ({ navigate, product: product1 }: Props) => {
         </View>
       </View>
     </Pressable>
-  )
-}
+  );
+};
 
-export default ProductItem
+export default ProductItem;
 
 const styles = StyleSheet.create({
   container: {
@@ -264,4 +264,4 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 11,
   },
-})
+});
