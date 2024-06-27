@@ -341,8 +341,8 @@ const Checkout = ({ navigation }: Props) => {
               Proceed to Payment
             </Text>
           </TouchableOpacity>
-        ) : paymentMethod == "Card" ? (
-          region() === "NGN" ? (
+        ) : paymentMethod === "Card" ? (
+          region() !== "NGN" ? (
             <Payfast placeOrderHandler={placeOrderHandler} totalPrice={total} />
           ) : (
             <PayWithFlutterwave

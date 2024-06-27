@@ -3,23 +3,26 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-} from "react-native"
-import React, { useState } from "react"
-import { useTheme } from "react-native-paper"
-import useAuth from "../../hooks/useAuth"
-import { IOrder } from "../../types/order"
-import { makePayFastPaymentService } from "../../services/others"
+} from "react-native";
+import React, { useState } from "react";
+import { useTheme } from "react-native-paper";
+import useAuth from "../../hooks/useAuth";
+import { IOrder } from "../../types/order";
+import { makePayFastPaymentService } from "../../services/others";
 
 type Props = {
-  totalPrice: number
-  placeOrderHandler: () => Promise<IOrder | undefined>
-}
+  totalPrice: number;
+  placeOrderHandler: (value: {
+    paymentMethod: string;
+    transId: string;
+  }) => Promise<IOrder | undefined>;
+};
 
 const Payfast = ({ placeOrderHandler, totalPrice }: Props) => {
-  const { colors } = useTheme()
-  const { user } = useAuth()
+  const { colors } = useTheme();
+  const { user } = useAuth();
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const myData = {
     // Merchant details
@@ -37,23 +40,23 @@ const Payfast = ({ placeOrderHandler, totalPrice }: Props) => {
     amount: `${totalPrice}`,
     item_name: "",
     //custom
-  }
+  };
 
   const handleSubmit = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const order = await placeOrderHandler()
+      const order = await placeOrderHandler({ paymentMethod: "", transId: "" });
       if (order) {
-        console.log(order)
-        myData["item_name"] = `${order._id}`
+        console.log(order);
+        myData["item_name"] = `${order._id}`;
 
-        await makePayFastPaymentService(myData)
-      } else console.log("cant create order")
+        await makePayFastPaymentService(myData);
+      } else console.log("cant create order");
     } catch (err) {
-      console.log(err)
-      setLoading(false)
+      console.log(err);
+      setLoading(false);
     }
-  }
+  };
 
   return loading ? (
     <ActivityIndicator size={"large"} color={colors.primary} />
@@ -69,10 +72,10 @@ const Payfast = ({ placeOrderHandler, totalPrice }: Props) => {
         Proceed to Payment
       </Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
-export default Payfast
+export default Payfast;
 
 const styles = StyleSheet.create({
   button: {
@@ -81,4 +84,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 5,
   },
-})
+});
