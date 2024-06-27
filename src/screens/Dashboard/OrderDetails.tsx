@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Modal,
   Pressable,
@@ -12,7 +13,7 @@ import {
   View,
 } from "react-native"
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react"
-import { Appbar, Text, useTheme } from "react-native-paper"
+import { Appbar, Button, Text, useTheme } from "react-native-paper"
 import useOrder from "../../hooks/useOrder"
 import ViewShot from "react-native-view-shot"
 import * as FileSystem from "expo-file-system"
@@ -24,6 +25,7 @@ import useAuth from "../../hooks/useAuth"
 import {
   currency,
   deliveryNumber,
+  deliveryStatusMap,
   region,
   timeDifference,
 } from "../../utils/common"
@@ -38,7 +40,7 @@ type Props = OrderDetailsNavigationProp
 
 const OrderDetails = ({ navigation, route }: Props) => {
   const { colors, dark } = useTheme()
-  const { loading, fetchOrderById, error } = useOrder()
+  const { fetchOrderById, error, loading, updateOrderItemTracking } = useOrder()
   const { user } = useAuth()
   const { id } = route.params
 
@@ -48,26 +50,39 @@ const OrderDetails = ({ navigation, route }: Props) => {
 
   const [showDeliveryHistory, setShowDeliveryHistory] = useState(false)
   const [currentDeliveryHistory, setCurrentDeliveryHistory] = useState(0)
-  const [enterwaybil, setEnterwaybil] = useState(false)
-  const [waybillNumber, setWaybillNumber] = useState("")
+  const [showTracking, setShowTracking] = useState(false)
+  const [trackingNumber, setTrackingNumber] = useState("")
   const [afterAction, setAfterAction] = useState(false)
   const [showDelivery, setShowDelivery] = useState("")
   const [refresh, setRefresh] = useState(true)
+  const [isSeller, setIsSeller] = useState(false)
+  const [updatingStatus, setUpdatingStatus] = useState(false)
+  const [showError, setShowError] = useState(false)
 
   useEffect(() => {
     const fetchOrder = async () => {
       const res = await fetchOrderById(id)
-      if (res) setOrder(res)
+      if (res) {
+        setOrder(res)
+        if (user) {
+          const existSell = res.items.filter((x) => x.seller._id === user._id)
+          if (existSell.length) {
+            setIsSeller(true)
+          }
+        }
+      } else {
+        setShowError(true)
+      }
     }
 
     fetchOrder()
   }, [id])
 
   const comfirmWaybill = async (order: OrderItem) => {
-    if (!waybillNumber) return
+    if (!trackingNumber) return
 
-    await deliverOrderHandler("Dispatched", order.product._id, order._id)
-    setEnterwaybil(false)
+    await deliverOrderHandler("Dispatched", order, order._id)
+    setShowTracking(false)
   }
 
   const daydiff = (x: number) =>
@@ -98,12 +113,67 @@ const OrderDetails = ({ navigation, route }: Props) => {
     console.log("PDF saved successfully!")
   }
 
+  const showNextStatus = (status: string) => {
+    const entries = Object.entries(deliveryStatusMap)
+    const currentNumber = deliveryNumber(status)
+
+    return entries[currentNumber]
+  }
+
   const deliverOrderHandler = async (
-    deliveryStatus: string,
-    productId: string,
-    orderitemId: string
+    currentStatus: string,
+    orderItem: OrderItem,
+    trackingNumber?: string
   ) => {
-    console.log(deliveryStatus, productId, orderitemId)
+    if (!order) return
+    const nextStatus = showNextStatus(currentStatus)
+
+    if (nextStatus[1] === 2) {
+      if (!trackingNumber) {
+        // TODO:
+        Alert.alert("Tracking number is required to dispatch item")
+        return
+      }
+    }
+
+    setUpdatingStatus(true)
+
+    const res = await updateOrderItemTracking(
+      order._id,
+      orderItem.product._id,
+      {
+        status: nextStatus[0],
+        trackingNumber,
+      }
+    )
+    if (res) {
+      // TODO:
+      Alert.alert("Item status has been updated")
+      setOrder(res)
+    } else {
+      // TODO:
+      Alert.alert(error ?? "Failed to update status")
+    }
+
+    setUpdatingStatus(false)
+  }
+
+  const updateTracking = async (orderItem: OrderItem) => {
+    if (updatingStatus) return
+
+    const nextStatus = showNextStatus(
+      orderItem.deliveryTracking.currentStatus.status
+    )
+
+    if (nextStatus[1] === 2 && !trackingNumber) {
+      setShowTracking(true)
+    } else {
+      await deliverOrderHandler(
+        orderItem.deliveryTracking.currentStatus.status,
+        orderItem,
+        trackingNumber
+      )
+    }
   }
 
   const paymentRequest = async (
@@ -116,8 +186,6 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const paySeller = async (product: OrderItem) => {}
   const refund = async (product: OrderItem) => {}
 
-  //   TODO:
-  const isSeller = false
   let shippingPrice = 0
   let itemsPrice = 0
 
@@ -140,7 +208,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
 
       {loading ? (
         <Loader />
-      ) : error ? (
+      ) : showError && error ? (
         <Text1 style={{ color: "red" }}>{error}</Text1>
       ) : order ? (
         <ViewShot ref={viewShotRef}>
@@ -185,8 +253,6 @@ const OrderDetails = ({ navigation, route }: Props) => {
               </TouchableOpacity>
               {!isSeller &&
                 daydiff(3) > 0 &&
-                // TODO: order delivery status
-                // deliveryNumber(order.deliveryStatus) > 3 && (
                 deliveryNumber(
                   order.items[0].deliveryTracking.currentStatus.status
                 ) > 3 && (
@@ -195,7 +261,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                       navigation.push("ReturnForm", {
                         orderItems: order.items,
                         orderId: id,
-                        waybillNumber,
+                        waybillNumber: trackingNumber,
                       })
                     }
                   >
@@ -278,11 +344,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                               { backgroundColor: colors.primary },
                             ]}
                             onPress={() =>
-                              deliverOrderHandler(
-                                "Received",
-                                orderitem.product._id,
-                                orderitem._id
-                              )
+                              deliverOrderHandler("Received", orderitem)
                             }
                           >
                             <Text style={styles.link}>
@@ -292,12 +354,12 @@ const OrderDetails = ({ navigation, route }: Props) => {
                         )}
                       {user && order && (
                         <View>
-                          {enterwaybil ? (
+                          {showTracking ? (
                             <View style={styles.trackingCont}>
                               <TextInput
                                 placeholder="Enter Tracking number"
-                                value={waybillNumber}
-                                onChangeText={(e) => setWaybillNumber(e)}
+                                value={trackingNumber}
+                                onChangeText={(e) => setTrackingNumber(e)}
                               />
                               <TouchableOpacity
                                 style={{
@@ -323,80 +385,22 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                 </Text1>
                               )}
 
-                              <SelectDropdown
-                                // ref={selectRefProvince}
-                                // disabled={
-                                //   order.deliveryStatus === "Hold" ||
-                                //   order.deliveryStatus === "Received" ||
-                                //   order.deliveryStatus === "Return Logged"
-                                // }
-                                data={
-                                  deliveryNumber(
-                                    orderitem.deliveryTracking.currentStatus
-                                      .status
-                                  ) < 1
-                                    ? [
-                                        "Processing",
-                                        "Dispatched",
-                                        "In Transit",
-                                        "Delivered",
-                                      ]
-                                    : deliveryNumber(
-                                        orderitem.deliveryTracking.currentStatus
-                                          .status
-                                      ) < 2
-                                    ? ["Dispatched", "In Transit", "Delivered"]
-                                    : deliveryNumber(
-                                        orderitem.deliveryTracking.currentStatus
-                                          .status
-                                      ) < 3
-                                    ? ["In Transit", "Delivered"]
-                                    : deliveryNumber(
-                                        orderitem.deliveryTracking.currentStatus
-                                          .status
-                                      ) < 4
-                                    ? ["Delivered"]
-                                    : []
-                                }
-                                onSelect={(selectedItem, index) => {
-                                  if (
-                                    selectedItem === "Dispatched" &&
-                                    orderitem.deliveryOption.method !==
-                                      "Pick up from Seller"
-                                  ) {
-                                    setEnterwaybil(true)
-                                  } else {
-                                    deliverOrderHandler(
-                                      selectedItem,
-                                      orderitem.product._id,
-                                      orderitem._id
-                                    )
-                                  }
-                                }}
-                                defaultButtonText="Update delivery status"
-                                buttonTextAfterSelection={(
-                                  selectedItem,
-                                  index
-                                ) => {
-                                  return selectedItem
-                                }}
-                                rowTextForSelection={(item, index) => {
-                                  return item
-                                }}
-                                buttonTextStyle={{
-                                  fontSize: 13,
-                                  color: colors.onBackground,
-                                  // textAlign: "right",
-                                }}
-                                buttonStyle={{
-                                  height: 30,
-                                  flex: 1,
-                                  borderWidth: 1,
-                                  borderColor: colors.elevation.level3,
-                                  borderRadius: 5,
-                                  backgroundColor: colors.background,
-                                }}
-                              />
+                              {deliveryNumber(
+                                orderitem.deliveryTracking.currentStatus.status
+                              ) < 3 && (
+                                <Button
+                                  onPress={() => updateTracking(orderitem)}
+                                  children={`Mark as ${
+                                    showNextStatus(
+                                      orderitem.deliveryTracking.currentStatus
+                                        .status
+                                    )[0]
+                                  }`}
+                                  mode="contained"
+                                  style={{ borderRadius: 5 }}
+                                  loading={updatingStatus}
+                                />
+                              )}
                             </>
                           )}
                         </View>
@@ -466,8 +470,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                   .status === "Hold"
                                   ? "UnHold"
                                   : "Hold",
-                                orderitem.product._id,
-                                orderitem._id
+                                orderitem
                               )
                             }
                             style={[
@@ -496,8 +499,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                 paySeller(orderitem)
                                 deliverOrderHandler(
                                   "Payment To Seller Initiated",
-                                  orderitem.product._id,
-                                  orderitem._id
+                                  orderitem
                                 )
                               }}
                               style={[
@@ -741,11 +743,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                       },
                                     ]}
                                     onPress={() => {
-                                      deliverOrderHandler(
-                                        "Received",
-                                        orderitem.product._id,
-                                        orderitem._id
-                                      )
+                                      deliverOrderHandler("Received", orderitem)
                                       paymentRequest(
                                         orderitem.seller._id,
                                         orderitem.price,
@@ -852,8 +850,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                 .status === "Hold"
                                 ? "UnHold"
                                 : "Hold",
-                              orderitem.product._id,
-                              orderitem._id
+                              orderitem
                             )
                           }
                           style={[

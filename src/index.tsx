@@ -28,6 +28,7 @@ import { StoreProvider } from "./contexts/StoreContext";
 import { TransactionProvider } from "./contexts/TransactionContext";
 import { ToastNotificationProvider } from "./contexts/ToastNotificationContext";
 import ToastNotification from "./components/ui/ToastNotification";
+import { ReturnProvider } from "./contexts/ReturnContext";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -55,34 +56,36 @@ const Main = () => {
         theme={themeMode === "dark" ? CombinedDarkTheme : CombinedDefaultTheme}
       >
         <AuthProvider>
-          <StoreProvider>
-            <ToastNotificationProvider>
-              <ProductProvider>
-                <UserProvider>
+          <ToastNotificationProvider>
+            <BrandProvider>
+              <CategoryProvider>
+                <BottomSheetModalProvider>
                   <StoreProvider>
-                    <BrandProvider>
-                      <BottomSheetModalProvider>
-                        <CategoryProvider>
+                    <ProductProvider>
+                      <UserProvider>
+                        <StoreProvider>
                           <CartProvider>
                             <NewsletterProvider>
                               <OrderProvider>
                                 <TransactionProvider>
                                   <MessageProvider>
-                                    <ToastNotification />
-                                    <MainStackNav />
+                                    <ReturnProvider>
+                                      <ToastNotification />
+                                      <MainStackNav />
+                                    </ReturnProvider>
                                   </MessageProvider>
                                 </TransactionProvider>
                               </OrderProvider>
                             </NewsletterProvider>
                           </CartProvider>
-                        </CategoryProvider>
-                      </BottomSheetModalProvider>
-                    </BrandProvider>
+                        </StoreProvider>
+                      </UserProvider>
+                    </ProductProvider>
                   </StoreProvider>
-                </UserProvider>
-              </ProductProvider>
-            </ToastNotificationProvider>
-          </StoreProvider>
+                </BottomSheetModalProvider>
+              </CategoryProvider>
+            </BrandProvider>
+          </ToastNotificationProvider>
         </AuthProvider>
       </NavigationContainer>
     </PaperProvider>

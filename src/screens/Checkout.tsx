@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import React, { useMemo, useState } from "react";
-import { Appbar, Text, useTheme } from "react-native-paper";
+import { Appbar, Button, Text, useTheme } from "react-native-paper";
 import useCart from "../hooks/useCart";
 import { CheckoutNavigationProp } from "../types/navigation/stack";
 import { API_KEY } from "../utils/constants";
@@ -373,24 +373,19 @@ const Checkout = ({ navigation }: Props) => {
                   description: "Payment for items in cart",
                 },
               }}
-              customButton={(props) =>
-                isLoading ? (
-                  <ActivityIndicator size={"large"} color={colors.primary} />
-                ) : (
-                  <TouchableOpacity
-                    style={[styles.button, { backgroundColor: colors.primary }]}
-                    onPress={() => {
-                      setIsLoading(true);
-                      props.onPress();
-                    }}
-                    disabled={props.disabled}
-                  >
-                    <Text style={{ color: "white", fontWeight: "bold" }}>
-                      PROCEED
-                    </Text>
-                  </TouchableOpacity>
-                )
-              }
+              customButton={(props) => (
+                <Button
+                  onPress={() => {
+                    setIsLoading(true);
+                    props.onPress();
+                  }}
+                  children="Proceed"
+                  loading={isLoading}
+                  mode="contained"
+                  style={[styles.button, { backgroundColor: colors.primary }]}
+                  labelStyle={{ color: "white", fontWeight: "bold" }}
+                />
+              )}
             />
           )
         ) : null}

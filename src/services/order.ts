@@ -99,7 +99,7 @@ export const fetchSoldOrdersService = async (): Promise<IOrder[]> => {
 export const updateOrderItemTrackingService = async (
   orderId: string,
   itemId: string,
-  body: { status: string }
+  body: { status: string; trackingNumber?: string }
 ): Promise<IOrder> => {
   try {
     const data: {
