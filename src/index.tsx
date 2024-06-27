@@ -26,6 +26,7 @@ import { OrderProvider } from "./contexts/OrderContext"
 import { CategoryProvider } from "./contexts/CategoryContext"
 import { StoreProvider } from "./contexts/StoreContext"
 import { TransactionProvider } from "./contexts/TransactionContext"
+import { ReturnProvider } from "./contexts/ReturnContext"
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -65,7 +66,9 @@ const Main = () => {
                             <OrderProvider>
                               <TransactionProvider>
                                 <MessageProvider>
-                                  <MainStackNav />
+                                  <ReturnProvider>
+                                    <MainStackNav />
+                                  </ReturnProvider>
                                 </MessageProvider>
                               </TransactionProvider>
                             </OrderProvider>

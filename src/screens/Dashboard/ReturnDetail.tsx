@@ -18,12 +18,14 @@ import { ReturnDetailNavigationProp } from "../../types/navigation/stack"
 import { returns } from "../../utils/data"
 import { IReturn } from "../../types/order"
 import Loader from "../../components/ui/Loader"
+import useReturn from "../../hooks/useReturn"
 
 type Props = ReturnDetailNavigationProp
 
 const ReturnDetail = ({ navigation, route }: Props) => {
   const { colors } = useTheme()
   const { user } = useAuth()
+  const { createReturns, error: creatingError } = useReturn()
 
   const { id: returnId } = route.params
 
@@ -48,10 +50,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
     productId: string
   ) => {}
 
-  //   TODO: fix type when return is done
-  const comfirmWaybill = async (
-    product: IReturn["orderId"]["orderItems"][number]
-  ) => {
+  const comfirmWaybill = async (product: IReturn) => {
     if (!waybillNumber) return
 
     await deliverOrderHandler("Return Dispatched", product._id)
@@ -124,12 +123,12 @@ const ReturnDetail = ({ navigation, route }: Props) => {
             onPress={() => {
               // navigate to order details screen
               navigation.push("MyAccount", {
-                username: returned.orderId.user._id,
+                username: returned.orderId.buyer._id,
               })
             }}
           >
             <Text style={{ color: colors.secondary }}>
-              {returned.orderId.user.username}
+              {returned.orderId.buyer.username}
             </Text>
           </TouchableOpacity>
           <View style={styles.hr} />
@@ -153,9 +152,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           <Text style={styles.itemNum}>{returned.reason}</Text>
           <View style={styles.hr} />
           <Text style={styles.name}>Preferred Sending Method</Text>
-          <Text style={styles.itemNum}>
-            {returned.sending["delivery Option"]}
-          </Text>
+          <Text style={styles.itemNum}>{returned.deliveryOption.method}</Text>
           <View style={styles.hr} />
           <Text style={styles.name}>Preferred Refund Method</Text>
           <Text style={styles.itemNum}>{returned.refund}</Text>
@@ -220,7 +217,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
             <Text style={{ color: "red" }}>Waiting Admin Approver/Decline</Text>
           )}
           <View>
-            {returned.orderId.orderItems.map(
+            {returned.orderId.items.map(
               (orderitem) =>
                 orderitem._id === returned.productId._id && (
                   <View key={orderitem._id}>
@@ -228,7 +225,9 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                       <View style={{ marginTop: 10 }}>
                         <Text style={styles.name}>Update Delivery Status</Text>
                         <Picker
-                          selectedValue={orderitem.deliveryStatus}
+                          selectedValue={
+                            orderitem.deliveryTracking.currentStatus.status
+                          }
                           style={{
                             backgroundColor: colors.elevation.level2,
                             padding: 5,
@@ -239,11 +238,11 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                               itemValue,
                               returned.productId._id
                             )
-                            returned.orderId.orderItems.map(async (item) => {
+                            returned.orderId.items.map(async (item) => {
                               if (item._id === returned.productId._id) {
                                 await paymentRequest(
-                                  returned.orderId.user._id,
-                                  (returned.returnDelivery?.cost ?? 0) * 2 +
+                                  returned.orderId.buyer._id,
+                                  returned.deliveryOption.fee * 2 +
                                     returned.productId.sellingPrice *
                                       item.quantity,
                                   "Return Completed"
@@ -269,12 +268,14 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                               color: colors.onBackground,
                             }}
                             enabled={
-                              deliveryNumber(orderitem.deliveryStatus) === 10
+                              deliveryNumber(
+                                orderitem.deliveryTracking.currentStatus.status
+                              ) === 10
                             }
                           />
                         </Picker>
                       </View>
-                    ) : returned.orderId.user._id === user?._id ? (
+                    ) : returned.orderId.buyer._id === user?._id ? (
                       enterwaybil ? (
                         <View>
                           <TextInput
@@ -298,7 +299,9 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                                 padding: 5,
                                 color: "grey",
                               }}
-                              selectedValue={orderitem.deliveryStatus}
+                              selectedValue={
+                                orderitem.deliveryTracking.currentStatus.status
+                              }
                               onValueChange={(itemValue) => {
                                 if (itemValue === "Return Dispatched") {
                                   setEnterwaybil(true)
@@ -328,8 +331,10 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                                 }}
                                 enabled={
                                   !!(
-                                    deliveryNumber(orderitem.deliveryStatus) ===
-                                      8 && returned.returnDelivery
+                                    deliveryNumber(
+                                      orderitem.deliveryTracking.currentStatus
+                                        .status
+                                    ) === 8 && returned.returnDelivery
                                   )
                                 }
                               />
@@ -337,7 +342,10 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                                 label="Return Delivered"
                                 value="Return Delivered"
                                 enabled={
-                                  deliveryNumber(orderitem.deliveryStatus) === 9
+                                  deliveryNumber(
+                                    orderitem.deliveryTracking.currentStatus
+                                      .status
+                                  ) === 9
                                 }
                               />
                             </Picker>
@@ -348,7 +356,9 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                     null}
                     <View style={{ marginTop: 15 }}>
                       <DeliveryHistory
-                        status={deliveryNumber(orderitem.deliveryStatus)}
+                        status={deliveryNumber(
+                          orderitem.deliveryTracking.currentStatus.status
+                        )}
                       />
                     </View>
                   </View>

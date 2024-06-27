@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// TODO: remove the lint above
 import { IDeliveryOption, IProduct } from "./product"
 import { IUser } from "./user"
 
@@ -20,6 +18,7 @@ export type OrderItem = {
   price: number
   selectedSize: string
   selectedColor: string
+  trackingNumber?: string
   onHold?: boolean
   deliveryOption: {
     fee: number
@@ -39,43 +38,6 @@ export type OrderItem = {
     }[]
   }
   _id: string
-}
-
-// TODO: remove when return is implemented
-export type IOrder1 = {
-  buyer: string
-  items: {
-    product: IProduct
-    seller: string
-    quantity: number
-    price: number
-    selectedSize: string
-    selectedColor: string
-    deliveryOption: {
-      fee: number
-      method: string
-      _id: string
-    }
-    deliveryTracking: {
-      currentStatus: {
-        status: string
-        timestamp: string
-        _id: string
-      }
-      history: {
-        status: string
-        timestamp: string
-        _id: string
-      }[]
-    }
-    _id: string
-  }[]
-  totalAmount: number
-  paymentMethod: string
-  transactionId: string
-  _id: string
-  createdAt: string
-  updatedAt: string
 }
 
 export type IOrder = {
@@ -151,143 +113,48 @@ export enum DeliverStatusEnum {
 }
 
 export type IReturn = {
-  comfirmDelivery?: string
-  _id: string
-  orderId: {
-    _id: string
-    orderItems: Array<{
-      _id: string
-      name: string
-      sellerName: string
-      seller: {
-        address: {
-          street: string
-          state: string
-          zipcode: number
-          apartment?: string
-        }
-        rebundle: {
-          status: boolean
-          count: number
-        }
-        _id: string
-        username: string
-        firstName: string
-        lastName: string
-        image: string
-        email: string
-        followers: Array<string>
-        sold: Array<string>
-        rating: number
-        numReviews: number
-        badge: boolean
-        region: "NGN" | "ZAR"
-      }
-      slug: string
-      image: string
-      images: Array<string | undefined>
-      tags: Array<string>
-      video: string
-      brand: string
-      color: string
-      category: string
-      product: string
-      subCategory: string
-      material: string
-      description: string
-      sizes: Array<{
-        size: string
-        value: string
-      }>
-      userBuy: Array<any>
-      deliveryOption: Array<{
-        name: string
-        value: any
-      }>
-      condition: string
-      shippingLocation: string
-      keyFeatures: string
-      price: number
-      actualPrice: number
-      rating: number
-      currency: string
-      numReviews: number
-      likes: Array<any>
-      sold: boolean
-      soldAll: boolean
-      meta?: {
-        lat: number
-        lng: number
-        name: string
-        address: string
-        phone: string
-        stationId: number
-      }
-      active: boolean
-      countInStock: number
-      region: "NGN" | "ZAR"
-      isAvailable: boolean
-      shares: Array<any>
-      viewcount: Array<{
-        hashed: string
-        time: string
-        _id: string
-      }>
-      reviews: Array<any>
-      createdAt: string
-      updatedAt: string
-      productId: string
-      quantity: number
-      selectSize: string
-      deliverySelect: {
-        "delivery Option": string
-        cost: any
-        total: {
-          status: boolean
-          cost: any
-        }
-        province?: string
-        address?: string
-        phone?: string
-      }
-      deliveryStatus: string
-      deliveredAt: number
-      notifications: Array<string>
-      trackingNumber?: string
-      returnTrackingNumber: any
-    }>
-    user: {
-      _id: string
-      username: string
-    }
-  }
+  orderId: IOrder
   productId: IProduct
-  sellerId: string
-  buyerId: string
   reason: string
-  sending: {
-    "delivery Option": string
-    cost: any
-    total: {
-      status: boolean
-      cost: any
-    }
-    province?: string
-    address?: string
-    phone?: string
-  }
   refund: string
   image: string
   others: string
-  region: "NGN" | "ZAR"
+  region: string
+  adminReason: string
+  deliveryToken: string
   status: string
-  returnId: string
+  deliveryOption: {
+    fee: number
+    method: string
+    _id: string
+  }
+  deliveryTracking: {
+    currentStatus: {
+      status: string
+      timestamp: string
+      _id: string
+    }
+    history: {
+      status: string
+      timestamp: string
+      _id: string
+    }[]
+  }
+  _id: string
   createdAt: string
   updatedAt: string
-  adminReason?: string
-  returnDelivery?: {
-    "delivery Option": string
-    cost: any
+}
+
+export type CreateReturn = {
+  orderId: string
+  productId: string
+  reason: string
+  refund: string
+  image: string
+  others: string
+  deliveryOption: {
+    method: string
+    fee: number
   }
 }
 
