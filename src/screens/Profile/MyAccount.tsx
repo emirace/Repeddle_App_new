@@ -99,15 +99,23 @@ const MyAccount = ({ navigation, route }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
         <Appbar.Content
           title={userData.user.username}
-          titleStyle={{ textTransform: "capitalize" }}
+          titleStyle={{ textTransform: "capitalize", color: "white" }}
         />
         {userInfo?._id === userData.user._id && (
           <Appbar.Action
             icon={({ color, size }) => (
-              <Feather name="edit" size={size} color={color} />
+              <Feather
+                iconColor="white"
+                name="edit"
+                size={size}
+                color={color}
+              />
             )}
             onPress={() => navigation.push("Profile")}
           />

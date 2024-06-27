@@ -28,7 +28,7 @@ const ProductList = ({ navigation }: Props) => {
   const { colors } = useTheme()
   const { products, fetchProducts, loading, error, deleteProduct } =
     useProducts()
-    const { addNotification } = useToastNotification()
+  const { addNotification } = useToastNotification()
 
   const [isSearchVisible, setIsSearchVisible] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -67,7 +67,7 @@ const ProductList = ({ navigation }: Props) => {
     const res = await deleteProduct(productId)
 
     if (res.message) {
-      addNotification({message:(res.message)})
+      addNotification({ message: res.message })
     }
   }
 
@@ -80,11 +80,15 @@ const ProductList = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Products" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content title="Products" titleStyle={{ color: "white" }} />
         <Appbar.Action
           icon="magnify"
           onPress={() => setIsSearchVisible(true)}
+          iconColor="white"
         />
       </Appbar.Header>
 

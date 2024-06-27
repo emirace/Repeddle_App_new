@@ -403,11 +403,15 @@ const EditProduct = ({ navigation, route }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Edit Product" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Edit Product" />
         <Appbar.Action
           icon="cart-outline"
           onPress={() => navigation.push("Cart")}
+          iconColor="white"
         />
       </Appbar.Header>
       {loading ? (

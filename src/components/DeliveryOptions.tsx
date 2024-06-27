@@ -313,11 +313,14 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
         }}
       >
         <Appbar.Action
-          iconColor={colors.onBackground}
+          iconColor="white"
           icon="arrow-left"
           onPress={() => setShowModel(false)}
         />
-        <Appbar.Content title="Select Delivery option" />
+        <Appbar.Content
+          title="Select Delivery option"
+          titleStyle={{ color: "white" }}
+        />
       </Appbar.Header>
       {/* <View style={styles.header}>
         <TouchableOpacity onPress={() => setShowModel(false)}>
@@ -1076,7 +1079,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
             ]}
             onPress={loadingGig ? undefined : validation}
           >
-            <Text1>Continue</Text1>
+            <Text style={{ color: "white" }}>Continue</Text>
           </TouchableOpacity>
         )}
       </View>

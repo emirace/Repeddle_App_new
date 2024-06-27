@@ -22,7 +22,6 @@ export type RootStackParamList = {
   Cart: undefined
   Checkout: undefined
   PaymentMethod: undefined
-  CreateProduct: undefined
   SellerReview: { id: string }
   Wishlist: undefined
   ReturnDetail: { id: string }
@@ -134,11 +133,6 @@ export type CheckoutNavigationProp = NativeStackScreenProps<
 export type PaymentMethodNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "PaymentMethod"
->
-
-export type CreateProductNavigationProp = NativeStackScreenProps<
-  RootStackParamList,
-  "CreateProduct"
 >
 
 export type SellerReviewNavigationProp = NativeStackScreenProps<

@@ -26,9 +26,12 @@ const PaymentMethod = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
-        <Appbar.Action icon="magnify" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="My Orders" />
+        <Appbar.Action iconColor="white" icon="magnify" />
       </Appbar.Header>
 
       <View style={{ flex: 1, justifyContent: "space-between", padding: 20 }}>

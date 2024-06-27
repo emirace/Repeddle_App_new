@@ -27,6 +27,7 @@ const numColumns = 2
 const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   const bottomSheetRef = useRef<BottomSheetModal>(null)
   const snapPoints = useMemo(() => ["87%"], [])
+  const { filter, query: queryParams } = route.params
 
   const { fetchProducts, loading, products: productData } = useProducts()
   const { categories, fetchCategories } = useCategory()
@@ -35,20 +36,23 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   const [hasResult, setHasResult] = useState(true)
   const [products, setProducts] = useState<IProduct[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(queryParams ?? "")
 
-  const [filters, setFilters] = useState<FilterOptions>({})
+  const [filters, setFilters] = useState<FilterOptions>(filter ?? {})
 
   const fetchProd = async () => {
     setHasResult(true)
+    setProducts([])
     const params: string[][] = []
 
     if (filters && Object.keys(filters).length) {
       const filterParam = joinFilterParm(filters)
+      console.log(filterParam)
       if (filterParam.length) params.push(["filter", filterParam])
     }
 
-    if (currentPage) params.push(["page", currentPage.toString()])
+    if (currentPage && currentPage > 1)
+      params.push(["page", currentPage.toString()])
 
     if (query) params.push(["search", query])
 
@@ -57,7 +61,6 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
     console.log(string)
 
     const res = await fetchProducts(string)
-    console.log(res)
 
     // check if there are products return from query
     if (res && productData.totalCount !== 0) {
@@ -67,7 +70,11 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
 
     console.log("no result")
 
-    await fetchProducts()
+    const related = await fetchProducts()
+    if (related) {
+      console.log(productData.products)
+      setProducts(productData.products)
+    }
     setHasResult(false)
   }
 
@@ -124,6 +131,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
         }}
       >
         <Appbar.BackAction
+          iconColor="white"
           onPress={() => navigation.goBack()}
           color={colors.onBackground}
         />
@@ -135,7 +143,14 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
           onIconPress={applyFilter}
         />
         <Appbar.Content
-          title={<CartIcon onPress={() => navigation.push("Cart")} />}
+          title={
+            <View style={{ marginLeft: "auto" }}>
+              <CartIcon
+                iconColor="white"
+                onPress={() => navigation.push("Cart")}
+              />
+            </View>
+          }
         />
       </Appbar.Header>
       <View style={styles.container}>

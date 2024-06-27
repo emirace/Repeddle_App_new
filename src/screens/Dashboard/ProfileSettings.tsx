@@ -343,9 +343,12 @@ const ProfileSettings = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Profile" />
-        <Appbar.Action icon="magnify" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content title="Profile" titleStyle={{ color: "white" }} />
+        <Appbar.Action icon="magnify" iconColor="white" />
       </Appbar.Header>
       <ScrollView
         showsVerticalScrollIndicator={false}

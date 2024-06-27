@@ -87,11 +87,15 @@ const SizeChart = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Size Chart" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content title="Size Chart" titleStyle={{ color: "white" }} />
         <Appbar.Action
           icon="cart-outline"
           onPress={() => navigation.push("Cart")}
+          iconColor="white"
         />
       </Appbar.Header>
 

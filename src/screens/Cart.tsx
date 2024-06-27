@@ -64,12 +64,15 @@ const Cart = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Cart" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Cart" />
         <Appbar.Content
           title={
             <WishlistIcon
-              iconColor={colors.onBackground}
+              iconColor="white"
               onPress={() => navigation.push("Wishlist")}
             />
           }

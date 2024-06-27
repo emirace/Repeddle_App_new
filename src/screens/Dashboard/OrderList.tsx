@@ -36,11 +36,15 @@ const OrderList = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content title="My Orders" titleStyle={{ color: "white" }} />
         <Appbar.Action
           icon="cart-outline"
           onPress={() => navigation.push("Cart")}
+          iconColor="white"
         />
       </Appbar.Header>
       <TopNavigation tabs={tabs} />

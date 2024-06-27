@@ -108,9 +108,12 @@ const Checkout = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Checkout" />
-        <Appbar.Action icon="magnify" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Checkout" />
+        <Appbar.Action iconColor="white" icon="magnify" />
       </Appbar.Header>
       <ScrollView style={styles.content}>
         <View
