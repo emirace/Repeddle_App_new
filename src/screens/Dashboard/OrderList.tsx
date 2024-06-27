@@ -4,7 +4,6 @@ import { OrderListNavigationProp } from "../../types/navigation/stack"
 import { Appbar, useTheme } from "react-native-paper"
 import Purchase from "../../section/order/Purchase"
 import Sold from "../../section/order/Sold"
-import Returns from "../../section/order/Returns"
 import TopNavigation from "../../navigations/top"
 
 type Props = OrderListNavigationProp

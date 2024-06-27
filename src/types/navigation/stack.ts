@@ -11,7 +11,7 @@ export type RootStackParamList = {
   Product: { slug: string }
   Chat: { conversationId: string }
   Sell: undefined
-  Profile: undefined
+  ProfileSettings: undefined
   ProductList: undefined
   OrderList: undefined
   EditProduct: { id: string }
@@ -77,9 +77,9 @@ export type WithdrawNavigationProp = NativeStackScreenProps<
   "Withdraw"
 >
 
-export type ProfileNavigationProp = NativeStackScreenProps<
+export type ProfileSettingsNavigationProp = NativeStackScreenProps<
   RootStackParamList,
-  "Profile"
+  "ProfileSettings"
 >
 
 export type ProductNavigationProp = NativeStackScreenProps<

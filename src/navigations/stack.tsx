@@ -80,7 +80,7 @@ function MainStackNav() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Profile"
+        name="ProfileSettings"
         component={ProfileSettings}
         options={{ headerShown: false }}
       />

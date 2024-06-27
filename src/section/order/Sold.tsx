@@ -44,7 +44,7 @@ const Sold = (props: Props) => {
   }, [])
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {loading ? (
         <Loader />
       ) : !orders.length ? (

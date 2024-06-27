@@ -90,7 +90,7 @@ const dashboardItems: {
 }[] = [
   {
     name: "My Profile",
-    link: "Profile",
+    link: "ProfileSettings",
     leftIcon: "account",
     description: "Manage your profile",
   },
@@ -108,7 +108,7 @@ const dashboardItems: {
   },
   {
     name: "My Earnings",
-    link: "Profile",
+    link: "ProfileSettings",
     leftIcon: "account",
     description: "See your achievements",
   },

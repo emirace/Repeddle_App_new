@@ -44,9 +44,11 @@ const Purchase = (props: Props) => {
   }, [])
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {loading ? (
-        <Loader />
+        <View style={{ flex: 1, marginTop: 50 }}>
+          <Loader />
+        </View>
       ) : !orders.length ? (
         <View style={{ alignItems: "center", paddingVertical: 20 }}>
           <Text

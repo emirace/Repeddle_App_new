@@ -26,7 +26,7 @@ type Props = ProductListNavigationProp
 
 const ProductList = ({ navigation }: Props) => {
   const { colors } = useTheme()
-  const { products, fetchProducts, loading, error, deleteProduct } =
+  const { products, fetchUserProducts, loading, error, deleteProduct } =
     useProducts()
   const { addNotification } = useToastNotification()
 
@@ -36,7 +36,7 @@ const ProductList = ({ navigation }: Props) => {
   const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
-    fetchProducts(`page=${currentPage}`)
+    fetchUserProducts(`page=${currentPage}`)
     // TODO: search filter
   }, [currentPage])
 

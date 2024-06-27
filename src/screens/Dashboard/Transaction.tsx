@@ -43,7 +43,7 @@ const Transaction = ({ navigation }: Props) => {
   }
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Appbar.Header
         mode="small"
         style={{

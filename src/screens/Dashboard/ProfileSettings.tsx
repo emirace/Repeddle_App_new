@@ -27,10 +27,11 @@ import { UpdateUser } from "../../types/user"
 import Input from "../../components/Input"
 import useNewsletter from "../../hooks/useNewsletter"
 import Rebundle from "../../components/Rebundle"
-import { ProfileNavigationProp } from "../../types/navigation/stack"
+import { ProfileSettingsNavigationProp } from "../../types/navigation/stack"
 import useToastNotification from "../../hooks/useToastNotification"
+import { baseURL } from "../../services/api"
 
-type Props = ProfileNavigationProp
+type Props = ProfileSettingsNavigationProp
 
 const ProfileSettings = ({ navigation }: Props) => {
   const { user, loading, updateUser } = useAuth()
@@ -358,7 +359,7 @@ const ProfileSettings = ({ navigation }: Props) => {
         <View style={{ alignItems: "center" }}>
           <View style={styles.image}>
             <Image
-              source={{ uri: image || user?.image }}
+              source={{ uri: image || baseURL + user?.image }}
               style={{ width: 80, height: 80, borderRadius: 40 }}
             />
             <Ionicons
