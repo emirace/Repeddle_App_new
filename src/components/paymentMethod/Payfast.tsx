@@ -13,7 +13,10 @@ import Loader from "../ui/Loader"
 
 type Props = {
   totalPrice: number
-  placeOrderHandler: () => Promise<IOrder | undefined>
+  placeOrderHandler: (value: {
+    paymentMethod: string
+    transId: string
+  }) => Promise<IOrder | undefined>
 }
 
 const Payfast = ({ placeOrderHandler, totalPrice }: Props) => {
@@ -43,7 +46,7 @@ const Payfast = ({ placeOrderHandler, totalPrice }: Props) => {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      const order = await placeOrderHandler()
+      const order = await placeOrderHandler({ paymentMethod: "", transId: "" })
       if (order) {
         console.log(order)
         myData["item_name"] = `${order._id}`

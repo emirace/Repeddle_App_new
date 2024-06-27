@@ -5,17 +5,17 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { lightTheme } from "../constant/theme"
-import { Ionicons } from "@expo/vector-icons"
-import MultiSlider from "@ptomasroos/react-native-multi-slider"
-import { currency } from "../utils/common"
+} from "react-native";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { lightTheme } from "../constant/theme";
+import { Ionicons } from "@expo/vector-icons";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { currency } from "../utils/common";
 import {
   FilterOptions,
   SearchOptionsKey,
   SearchOptionsObject,
-} from "../types/search"
+} from "../types/search";
 import {
   availabilitylist,
   color1,
@@ -25,36 +25,35 @@ import {
   shippinglist,
   sizelist,
   typelist,
-} from "../utils/constants"
-import { Text, useTheme } from "react-native-paper"
-import { ICategory } from "../types/category"
-import useBrands from "../hooks/useBrand"
+} from "../utils/constants";
+import { Text, useTheme } from "react-native-paper";
+import { ICategory } from "../types/category";
+import useBrands from "../hooks/useBrand";
 
 type Props = {
-  filters: FilterOptions
-  handleFilter: (key: keyof FilterOptions, val: string | number) => void
-  setFilters: Dispatch<SetStateAction<FilterOptions>>
-  categories: ICategory[]
-}
+  filters: FilterOptions;
+  handleFilter: (key: keyof FilterOptions, val: string | number) => void;
+  setFilters: Dispatch<SetStateAction<FilterOptions>>;
+  categories: ICategory[];
+};
 
 const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
-  const { colors } = useTheme()
-  const { brands, fetchBrands } = useBrands()
+  const { colors } = useTheme();
+  const { brands, fetchBrands } = useBrands();
 
-  const [queryBrand, setQueryBrand] = useState<string>("")
+  const [queryBrand, setQueryBrand] = useState<string>("");
 
   const [priceRange, setPriceRange] = useState([
     +(filters.minPrice ?? 0),
     +(filters.maxPrice ?? 500000),
-  ])
+  ]);
 
   useEffect(() => {
-    const params = [["search", queryBrand]]
+    const params = [["search", queryBrand]];
 
-    const string = new URLSearchParams(params).toString()
-
-    fetchBrands(string)
-  }, [])
+    const string = new URLSearchParams(params).toString();
+    fetchBrands(string);
+  }, [queryBrand]);
 
   const [collapse, setCollapse] = useState({
     category: true,
@@ -69,24 +68,24 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
     availability: true,
     type: true,
     pattern: true,
-  })
+  });
 
   const toggleCollapse = (key: keyof typeof collapse, val: boolean) => {
-    setCollapse({ ...collapse, [key]: val })
-  }
+    setCollapse({ ...collapse, [key]: val });
+  };
 
   const handleAfterPriceChange = (values: number[]) => {
-    const [newMinValue, newMaxValue] = values
+    const [newMinValue, newMaxValue] = values;
     if (+(filters?.minPrice ?? 0) !== newMinValue) {
-      handleFilter("minPrice", newMinValue)
+      handleFilter("minPrice", newMinValue);
     }
     if (+(filters?.maxPrice ?? 0) !== newMaxValue) {
-      handleFilter("maxPrice", newMaxValue)
+      handleFilter("maxPrice", newMaxValue);
     }
-    setPriceRange(values)
-  }
+    setPriceRange(values);
+  };
 
-  const region = "NGN"
+  const region = "NGN";
 
   return (
     <View style={styles.container}>
@@ -179,10 +178,10 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
               value={queryBrand ?? filters.brand?.toString()}
               onChangeText={(text) => {
                 setFilters((prev) => {
-                  delete prev.brand
-                  return prev
-                })
-                setQueryBrand(text)
+                  delete prev.brand;
+                  return prev;
+                });
+                setQueryBrand(text);
               }}
               style={[styles.textInput, { color: colors.onBackground }]}
               cursorColor={colors.onBackground}
@@ -214,9 +213,9 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
                   <TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => {
-                        handleFilter("brand", p.name)
-                        setQueryBrand(p.name)
-                        Keyboard.dismiss()
+                        handleFilter("brand", p.name);
+                        setQueryBrand(p.name);
+                        Keyboard.dismiss();
                       }}
                       style={styles.listItem}
                     >
@@ -238,6 +237,19 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
                   </TouchableOpacity>
                 </View>
               ))}
+            {queryBrand && (
+              <TouchableOpacity>
+                <TouchableOpacity onPress={() => {}} style={styles.listItem}>
+                  <Ionicons
+                    style={{ marginRight: 5 }}
+                    name="stop-circle-sharp"
+                    size={10}
+                    color={lightTheme.colors.secondary}
+                  />
+                  <Text style={[styles.itemText]}>Others</Text>
+                </TouchableOpacity>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <View style={styles.menu}>
@@ -869,10 +881,10 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default Filters
+export default Filters;
 
 const styles = StyleSheet.create({
   container: {
@@ -933,4 +945,4 @@ const styles = StyleSheet.create({
   },
   rating: { flexDirection: "row", marginHorizontal: 5, marginVertical: 5 },
   selected: { fontWeight: "bold", color: lightTheme.colors.primary },
-})
+});
