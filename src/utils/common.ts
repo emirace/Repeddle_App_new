@@ -48,23 +48,23 @@ export const uploadImage = async (file: File, image?: string) => {
   }
 }
 
-export const deliveryNumber = (status: string) => {
-  const deliveryStatusMap = {
-    Processing: 1,
-    Dispatched: 2,
-    "In Transit": 3,
-    Delivered: 4,
-    Received: 5,
-    "Return Logged": 6,
-    "Return Approved": 8,
-    "Return Declined": 7,
-    "Return Dispatched": 9,
-    "Return Delivered": 10,
-    "Return Received": 11,
-    Refunded: 12,
-    "Payment to Seller Initiated": 13,
-  } as const
+export const deliveryStatusMap = {
+  Processing: 1,
+  Dispatched: 2,
+  "In Transit": 3,
+  Delivered: 4,
+  Received: 5,
+  "Return Logged": 6,
+  "Return Approved": 8,
+  "Return Declined": 7,
+  "Return Dispatched": 9,
+  "Return Delivered": 10,
+  "Return Received": 11,
+  Refunded: 12,
+  "Payment to Seller Initiated": 13,
+} as const
 
+export const deliveryNumber = (status: string) => {
   return deliveryStatusMap[status as keyof typeof deliveryStatusMap] ?? 0
 }
 
