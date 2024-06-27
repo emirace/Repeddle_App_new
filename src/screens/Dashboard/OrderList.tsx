@@ -18,10 +18,6 @@ const tabs = [
     name: "Sold",
     component: Sold,
   },
-  {
-    name: "Returns",
-    component: Returns,
-  },
 ]
 
 const OrderList = ({ navigation }: Props) => {

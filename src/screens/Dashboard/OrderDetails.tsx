@@ -35,6 +35,7 @@ import { normaliseH } from "../../utils/normalize"
 import DeliveryHistory from "../../components/DeliveryHistory"
 import Loader from "../../components/ui/Loader"
 import useToastNotification from "../../hooks/useToastNotification"
+import { baseURL } from "../../services/api"
 
 type Props = OrderDetailsNavigationProp
 
@@ -192,6 +193,8 @@ const OrderDetails = ({ navigation, route }: Props) => {
   let shippingPrice = 0
   let itemsPrice = 0
 
+  console.log(order)
+
   return (
     <View style={[styles.container]}>
       <Appbar.Header
@@ -205,7 +208,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
           iconColor="white"
           onPress={() => navigation.goBack()}
         />
-        <Appbar.Content title="My Orders" titleStyle={{ color: "white" }} />
+        <Appbar.Content title="Order Details" titleStyle={{ color: "white" }} />
         <Appbar.Action
           icon="cart-outline"
           onPress={() => navigation.push("Cart")}
@@ -385,29 +388,29 @@ const OrderDetails = ({ navigation, route }: Props) => {
                             </View>
                           ) : (
                             <>
-                              {orderitem.deliveryTracking.currentStatus._id && (
+                              {orderitem.trackingNumber && (
                                 <Text1 style={[{ marginRight: 20 }]}>
-                                  Tracking Number:{" "}
-                                  {orderitem.deliveryTracking.currentStatus._id}
+                                  Tracking Number: {orderitem.trackingNumber}
                                 </Text1>
                               )}
 
-                              {deliveryNumber(
-                                orderitem.deliveryTracking.currentStatus.status
-                              ) < 3 && (
-                                <Button
-                                  onPress={() => updateTracking(orderitem)}
-                                  children={`Mark as ${
-                                    showNextStatus(
-                                      orderitem.deliveryTracking.currentStatus
-                                        .status
-                                    )[0]
-                                  }`}
-                                  mode="contained"
-                                  style={{ borderRadius: 5 }}
-                                  loading={updatingStatus}
-                                />
-                              )}
+                              {user &&
+                                order.buyer._id === user._id &&
+                                orderitem.deliveryTracking.currentStatus
+                                  .status === "Delivered" && (
+                                  <Button
+                                    onPress={() => updateTracking(orderitem)}
+                                    children={`Mark as ${
+                                      showNextStatus(
+                                        orderitem.deliveryTracking.currentStatus
+                                          .status
+                                      )[0]
+                                    }`}
+                                    mode="contained"
+                                    style={{ borderRadius: 5 }}
+                                    loading={updatingStatus}
+                                  />
+                                )}
                             </>
                           )}
                         </View>
@@ -417,7 +420,9 @@ const OrderDetails = ({ navigation, route }: Props) => {
                     <View style={styles.detailButton}>
                       <View style={styles.orderItem}>
                         <Image
-                          source={{ uri: orderitem.product.images[0] }}
+                          source={{
+                            uri: baseURL + orderitem.product.images[0],
+                          }}
                           style={styles.image}
                         />
                         <View style={styles.details1}>
@@ -803,10 +808,9 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           </Modal>
                         </>
                       )}
-                    {orderitem.deliveryTracking.currentStatus && (
+                    {orderitem.trackingNumber && (
                       <Text1 style={{ marginRight: 20 }}>
-                        Tracking Number:{" "}
-                        {orderitem.deliveryTracking.currentStatus._id}
+                        Tracking Number: {orderitem.trackingNumber}
                       </Text1>
                     )}
                   </View>

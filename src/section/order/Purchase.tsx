@@ -16,18 +16,31 @@ import { IOrder } from "../../types/order"
 import { currency, region } from "../../utils/common"
 import moment from "moment"
 import Loader from "../../components/ui/Loader"
+import { baseURL } from "../../services/api"
+import useToastNotification from "../../hooks/useToastNotification"
 
 type Props = {}
 
 const Purchase = (props: Props) => {
   const { colors } = useTheme()
-  const { orders, loading, fetchOrders } = useOrder()
+  const { loading, fetchOrders, error } = useOrder()
+  const { addNotification } = useToastNotification()
+
+  const [orders, setOrders] = useState<IOrder[]>([])
 
   const navigation = useNavigation<OrderListNavigationProp["navigation"]>()
 
   useEffect(() => {
-    fetchOrders()
-    console.log("fetched1")
+    const getData = async () => {
+      const res = await fetchOrders()
+      if (res) {
+        setOrders([...res])
+      } else {
+        addNotification({ message: error, error: true })
+      }
+    }
+
+    getData()
   }, [])
 
   return (
@@ -86,8 +99,9 @@ const RenderItem = ({
     >
       <Image
         style={styles.orderImage}
-        source={{ uri: item.items[0].product.images[0] }}
+        source={{ uri: baseURL + item.items[0].product.images[0] }}
         alt={item.items[0].product.name}
+        resizeMode="cover"
       />
       <View style={styles.orderDetailsCont}>
         <View>
@@ -100,17 +114,11 @@ const RenderItem = ({
         </View>
         <View>
           <Text style={{ fontSize: 13 }}>
-            {
-              item.items[0].deliveryTracking.history[
-                item.items[0].deliveryTracking.history.length - 1
-              ].status
-            }
+            {item.items[0].deliveryTracking.currentStatus.status}
           </Text>
           <Text>
             {moment(
-              item.items[0].deliveryTracking.history[
-                item.items[0].deliveryTracking.history.length - 1
-              ].timestamp
+              item.items[0].deliveryTracking.currentStatus.timestamp
             ).format("MMM DD YY, h:mm a")}
           </Text>
         </View>

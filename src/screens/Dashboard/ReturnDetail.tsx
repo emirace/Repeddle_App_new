@@ -72,7 +72,10 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           iconColor="white"
           onPress={() => navigation.goBack()}
         />
-        <Appbar.Content titleStyle={{ color: "white" }} title="My Orders" />
+        <Appbar.Content
+          titleStyle={{ color: "white" }}
+          title="Return Details"
+        />
         <Appbar.Action
           icon="cart-outline"
           iconColor="white"

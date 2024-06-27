@@ -16,18 +16,31 @@ import { currency, region } from "../../utils/common"
 import { IOrder } from "../../types/order"
 import moment from "moment"
 import Loader from "../../components/ui/Loader"
+import { baseURL } from "../../services/api"
+import useToastNotification from "../../hooks/useToastNotification"
 
 type Props = {}
 
 const Sold = (props: Props) => {
   const { colors } = useTheme()
-  const { orders, loading, fetchSoldOrders } = useOrder()
+  const { loading, fetchSoldOrders, error } = useOrder()
+  const { addNotification } = useToastNotification()
+
+  const [orders, setOrders] = useState<IOrder[]>([])
 
   const navigation = useNavigation<OrderListNavigationProp["navigation"]>()
 
   useEffect(() => {
-    fetchSoldOrders()
-    console.log("fetched2")
+    const getData = async () => {
+      const res = await fetchSoldOrders()
+      if (res) {
+        setOrders([...res])
+      } else {
+        addNotification({ message: error, error: true })
+      }
+    }
+
+    getData()
   }, [])
 
   return (
@@ -81,7 +94,7 @@ const RenderItem = ({
     >
       <Image
         style={styles.orderImage}
-        source={{ uri: item.items[0].product.images[0] }}
+        source={{ uri: baseURL + item.items[0].product.images[0] }}
         alt={item.items[0].product.name}
       />
       <View style={styles.orderDetailsCont}>
@@ -95,11 +108,7 @@ const RenderItem = ({
         </View>
         <View>
           <Text style={{ fontSize: 13 }}>
-            {
-              item.items[0].deliveryTracking.history[
-                item.items[0].deliveryTracking.history.length - 1
-              ].status
-            }
+            {item.items[0].deliveryTracking.currentStatus.status}
           </Text>
           <Text>
             {moment(

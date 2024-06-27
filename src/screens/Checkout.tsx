@@ -30,7 +30,14 @@ type Props = CheckoutNavigationProp
 
 const Checkout = ({ navigation }: Props) => {
   const { colors } = useTheme()
-  const { cart, subtotal, total, paymentMethod, clearCart } = useCart()
+  const {
+    cart,
+    subtotal,
+    total,
+    paymentMethod,
+    clearCart,
+    changePaymentMethod,
+  } = useCart()
   const { createOrder, error } = useOrder()
   const { user } = useAuth()
   const { addNotification } = useToastNotification()
@@ -50,12 +57,17 @@ const Checkout = ({ navigation }: Props) => {
 
   const onApprove = async (response: RedirectParams) => {
     const order1 = await placeOrderHandler({
-      paymentMethod: "flutterwave",
+      paymentMethod: "Flutterwave",
       transId: response.transaction_id ?? response.tx_ref,
     })
     if (order1) {
+      clearCart()
+      changePaymentMethod("Card")
+      addNotification({ message: "order created" })
+      navigation.pop(3)
+      navigation.navigate("OrderDetails", { id: order1._id })
     } else {
-      console.log("no order found")
+      addNotification({ message: error || "failed to create order" })
     }
   }
 
@@ -67,7 +79,8 @@ const Checkout = ({ navigation }: Props) => {
         setIsLoading(false)
         return
       }
-      onApprove(result)
+      addNotification({ message: "Payment successful" })
+      await onApprove(result)
     } catch (err) {
       console.log(err)
     }
