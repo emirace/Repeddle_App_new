@@ -854,7 +854,7 @@ const EditProduct = ({ navigation, route }: Props) => {
           </Text>
           <View style={styles.imageCont}>
             <TouchableOpacity
-              onPress={() => pickImage("image1")}
+              onPress={() => pickImage("image1")}disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -874,7 +874,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               )}
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => pickImage("image2")}
+              onPress={() => pickImage("image2")}disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -894,7 +894,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               )}
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => pickImage("image3")}
+              onPress={() => pickImage("image3")}disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -914,7 +914,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               )}
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => pickImage("image4")}
+              onPress={() => pickImage("image4")}disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },

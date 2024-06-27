@@ -427,7 +427,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
                 <Button
                   mode="contained"
                   style={[styles.button, { backgroundColor: colors.primary }]}
-                  onPress={loading ? undefined : handleReturn}
+                  onPress={handleReturn}
                   loading={loading}
                 >
                   <Text style={{ color: "white", fontWeight: "600" }}>

@@ -86,6 +86,9 @@ const Sell = ({ navigation }: any) => {
   const [price, setPrice] = useState("")
   const [discount, setDiscount] = useState("")
   const [showVideoModal, setShowVideoModal] = useState(false)
+  const [tags, setTags] = useState<string[]>([])
+  const [colorsVal, setColorsVal] = useState<string[]>([])
+  const [sizesInputCounts, setSizesInputCounts] = useState<number[]>([])
 
   const [paxi, setPaxi] = useState(true)
   const [gig, setGig] = useState(false)
@@ -105,10 +108,7 @@ const Sell = ({ navigation }: any) => {
   const [searchBrand, setSearchBrand] = useState<IBrand[]>([])
   const [showOtherBrand, setShowOtherBrand] = useState(false)
   const [showFeeStructure, setShowFeeStructure] = useState(false)
-  const [refresh, setRefresh] = useState(false)
-
-  let tags: string[] = []
-  let sizesInputCounts = [1]
+  const [loadingUpload, setLoadingUpload] = useState(false)
 
   const handleOnChange = (text: string | boolean, key: keyof typeof input) => {
     setInput((prevState) => ({ ...prevState, [key]: text }))
@@ -119,7 +119,7 @@ const Sell = ({ navigation }: any) => {
   }
 
   const addSizesCont = () => {
-    sizesInputCounts.push(1)
+    setSizesInputCounts([...sizesInputCounts, 1])
   }
 
   const validation = () => {
@@ -166,7 +166,7 @@ const Sell = ({ navigation }: any) => {
       handleError("Select features", "keyFeatures")
       valid = false
     }
-    if (!input.color) {
+    if (!colorsVal.length) {
       handleError("Select color", "color")
       valid = false
     }
@@ -226,7 +226,7 @@ const Sell = ({ navigation }: any) => {
       luxury: input.luxury,
       vintage: input.vintage,
       material: input.material,
-      color: input.color,
+      color: colorsVal,
       luxuryImage: input.luxuryImage,
       // addSize,
       countInStock,
@@ -261,7 +261,7 @@ const Sell = ({ navigation }: any) => {
 
   const removeTags = (tag: string) => {
     const newtags = tags.filter((data) => data != tag)
-    tags = newtags
+    setTags(newtags)
   }
 
   useEffect(() => {
@@ -768,9 +768,10 @@ const Sell = ({ navigation }: any) => {
                 padding: 5,
                 color: "grey",
               }}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "color")
-              }
+                setColorsVal([...colorsVal, itemValue])
+              }}
             >
               <Picker.Item
                 style={{
@@ -824,6 +825,7 @@ const Sell = ({ navigation }: any) => {
             <TouchableOpacity
               // onPress={() => setModalVisibleIMage(true)}
               onPress={() => pickImage("image1")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -841,6 +843,7 @@ const Sell = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => pickImage("image2")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -858,6 +861,7 @@ const Sell = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => pickImage("image3")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -875,6 +879,7 @@ const Sell = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => pickImage("image4")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },

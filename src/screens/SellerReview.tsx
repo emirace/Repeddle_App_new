@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native"
 import React, { useState } from "react"
-import { Appbar, Text, useTheme } from "react-native-paper"
+import { Appbar, Button, Text, useTheme } from "react-native-paper"
 import { FontAwesome } from "@expo/vector-icons"
 import Rating from "../components/Rating"
 import moment from "moment"
@@ -188,12 +188,14 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
               value={replyText}
               multiline
             />
-            <TouchableOpacity
-              style={[styles.submitButton, { backgroundColor: colors.primary }]}
+            <Button
               onPress={handleReplySubmit}
-            >
-              <Text style={styles.submitButtonText}>Submit</Text>
-            </TouchableOpacity>
+              children="Proceed"
+              loading={loading}
+              mode="contained"
+              style={[styles.submitButton, { backgroundColor: colors.primary }]}
+              labelStyle={styles.submitButtonText}
+            />
           </View>
         )}
       </View>

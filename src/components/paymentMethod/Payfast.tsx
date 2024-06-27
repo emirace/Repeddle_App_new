@@ -9,6 +9,7 @@ import { useTheme } from "react-native-paper"
 import useAuth from "../../hooks/useAuth"
 import { IOrder } from "../../types/order"
 import { makePayFastPaymentService } from "../../services/others"
+import Loader from "../ui/Loader"
 
 type Props = {
   totalPrice: number
@@ -56,7 +57,7 @@ const Payfast = ({ placeOrderHandler, totalPrice }: Props) => {
   }
 
   return loading ? (
-    <ActivityIndicator size={"large"} color={colors.primary} />
+    <Loader />
   ) : (
     <TouchableOpacity
       style={[

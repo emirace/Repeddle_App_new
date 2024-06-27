@@ -58,8 +58,6 @@ const Cart = ({ navigation }: Props) => {
     }
   }
 
-  const loading = false
-
   return (
     <View style={styles.container}>
       <Appbar.Header
@@ -98,8 +96,6 @@ const Cart = ({ navigation }: Props) => {
             </TouchableOpacity>
           </View>
         </View>
-      ) : loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
       ) : (
         <>
           <FlatList

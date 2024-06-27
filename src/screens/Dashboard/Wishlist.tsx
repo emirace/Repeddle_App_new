@@ -7,6 +7,7 @@ import ProductItem from "../../components/ProductItem"
 import { IProduct } from "../../types/product"
 import { WishlistNavigationProp } from "../../types/navigation/stack"
 import { Wishlist as WishlistType } from "../../types/user"
+import Loader from "../../components/ui/Loader"
 
 type Props = WishlistNavigationProp
 const numColumns = 2
@@ -58,37 +59,38 @@ const Wishlist = ({ navigation }: Props) => {
           onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
+      {loading && <Loader />}
+      {!loading &&
+        (wishlist.length > 0 ? (
+          <View style={styles.cartList}>
+            <FlatList
+              data={formatData(wishlist)}
+              renderItem={({ item }) => (
+                <RenderItem item={item} navigation={navigation} />
+              )}
+              keyExtractor={(item) => item._id}
+              numColumns={numColumns}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+              marginTop: 20,
+            }}
+          >
+            <Text style={{ textAlign: "center" }}>No item in Wishlist 😍 </Text>
 
-      {user?.wishlist && user.wishlist.length > 0 ? (
-        <View style={styles.cartList}>
-          <FlatList
-            data={formatData(wishlist)}
-            renderItem={({ item }) => (
-              <RenderItem item={item} navigation={navigation} />
-            )}
-            keyExtractor={(item) => item._id}
-            numColumns={numColumns}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      ) : (
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            marginTop: 20,
-          }}
-        >
-          <Text style={{ textAlign: "center" }}>No item in Wishlist 😍 </Text>
-
-          <Pressable onPress={() => navigation.push("Main")}>
-            <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
-              Go Shopping
-            </Text>
-          </Pressable>
-        </View>
-      )}
+            <Pressable onPress={() => navigation.push("Main")}>
+              <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
+                Go Shopping
+              </Text>
+            </Pressable>
+          </View>
+        ))}
     </View>
   )
 }

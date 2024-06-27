@@ -15,6 +15,7 @@ import React, { PropsWithChildren, ReactNode, useState } from "react"
 import {
   ActivityIndicator,
   Appbar,
+  Button,
   Switch,
   Text,
   useTheme,
@@ -695,11 +696,16 @@ const ProfileSettings = ({ navigation }: Props) => {
                     }}
                   />
 
-                  {isLoading ? (
-                    <ActivityIndicator size={"large"} color={colors.primary} />
-                  ) : (
-                    <MyButton text="Submit" onPress={addressValidate} />
-                  )}
+                  <Button
+                    onPress={addressValidate}
+                    children="Submit"
+                    loading={isLoading}
+                    mode="contained"
+                    style={{
+                      backgroundColor: colors.primary,
+                      borderRadius: 5,
+                    }}
+                  />
                 </View>
               </View>
             </View>
@@ -806,11 +812,16 @@ const ProfileSettings = ({ navigation }: Props) => {
                     Note: This cannot be change once saved, contact support to
                     make any changes.
                   </Text>
-                  {isLoading ? (
-                    <ActivityIndicator size={"large"} color={colors.primary} />
-                  ) : (
-                    <MyButton text="Submit" onPress={accountValidate} />
-                  )}
+                  <Button
+                    onPress={accountValidate}
+                    children="Submit"
+                    loading={isLoading}
+                    mode="contained"
+                    style={{
+                      backgroundColor: colors.primary,
+                      borderRadius: 5,
+                    }}
+                  />
                 </View>
               </View>
             </View>
@@ -831,11 +842,17 @@ const ProfileSettings = ({ navigation }: Props) => {
         </View>
       </ScrollView>
       <View style={{ margin: 10 }}>
-        {isLoading ? (
-          <ActivityIndicator size={"large"} color={colors.primary} />
-        ) : (
-          <MyButton text={"update"} icon="pencil" onPress={validate} />
-        )}
+        <Button
+          onPress={validate}
+          children="Update"
+          loading={isLoading}
+          mode="contained"
+          style={{
+            backgroundColor: colors.primary,
+            borderRadius: 5,
+          }}
+          icon={"pencil"}
+        />
       </View>
     </View>
   )
