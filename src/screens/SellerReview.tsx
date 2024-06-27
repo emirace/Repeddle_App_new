@@ -1,5 +1,4 @@
 import {
-  Alert,
   FlatList,
   Image,
   Pressable,
@@ -15,6 +14,7 @@ import Rating from "../components/Rating"
 import moment from "moment"
 import { IReview } from "../types/product"
 import { SellerReviewNavigationProp } from "../types/navigation/stack"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = SellerReviewNavigationProp
 
@@ -67,6 +67,7 @@ type ReviewProps = {
 
 const ReviewItem = ({ item, navigation }: ReviewProps) => {
   const { colors } = useTheme()
+  const { addNotification } = useToastNotification()
 
   const [replyVisible, setReplyVisible] = useState(false)
   const [replyText, setReplyText] = useState("")
@@ -79,16 +80,14 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
 
   const handleReplySubmit = async () => {
     if (!replyText) {
-      // TODO: add notification
-      Alert.alert("Enter a reply")
+      addNotification({ message: "Enter a reply", error: true })
       return
     }
     setLoading(true)
 
     setReplyText("")
     setReplyVisible(false)
-    // TODO: add notification
-    Alert.alert("Reply submitted successfully")
+    addNotification({ message: "Reply submitted successfully" })
 
     setLoading(false)
   }

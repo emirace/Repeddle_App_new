@@ -8,16 +8,17 @@ import { IProduct } from "../../types/product"
 import { WishlistNavigationProp } from "../../types/navigation/stack"
 import { Wishlist as WishlistType } from "../../types/user"
 import Loader from "../../components/ui/Loader"
+import useToastNotification from "../../hooks/useToastNotification"
 
 type Props = WishlistNavigationProp
 const numColumns = 2
 
 const Wishlist = ({ navigation }: Props) => {
   const { colors } = useTheme()
-
+  const { addNotification } = useToastNotification()
   const { removeFromWishlist, user, error, getWishlist } = useAuth()
+
   const [wishlist, setWishlist] = useState<WishlistType[]>([])
-  const [refresh, setRefresh] = useState(false)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -25,13 +26,13 @@ const Wishlist = ({ navigation }: Props) => {
       setLoading(true)
       const res = await getWishlist()
       if (res) setWishlist(res)
-      // TODO: show toast
-      else Alert.alert(error ?? "An error occurred")
+      else
+        addNotification({ message: error ?? "An error occurred", error: true })
       setLoading(false)
     }
 
     getList()
-  }, [refresh])
+  }, [])
 
   const formatData = (data: IProduct[]) => {
     const totalRows = Math.floor(data.length / numColumns)

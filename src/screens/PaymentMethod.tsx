@@ -4,19 +4,16 @@ import { Appbar, Text, useTheme } from "react-native-paper"
 import useAuth from "../hooks/useAuth"
 import useCart from "../hooks/useCart"
 import { PaymentMethodNavigationProp } from "../types/navigation/stack"
+import { currency, region } from "../utils/common"
 
 type Props = PaymentMethodNavigationProp
 
 const PaymentMethod = ({ navigation }: Props) => {
   const { colors } = useTheme()
-  const { total } = useCart()
+  const { total, paymentMethod, changePaymentMethod } = useCart()
   const { user } = useAuth()
 
-  const [paymentMethodName, setPaymentMethod] = useState("Credit/Debit card")
-  const [currency, setCurrency] = useState("")
-
   const handleSubmit = () => {
-    // TODO: save payment method
     navigation.push("Checkout")
   }
 
@@ -36,24 +33,28 @@ const PaymentMethod = ({ navigation }: Props) => {
 
       <View style={{ flex: 1, justifyContent: "space-between", padding: 20 }}>
         <View style={{ flex: 1 }}>
+          {/* TODO: use react native paper  */}
           <Radio
             label="Credit/Debit card"
-            onPress={() => setPaymentMethod("Credit/Debit card")}
-            paymentMethodName={paymentMethodName}
+            onPress={() => changePaymentMethod("Card")}
+            paymentMethodName={paymentMethod}
           />
+          {/* TODO: use react native paper  */}
           <Radio
-            label={`Wallet (${currency}${(user?.balance ?? 0).toFixed(2)})`}
+            label={`Wallet (${currency(region())}${(user?.balance ?? 0).toFixed(
+              2
+            )})`}
             onPress={() =>
               (user?.balance ?? 0) === 0 || (user?.balance ?? 0) < total
                 ? ""
-                : setPaymentMethod("Wallet")
+                : changePaymentMethod("Wallet")
             }
-            paymentMethodName={paymentMethodName}
+            paymentMethodName={paymentMethod}
           />
           {(user?.balance ?? 0) <= total && (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={{ color: "red", fontSize: 13 }}>
-                Insufficiant balance
+                Insufficient balance
               </Text>
               <Text style={{ color: colors.secondary, marginHorizontal: 20 }}>
                 Fund Wallet Now

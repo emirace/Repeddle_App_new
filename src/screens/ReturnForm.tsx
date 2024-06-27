@@ -15,12 +15,15 @@ import { Entypo, Ionicons } from "@expo/vector-icons"
 import { currency, deliveryNumber, uploadImage } from "../utils/common"
 import { OrderItem } from "../types/order"
 import * as ImagePicker from "expo-image-picker"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = ReturnFormNavigationProp
 
 const ReturnForm = ({ navigation, route }: Props) => {
   const { orderItems, orderId, waybillNumber } = route.params
   const { colors } = useTheme()
+  const { addNotification } = useToastNotification()
+
   const [tab, setTab] = useState("items")
   const [current, setCurrent] = useState<OrderItem>()
   const [error, setError] = useState("")
@@ -98,8 +101,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
       const res = await uploadImage(file)
       setImage(res)
     } catch (error) {
-      //   // TODO: toast notification
-      Alert.alert(error as string)
+      addNotification({ message: error as string, error: true })
     }
     setLoadingUpload(false)
   }

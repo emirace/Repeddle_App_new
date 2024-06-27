@@ -1,5 +1,4 @@
 import {
-  Alert,
   Image,
   Modal,
   Pressable,
@@ -35,6 +34,7 @@ import { displayDeliveryStatus } from "../../utils/render"
 import { normaliseH } from "../../utils/normalize"
 import DeliveryHistory from "../../components/DeliveryHistory"
 import Loader from "../../components/ui/Loader"
+import useToastNotification from "../../hooks/useToastNotification"
 
 type Props = OrderDetailsNavigationProp
 
@@ -42,6 +42,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const { colors, dark } = useTheme()
   const { fetchOrderById, error, loading, updateOrderItemTracking } = useOrder()
   const { user } = useAuth()
+  const { addNotification } = useToastNotification()
   const { id } = route.params
 
   const viewShotRef = useRef<ViewShot>(null)
@@ -54,7 +55,6 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const [trackingNumber, setTrackingNumber] = useState("")
   const [afterAction, setAfterAction] = useState(false)
   const [showDelivery, setShowDelivery] = useState("")
-  const [refresh, setRefresh] = useState(true)
   const [isSeller, setIsSeller] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [showError, setShowError] = useState(false)
@@ -130,8 +130,10 @@ const OrderDetails = ({ navigation, route }: Props) => {
 
     if (nextStatus[1] === 2) {
       if (!trackingNumber) {
-        // TODO:
-        Alert.alert("Tracking number is required to dispatch item")
+        addNotification({
+          message: "Tracking number is required to dispatch item",
+          error: true,
+        })
         return
       }
     }
@@ -147,12 +149,13 @@ const OrderDetails = ({ navigation, route }: Props) => {
       }
     )
     if (res) {
-      // TODO:
-      Alert.alert("Item status has been updated")
+      addNotification({ message: "Item status has been updated" })
       setOrder(res)
     } else {
-      // TODO:
-      Alert.alert(error ?? "Failed to update status")
+      addNotification({
+        message: error ?? "Failed to update status",
+        error: true,
+      })
     }
 
     setUpdatingStatus(false)

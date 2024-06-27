@@ -1,6 +1,4 @@
 import {
-  ActivityIndicator,
-  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -24,6 +22,7 @@ import CustomAlert from "../components/CustomAlert"
 import { normaliseW } from "../utils/normalize"
 import { baseURL } from "../services/api"
 import WishlistIcon from "../components/ui/WishlistIcon"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = CartNavigationProp
 
@@ -33,22 +32,20 @@ const Cart = ({ navigation }: Props) => {
   const { colors } = useTheme()
   const { user } = useAuth()
   const { cart, subtotal, total } = useCart()
+  const { addNotification } = useToastNotification()
 
   const checkout = () => {
     if (!user) {
-      // TODO: show toast
-      Alert.alert("Login to continue")
+      addNotification({ message: "Login to continue", error: true })
       navigation.push("Auth")
       return
     }
     if (!checkDeliverySelect(cart)) {
-      // TODO: show toast
-      Alert.alert("Select delivery method")
+      addNotification({ message: "Select delivery method", error: true })
       return
     }
     if (cart.length === 0) {
-      // TODO: show toast
-      Alert.alert("Cart is empty")
+      addNotification({ message: "Cart is empty", error: true })
     } else {
       if (user.isVerifiedEmail) {
         navigation.push("PaymentMethod")
@@ -139,6 +136,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
   const { colors } = useTheme()
   const { user, addToWishlist, error } = useAuth()
   const { removeFromCart } = useCart()
+  const { addNotification } = useToastNotification()
 
   const [modalVisible, setModalVisible] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
@@ -157,26 +155,28 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
 
   const saveItem = async () => {
     if (!user) {
-      // TODO: show toast
-      Alert.alert("login to add item to wishlist")
+      addNotification({ message: "login to add item to wishlist", error: true })
       return
     }
     if (item.seller._id === user._id) {
-      // TODO: show toast
-      Alert.alert("You can't add your product to wishlist")
+      addNotification({
+        message: "You can't add your product to wishlist",
+        error: true,
+      })
       return
     }
     setAddToWish(true)
 
     const res = await addToWishlist(item._id)
     if (res) {
-      // TODO: add alert
-      Alert.alert(res)
+      addNotification({ message: res })
       removeFromCart(item._id)
       setShowAlert(false)
-    }
-    // TODO: add alert
-    else Alert.alert(error ?? "Failed to add to wishlist")
+    } else
+      addNotification({
+        message: error ?? "Failed to add to wishlist",
+        error: true,
+      })
 
     setAddToWish(false)
   }

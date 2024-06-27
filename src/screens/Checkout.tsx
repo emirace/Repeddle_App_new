@@ -1,104 +1,103 @@
 import {
   ActivityIndicator,
-  Alert,
   Image,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useMemo, useState } from "react";
-import { Appbar, Button, Text, useTheme } from "react-native-paper";
-import useCart from "../hooks/useCart";
-import { CheckoutNavigationProp } from "../types/navigation/stack";
-import { API_KEY } from "../utils/constants";
+} from "react-native"
+import React, { useMemo, useState } from "react"
+import { Appbar, Button, Text, useTheme } from "react-native-paper"
+import useCart from "../hooks/useCart"
+import { CheckoutNavigationProp } from "../types/navigation/stack"
+import { API_KEY } from "../utils/constants"
 import {
   couponDiscount,
   currency,
   generateTransactionRef,
   region,
-} from "../utils/common";
-import useAuth from "../hooks/useAuth";
-import { Ionicons } from "@expo/vector-icons";
-import PayWithFlutterwave from "flutterwave-react-native";
-import Payfast from "../components/paymentMethod/Payfast";
-import useOrder from "../hooks/useOrder";
-import { RedirectParams } from "flutterwave-react-native/dist/PayWithFlutterwave";
-import { baseURL } from "../services/api";
+} from "../utils/common"
+import useAuth from "../hooks/useAuth"
+import { Ionicons } from "@expo/vector-icons"
+import PayWithFlutterwave from "flutterwave-react-native"
+import Payfast from "../components/paymentMethod/Payfast"
+import useOrder from "../hooks/useOrder"
+import { RedirectParams } from "flutterwave-react-native/dist/PayWithFlutterwave"
+import { baseURL } from "../services/api"
+import useToastNotification from "../hooks/useToastNotification"
 
-type Props = CheckoutNavigationProp;
+type Props = CheckoutNavigationProp
 
 const Checkout = ({ navigation }: Props) => {
-  const { colors } = useTheme();
-  const { cart, subtotal, total, paymentMethod, clearCart } = useCart();
-  const { createOrder, error } = useOrder();
-  const { user } = useAuth();
+  const { colors } = useTheme()
+  const { cart, subtotal, total, paymentMethod, clearCart } = useCart()
+  const { createOrder, error } = useOrder()
+  const { user } = useAuth()
+  const { addNotification } = useToastNotification()
 
-  const [showDelivery, setShowDelivery] = useState("");
-  const [coupon, setCoupon] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingPay, setLoadingPay] = useState(false);
+  const [showDelivery, setShowDelivery] = useState("")
+  const [coupon, setCoupon] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [loadingPay, setLoadingPay] = useState(false)
 
-  const currencyVal = useMemo(() => currency(cart?.[0].region), [cart]);
+  const currencyVal = useMemo(() => currency(cart?.[0].region), [cart])
   const discount = useMemo(
     () => (coupon ? couponDiscount(coupon, total) : 0),
     [coupon]
-  );
+  )
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {}
 
   const onApprove = async (response: RedirectParams) => {
     const order1 = await placeOrderHandler({
       paymentMethod: "flutterwave",
       transId: response.transaction_id ?? response.tx_ref,
-    });
+    })
     if (order1) {
     } else {
-      console.log("no order found");
+      console.log("no order found")
     }
-  };
+  }
 
   const handleOnRedirect = async (result: RedirectParams) => {
-    console.log(result, "res");
+    console.log(result, "res")
     try {
       if (result.status !== "successful") {
-        console.log("unsuccessfull");
-        setIsLoading(false);
-        return;
+        console.log("unsuccessfull")
+        setIsLoading(false)
+        return
       }
-      onApprove(result);
+      onApprove(result)
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const onError = () => {
-    setIsLoading(false);
-  };
+    setIsLoading(false)
+  }
 
   const placeOrderHandler = async ({
     paymentMethod,
     transId,
   }: {
-    paymentMethod: string;
-    transId: string;
+    paymentMethod: string
+    transId: string
   }) => {
     const res = await createOrder({
       items: cart,
       paymentMethod,
       totalAmount: total,
       transactionId: transId,
-    });
+    })
 
     if (res) {
-      // TODO: add notification
-      Alert.alert(res.message);
-      return res.order;
+      addNotification({ message: res.message })
+      return res.order
     } else {
-      // TODO: add notification
-      Alert.alert(error);
+      addNotification({ message: error, error: true })
     }
-  };
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -376,8 +375,8 @@ const Checkout = ({ navigation }: Props) => {
               customButton={(props) => (
                 <Button
                   onPress={() => {
-                    setIsLoading(true);
-                    props.onPress();
+                    setIsLoading(true)
+                    props.onPress()
                   }}
                   children="Proceed"
                   loading={isLoading}
@@ -391,10 +390,10 @@ const Checkout = ({ navigation }: Props) => {
         ) : null}
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default Checkout;
+export default Checkout
 
 const styles = StyleSheet.create({
   title: { fontWeight: "bold", fontSize: 20, textTransform: "capitalize" },
@@ -446,4 +445,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 5,
   },
-});
+})

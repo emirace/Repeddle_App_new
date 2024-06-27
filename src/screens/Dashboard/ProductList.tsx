@@ -20,6 +20,7 @@ import useProducts from "../../hooks/useProducts"
 import { IProduct } from "../../types/product"
 import Loader from "../../components/ui/Loader"
 import { baseURL } from "../../services/api"
+import useToastNotification from "../../hooks/useToastNotification"
 
 type Props = ProductListNavigationProp
 
@@ -27,6 +28,7 @@ const ProductList = ({ navigation }: Props) => {
   const { colors } = useTheme()
   const { products, fetchProducts, loading, error, deleteProduct } =
     useProducts()
+    const { addNotification } = useToastNotification()
 
   const [isSearchVisible, setIsSearchVisible] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -64,9 +66,8 @@ const ProductList = ({ navigation }: Props) => {
   const deleteHandler = async (productId: string) => {
     const res = await deleteProduct(productId)
 
-    // TODO: toast
     if (res.message) {
-      Alert.alert(res.message)
+      addNotification({message:(res.message)})
     }
   }
 
