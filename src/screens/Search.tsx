@@ -8,7 +8,7 @@ import {
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet"
 import { Ionicons } from "@expo/vector-icons"
-import { IProduct } from "../types/product"
+import { IProduct, ProductWithPagination } from "../types/product"
 import { normaliseH } from "../utils/normalize"
 import { FilterOptions } from "../types/search"
 import { SearchScreenNavigationProp } from "../types/navigation/stack"
@@ -21,20 +21,29 @@ import { lightTheme } from "../constant/theme"
 import useCategory from "../hooks/useCategory"
 import Loader from "../components/ui/Loader"
 import CartIcon from "../components/ui/cartIcon"
+import useToastNotification from "../hooks/useToastNotification"
 
 const numColumns = 2
+
+const emptyProduct = {
+  currentPage: 0,
+  products: [],
+  totalCount: 0,
+  totalPages: 0,
+}
 
 const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   const bottomSheetRef = useRef<BottomSheetModal>(null)
   const snapPoints = useMemo(() => ["87%"], [])
   const { filter, query: queryParams } = route.params
 
-  const { fetchProducts, loading, products: productData } = useProducts()
+  const { fetchProducts, loading } = useProducts()
   const { categories, fetchCategories } = useCategory()
   const { colors } = useTheme()
+  const { addNotification } = useToastNotification()
 
   const [hasResult, setHasResult] = useState(true)
-  const [products, setProducts] = useState<IProduct[]>([])
+  const [products, setProducts] = useState<ProductWithPagination>(emptyProduct)
   const [currentPage, setCurrentPage] = useState(1)
   const [query, setQuery] = useState(queryParams ?? "")
 
@@ -42,7 +51,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
 
   const fetchProd = async () => {
     setHasResult(true)
-    setProducts([])
+    setProducts(emptyProduct)
     const params: string[][] = []
 
     if (filters && Object.keys(filters).length) {
@@ -63,19 +72,21 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
     const res = await fetchProducts(string)
 
     // check if there are products return from query
-    if (res && productData.totalCount !== 0) {
-      setProducts(productData.products)
+    if (typeof res !== "string" && products.totalCount !== 0) {
+      setProducts(products)
       return
     }
 
     console.log("no result")
 
     const related = await fetchProducts()
-    if (related) {
-      console.log(productData.products)
-      setProducts(productData.products)
+    if (typeof related !== "string") {
+      console.log(products)
+      setProducts(products)
+      setHasResult(false)
+    } else {
+      addNotification({ message: related, error: true })
     }
-    setHasResult(false)
   }
 
   const joinFilterParm = (param: { [key: string]: string }) => {
@@ -106,7 +117,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   }
 
   const applyFilter = async () => {
-    setProducts([])
+    setProducts(emptyProduct)
     setCurrentPage(1)
     await fetchProd()
   }
@@ -116,7 +127,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   }
 
   const handleMore = () => {
-    if (currentPage < productData.totalPages) {
+    if (currentPage < products.totalPages) {
       setCurrentPage(currentPage + 1)
     }
   }
@@ -162,7 +173,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
             <Ionicons name="filter" color={colors.onBackground} size={24} />
           </TouchableOpacity>
           <View style={styles.resultCont}>
-            <Text style={[styles.result]}>{products.length} results</Text>
+            <Text style={[styles.result]}>{products.totalCount} results</Text>
           </View>
         </View>
         {!hasResult && !loading && (
@@ -178,7 +189,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
         )}
 
         <FlatList
-          data={formatData(products)}
+          data={formatData(products.products)}
           renderItem={({ item }) => (
             <RenderItem item={item} navigation={navigation} />
           )}
