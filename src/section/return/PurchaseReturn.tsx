@@ -1,16 +1,31 @@
 import { StyleSheet, View } from "react-native"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { returns } from "../../utils/data"
 import ReturnComp from "./ReturnComp"
+import useReturn from "../../hooks/useReturn"
+import { IReturn } from "../../types/order"
 
 type Props = {}
 
 const PurchaseReturn = (props: Props) => {
-  const loading = false
-  const error = ""
-  const returnData = returns
+  const { fetchPurchaseReturns, loading } = useReturn()
 
-  return <ReturnComp loading={loading} returns={returnData} error={error} />
+  const [query, setQuery] = useState("")
+  const [returns, setReturns] = useState<IReturn[]>([])
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    const getReturn = async () => {
+      const res = await fetchPurchaseReturns()
+      if (typeof res !== "string") {
+        setReturns(res)
+      } else setError(res)
+    }
+
+    getReturn()
+  }, [])
+
+  return <ReturnComp loading={loading} returns={returns} error={error} />
 }
 
 export default PurchaseReturn

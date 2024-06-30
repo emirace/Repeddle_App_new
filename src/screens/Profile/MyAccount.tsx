@@ -38,7 +38,6 @@ const TabBar = (props: TabBarProps<string>) => {
     <MaterialTabBar
       {...props}
       indicatorStyle={{ backgroundColor: lightTheme.colors.primary }}
-      // style={{ backgroundColor: "pink" }}
       labelStyle={{
         textTransform: "capitalize",
         fontWeight: "bold",
@@ -117,7 +116,7 @@ const MyAccount = ({ navigation, route }: Props) => {
                 color={color}
               />
             )}
-            onPress={() => navigation.push("Profile")}
+            onPress={() => navigation.push("ProfileSettings")}
           />
         )}
       </Appbar.Header>
