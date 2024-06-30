@@ -1,5 +1,4 @@
 import {
-  Alert,
   Image,
   Modal,
   Pressable,
@@ -35,6 +34,8 @@ import { displayDeliveryStatus } from "../../utils/render"
 import { normaliseH } from "../../utils/normalize"
 import DeliveryHistory from "../../components/DeliveryHistory"
 import Loader from "../../components/ui/Loader"
+import useToastNotification from "../../hooks/useToastNotification"
+import { baseURL } from "../../services/api"
 
 type Props = OrderDetailsNavigationProp
 
@@ -42,6 +43,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const { colors, dark } = useTheme()
   const { fetchOrderById, error, loading, updateOrderItemTracking } = useOrder()
   const { user } = useAuth()
+  const { addNotification } = useToastNotification()
   const { id } = route.params
 
   const viewShotRef = useRef<ViewShot>(null)
@@ -54,7 +56,6 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const [trackingNumber, setTrackingNumber] = useState("")
   const [afterAction, setAfterAction] = useState(false)
   const [showDelivery, setShowDelivery] = useState("")
-  const [refresh, setRefresh] = useState(true)
   const [isSeller, setIsSeller] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [showError, setShowError] = useState(false)
@@ -130,8 +131,10 @@ const OrderDetails = ({ navigation, route }: Props) => {
 
     if (nextStatus[1] === 2) {
       if (!trackingNumber) {
-        // TODO:
-        Alert.alert("Tracking number is required to dispatch item")
+        addNotification({
+          message: "Tracking number is required to dispatch item",
+          error: true,
+        })
         return
       }
     }
@@ -147,12 +150,13 @@ const OrderDetails = ({ navigation, route }: Props) => {
       }
     )
     if (res) {
-      // TODO:
-      Alert.alert("Item status has been updated")
+      addNotification({ message: "Item status has been updated" })
       setOrder(res)
     } else {
-      // TODO:
-      Alert.alert(error ?? "Failed to update status")
+      addNotification({
+        message: error ?? "Failed to update status",
+        error: true,
+      })
     }
 
     setUpdatingStatus(false)
@@ -189,6 +193,8 @@ const OrderDetails = ({ navigation, route }: Props) => {
   let shippingPrice = 0
   let itemsPrice = 0
 
+  console.log(order)
+
   return (
     <View style={[styles.container]}>
       <Appbar.Header
@@ -198,11 +204,15 @@ const OrderDetails = ({ navigation, route }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content title="Order Details" titleStyle={{ color: "white" }} />
         <Appbar.Action
           icon="cart-outline"
           onPress={() => navigation.push("Cart")}
+          iconColor="white"
         />
       </Appbar.Header>
 
@@ -378,29 +388,29 @@ const OrderDetails = ({ navigation, route }: Props) => {
                             </View>
                           ) : (
                             <>
-                              {orderitem.deliveryTracking.currentStatus._id && (
+                              {orderitem.trackingNumber && (
                                 <Text1 style={[{ marginRight: 20 }]}>
-                                  Tracking Number:{" "}
-                                  {orderitem.deliveryTracking.currentStatus._id}
+                                  Tracking Number: {orderitem.trackingNumber}
                                 </Text1>
                               )}
 
-                              {deliveryNumber(
-                                orderitem.deliveryTracking.currentStatus.status
-                              ) < 3 && (
-                                <Button
-                                  onPress={() => updateTracking(orderitem)}
-                                  children={`Mark as ${
-                                    showNextStatus(
-                                      orderitem.deliveryTracking.currentStatus
-                                        .status
-                                    )[0]
-                                  }`}
-                                  mode="contained"
-                                  style={{ borderRadius: 5 }}
-                                  loading={updatingStatus}
-                                />
-                              )}
+                              {user &&
+                                order.buyer._id === user._id &&
+                                orderitem.deliveryTracking.currentStatus
+                                  .status === "Delivered" && (
+                                  <Button
+                                    onPress={() => updateTracking(orderitem)}
+                                    children={`Mark as ${
+                                      showNextStatus(
+                                        orderitem.deliveryTracking.currentStatus
+                                          .status
+                                      )[0]
+                                    }`}
+                                    mode="contained"
+                                    style={{ borderRadius: 5 }}
+                                    loading={updatingStatus}
+                                  />
+                                )}
                             </>
                           )}
                         </View>
@@ -410,7 +420,9 @@ const OrderDetails = ({ navigation, route }: Props) => {
                     <View style={styles.detailButton}>
                       <View style={styles.orderItem}>
                         <Image
-                          source={{ uri: orderitem.product.images[0] }}
+                          source={{
+                            uri: baseURL + orderitem.product.images[0],
+                          }}
                           style={styles.image}
                         />
                         <View style={styles.details1}>
@@ -796,10 +808,9 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           </Modal>
                         </>
                       )}
-                    {orderitem.deliveryTracking.currentStatus && (
+                    {orderitem.trackingNumber && (
                       <Text1 style={{ marginRight: 20 }}>
-                        Tracking Number:{" "}
-                        {orderitem.deliveryTracking.currentStatus._id}
+                        Tracking Number: {orderitem.trackingNumber}
                       </Text1>
                     )}
                   </View>

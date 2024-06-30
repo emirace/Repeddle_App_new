@@ -11,14 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import React, { PropsWithChildren, ReactNode, useState } from "react"
-import {
-  ActivityIndicator,
-  Appbar,
-  Switch,
-  Text,
-  useTheme,
-} from "react-native-paper"
+import React, { PropsWithChildren, useState } from "react"
+import { Appbar, Button, Switch, Text, useTheme } from "react-native-paper"
 import useAuth from "../../hooks/useAuth"
 import { FontAwesome5, Ionicons } from "@expo/vector-icons"
 import { Picker } from "@react-native-picker/picker"
@@ -33,13 +27,16 @@ import { UpdateUser } from "../../types/user"
 import Input from "../../components/Input"
 import useNewsletter from "../../hooks/useNewsletter"
 import Rebundle from "../../components/Rebundle"
-import { ProfileNavigationProp } from "../../types/navigation/stack"
+import { ProfileSettingsNavigationProp } from "../../types/navigation/stack"
+import useToastNotification from "../../hooks/useToastNotification"
+import { baseURL } from "../../services/api"
 
-type Props = ProfileNavigationProp
+type Props = ProfileSettingsNavigationProp
 
 const ProfileSettings = ({ navigation }: Props) => {
   const { user, loading, updateUser } = useAuth()
   const { colors } = useTheme()
+  const { addNotification } = useToastNotification()
 
   const {
     createNewsletter,
@@ -50,6 +47,8 @@ const ProfileSettings = ({ navigation }: Props) => {
   const [username, setUsername] = useState("")
 
   const [image, setImage] = useState("")
+  const [removingLetter, setRemovingLetter] = useState(false)
+  const [loadingUpload, setLoadingUpload] = useState(false)
 
   // moment.locale()
 
@@ -167,14 +166,15 @@ const ProfileSettings = ({ navigation }: Props) => {
     const file = photo as File
     const bodyFormData = new FormData()
     bodyFormData.append("file", file)
-    // setLoadingUpload(true)
+    setLoadingUpload(true)
     try {
       const res = await uploadImage(file)
       setImage(res)
     } catch (error) {
-      //   // TODO: toast notification
-      Alert.alert(error as string)
+      addNotification({ message: error as string, error: true })
     }
+
+    setLoadingUpload(false)
   }
 
   const daydiff = input.usernameLastUpdate
@@ -299,29 +299,40 @@ const ProfileSettings = ({ navigation }: Props) => {
     const res = await updateUser(data)
 
     if (res) {
-      Alert.alert("")
+      addNotification({ message: "" })
     }
   }
 
   const handleNewsletter = async () => {
+    setRemovingLetter(true)
     if (newsletterStatus) {
-      // TODO: ask if its userid
-      const resp = await deleteNewsletter(user?._id ?? "")
+      if (!user?._id) return
+      const resp = await deleteNewsletter(user._id)
       if (resp.success) {
-        Alert.alert(resp.message ?? "Unsubscribed from newsletter")
+        addNotification({
+          message: resp.message ?? "Unsubscribed from newsletter",
+        })
         setNewsletterStatus(false)
       } else {
-        Alert.alert(newsletterError ?? "failed to unsubscribe from newsletter")
+        addNotification({
+          message: newsletterError ?? "failed to unsubscribe from newsletter",
+          error: true,
+        })
       }
     } else {
       const resp = await createNewsletter(user!.email)
       if (resp) {
-        Alert.alert("Subscribed from newsletter")
+        addNotification({ message: "Subscribed from newsletter" })
         setNewsletterStatus(true)
       } else {
-        Alert.alert(newsletterError ?? "failed to subscribe to newsletter")
+        addNotification({
+          message: newsletterError ?? "failed to subscribe to newsletter",
+          error: true,
+        })
       }
     }
+
+    setRemovingLetter(false)
   }
 
   return (
@@ -333,9 +344,12 @@ const ProfileSettings = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Profile" />
-        <Appbar.Action icon="magnify" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content title="Profile" titleStyle={{ color: "white" }} />
+        <Appbar.Action icon="magnify" iconColor="white" />
       </Appbar.Header>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -345,11 +359,12 @@ const ProfileSettings = ({ navigation }: Props) => {
         <View style={{ alignItems: "center" }}>
           <View style={styles.image}>
             <Image
-              source={{ uri: image || user?.image }}
+              source={{ uri: image || baseURL + user?.image }}
               style={{ width: 80, height: 80, borderRadius: 40 }}
             />
             <Ionicons
               onPress={pickImage}
+              disabled={loadingUpload}
               style={styles.edit}
               name="camera-outline"
               size={18}
@@ -695,11 +710,16 @@ const ProfileSettings = ({ navigation }: Props) => {
                     }}
                   />
 
-                  {isLoading ? (
-                    <ActivityIndicator size={"large"} color={colors.primary} />
-                  ) : (
-                    <MyButton text="Submit" onPress={addressValidate} />
-                  )}
+                  <Button
+                    onPress={addressValidate}
+                    children="Submit"
+                    loading={isLoading}
+                    mode="contained"
+                    style={{
+                      backgroundColor: colors.primary,
+                      borderRadius: 5,
+                    }}
+                  />
                 </View>
               </View>
             </View>
@@ -806,11 +826,16 @@ const ProfileSettings = ({ navigation }: Props) => {
                     Note: This cannot be change once saved, contact support to
                     make any changes.
                   </Text>
-                  {isLoading ? (
-                    <ActivityIndicator size={"large"} color={colors.primary} />
-                  ) : (
-                    <MyButton text="Submit" onPress={accountValidate} />
-                  )}
+                  <Button
+                    onPress={accountValidate}
+                    children="Submit"
+                    loading={isLoading}
+                    mode="contained"
+                    style={{
+                      backgroundColor: colors.primary,
+                      borderRadius: 5,
+                    }}
+                  />
                 </View>
               </View>
             </View>
@@ -825,17 +850,24 @@ const ProfileSettings = ({ navigation }: Props) => {
               ios_backgroundColor="#3e3e3e"
               onValueChange={handleNewsletter}
               value={newsletterStatus}
+              disabled={removingLetter}
             />
           </View>
           {!isLoading && <Rebundle bundle={bundle} setBundle={setBundle} />}
         </View>
       </ScrollView>
       <View style={{ margin: 10 }}>
-        {isLoading ? (
-          <ActivityIndicator size={"large"} color={colors.primary} />
-        ) : (
-          <MyButton text={"update"} icon="pencil" onPress={validate} />
-        )}
+        <Button
+          onPress={validate}
+          children="Update"
+          loading={isLoading}
+          mode="contained"
+          style={{
+            backgroundColor: colors.primary,
+            borderRadius: 5,
+          }}
+          icon={"pencil"}
+        />
       </View>
     </View>
   )

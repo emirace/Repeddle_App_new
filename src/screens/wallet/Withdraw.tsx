@@ -1,37 +1,43 @@
-import * as React from "react";
-import { View, StyleSheet, Alert } from "react-native";
-import { Text, TextInput, Button, Card, Appbar } from "react-native-paper";
-import { WithdrawNavigationProp } from "../../types/navigation/stack";
+import * as React from "react"
+import { View, StyleSheet, Alert } from "react-native"
+import { Text, TextInput, Button, Card, Appbar } from "react-native-paper"
+import { WithdrawNavigationProp } from "../../types/navigation/stack"
 
 const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
-  const [amount, setAmount] = React.useState("");
+  const [amount, setAmount] = React.useState("")
 
   // Example user account information
   const accountInfo = {
     accountNumber: "1234567890",
     bankName: "Sample Bank",
     accountName: "John Doe",
-  };
+  }
 
   const handleWithdraw = () => {
     if (amount === "" || isNaN(parseFloat(amount))) {
-      Alert.alert("Invalid Amount", "Please enter a valid amount.");
-      return;
+      Alert.alert("Invalid Amount", "Please enter a valid amount.")
+      return
     }
     // Handle the withdrawal logic here
     Alert.alert(
       "Success",
       `You have withdrawn ₦${amount} to ${accountInfo.accountName}.`
-    );
-  };
+    )
+  }
 
   return (
     <View style={styles.container}>
       <Appbar.Header mode="large">
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Withdraw Funds" />
-        <Appbar.Action icon="plus" onPress={() => {}} />
-        <Appbar.Action icon="history" onPress={() => {}} />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content
+          titleStyle={{ color: "white" }}
+          title="Withdraw Funds"
+        />
+        <Appbar.Action iconColor="white" icon="plus" onPress={() => {}} />
+        <Appbar.Action iconColor="white" icon="history" onPress={() => {}} />
       </Appbar.Header>
       <View style={{ flex: 1, padding: 20 }}>
         <View style={{ flex: 1 }}>
@@ -69,8 +75,8 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
         </Button>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -91,6 +97,6 @@ const styles = StyleSheet.create({
     marginVertical: 50,
   },
   withdrawButton: {},
-});
+})
 
-export default Withdraw;
+export default Withdraw

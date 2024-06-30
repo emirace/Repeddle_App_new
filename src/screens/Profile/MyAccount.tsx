@@ -1,5 +1,4 @@
 import {
-  Alert,
   Dimensions,
   Image,
   Share,
@@ -29,6 +28,7 @@ import Rating from "../../components/Rating"
 import { baseURL } from "../../services/api"
 import { lightTheme } from "../../constant/theme"
 import Loader from "../../components/ui/Loader"
+import useToastNotification from "../../hooks/useToastNotification"
 
 type Props = MyAccountNavigationProp
 
@@ -38,7 +38,6 @@ const TabBar = (props: TabBarProps<string>) => {
     <MaterialTabBar
       {...props}
       indicatorStyle={{ backgroundColor: lightTheme.colors.primary }}
-      // style={{ backgroundColor: "pink" }}
       labelStyle={{
         textTransform: "capitalize",
         fontWeight: "bold",
@@ -55,6 +54,7 @@ const MyAccount = ({ navigation, route }: Props) => {
   const { user: userInfo } = useAuth()
   const { getUserByUsername, error, loading: loadingUser } = useUser()
   const { username } = route.params
+  const { addNotification } = useToastNotification()
 
   const [userData, setUserData] = useState<UserByUsername>()
 
@@ -64,8 +64,7 @@ const MyAccount = ({ navigation, route }: Props) => {
       if (typeof res !== "string") {
         setUserData(res)
       } else {
-        // TODO: Toast notification
-        Alert.alert(res)
+        addNotification({ message: res, error: true })
       }
     }
 
@@ -99,17 +98,25 @@ const MyAccount = ({ navigation, route }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
         <Appbar.Content
           title={userData.user.username}
-          titleStyle={{ textTransform: "capitalize" }}
+          titleStyle={{ textTransform: "capitalize", color: "white" }}
         />
         {userInfo?._id === userData.user._id && (
           <Appbar.Action
             icon={({ color, size }) => (
-              <Feather name="edit" size={size} color={color} />
+              <Feather
+                iconColor="white"
+                name="edit"
+                size={size}
+                color={color}
+              />
             )}
-            onPress={() => navigation.push("Profile")}
+            onPress={() => navigation.push("ProfileSettings")}
           />
         )}
       </Appbar.Header>
@@ -171,32 +178,34 @@ const RenderHeader = ({
 }: RenderProps) => {
   const { colors } = useTheme()
   const { followUser, unFollowUser, error } = useAuth()
+  const { addNotification } = useToastNotification()
 
   const followHandle = async () => {
     if (!user?._id) return
 
     if (user?._id === userInfo?._id) {
-      // TODO: Toast notification
-      Alert.alert("You can't follow yourself")
+      addNotification({ message: "You can't follow yourself", error: true })
     }
 
     if (isFollowing) {
       const res = await unFollowUser(user._id)
       if (res) {
-        // TODO: Toast notification
-        Alert.alert(res)
+        addNotification({ message: res })
       } else {
-        // TODO: Toast notification
-        Alert.alert(error ?? "failed to unfollow user")
+        addNotification({
+          message: error ?? "failed to unfollow user",
+          error: true,
+        })
       }
     } else {
       const res = await followUser(user._id)
       if (res) {
-        // TODO: Toast notification
-        Alert.alert(res)
+        addNotification({ message: res })
       } else {
-        // TODO: Toast notification
-        Alert.alert(error ?? "failed to follow user")
+        addNotification({
+          message: error ?? "failed to follow user",
+          error: true,
+        })
       }
     }
   }
@@ -212,10 +221,7 @@ const RenderHeader = ({
   }
 
   return (
-    <View
-      pointerEvents="box-none"
-      // style={{ backgroundColor: colors.elevation.level2 }}
-    >
+    <View pointerEvents="box-none">
       <View
         pointerEvents="box-none"
         style={[styles.topCont, { backgroundColor: colors.elevation.level2 }]}

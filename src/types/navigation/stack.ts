@@ -11,7 +11,7 @@ export type RootStackParamList = {
   Product: { slug: string }
   Chat: { conversationId: string }
   Sell: undefined
-  Profile: undefined
+  ProfileSettings: undefined
   ProductList: undefined
   OrderList: undefined
   EditProduct: { id: string }
@@ -22,7 +22,6 @@ export type RootStackParamList = {
   Cart: undefined
   Checkout: undefined
   PaymentMethod: undefined
-  CreateProduct: undefined
   SellerReview: { id: string }
   Wishlist: undefined
   ReturnDetail: { id: string }
@@ -78,9 +77,9 @@ export type WithdrawNavigationProp = NativeStackScreenProps<
   "Withdraw"
 >
 
-export type ProfileNavigationProp = NativeStackScreenProps<
+export type ProfileSettingsNavigationProp = NativeStackScreenProps<
   RootStackParamList,
-  "Profile"
+  "ProfileSettings"
 >
 
 export type ProductNavigationProp = NativeStackScreenProps<
@@ -134,11 +133,6 @@ export type CheckoutNavigationProp = NativeStackScreenProps<
 export type PaymentMethodNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "PaymentMethod"
->
-
-export type CreateProductNavigationProp = NativeStackScreenProps<
-  RootStackParamList,
-  "CreateProduct"
 >
 
 export type SellerReviewNavigationProp = NativeStackScreenProps<

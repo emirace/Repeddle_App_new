@@ -19,6 +19,8 @@ export const fetchProductsService = async (
       url = url + `?${params}`
     }
 
+    console.log(url)
+
     const resp: { data: ProductWithPagination; status: boolean } =
       await api.get(url)
 

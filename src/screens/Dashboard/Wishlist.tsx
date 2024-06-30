@@ -7,16 +7,18 @@ import ProductItem from "../../components/ProductItem"
 import { IProduct } from "../../types/product"
 import { WishlistNavigationProp } from "../../types/navigation/stack"
 import { Wishlist as WishlistType } from "../../types/user"
+import Loader from "../../components/ui/Loader"
+import useToastNotification from "../../hooks/useToastNotification"
 
 type Props = WishlistNavigationProp
 const numColumns = 2
 
 const Wishlist = ({ navigation }: Props) => {
   const { colors } = useTheme()
-
+  const { addNotification } = useToastNotification()
   const { removeFromWishlist, user, error, getWishlist } = useAuth()
+
   const [wishlist, setWishlist] = useState<WishlistType[]>([])
-  const [refresh, setRefresh] = useState(false)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -24,13 +26,13 @@ const Wishlist = ({ navigation }: Props) => {
       setLoading(true)
       const res = await getWishlist()
       if (res) setWishlist(res)
-      // TODO: show toast
-      else Alert.alert(error ?? "An error occurred")
+      else
+        addNotification({ message: error ?? "An error occurred", error: true })
       setLoading(false)
     }
 
     getList()
-  }, [refresh])
+  }, [])
 
   const formatData = (data: IProduct[]) => {
     const totalRows = Math.floor(data.length / numColumns)
@@ -51,44 +53,49 @@ const Wishlist = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Wishlist" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Wishlist" />
         <Appbar.Action
           icon="cart-outline"
+          iconColor="white"
           onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
+      {loading && <Loader />}
+      {!loading &&
+        (wishlist.length > 0 ? (
+          <View style={styles.cartList}>
+            <FlatList
+              data={formatData(wishlist)}
+              renderItem={({ item }) => (
+                <RenderItem item={item} navigation={navigation} />
+              )}
+              keyExtractor={(item) => item._id}
+              numColumns={numColumns}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+              marginTop: 20,
+            }}
+          >
+            <Text style={{ textAlign: "center" }}>No item in Wishlist 😍 </Text>
 
-      {user?.wishlist && user.wishlist.length > 0 ? (
-        <View style={styles.cartList}>
-          <FlatList
-            data={formatData(wishlist)}
-            renderItem={({ item }) => (
-              <RenderItem item={item} navigation={navigation} />
-            )}
-            keyExtractor={(item) => item._id}
-            numColumns={numColumns}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      ) : (
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-            marginTop: 20,
-          }}
-        >
-          <Text style={{ textAlign: "center" }}>No item in Wishlist 😍 </Text>
-
-          <Pressable onPress={() => navigation.push("Main")}>
-            <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
-              Go Shopping
-            </Text>
-          </Pressable>
-        </View>
-      )}
+            <Pressable onPress={() => navigation.push("Main")}>
+              <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
+                Go Shopping
+              </Text>
+            </Pressable>
+          </View>
+        ))}
     </View>
   )
 }

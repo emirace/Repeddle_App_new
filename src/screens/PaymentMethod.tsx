@@ -1,23 +1,32 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native"
 import React, { useState } from "react"
-import { Appbar, Text, useTheme } from "react-native-paper"
+import { Appbar, RadioButton, Text, useTheme } from "react-native-paper"
 import useAuth from "../hooks/useAuth"
 import useCart from "../hooks/useCart"
 import { PaymentMethodNavigationProp } from "../types/navigation/stack"
+import { currency, region } from "../utils/common"
+import { PaymentType } from "../contexts/CartContext"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = PaymentMethodNavigationProp
 
 const PaymentMethod = ({ navigation }: Props) => {
   const { colors } = useTheme()
-  const { total } = useCart()
+  const { total, paymentMethod, changePaymentMethod } = useCart()
   const { user } = useAuth()
-
-  const [paymentMethodName, setPaymentMethod] = useState("Credit/Debit card")
-  const [currency, setCurrency] = useState("")
+  const { addNotification } = useToastNotification()
 
   const handleSubmit = () => {
-    // TODO: save payment method
     navigation.push("Checkout")
+  }
+
+  const handleClick = (val: string) => {
+    const newVal = val as PaymentType
+    if (newVal === "Wallet" && (!user?.balance || user.balance < total)) {
+      addNotification({ message: "Insufficient balance", error: true })
+      return
+    }
+    changePaymentMethod(newVal)
   }
 
   return (
@@ -29,31 +38,48 @@ const PaymentMethod = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
-        <Appbar.Action icon="magnify" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content
+          titleStyle={{ color: "white" }}
+          title="Payment Method"
+        />
+        <Appbar.Action iconColor="white" icon="magnify" />
       </Appbar.Header>
 
       <View style={{ flex: 1, justifyContent: "space-between", padding: 20 }}>
-        <View style={{ flex: 1 }}>
-          <Radio
-            label="Credit/Debit card"
-            onPress={() => setPaymentMethod("Credit/Debit card")}
-            paymentMethodName={paymentMethodName}
-          />
-          <Radio
-            label={`Wallet (${currency}${(user?.balance ?? 0).toFixed(2)})`}
-            onPress={() =>
-              (user?.balance ?? 0) === 0 || (user?.balance ?? 0) < total
-                ? ""
-                : setPaymentMethod("Wallet")
-            }
-            paymentMethodName={paymentMethodName}
-          />
+        <RadioButton.Group onValueChange={handleClick} value={paymentMethod}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <RadioButton.Item
+              position="leading"
+              label="Credit/Debit card"
+              value="Card"
+              style={{ paddingLeft: 0 }}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <RadioButton.Item
+              position="leading"
+              label={`Wallet (${currency(region())}${(
+                user?.balance ?? 0
+              ).toFixed(2)})`}
+              value="Wallet"
+              style={{ paddingLeft: 0 }}
+            />
+          </View>
+        </RadioButton.Group>
+        <View style={{ flex: 1, marginLeft: 10 }}>
           {(user?.balance ?? 0) <= total && (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={{ color: "red", fontSize: 13 }}>
-                Insufficiant balance
+                Insufficient balance
               </Text>
               <Text style={{ color: colors.secondary, marginHorizontal: 20 }}>
                 Fund Wallet Now

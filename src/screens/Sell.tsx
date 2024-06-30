@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Alert,
   Image,
   Keyboard,
   Modal,
@@ -41,12 +40,14 @@ import AddOtherBrands from "../components/AddOtherBrands"
 import AddAccount from "../components/AddAccount"
 import AddAddress from "../components/AddAddress"
 import { useIsFocused } from "@react-navigation/native"
+import useToastNotification from "../hooks/useToastNotification"
 
 const Sell = ({ navigation }: any) => {
   const { colors } = useTheme()
   const { fetchBrands, brands } = useBrands()
   const { categories, fetchCategories } = useCategory()
   const { createProduct, error } = useProducts()
+  const { addNotification } = useToastNotification()
   const { user } = useAuth()
   const isFocused = useIsFocused()
 
@@ -86,6 +87,9 @@ const Sell = ({ navigation }: any) => {
   const [price, setPrice] = useState("")
   const [discount, setDiscount] = useState("")
   const [showVideoModal, setShowVideoModal] = useState(false)
+  const [tags, setTags] = useState<string[]>([])
+  const [colorsVal, setColorsVal] = useState<string[]>([])
+  const [sizesInputCounts, setSizesInputCounts] = useState<number[]>([])
 
   const [paxi, setPaxi] = useState(true)
   const [gig, setGig] = useState(false)
@@ -105,10 +109,7 @@ const Sell = ({ navigation }: any) => {
   const [searchBrand, setSearchBrand] = useState<IBrand[]>([])
   const [showOtherBrand, setShowOtherBrand] = useState(false)
   const [showFeeStructure, setShowFeeStructure] = useState(false)
-  const [refresh, setRefresh] = useState(false)
-
-  let tags: string[] = []
-  let sizesInputCounts = [1]
+  const [loadingUpload, setLoadingUpload] = useState(false)
 
   const handleOnChange = (text: string | boolean, key: keyof typeof input) => {
     setInput((prevState) => ({ ...prevState, [key]: text }))
@@ -119,7 +120,7 @@ const Sell = ({ navigation }: any) => {
   }
 
   const addSizesCont = () => {
-    sizesInputCounts.push(1)
+    setSizesInputCounts([...sizesInputCounts, 1])
   }
 
   const validation = () => {
@@ -166,7 +167,7 @@ const Sell = ({ navigation }: any) => {
       handleError("Select features", "keyFeatures")
       valid = false
     }
-    if (!input.color) {
+    if (!colorsVal.length) {
       handleError("Select color", "color")
       valid = false
     }
@@ -188,15 +189,16 @@ const Sell = ({ navigation }: any) => {
     }
     if (valid) {
       submitHandler()
-    }
-    // TODO: toast notification
-    else Alert.alert("Error creating product, fill mising fields ")
+    } else
+      addNotification({
+        message: "Error creating product, fill mising fields ",
+        error: true,
+      })
   }
 
   const submitHandler = async () => {
     if (addSize === false && sizes.length === 0) {
-      // TODO: toast notification
-      Alert.alert
+      addNotification({ message: "Please add size", error: true })
       return
     }
     const images: string[] = []
@@ -226,7 +228,7 @@ const Sell = ({ navigation }: any) => {
       luxury: input.luxury,
       vintage: input.vintage,
       material: input.material,
-      color: input.color,
+      color: colorsVal,
       luxuryImage: input.luxuryImage,
       // addSize,
       countInStock,
@@ -235,21 +237,21 @@ const Sell = ({ navigation }: any) => {
     if (res) {
       navigation.push("MyAccount", { username: user!.username })
     } else {
-      // TODO: toast notification
-      Alert.alert(error)
+      addNotification({ message: error, error: true })
     }
   }
 
   const handleTags = (tag: string) => {
     if (tag.includes(" ")) {
-      // TODO: toast notification
-      Alert.alert("Please remove unnecessary space")
+      addNotification({
+        message: "Please remove unnecessary space",
+        error: true,
+      })
       return
     }
 
     if (tags.length > 5) {
-      // TODO: toast notification
-      Alert.alert("You can't add more five tags ")
+      addNotification({ message: "You can't add more five tags ", error: true })
 
       return
     }
@@ -261,7 +263,7 @@ const Sell = ({ navigation }: any) => {
 
   const removeTags = (tag: string) => {
     const newtags = tags.filter((data) => data != tag)
-    tags = newtags
+    setTags(newtags)
   }
 
   useEffect(() => {
@@ -312,15 +314,13 @@ const Sell = ({ navigation }: any) => {
       const res = await uploadImage(file)
       handleOnChange(res, key)
     } catch (error) {
-      //   // TODO: toast notification
-      Alert.alert(error as string)
+      //   addNotification({message:(error as string),error:true})
     }
   }
 
   const sizeHandler = (sizenow: string) => {
     if (!sizenow) {
-      // TODO: toast notification
-      Alert.alert("Please enter size")
+      addNotification({ message: "Please enter size", error: true })
       return
     }
 
@@ -351,10 +351,14 @@ const Sell = ({ navigation }: any) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Sell" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Sell" />
         <Appbar.Action
           icon="cart-outline"
+          iconColor="white"
           onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
@@ -768,9 +772,10 @@ const Sell = ({ navigation }: any) => {
                 padding: 5,
                 color: "grey",
               }}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "color")
-              }
+                setColorsVal([...colorsVal, itemValue])
+              }}
             >
               <Picker.Item
                 style={{
@@ -824,6 +829,7 @@ const Sell = ({ navigation }: any) => {
             <TouchableOpacity
               // onPress={() => setModalVisibleIMage(true)}
               onPress={() => pickImage("image1")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -841,6 +847,7 @@ const Sell = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => pickImage("image2")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -858,6 +865,7 @@ const Sell = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => pickImage("image3")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -875,6 +883,7 @@ const Sell = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => pickImage("image4")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },

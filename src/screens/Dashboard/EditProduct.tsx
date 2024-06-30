@@ -1,5 +1,4 @@
 import {
-  Alert,
   Image,
   Modal,
   ScrollView,
@@ -34,6 +33,7 @@ import useBrands from "../../hooks/useBrand"
 import * as ImagePicker from "expo-image-picker"
 import Loader from "../../components/ui/Loader"
 import { baseURL } from "../../services/api"
+import useToastNotification from "../../hooks/useToastNotification"
 
 type Props = EditProductNavigationProp
 
@@ -43,6 +43,7 @@ const EditProduct = ({ navigation, route }: Props) => {
   const { loading, fetchProductById, error, updateProduct } = useProducts()
   const { fetchBrands, brands } = useBrands()
   const { fetchCategories, categories } = useCategory()
+  const { addNotification } = useToastNotification()
 
   const [input, setInput] = useState({
     name: "",
@@ -111,14 +112,15 @@ const EditProduct = ({ navigation, route }: Props) => {
 
   const handleTags = (tag: string) => {
     if (tag.includes(" ")) {
-      // TODO: toast notification
-      Alert.alert("Please remove unnecessary space")
+      addNotification({
+        message: "Please remove unnecessary space",
+        error: true,
+      })
       return
     }
 
     if (tags.length > 5) {
-      // TODO: toast notification
-      Alert.alert("You can't add more five tags ")
+      addNotification({ message: "You can't add more five tags ", error: true })
 
       return
     }
@@ -147,20 +149,20 @@ const EditProduct = ({ navigation, route }: Props) => {
     const file = photo as File
     const bodyFormData = new FormData()
     bodyFormData.append("file", file)
-    // setLoadingUpload(true)
+    setLoadingUpload(true)
     try {
       const res = await uploadImage(file)
       handleOnChange(res, key)
     } catch (error) {
-      //   // TODO: toast notification
-      Alert.alert(error as string)
+      addNotification({ message: error as string, error: true })
     }
+
+    setLoadingUpload(false)
   }
 
   const sizeHandler = (sizenow: string) => {
     if (!sizenow) {
-      // TODO: toast notification
-      Alert.alert("Please enter size")
+      addNotification({ message: "Please enter size", error: true })
       return
     }
 
@@ -240,8 +242,7 @@ const EditProduct = ({ navigation, route }: Props) => {
         setTags(tags)
         setColorsVal(res.color ?? colorsVal)
       } else {
-        // TODO: toast notification
-        Alert.alert(res)
+        addNotification({ message: res, error: true })
       }
     }
 
@@ -253,8 +254,7 @@ const EditProduct = ({ navigation, route }: Props) => {
       const res = await fetchCategories()
       if (res) {
       } else {
-        // TODO: toast notification
-        Alert.alert(error)
+        addNotification({ message: error, error: true })
       }
     }
 
@@ -341,15 +341,16 @@ const EditProduct = ({ navigation, route }: Props) => {
     }
     if (valid) {
       submitHandler()
-    }
-    // TODO: toast notification
-    else Alert.alert("Error creating product, fill mising fields ")
+    } else
+      addNotification({
+        message: "Error creating product, fill mising fields ",
+        error: true,
+      })
   }
 
   const submitHandler = async () => {
     if (addSize === false && sizes.length === 0) {
-      // TODO: toast notification
-      Alert.alert
+      addNotification({ message: "Please add size", error: true })
       return
     }
     const images: string[] = []
@@ -389,8 +390,7 @@ const EditProduct = ({ navigation, route }: Props) => {
       if (navigation.canGoBack()) return navigation.goBack()
       navigation.push("ProductList")
     } else {
-      // TODO: toast notification
-      Alert.alert(error)
+      addNotification({ message: error, error: true })
     }
   }
 
@@ -403,11 +403,15 @@ const EditProduct = ({ navigation, route }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Edit Product" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Edit Product" />
         <Appbar.Action
           icon="cart-outline"
           onPress={() => navigation.push("Cart")}
+          iconColor="white"
         />
       </Appbar.Header>
       {loading ? (
@@ -855,6 +859,7 @@ const EditProduct = ({ navigation, route }: Props) => {
           <View style={styles.imageCont}>
             <TouchableOpacity
               onPress={() => pickImage("image1")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -875,6 +880,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => pickImage("image2")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -895,6 +901,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => pickImage("image3")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -915,6 +922,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => pickImage("image4")}
+              disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
@@ -1214,7 +1222,6 @@ const EditProduct = ({ navigation, route }: Props) => {
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-              Alert.alert("Modal has been closed.")
               setModalVisible(!modalVisible)
             }}
           >

@@ -1,55 +1,59 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
-import { Appbar, Button, TextInput } from "react-native-paper";
-import { useBottomSheetInternal } from "@gorhom/bottom-sheet";
-import useAuth from "../../../../hooks/useAuth";
+import { View, Text, StyleSheet } from "react-native"
+import React, { useCallback, useEffect, useState } from "react"
+import { Appbar, Button, TextInput } from "react-native-paper"
+import { useBottomSheetInternal } from "@gorhom/bottom-sheet"
+import useAuth from "../../../../hooks/useAuth"
 
 interface Props {
-  back: () => void;
-  onSuccess: () => void;
-  token: string;
+  back: () => void
+  onSuccess: () => void
+  token: string
 }
 const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
-  const { shouldHandleKeyboardEvents } = useBottomSheetInternal();
-  const { createUserChangePassword, error: regError } = useAuth();
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>("");
-  const [loading, setLoading] = useState(false);
+  const { shouldHandleKeyboardEvents } = useBottomSheetInternal()
+  const { createUserChangePassword, error: regError } = useAuth()
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState<string | null>("")
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     return () => {
       // Reset the flag on unmount
-      shouldHandleKeyboardEvents.value = false;
-    };
-  }, [shouldHandleKeyboardEvents]);
+      shouldHandleKeyboardEvents.value = false
+    }
+  }, [shouldHandleKeyboardEvents])
 
   const handleOnFocus = useCallback(() => {
-    shouldHandleKeyboardEvents.value = true;
-  }, [shouldHandleKeyboardEvents]);
+    shouldHandleKeyboardEvents.value = true
+  }, [shouldHandleKeyboardEvents])
   const handleOnBlur = useCallback(() => {
-    shouldHandleKeyboardEvents.value = false;
-  }, [shouldHandleKeyboardEvents]);
+    shouldHandleKeyboardEvents.value = false
+  }, [shouldHandleKeyboardEvents])
 
   const handleRegister = async () => {
-    setLoading(true);
-    const result = await createUserChangePassword({ password, token });
+    setLoading(true)
+    const result = await createUserChangePassword({ password, token })
     if (result) {
-      onSuccess();
+      onSuccess()
     } else {
-      setError(regError);
+      setError(regError)
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
     <View style={{ flex: 1 }}>
       <Appbar.Header>
         <Appbar.BackAction
           onPress={() => {
-            back();
+            back()
           }}
+          iconColor="white"
         />
-        <Appbar.Content title="Create New Password" />
+        <Appbar.Content
+          titleStyle={{ color: "white" }}
+          title="Create New Password"
+        />
       </Appbar.Header>
       <View style={{ flex: 1, padding: 20, justifyContent: "space-between" }}>
         <View>
@@ -57,8 +61,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
             label="Password"
             value={password}
             onChangeText={(text) => {
-              setPassword(text);
-              setError("");
+              setPassword(text)
+              setError("")
             }}
             style={styles.input}
             autoCapitalize="none"
@@ -82,8 +86,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
         </Button>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -125,6 +129,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: "center",
   },
-});
+})
 
-export default Password;
+export default Password

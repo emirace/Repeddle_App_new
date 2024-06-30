@@ -1,5 +1,4 @@
 import {
-  Button,
   Image,
   ScrollView,
   StyleSheet,
@@ -7,35 +6,141 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import React, { useState } from "react"
-import { Appbar, Text, useTheme } from "react-native-paper"
+import React, { useEffect, useState } from "react"
+import { Appbar, Button, Text, useTheme } from "react-native-paper"
 import moment from "moment"
 import useAuth from "../../hooks/useAuth"
-import { Picker } from "@react-native-picker/picker"
 import DeliveryHistory from "../../components/DeliveryHistory"
-import { deliveryNumber } from "../../utils/common"
+import { deliveryNumber, deliveryStatusMap } from "../../utils/common"
 import { ReturnDetailNavigationProp } from "../../types/navigation/stack"
-import { returns } from "../../utils/data"
 import { IReturn } from "../../types/order"
 import Loader from "../../components/ui/Loader"
 import useReturn from "../../hooks/useReturn"
+import useToastNotification from "../../hooks/useToastNotification"
 
 type Props = ReturnDetailNavigationProp
 
 const ReturnDetail = ({ navigation, route }: Props) => {
   const { colors } = useTheme()
   const { user } = useAuth()
-  const { createReturns, error: creatingError } = useReturn()
+  const {
+    fetchReturnById,
+    error,
+    updateReturnStatusAdmin,
+    updateReturnStatus,
+  } = useReturn()
+  const { addNotification } = useToastNotification()
 
   const { id: returnId } = route.params
 
-  const [refresh, setRefresh] = useState(true)
-  const [enterwaybil, setEnterwaybil] = useState(false)
-  const [waybillNumber, setWaybillNumber] = useState("")
   const [reasonText, setReasonText] = useState("")
+  const [showModel, setShowModel] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [loadingReturn, setLoadingReturn] = useState(false)
+  const [returned, setReturned] = useState<IReturn>()
+  const [showTracking, setShowTracking] = useState(false)
+  const [trackingNumber, setTrackingNumber] = useState("")
 
-  const loading = false
-  const returned = returns[0]
+  useEffect(() => {
+    const getData = async () => {
+      setLoading(true)
+      if (!returnId)
+        return addNotification({ message: "Id not found", error: true })
+      const res = await fetchReturnById(returnId)
+      if (typeof res !== "string") {
+        setReturned(res)
+      } else {
+        addNotification({ message: error, error: true })
+      }
+
+      setLoading(false)
+    }
+
+    getData()
+  }, [])
+
+  const showNextStatus = (status: string) => {
+    const entries = Object.entries(deliveryStatusMap)
+    const currentNumber = deliveryNumber(status)
+
+    return entries[currentNumber]
+  }
+
+  const handleReturn = async (type: string) => {
+    if (type === "Declined") {
+      if (!reasonText.length) {
+        addNotification({ message: "Enter Reason for Decline", error: true })
+        return
+      }
+      setLoadingReturn(true)
+
+      const res = await updateReturnStatusAdmin(returnId ?? "", {
+        adminReason: reasonText,
+        status: type,
+      })
+
+      if (typeof res !== "string") {
+        setReturned(res)
+      } else {
+        addNotification({ message: error, error: true })
+      }
+    } else {
+      setLoadingReturn(true)
+
+      const res = await updateReturnStatusAdmin(returnId ?? "", {
+        adminReason: reasonText,
+        status: type,
+      })
+
+      if (typeof res !== "string") {
+        setReturned(res)
+      } else {
+        addNotification({ message: error, error: true })
+      }
+    }
+
+    setLoadingReturn(false)
+  }
+
+  const updateTracking = async () => {
+    if (!returned) return
+
+    const nextStatus = showNextStatus(
+      returned.deliveryTracking.currentStatus.status
+    )
+
+    if (nextStatus[1] === 9 && !trackingNumber) {
+      setShowTracking(true)
+    } else {
+      setLoadingReturn(true)
+      const body: { status: string; trackingNumber?: string } = {
+        status: nextStatus[0],
+      }
+
+      if (trackingNumber) body["trackingNumber"] = trackingNumber
+
+      const res = await updateReturnStatus(returned._id, body)
+
+      if (typeof res !== "string") setReturned(res)
+      else
+        addNotification({
+          message: error || "Failed to update status",
+          error: true,
+        })
+
+      setLoadingReturn(false)
+    }
+  }
+
+  const confirmTracking = async () => {
+    if (!trackingNumber)
+      addNotification({ message: "Tracking number is required", error: true })
+
+    await updateTracking()
+
+    setShowTracking(false)
+    setTrackingNumber("")
+  }
 
   const paymentRequest = async (
     userId: string,
@@ -43,23 +148,9 @@ const ReturnDetail = ({ navigation, route }: Props) => {
     type: string
   ) => {}
 
-  const handleReturn = async (type: string) => {}
-
-  const deliverOrderHandler = async (
-    deliveryStatus: string,
-    productId: string
-  ) => {}
-
-  const comfirmWaybill = async (product: IReturn) => {
-    if (!waybillNumber) return
-
-    await deliverOrderHandler("Return Dispatched", product._id)
-    setEnterwaybil(false)
-  }
-
   return loading ? (
     <Loader />
-  ) : (
+  ) : returned ? (
     <View style={styles.container}>
       <Appbar.Header
         mode="small"
@@ -68,10 +159,17 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content
+          titleStyle={{ color: "white" }}
+          title="Return Details"
+        />
         <Appbar.Action
           icon="cart-outline"
+          iconColor="white"
           onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>
@@ -201,15 +299,17 @@ const ReturnDetail = ({ navigation, route }: Props) => {
               <View style={{ flexDirection: "row" }}>
                 <View style={{ marginRight: 10 }}>
                   <Button
-                    title="Approve"
+                    children="Approve"
+                    mode="contained"
+                    style={{ borderRadius: 5 }}
                     onPress={() => handleReturn("Approved")}
-                    color={colors.primary}
                   />
                 </View>
                 <Button
-                  title="Decline"
-                  onPress={() => handleReturn("Decline")}
-                  color={colors.secondary}
+                  children="Decline"
+                  mode="contained"
+                  style={{ borderRadius: 5 }}
+                  onPress={() => handleReturn("Declined")}
                 />
               </View>
             </>
@@ -224,132 +324,63 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                     {returned.productId.seller._id === user?._id ? (
                       <View style={{ marginTop: 10 }}>
                         <Text style={styles.name}>Update Delivery Status</Text>
-                        <Picker
-                          selectedValue={
-                            orderitem.deliveryTracking.currentStatus.status
-                          }
-                          style={{
-                            backgroundColor: colors.elevation.level2,
-                            padding: 5,
-                            color: "grey",
-                          }}
-                          onValueChange={(itemValue) => {
-                            deliverOrderHandler(
-                              itemValue,
-                              returned.productId._id
-                            )
-                            returned.orderId.items.map(async (item) => {
-                              if (item._id === returned.productId._id) {
-                                await paymentRequest(
-                                  returned.orderId.buyer._id,
-                                  returned.deliveryOption.fee * 2 +
-                                    returned.productId.sellingPrice *
-                                      item.quantity,
-                                  "Return Completed"
-                                )
-                              }
-                            })
-                          }}
-                        >
-                          <Picker.Item
-                            label="--select--"
-                            value=""
-                            style={{
-                              backgroundColor: colors.elevation.level2,
-                              color: colors.onBackground,
-                            }}
-                            enabled={false}
-                          />
-                          <Picker.Item
-                            label="Return Received"
-                            value="Return Received"
-                            style={{
-                              backgroundColor: colors.elevation.level2,
-                              color: colors.onBackground,
-                            }}
-                            enabled={
-                              deliveryNumber(
-                                orderitem.deliveryTracking.currentStatus.status
-                              ) === 10
-                            }
-                          />
-                        </Picker>
+                        {deliveryNumber(
+                          returned.deliveryTracking.currentStatus.status
+                        ) === 10 ? (
+                          <Button
+                            onPress={updateTracking}
+                            loading={loadingReturn}
+                            style={{ borderRadius: 5 }}
+                          >
+                            {`Mark as ${
+                              showNextStatus(
+                                returned.deliveryTracking.currentStatus.status
+                              )[0]
+                            }`}
+                          </Button>
+                        ) : null}
                       </View>
                     ) : returned.orderId.buyer._id === user?._id ? (
-                      enterwaybil ? (
+                      showTracking ? (
                         <View>
                           <TextInput
                             style={styles.textarea}
                             placeholderTextColor={"grey"}
-                            value={waybillNumber}
-                            onChangeText={(text) => setWaybillNumber(text)}
+                            value={trackingNumber}
+                            onChangeText={(text) => setTrackingNumber(text)}
                             placeholder="Enter Tracking number..."
                           />
                           <TouchableOpacity
                             style={{ backgroundColor: colors.primary }}
-                            onPress={() => comfirmWaybill(orderitem)}
+                            onPress={confirmTracking}
                           ></TouchableOpacity>
                         </View>
                       ) : (
                         <>
-                          <View>
-                            <Picker
-                              style={{
-                                backgroundColor: colors.background,
-                                padding: 5,
-                                color: "grey",
-                              }}
-                              selectedValue={
-                                orderitem.deliveryTracking.currentStatus.status
-                              }
-                              onValueChange={(itemValue) => {
-                                if (itemValue === "Return Dispatched") {
-                                  setEnterwaybil(true)
-                                } else {
-                                  deliverOrderHandler(
-                                    itemValue,
-                                    returned.productId._id
-                                  )
-                                }
-                              }}
-                            >
-                              <Picker.Item
-                                label="Update Delivery Status"
-                                value=""
-                                style={{
-                                  backgroundColor: colors.elevation.level2,
-                                  color: colors.onBackground,
-                                }}
-                                enabled={false}
-                              />
-                              <Picker.Item
-                                label="Return Dispatched"
-                                value="Return Dispatched"
-                                style={{
-                                  backgroundColor: colors.elevation.level2,
-                                  color: colors.onBackground,
-                                }}
-                                enabled={
-                                  !!(
-                                    deliveryNumber(
-                                      orderitem.deliveryTracking.currentStatus
-                                        .status
-                                    ) === 8 && returned.returnDelivery
-                                  )
-                                }
-                              />
-                              <Picker.Item
-                                label="Return Delivered"
-                                value="Return Delivered"
-                                enabled={
-                                  deliveryNumber(
-                                    orderitem.deliveryTracking.currentStatus
+                          {returned?.trackingNumber && (
+                            <Text>
+                              Tracking Number: {returned.trackingNumber}
+                            </Text>
+                          )}
+                          {deliveryNumber(
+                            returned.deliveryTracking.currentStatus.status
+                          ) > 7 &&
+                            deliveryNumber(
+                              returned.deliveryTracking.currentStatus.status
+                            ) < 10 && (
+                              <Button
+                                onPress={updateTracking}
+                                loading={loadingReturn}
+                                style={{ borderRadius: 5 }}
+                              >
+                                {`Mark as ${
+                                  showNextStatus(
+                                    returned.deliveryTracking.currentStatus
                                       .status
-                                  ) === 9
-                                }
-                              />
-                            </Picker>
-                          </View>
+                                  )[0]
+                                }`}
+                              </Button>
+                            )}
                         </>
                       )
                     ) : // Other cases
@@ -368,7 +399,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
         </View>
       </ScrollView>
     </View>
-  )
+  ) : null
 }
 
 export default ReturnDetail

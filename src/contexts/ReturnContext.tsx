@@ -3,22 +3,36 @@ import useAuth from "../hooks/useAuth"
 import { CreateReturn, IReturn } from "../types/order"
 import {
   createReturnService,
+  fetchAdminReturnService,
+  fetchPurchaseReturnService,
   fetchReturnByIdService,
-  fetchReturnService,
+  fetchSoldReturnService,
+  updateReturnAddressService,
   updateReturnStatusAdminService,
+  updateReturnStatusService,
 } from "../services/return"
 
 type ContextType = {
   returns: IReturn[]
   loading: boolean
   error: string
-  fetchReturns: () => Promise<boolean>
-  createReturns: (body: CreateReturn) => Promise<IReturn | null>
-  fetchReturnById: (id: string) => Promise<IReturn | null>
+  fetchSoldReturns: () => Promise<IReturn[] | string>
+  fetchPurchaseReturns: () => Promise<IReturn[] | string>
+  fetchAdminReturns: () => Promise<IReturn[] | string>
+  createReturns: (body: CreateReturn) => Promise<IReturn | string>
+  fetchReturnById: (id: string) => Promise<IReturn | string>
   updateReturnStatusAdmin: (
     id: string,
     body: { status: string; adminReason: string }
-  ) => Promise<IReturn | null>
+  ) => Promise<IReturn | string>
+  updateReturnStatus: (
+    id: string,
+    body: { status: string; trackingNumber?: string }
+  ) => Promise<IReturn | string>
+  updateReturnAddress: (
+    id: string,
+    body: { method: string; fee: number }
+  ) => Promise<IReturn | string>
 }
 
 // Create return context
@@ -45,18 +59,47 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
   }
 
   // Function to fetch returns
-  const fetchReturns = async () => {
+  const fetchSoldReturns = async () => {
     try {
       setError("")
       setLoading(true)
-      const result = await fetchReturnService()
+      const result = await fetchSoldReturnService()
       setReturns(result)
       setLoading(false)
-      return true
+      return result
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return false
+      return error as string
+    }
+  }
+  const fetchPurchaseReturns = async () => {
+    try {
+      setError("")
+      setLoading(true)
+      const result = await fetchPurchaseReturnService()
+      setReturns(result)
+      setLoading(false)
+      return result
+    } catch (error) {
+      handleError(error as string)
+      setLoading(false)
+      return error as string
+    }
+  }
+
+  const fetchAdminReturns = async () => {
+    try {
+      setError("")
+      setLoading(true)
+      const result = await fetchAdminReturnService()
+      setReturns(result)
+      setLoading(false)
+      return result
+    } catch (error) {
+      handleError(error as string)
+      setLoading(false)
+      return error as string
     }
   }
 
@@ -73,19 +116,20 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return null
+      return error as string
     }
   }
 
   // Function to fetch return byId
   const fetchReturnById = async (id: string) => {
+    setLoading(true)
     try {
       const result = await fetchReturnByIdService(id)
 
       return result
     } catch (error) {
       handleError(error)
-      return null
+      return error as string
     }
   }
 
@@ -99,20 +143,52 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
       return result
     } catch (error) {
       handleError(error)
-      return null
+      return error as string
+    }
+  }
+
+  const updateReturnStatus = async (
+    id: string,
+    body: { status: string; trackingNumber?: string }
+  ) => {
+    try {
+      const result = await updateReturnStatusService(id, body)
+
+      return result
+    } catch (error) {
+      handleError(error)
+      return error as string
+    }
+  }
+
+  const updateReturnAddress = async (
+    id: string,
+    body: { method: string; fee: number }
+  ) => {
+    try {
+      const result = await updateReturnAddressService(id, body)
+
+      return result
+    } catch (error) {
+      handleError(error)
+      return error as string
     }
   }
 
   return (
     <ReturnContext.Provider
       value={{
-        fetchReturns,
+        fetchAdminReturns,
+        fetchPurchaseReturns,
+        fetchSoldReturns,
         createReturns,
         fetchReturnById,
         returns,
         loading,
         error,
         updateReturnStatusAdmin,
+        updateReturnStatus,
+        updateReturnAddress,
       }}
     >
       {children}

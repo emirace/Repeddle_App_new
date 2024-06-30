@@ -43,7 +43,7 @@ const Transaction = ({ navigation }: Props) => {
   }
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Appbar.Header
         mode="small"
         style={{
@@ -51,10 +51,14 @@ const Transaction = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Transactions" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Transactions" />
         <Appbar.Action
           icon="cart-outline"
+          iconColor="white"
           onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>

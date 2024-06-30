@@ -1,5 +1,4 @@
 import {
-  Alert,
   Modal,
   Pressable,
   StyleSheet,
@@ -22,6 +21,7 @@ import * as ImagePicker from "expo-image-picker"
 import { uploadImage } from "../utils/common"
 import Comment from "./Comment"
 import useProducts from "../hooks/useProducts"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = {
   comments?: IComment[]
@@ -33,6 +33,7 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
   const { colors } = useTheme()
   const { user } = useAuth()
   const { commentProduct, error } = useProducts()
+  const { addNotification } = useToastNotification()
 
   const { push } = useNavigation<ProductNavigationProp["navigation"]>()
 
@@ -72,15 +73,13 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
       const res = await uploadImage(file)
       setImage(res)
     } catch (error) {
-      //   // TODO: toast notification
-      Alert.alert(error as string)
+      addNotification({ message: error as string, error: true })
     }
   }
 
   const submitCommentHandler = async () => {
     if (!newComment) {
-      // TODO: add notification
-      Alert.alert("Enter a comment")
+      addNotification({ message: "Enter a comment", error: true })
       return
     }
     setLoadingCreateReview(true)
@@ -91,11 +90,10 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
       const newProd = product
       newProd.comments = [...(newProd.comments ?? []), res.comment]
       setProduct(newProd)
-      // TODO: add notification
-      Alert.alert("Comment added to product")
+
+      addNotification({ message: "Comment added to product" })
       setModalVisible(false)
-    } // TODO: add notification
-    else Alert.alert(error)
+    } else addNotification({ message: error, error: true })
 
     setLoadingCreateReview(false)
   }

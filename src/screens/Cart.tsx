@@ -1,6 +1,4 @@
 import {
-  ActivityIndicator,
-  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -8,57 +6,54 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useState } from "react";
-import MyButton from "../components/MyButton";
-import { Appbar, Text, useTheme } from "react-native-paper";
-import { CartNavigationProp } from "../types/navigation/stack";
-import useCart from "../hooks/useCart";
-import { checkDeliverySelect, currency, region } from "../utils/common";
-import useAuth from "../hooks/useAuth";
-import { Ionicons } from "@expo/vector-icons";
-import { CartItem } from "../contexts/CartContext";
-import QuantitySelector from "../components/QuantitySelector";
-import DeliveryOptions from "../components/DeliveryOptions";
-import CustomAlert from "../components/CustomAlert";
-import { normaliseW } from "../utils/normalize";
-import { baseURL } from "../services/api";
-import WishlistIcon from "../components/ui/WishlistIcon";
+} from "react-native"
+import React, { useState } from "react"
+import MyButton from "../components/MyButton"
+import { Appbar, Text, useTheme } from "react-native-paper"
+import { CartNavigationProp } from "../types/navigation/stack"
+import useCart from "../hooks/useCart"
+import { checkDeliverySelect, currency, region } from "../utils/common"
+import useAuth from "../hooks/useAuth"
+import { Ionicons } from "@expo/vector-icons"
+import { CartItem } from "../contexts/CartContext"
+import QuantitySelector from "../components/QuantitySelector"
+import DeliveryOptions from "../components/DeliveryOptions"
+import CustomAlert from "../components/CustomAlert"
+import { normaliseW } from "../utils/normalize"
+import { baseURL } from "../services/api"
+import WishlistIcon from "../components/ui/WishlistIcon"
+import useToastNotification from "../hooks/useToastNotification"
 
-type Props = CartNavigationProp;
+type Props = CartNavigationProp
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const { width: SCREEN_WIDTH } = Dimensions.get("window")
 
 const Cart = ({ navigation }: Props) => {
-  const { colors } = useTheme();
-  const { user } = useAuth();
-  const { cart, subtotal, total } = useCart();
+  const { colors } = useTheme()
+  const { user } = useAuth()
+  const { cart, subtotal, total } = useCart()
+  const { addNotification } = useToastNotification()
 
   const checkout = () => {
     if (!user) {
-      // TODO: show toast
-      Alert.alert("Login to continue");
-      navigation.push("Auth");
-      return;
+      addNotification({ message: "Login to continue", error: true })
+      navigation.push("Auth")
+      return
     }
     if (!checkDeliverySelect(cart)) {
-      // TODO: show toast
-      Alert.alert("Select delivery method");
-      return;
+      addNotification({ message: "Select delivery method", error: true })
+      return
     }
     if (cart.length === 0) {
-      // TODO: show toast
-      Alert.alert("Cart is empty");
+      addNotification({ message: "Cart is empty", error: true })
     } else {
       if (user.isVerifiedEmail) {
-        navigation.push("PaymentMethod");
+        navigation.push("PaymentMethod")
       } else {
-        navigation.push("PaymentMethod");
+        navigation.push("PaymentMethod")
       }
     }
-  };
-
-  const loading = false;
+  }
 
   return (
     <View style={styles.container}>
@@ -69,12 +64,15 @@ const Cart = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Cart" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Cart" />
         <Appbar.Content
           title={
             <WishlistIcon
-              iconColor={colors.onBackground}
+              iconColor="white"
               onPress={() => navigation.push("Wishlist")}
             />
           }
@@ -98,8 +96,6 @@ const Cart = ({ navigation }: Props) => {
             </TouchableOpacity>
           </View>
         </View>
-      ) : loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
       ) : (
         <>
           <FlatList
@@ -129,61 +125,64 @@ const Cart = ({ navigation }: Props) => {
         </>
       )}
     </View>
-  );
-};
+  )
+}
 
-export default Cart;
+export default Cart
 
 type RenderProps = {
-  navigation: CartNavigationProp["navigation"];
-  item: CartItem;
-};
+  navigation: CartNavigationProp["navigation"]
+  item: CartItem
+}
 
 const RenderItem = ({ item, navigation }: RenderProps) => {
-  const { colors } = useTheme();
-  const { user, addToWishlist, error } = useAuth();
-  const { removeFromCart } = useCart();
+  const { colors } = useTheme()
+  const { user, addToWishlist, error } = useAuth()
+  const { removeFromCart } = useCart()
+  const { addNotification } = useToastNotification()
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [addToWish, setAddToWish] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false)
+  const [showAlert, setShowAlert] = useState(false)
+  const [addToWish, setAddToWish] = useState(false)
 
   const handleConfirm = async () => {
     // do something when Confirm button is pressed
-    removeFromCart(item._id);
-    setShowAlert(false);
-  };
+    removeFromCart(item._id)
+    setShowAlert(false)
+  }
 
   const handleCancel = () => {
     // do something when Cancel button is pressed
-    setShowAlert(false);
-  };
+    setShowAlert(false)
+  }
 
   const saveItem = async () => {
     if (!user) {
-      // TODO: show toast
-      Alert.alert("login to add item to wishlist");
-      return;
+      addNotification({ message: "login to add item to wishlist", error: true })
+      return
     }
     if (item.seller._id === user._id) {
-      // TODO: show toast
-      Alert.alert("You can't add your product to wishlist");
-      return;
+      addNotification({
+        message: "You can't add your product to wishlist",
+        error: true,
+      })
+      return
     }
-    setAddToWish(true);
+    setAddToWish(true)
 
-    const res = await addToWishlist(item._id);
+    const res = await addToWishlist(item._id)
     if (res) {
-      // TODO: add alert
-      Alert.alert(res);
-      removeFromCart(item._id);
-      setShowAlert(false);
-    }
-    // TODO: add alert
-    else Alert.alert(error ?? "Failed to add to wishlist");
+      addNotification({ message: res })
+      removeFromCart(item._id)
+      setShowAlert(false)
+    } else
+      addNotification({
+        message: error ?? "Failed to add to wishlist",
+        error: true,
+      })
 
-    setAddToWish(false);
-  };
+    setAddToWish(false)
+  }
 
   return (
     <View
@@ -268,15 +267,15 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
           animationType="slide"
           visible={modalVisible}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setModalVisible(!modalVisible)
           }}
         >
           <DeliveryOptions item={item} setShowModel={setModalVisible} />
         </Modal>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -351,4 +350,4 @@ const styles = StyleSheet.create({
   },
   frsttext: { justifyContent: "center", flexDirection: "row" },
   secondtext: { fontWeight: "500", fontSize: 15, color: "#8a1719" },
-});
+})

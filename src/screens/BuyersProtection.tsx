@@ -18,9 +18,16 @@ const BuyersProtection = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Buyers Protection" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content
+          title="Buyers Protection"
+          titleStyle={{ color: "white" }}
+        />
         <Appbar.Action
+          iconColor="white"
           icon="cart-outline"
           onPress={() => navigation.push("Cart")}
         />

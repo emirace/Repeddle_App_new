@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Alert,
   Image,
   StyleSheet,
   TextInput,
@@ -15,12 +14,17 @@ import { Entypo, Ionicons } from "@expo/vector-icons"
 import { currency, deliveryNumber, uploadImage } from "../utils/common"
 import { OrderItem } from "../types/order"
 import * as ImagePicker from "expo-image-picker"
+import useToastNotification from "../hooks/useToastNotification"
+import useReturn from "../hooks/useReturn"
 
 type Props = ReturnFormNavigationProp
 
 const ReturnForm = ({ navigation, route }: Props) => {
   const { orderItems, orderId, waybillNumber } = route.params
   const { colors } = useTheme()
+  const { addNotification } = useToastNotification()
+  const { createReturns } = useReturn()
+
   const [tab, setTab] = useState("items")
   const [current, setCurrent] = useState<OrderItem>()
   const [error, setError] = useState("")
@@ -31,6 +35,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
   const [invalidImage, setInvalidImage] = useState("")
   const [image, setImage] = useState("")
   const [loadingUpload, setLoadingUpload] = useState(false)
+  const [updatingStatus, setUpdatingStatus] = useState(false)
 
   const loading = false
 
@@ -38,9 +43,31 @@ const ReturnForm = ({ navigation, route }: Props) => {
 
   const deliverOrderHandler = async (
     deliveryStatus: string,
-    productId: string,
     orderitem: OrderItem
-  ) => {}
+  ) => {
+    setUpdatingStatus(true)
+
+    const res = await createReturns({
+      deliveryOption: orderitem.deliveryOption,
+      image,
+      orderId,
+      others: description,
+      productId: orderitem.product._id,
+      reason,
+      refund,
+    })
+    if (res) {
+      addNotification({ message: "Item status has been updated" })
+      navigation.goBack()
+    } else {
+      addNotification({
+        message: error ?? "Failed to update status",
+        error: true,
+      })
+    }
+
+    setUpdatingStatus(false)
+  }
 
   const handleReturn = async () => {
     if (!reason.length) {
@@ -63,7 +90,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
 
     // Send request
 
-    deliverOrderHandler("Return Logged", current._id, current)
+    deliverOrderHandler("Return Logged", current)
 
     setImage("")
     navigation.goBack()
@@ -98,8 +125,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
       const res = await uploadImage(file)
       setImage(res)
     } catch (error) {
-      //   // TODO: toast notification
-      Alert.alert(error as string)
+      addNotification({ message: error as string, error: true })
     }
     setLoadingUpload(false)
   }
@@ -311,7 +337,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
                 <Text style={styles.label}>Preferred Sending Method</Text>
 
                 <SelectDropdown
-                  data={[current?.deliveryOption]}
+                  data={[current?.deliveryOption.method]}
                   onSelect={(selectedItem, index) => {
                     setSending(selectedItem)
                   }}
@@ -427,7 +453,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
                 <Button
                   mode="contained"
                   style={[styles.button, { backgroundColor: colors.primary }]}
-                  onPress={loading ? undefined : handleReturn}
+                  onPress={handleReturn}
                   loading={loading}
                 >
                   <Text style={{ color: "white", fontWeight: "600" }}>
@@ -452,10 +478,14 @@ const ReturnForm = ({ navigation, route }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Wishlist" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Wishlist" />
         <Appbar.Action
           icon="cart-outline"
+          iconColor="white"
           onPress={() => navigation.push("Cart")}
         />
       </Appbar.Header>

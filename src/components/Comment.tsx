@@ -1,5 +1,4 @@
 import {
-  Alert,
   Image,
   StyleSheet,
   TextInput,
@@ -16,6 +15,7 @@ import useAuth from "../hooks/useAuth"
 import useProducts from "../hooks/useProducts"
 import { IComment, ICommentReply, IProduct } from "../types/product"
 import { baseURL } from "../services/api"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = {
   comment: IComment
@@ -34,6 +34,7 @@ const Comment = ({ comment, product, setProduct }: Props) => {
     error,
   } = useProducts()
   const { colors } = useTheme()
+  const { addNotification } = useToastNotification()
 
   const [replyArea, setReplyArea] = useState(false)
   const [reply, setReply] = useState("")
@@ -48,8 +49,7 @@ const Comment = ({ comment, product, setProduct }: Props) => {
     if (!user) return
 
     if (comment.userId._id === user._id) {
-      // TODO: add notification
-      Alert.alert("You can't like your comment")
+      addNotification({ message: "You can't like your comment", error: true })
       return
     }
 
@@ -64,10 +64,8 @@ const Comment = ({ comment, product, setProduct }: Props) => {
           com._id === res.comment._id ? res.comment : com
         )
         setProduct(newProd)
-        // TODO: add notification
-        Alert.alert(res.message)
-      } // TODO: add notification
-      else Alert.alert(error)
+        addNotification({ message: res.message })
+      } else addNotification({ message: error, error: true })
     } else {
       const res = await likeProductComment(product._id, comment._id)
 
@@ -77,10 +75,8 @@ const Comment = ({ comment, product, setProduct }: Props) => {
           com._id === res.comment._id ? res.comment : com
         )
         setProduct(newProd)
-        // TODO: add notification
-        Alert.alert(res.message)
-      } // TODO: add notification
-      else Alert.alert(error)
+        addNotification({ message: res.message })
+      } else addNotification({ message: error, error: true })
     }
 
     setLoading(false)
@@ -90,8 +86,7 @@ const Comment = ({ comment, product, setProduct }: Props) => {
     if (!user) return
 
     if (reply.userId._id === user._id) {
-      // TODO: add notification
-      Alert.alert("You can't like your reply")
+      addNotification({ message: "You can't like your reply", error: true })
       return
     }
 
@@ -117,10 +112,8 @@ const Comment = ({ comment, product, setProduct }: Props) => {
           return com
         })
         setProduct(newProd)
-        // TODO: add notification
-        Alert.alert(res.message)
-      } // TODO: add notification
-      else Alert.alert(error)
+        addNotification({ message: res.message })
+      } else addNotification({ message: error, error: true })
     } else {
       const res = await likeProductCommentReply(
         product._id,
@@ -141,10 +134,8 @@ const Comment = ({ comment, product, setProduct }: Props) => {
           return com
         })
         setProduct(newProd)
-        // TODO: add notification
-        Alert.alert(res.message)
-      } // TODO: add notification
-      else Alert.alert(error)
+        addNotification({ message: res.message })
+      } else addNotification({ message: error, error: true })
     }
 
     setLoading(false)
@@ -152,8 +143,7 @@ const Comment = ({ comment, product, setProduct }: Props) => {
 
   const submitReplyHandler = async () => {
     if (!reply) {
-      // TODO: add notification
-      Alert.alert("Enter a reply")
+      addNotification({ message: "Enter a reply", error: true })
       return
     }
 
@@ -179,9 +169,8 @@ const Comment = ({ comment, product, setProduct }: Props) => {
       setReply("")
       setReplyArea(false)
 
-      Alert.alert(res.message)
-    } // TODO: add notification
-    else Alert.alert(error)
+      addNotification({ message: res.message })
+    } else addNotification({ message: error, error: true })
 
     setLoading(false)
   }

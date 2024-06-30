@@ -1,5 +1,4 @@
 import {
-  Alert,
   Modal,
   StyleProp,
   StyleSheet,
@@ -15,6 +14,7 @@ import useAuth from "../hooks/useAuth"
 import { CreateProductNavigationProp } from "../types/navigation/stack"
 import { Picker } from "@react-native-picker/picker"
 import { banks } from "../utils/constants"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = {
   isFocused: boolean
@@ -24,6 +24,7 @@ type Props = {
 const AddAccount = ({ isFocused, navigation }: Props) => {
   const { colors } = useTheme()
   const { updateUser, loading, error: userError, user } = useAuth()
+  const { addNotification } = useToastNotification()
 
   const [showAccount, setShowAccount] = useState(false)
   const [input, setInput] = useState({
@@ -67,12 +68,13 @@ const AddAccount = ({ isFocused, navigation }: Props) => {
       bankName: input.bankName,
     })
     if (res) {
-      // TODO: add notification
-      Alert.alert("Account Verified Successfully")
+      addNotification({ message: "Account Verified Successfully" })
       setShowAccount(false)
     } else {
-      // TODO: add notification
-      Alert.alert(userError ?? "Failed to verify account")
+      addNotification({
+        message: userError ?? "Failed to verify account",
+        error: true,
+      })
     }
   }
 
