@@ -4,28 +4,44 @@ import { returns } from "../../utils/data"
 import ReturnComp from "./ReturnComp"
 import useReturn from "../../hooks/useReturn"
 import { IReturn } from "../../types/order"
+import { ReturnFormNavigationProp } from "../../types/navigation/stack"
 
-type Props = {}
+type Props = {
+  navigation: any
+}
 
-const PurchaseReturn = (props: Props) => {
-  const { fetchPurchaseReturns, loading } = useReturn()
+const PurchaseReturn = ({ navigation }: Props) => {
+  const { fetchPurchaseReturns } = useReturn()
 
   const [query, setQuery] = useState("")
   const [returns, setReturns] = useState<IReturn[]>([])
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  console.log(loading)
 
   useEffect(() => {
     const getReturn = async () => {
+      setLoading(true)
       const res = await fetchPurchaseReturns()
       if (typeof res !== "string") {
         setReturns(res)
       } else setError(res)
+
+      setLoading(false)
     }
 
     getReturn()
   }, [])
 
-  return <ReturnComp loading={loading} returns={returns} error={error} />
+  return (
+    <ReturnComp
+      navigation={navigation}
+      loading={loading}
+      returns={returns}
+      error={error}
+    />
+  )
 }
 
 export default PurchaseReturn

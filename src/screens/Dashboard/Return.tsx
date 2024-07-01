@@ -35,11 +35,6 @@ const Return = ({ navigation }: Props) => {
           onPress={() => navigation.goBack()}
         />
         <Appbar.Content title="My Returns" titleStyle={{ color: "white" }} />
-        <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.push("Cart")}
-          iconColor="white"
-        />
       </Appbar.Header>
       <TopNavigation tabs={tabs} />
     </View>

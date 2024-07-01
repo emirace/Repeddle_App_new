@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native"
-import React from "react"
-import { Text, useTheme } from "react-native-paper"
+import React, { useState } from "react"
+import { ActivityIndicator, Text, useTheme } from "react-native-paper"
 import { CartItem } from "../contexts/CartContext"
 import useCart from "../hooks/useCart"
 import useProducts from "../hooks/useProducts"
@@ -15,7 +15,10 @@ const QuantitySelector = ({ item, quantity }: Props) => {
   const { addToCart, cart, removeFromCart } = useCart()
   const { fetchProductBySlug } = useProducts()
 
+  const [addLoading, setAddLoading] = useState(false)
+
   const cartHandler = async (type: "add" | "subtract") => {
+    setAddLoading(true)
     const data = await fetchProductBySlug(item.slug)
     if (!data) return removeFromCart(item._id)
 
@@ -29,6 +32,7 @@ const QuantitySelector = ({ item, quantity }: Props) => {
     if (quantity < 1) return removeFromCart(item._id)
 
     addToCart({ ...existItem, quantity })
+    setAddLoading(false)
   }
 
   return (
@@ -37,13 +41,19 @@ const QuantitySelector = ({ item, quantity }: Props) => {
       <TouchableOpacity
         onPress={() => cartHandler("subtract")}
         style={[styles.button, { backgroundColor: colors.elevation.level2 }]}
+        disabled={addLoading}
       >
         <Text style={[styles.text]}>-</Text>
       </TouchableOpacity>
-      <Text style={[styles.text]}>{quantity}</Text>
+      {addLoading ? (
+        <ActivityIndicator size={15} />
+      ) : (
+        <Text style={[styles.text]}>{quantity}</Text>
+      )}
       <TouchableOpacity
         onPress={() => cartHandler("add")}
         style={[styles.button, { backgroundColor: colors.elevation.level2 }]}
+        disabled={addLoading}
       >
         <Text style={[styles.text]}>+</Text>
       </TouchableOpacity>

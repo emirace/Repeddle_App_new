@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native"
 import React, { useEffect, useState } from "react"
-import { Appbar, Button, Text, useTheme } from "react-native-paper"
+import { Appbar, Button, IconButton, Text, useTheme } from "react-native-paper"
 import moment from "moment"
 import useAuth from "../../hooks/useAuth"
 import DeliveryHistory from "../../components/DeliveryHistory"
@@ -17,6 +17,7 @@ import { IReturn } from "../../types/order"
 import Loader from "../../components/ui/Loader"
 import useReturn from "../../hooks/useReturn"
 import useToastNotification from "../../hooks/useToastNotification"
+import { baseURL } from "../../services/api"
 
 type Props = ReturnDetailNavigationProp
 
@@ -40,6 +41,8 @@ const ReturnDetail = ({ navigation, route }: Props) => {
   const [returned, setReturned] = useState<IReturn>()
   const [showTracking, setShowTracking] = useState(false)
   const [trackingNumber, setTrackingNumber] = useState("")
+
+  console.log(returned)
 
   useEffect(() => {
     const getData = async () => {
@@ -67,6 +70,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
   }
 
   const handleReturn = async (type: string) => {
+    console.log(returnId)
     if (type === "Declined") {
       if (!reasonText.length) {
         addNotification({ message: "Enter Reason for Decline", error: true })
@@ -121,8 +125,10 @@ const ReturnDetail = ({ navigation, route }: Props) => {
 
       const res = await updateReturnStatus(returned._id, body)
 
-      if (typeof res !== "string") setReturned(res)
-      else
+      if (typeof res !== "string") {
+        setReturned(res)
+        addNotification({ message: "Item status updated" })
+      } else
         addNotification({
           message: error || "Failed to update status",
           error: true,
@@ -167,11 +173,6 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           titleStyle={{ color: "white" }}
           title="Return Details"
         />
-        <Appbar.Action
-          icon="cart-outline"
-          iconColor="white"
-          onPress={() => navigation.push("Cart")}
-        />
       </Appbar.Header>
       <ScrollView style={styles.content}>
         <Text style={styles.title}>Return ID MRRN: {returnId}</Text>
@@ -179,7 +180,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           <Text style={styles.name}>Product</Text>
           <View style={styles.productContainer}>
             <Image
-              source={{ uri: returned.productId.images[0] }}
+              source={{ uri: baseURL + returned.productId.images[0] }}
               style={styles.productImage}
             />
             <TouchableOpacity
@@ -257,9 +258,16 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           <View style={styles.hr} />
           <Text style={styles.name}>Other Information</Text>
           <Text style={styles.itemNum}>{returned.others}</Text>
-          <View style={styles.hr} />
-          <Text style={styles.name}>Image</Text>
-          <Image style={styles.itemImage} source={{ uri: returned.image }} />
+          {returned.image && (
+            <>
+              <View style={styles.hr} />
+              <Text style={styles.name}>Image</Text>
+              <Image
+                style={styles.itemImage}
+                source={{ uri: baseURL + returned.image }}
+              />
+            </>
+          )}
           {returned.status !== "Pending" ? (
             <>
               <View style={styles.hr} />
@@ -270,13 +278,13 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                 style={[
                   styles.itemNum,
                   {
-                    color: returned.status === "Decline" ? "red" : "green",
+                    color: returned.status === "Declined" ? "red" : "green",
                   },
                 ]}
               >
                 {returned.status}
               </Text>
-              {returned.status === "Decline" && (
+              {returned.status === "Declined" && (
                 <Text style={styles.itemNum}>
                   Reason: {returned.adminReason}
                 </Text>
@@ -287,7 +295,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
             <>
               <View style={styles.container}>
                 <TextInput
-                  style={styles.textarea}
+                  style={[styles.textarea, { textAlignVertical: "top" }]}
                   multiline
                   numberOfLines={4}
                   placeholderTextColor={"grey"}
@@ -303,13 +311,17 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                     mode="contained"
                     style={{ borderRadius: 5 }}
                     onPress={() => handleReturn("Approved")}
+                    loading={loadingReturn}
+                    disabled={loadingReturn}
                   />
                 </View>
                 <Button
                   children="Decline"
                   mode="contained"
-                  style={{ borderRadius: 5 }}
+                  style={{ borderRadius: 5, backgroundColor: colors.secondary }}
                   onPress={() => handleReturn("Declined")}
+                  loading={loadingReturn}
+                  disabled={loadingReturn}
                 />
               </View>
             </>
@@ -319,7 +331,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           <View>
             {returned.orderId.items.map(
               (orderitem) =>
-                orderitem._id === returned.productId._id && (
+                (orderitem.product as unknown) === returned.productId._id && (
                   <View key={orderitem._id}>
                     {returned.productId.seller._id === user?._id ? (
                       <View style={{ marginTop: 10 }}>
@@ -330,7 +342,9 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                           <Button
                             onPress={updateTracking}
                             loading={loadingReturn}
+                            disabled={loadingReturn}
                             style={{ borderRadius: 5 }}
+                            mode="contained"
                           >
                             {`Mark as ${
                               showNextStatus(
@@ -344,21 +358,28 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                       showTracking ? (
                         <View>
                           <TextInput
-                            style={styles.textarea}
+                            style={[
+                              styles.textarea,
+                              { textAlignVertical: "top" },
+                            ]}
                             placeholderTextColor={"grey"}
                             value={trackingNumber}
                             onChangeText={(text) => setTrackingNumber(text)}
                             placeholder="Enter Tracking number..."
                           />
-                          <TouchableOpacity
-                            style={{ backgroundColor: colors.primary }}
+                          <IconButton
+                            containerColor={colors.primary}
+                            icon={"check"}
                             onPress={confirmTracking}
-                          ></TouchableOpacity>
+                            iconColor="white"
+                            loading={loadingReturn}
+                            disabled={loadingReturn}
+                          />
                         </View>
                       ) : (
                         <>
                           {returned?.trackingNumber && (
-                            <Text>
+                            <Text style={{ marginBottom: 10 }}>
                               Tracking Number: {returned.trackingNumber}
                             </Text>
                           )}
@@ -369,8 +390,10 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                               returned.deliveryTracking.currentStatus.status
                             ) < 10 && (
                               <Button
+                                mode="contained"
                                 onPress={updateTracking}
                                 loading={loadingReturn}
+                                disabled={loadingReturn}
                                 style={{ borderRadius: 5 }}
                               >
                                 {`Mark as ${
@@ -388,7 +411,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                     <View style={{ marginTop: 15 }}>
                       <DeliveryHistory
                         status={deliveryNumber(
-                          orderitem.deliveryTracking.currentStatus.status
+                          returned.deliveryTracking.currentStatus.status
                         )}
                       />
                     </View>
@@ -415,6 +438,7 @@ const styles = StyleSheet.create({
   },
   itemNum: {
     flexDirection: "row",
+    marginBottom: 20,
   },
   name: {
     textTransform: "capitalize",
@@ -447,8 +471,8 @@ const styles = StyleSheet.create({
   },
   textarea: {
     // width: "50%",
-    height: 100,
-    padding: 20,
+    // height: 50,
+    padding: 10,
     marginBottom: 10,
     borderRadius: 5,
     borderColor: "gray",
@@ -457,5 +481,6 @@ const styles = StyleSheet.create({
   itemImage: {
     width: 120,
     height: 200,
+    marginBottom: 20,
   },
 })

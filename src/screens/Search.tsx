@@ -13,7 +13,14 @@ import { normaliseH } from "../utils/normalize"
 import { FilterOptions } from "../types/search"
 import { SearchScreenNavigationProp } from "../types/navigation/stack"
 import ProductItem from "../components/ProductItem"
-import { Appbar, Button, Searchbar, Text, useTheme } from "react-native-paper"
+import {
+  Appbar,
+  Button,
+  IconButton,
+  Searchbar,
+  Text,
+  useTheme,
+} from "react-native-paper"
 import Filters from "../components/Filters"
 import useProducts from "../hooks/useProducts"
 import CustomBackdrop from "../components/CustomBackdrop"
@@ -60,8 +67,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
       if (filterParam.length) params.push(["filter", filterParam])
     }
 
-    if (currentPage && currentPage > 1)
-      params.push(["page", currentPage.toString()])
+    if (currentPage) params.push(["page", currentPage.toString()])
 
     if (query) params.push(["search", query])
 
@@ -71,9 +77,11 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
 
     const res = await fetchProducts(string)
 
+    console.log(res)
+
     // check if there are products return from query
-    if (typeof res !== "string" && products.totalCount !== 0) {
-      setProducts(products)
+    if (typeof res !== "string" && res.products.length > 0) {
+      setProducts(res)
       return
     }
 
@@ -82,7 +90,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
     const related = await fetchProducts()
     if (typeof related !== "string") {
       console.log(products)
-      setProducts(products)
+      setProducts(related)
       setHasResult(false)
     } else {
       addNotification({ message: related, error: true })
@@ -152,6 +160,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
           value={query}
           onChangeText={setQuery}
           onIconPress={applyFilter}
+          onSubmitEditing={applyFilter}
         />
         <Appbar.Content
           title={
@@ -173,7 +182,9 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
             <Ionicons name="filter" color={colors.onBackground} size={24} />
           </TouchableOpacity>
           <View style={styles.resultCont}>
-            <Text style={[styles.result]}>{products.totalCount} results</Text>
+            <Text style={[styles.result]}>
+              {hasResult ? products.totalCount : 0} results
+            </Text>
           </View>
         </View>
         {!hasResult && !loading && (
@@ -229,12 +240,19 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
           <View style={styles.button}>
             <Button
               mode="contained"
-              style={{ borderRadius: 5, height: 50, padding: 5 }}
+              style={{ borderRadius: 5, height: 50, padding: 5, flex: 1 }}
               children={`Apply filter (${Object.keys(filters).length})`}
               onPress={() => {
                 applyFilter()
                 bottomSheetRef.current?.close()
               }}
+            />
+            <IconButton
+              size={30}
+              style={{ padding: 0, margin: 0 }}
+              icon={"broom"}
+              iconColor={colors.primary}
+              onPress={() => setFilters({})}
             />
           </View>
         </BottomSheetModal>
@@ -292,7 +310,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   resultCont: {},
-  button: { padding: 20 },
+  button: { padding: 20, flexDirection: "row", gap: 10 },
   result: {},
   iconCont: {},
   itemStyles: {

@@ -61,7 +61,9 @@ const RenderItemcat = ({
   const { colors } = useTheme()
   return (
     <TouchableOpacity
-      onPress={() => navigation.push("Search", { query: item.text })}
+      onPress={() =>
+        navigation.push("Search", { filter: { brand: item.text } })
+      }
       style={[homeStyles.catStyles]}
     >
       <Image
@@ -84,6 +86,7 @@ const RenderItemcat = ({
 }
 
 const brands = [
+  { key: "https://repeddle.com/images/Picture1.webp", text: "Puma" },
   { key: "https://repeddle.com/images/Picture1.webp", text: "Patagonia" },
   {
     key: "https://repeddle.com/images/lucas-hoang-O0e6Ka5vYSs-unsplash.webp",

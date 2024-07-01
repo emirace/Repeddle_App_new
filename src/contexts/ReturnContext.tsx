@@ -125,10 +125,12 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
     setLoading(true)
     try {
       const result = await fetchReturnByIdService(id)
+      setLoading(false)
 
       return result
     } catch (error) {
       handleError(error)
+      setLoading(false)
       return error as string
     }
   }

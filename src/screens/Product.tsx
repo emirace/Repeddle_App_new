@@ -13,7 +13,14 @@ import {
   Share,
 } from "react-native"
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { Badge, Chip, IconButton, Text, useTheme } from "react-native-paper"
+import {
+  Badge,
+  Button,
+  Chip,
+  IconButton,
+  Text,
+  useTheme,
+} from "react-native-paper"
 import { normaliseH, normaliseW } from "../utils/normalize"
 import { IProduct, RecentProduct } from "../types/product"
 import ProductItem from "../components/ProductItem"
@@ -80,6 +87,7 @@ const Product = ({ navigation, route }: Props) => {
   const [modalProductReview, setModalProductReview] = useState(false)
   const [liking, setLiking] = useState(false)
   const [addToWish, setAddToWish] = useState(false)
+  const [adding, setAdding] = useState(false)
 
   useEffect(() => {
     const fetchProd = async () => {
@@ -191,6 +199,8 @@ const Product = ({ navigation, route }: Props) => {
   const addToCartHandler = async () => {
     if (!product) return
 
+    setAdding(true)
+
     const existItem = cart.find((x) => x._id === product._id)
     const quantity = existItem ? existItem.quantity + 1 : 1
 
@@ -209,12 +219,17 @@ const Product = ({ navigation, route }: Props) => {
       return
     }
 
+    console.log(quantity)
+    addNotification({ message: "item added to cart" })
+
     addToCart({
       ...product,
       quantity,
       selectedSize,
       // selectedColor?: string;
     })
+
+    setAdding(false)
   }
 
   const onShare = async () => {
@@ -913,19 +928,23 @@ const Product = ({ navigation, route }: Props) => {
             />
           </TouchableOpacity>
           <View style={styles.button}>
-            <MyButton
+            <Button
               onPress={addToCartHandler}
-              text={
+              children={
                 product.sold || !(product.countInStock > 0)
                   ? "Sold out"
-                  : "add to cart"
+                  : "Add to cart"
               }
               icon={
                 product.sold || !(product.countInStock > 0)
-                  ? "cart-outline"
+                  ? "cart"
                   : "alert-circle-outline"
               }
-              disable={product.sold || !(product.countInStock > 0)}
+              disabled={product.sold || !(product.countInStock > 0) || adding}
+              mode="contained"
+              style={{ paddingVertical: 8, borderRadius: 5 }}
+              labelStyle={{ fontSize: 16 }}
+              loading={adding}
             />
           </View>
         </View>

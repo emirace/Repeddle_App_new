@@ -18,13 +18,15 @@ const WishlistIcon = ({ onPress, iconColor }: Props) => {
         icon="heart-outline"
         iconColor={iconColor ?? colors.background}
       />
-      <Badge
-        visible={user?.wishlist && user.wishlist.length > 0}
-        style={styles.badge}
-        theme={{ colors: { background: "red" } }}
-      >
-        {user?.wishlist.length}
-      </Badge>
+      {user?.wishlist.length ? (
+        <Badge
+          visible={user?.wishlist && user.wishlist.length > 0}
+          style={styles.badge}
+          theme={{ colors: { background: "red" } }}
+        >
+          {user?.wishlist.length}
+        </Badge>
+      ) : null}
     </Pressable>
   )
 }
