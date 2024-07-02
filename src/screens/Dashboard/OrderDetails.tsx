@@ -36,6 +36,7 @@ import DeliveryHistory from "../../components/DeliveryHistory"
 import Loader from "../../components/ui/Loader"
 import useToastNotification from "../../hooks/useToastNotification"
 import { baseURL } from "../../services/api"
+import CartIcon from "../../components/ui/cartIcon"
 
 type Props = OrderDetailsNavigationProp
 
@@ -229,10 +230,16 @@ const OrderDetails = ({ navigation, route }: Props) => {
           onPress={() => navigation.goBack()}
         />
         <Appbar.Content title="Order Details" titleStyle={{ color: "white" }} />
-        <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.push("Cart")}
-          iconColor="white"
+        <Appbar.Content
+          style={{ flex: 0 }}
+          title={
+            <View>
+              <CartIcon
+                iconColor="white"
+                onPress={() => navigation.push("Cart")}
+              />
+            </View>
+          }
         />
       </Appbar.Header>
 

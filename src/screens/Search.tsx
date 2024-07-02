@@ -163,8 +163,9 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
           onSubmitEditing={applyFilter}
         />
         <Appbar.Content
+          style={{ flex: 0 }}
           title={
-            <View style={{ marginLeft: "auto" }}>
+            <View>
               <CartIcon
                 iconColor="white"
                 onPress={() => navigation.push("Cart")}

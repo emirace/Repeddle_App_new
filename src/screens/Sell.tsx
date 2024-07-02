@@ -31,7 +31,6 @@ import { currency, region, uploadImage } from "../utils/common"
 import MyButton from "../components/MyButton"
 import useProducts from "../hooks/useProducts"
 import AddDeliveryOption from "../components/AddDeliveryOption"
-import { CreateProductNavigationProp } from "../types/navigation/stack"
 import useAuth from "../hooks/useAuth"
 import { normaliseH } from "../utils/normalize"
 import FeeStructure from "../components/FeeStructure"
@@ -41,6 +40,7 @@ import AddAccount from "../components/AddAccount"
 import AddAddress from "../components/AddAddress"
 import { useIsFocused } from "@react-navigation/native"
 import useToastNotification from "../hooks/useToastNotification"
+import CartIcon from "../components/ui/cartIcon"
 
 const Sell = ({ navigation }: any) => {
   const { colors } = useTheme()
@@ -356,10 +356,16 @@ const Sell = ({ navigation }: any) => {
           onPress={() => navigation.goBack()}
         />
         <Appbar.Content titleStyle={{ color: "white" }} title="Sell" />
-        <Appbar.Action
-          icon="cart-outline"
-          iconColor="white"
-          onPress={() => navigation.push("Cart")}
+        <Appbar.Content
+          style={{ flex: 0 }}
+          title={
+            <View>
+              <CartIcon
+                iconColor="white"
+                onPress={() => navigation.push("Cart")}
+              />
+            </View>
+          }
         />
       </Appbar.Header>
 

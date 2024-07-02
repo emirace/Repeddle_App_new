@@ -11,14 +11,14 @@ import { Button, Text, useTheme } from "react-native-paper"
 import { region } from "../utils/common"
 import Input from "./Input"
 import useAuth from "../hooks/useAuth"
-import { CreateProductNavigationProp } from "../types/navigation/stack"
+import { SellNavigationProp } from "../types/navigation/stack"
 import { Picker } from "@react-native-picker/picker"
 import { banks } from "../utils/constants"
 import useToastNotification from "../hooks/useToastNotification"
 
 type Props = {
   isFocused: boolean
-  navigation: CreateProductNavigationProp["navigation"]
+  navigation: SellNavigationProp["navigation"]
 }
 
 const AddAccount = ({ isFocused, navigation }: Props) => {
