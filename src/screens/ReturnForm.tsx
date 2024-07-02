@@ -16,6 +16,7 @@ import { OrderItem } from "../types/order"
 import * as ImagePicker from "expo-image-picker"
 import useToastNotification from "../hooks/useToastNotification"
 import useReturn from "../hooks/useReturn"
+import { baseURL } from "../services/api"
 
 type Props = ReturnFormNavigationProp
 
@@ -56,9 +57,9 @@ const ReturnForm = ({ navigation, route }: Props) => {
       reason,
       refund,
     })
-    if (res) {
-      addNotification({ message: "Item status has been updated" })
-      navigation.goBack()
+    if (typeof res !== "string") {
+      addNotification({ message: "Return logged successfully" })
+      navigation.navigate("ReturnDetail", { id: res._id })
     } else {
       addNotification({
         message: error ?? "Failed to update status",
@@ -90,10 +91,9 @@ const ReturnForm = ({ navigation, route }: Props) => {
 
     // Send request
 
-    deliverOrderHandler("Return Logged", current)
+    await deliverOrderHandler("Return Logged", current)
 
     setImage("")
-    navigation.goBack()
   }
 
   const pickImage = async () => {
@@ -155,7 +155,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
                   <View style={styles.orderItem}>
                     <Image
                       style={styles.image}
-                      source={{ uri: orderitem.product.images[0] }}
+                      source={{ uri: baseURL + orderitem.product.images[0] }}
                     />
                     <View style={styles.details1}>
                       <Text style={[styles.name]}>
@@ -186,7 +186,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
             {current ? (
               <View style={[styles.orderItem, { marginVertical: 10 }]}>
                 <Image
-                  source={{ uri: current.product.images[0] }}
+                  source={{ uri: baseURL + current.product.images[0] }}
                   style={styles.image}
                 />
                 <View style={styles.details1}>
@@ -285,7 +285,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
               <View style={[styles.orderItem, { marginVertical: 10 }]}>
                 <Image
                   style={styles.image}
-                  source={{ uri: current.product.images[0] }}
+                  source={{ uri: baseURL + current.product.images[0] }}
                 />
                 <View style={styles.details1}>
                   <Text style={styles.name}>{current.product.name}</Text>
@@ -401,7 +401,10 @@ const ReturnForm = ({ navigation, route }: Props) => {
                 <TextInput
                   style={[
                     styles.textarea,
-                    { backgroundColor: colors.elevation.level2 },
+                    {
+                      backgroundColor: colors.elevation.level2,
+                      textAlignVertical: "top",
+                    },
                   ]}
                   multiline={true}
                   placeholder="   More information"
@@ -454,7 +457,8 @@ const ReturnForm = ({ navigation, route }: Props) => {
                   mode="contained"
                   style={[styles.button, { backgroundColor: colors.primary }]}
                   onPress={handleReturn}
-                  loading={loading}
+                  loading={updatingStatus}
+                  disabled={updatingStatus}
                 >
                   <Text style={{ color: "white", fontWeight: "600" }}>
                     Submit
@@ -482,12 +486,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
           iconColor="white"
           onPress={() => navigation.goBack()}
         />
-        <Appbar.Content titleStyle={{ color: "white" }} title="Wishlist" />
-        <Appbar.Action
-          icon="cart-outline"
-          iconColor="white"
-          onPress={() => navigation.push("Cart")}
-        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Return Form" />
       </Appbar.Header>
 
       <View>{displayTab()}</View>

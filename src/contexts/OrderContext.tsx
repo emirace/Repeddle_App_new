@@ -123,16 +123,16 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
   ) => {
     try {
       setError("")
-      setLoading(true)
+      // setLoading(true)
       const result = await updateOrderItemTrackingService(orderId, itemId, body)
       setOrders((prevOrders) =>
         prevOrders.map((p) => (p._id === orderId ? result : p))
       )
-      setLoading(false)
+      // setLoading(false)
       return result
     } catch (error) {
       handleError(error as string)
-      setLoading(false)
+      // setLoading(false)
       return null
     }
   }

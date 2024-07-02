@@ -47,7 +47,7 @@ const Checkout = ({ navigation }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [loadingPay, setLoadingPay] = useState(false)
 
-  const currencyVal = useMemo(() => currency(cart?.[0].region), [cart])
+  const currencyVal = useMemo(() => currency(cart?.[0]?.region), [cart])
   const discount = useMemo(
     () => (coupon ? couponDiscount(coupon, total) : 0),
     [coupon]
@@ -63,7 +63,6 @@ const Checkout = ({ navigation }: Props) => {
     if (order1) {
       clearCart()
       changePaymentMethod("Card")
-      addNotification({ message: "order created" })
       navigation.pop(3)
       navigation.navigate("OrderDetails", { id: order1._id })
     } else {
@@ -336,7 +335,7 @@ const Checkout = ({ navigation }: Props) => {
                 fontWeight: "bold",
               }}
             >
-              {currency(cart[0].region)}
+              {currency(cart?.[0]?.region)}
               {(total - discount).toFixed(2)}
             </Text>
           </View>

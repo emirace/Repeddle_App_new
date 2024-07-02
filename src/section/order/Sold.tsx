@@ -67,6 +67,7 @@ const Sold = (props: Props) => {
           )}
           keyExtractor={(_, index) => index.toString()}
           ListHeaderComponent={() => <TopView />}
+          contentContainerStyle={{ paddingBottom: 100 }}
         />
       )}
     </View>
