@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store"
 import { PropsWithChildren, createContext } from "react"
-import { IProduct, RecentProduct } from "../types/product"
+import { IProduct, RecentlyViewed } from "../types/product"
 
 type ContextType = {
   storeString: (key: string, value: string) => Promise<void>
@@ -9,7 +9,7 @@ type ContextType = {
   getObject: (key: string) => Promise<object | any[] | null>
   removeValue: (key: string) => Promise<void>
   storeRecently: (data: IProduct) => Promise<void>
-  getRecently: () => Promise<RecentProduct[]>
+  getRecently: () => Promise<RecentlyViewed[]>
 }
 
 // Create store context
@@ -117,7 +117,7 @@ export const StoreProvider = ({ children }: PropsWithChildren) => {
   }
 
   const getRecently = async () => {
-    const data: RecentProduct[] = (await getObject("recentlyView")) ?? []
+    const data: RecentlyViewed[] = (await getObject("recentlyView")) ?? []
 
     return data
   }

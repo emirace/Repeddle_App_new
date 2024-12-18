@@ -1,4 +1,4 @@
-import { IProduct, Pagination } from "./product"
+import { IProduct, IReview, Pagination } from "./product"
 
 export interface IAddress {
   apartment?: string
@@ -11,6 +11,11 @@ export interface IRebundle {
   status: boolean
   count: number
   method?: string
+}
+
+export interface IGuestUser {
+  fullName: string
+  email: string
 }
 
 export interface IUser {
@@ -36,8 +41,8 @@ export interface IUser {
   isVerifiedEmail: boolean
   region: "NGN" | "ZAR"
   socketId?: string
-  activeLastUpdate: string
-  usernameLastUpdate?: string
+  activeLastUpdated?: string
+  usernameLastUpdated?: string
   createdAt: string
   updatedAt?: string
   about?: string
@@ -58,6 +63,8 @@ export interface IUser {
 export type Wishlist = IProduct
 
 export interface UpdateFields {
+  // TODO: ask about username
+  // username: string
   firstName: string
   lastName: string
   image?: string
@@ -85,14 +92,19 @@ export type UserBalance = {
 }
 
 export type IUsersWithPagination = Pagination & { users: IUser[] }
+export type ITopSellersWithPagination = {
+  sellers: TopSellers[]
+  currentPage: number
+  totalPages: number
+  totalSellers: number
+}
 
 export type TopSellers = {
+  _id: string
   username: string
-  firstName: string
-  lastName: string
   image: string
-  sold: number
   badge?: boolean
+  totalEarnings: number
 }
 
 export type UserByUsername = {
@@ -102,7 +114,7 @@ export type UserByUsername = {
     followers: string[]
     following: string[]
     likes: string[]
-    sold: Array<string>
+    sold: string[]
     numReviews: number
     region: string
     createdAt: string
@@ -112,6 +124,7 @@ export type UserByUsername = {
     rating?: number
     buyers?: string[]
     rebundle?: IRebundle
+    reviews?: IReview[]
   }
   products: {
     all: IProduct[]
@@ -119,4 +132,49 @@ export type UserByUsername = {
     liked: IProduct[]
     selling: IProduct[]
   }
+}
+
+export type Analytics = {
+  totalUsers: number
+  totalOrders: number
+  totalProducts: number
+  totalEarnings: number
+  newMembers: {
+    _id: string
+    email: string
+    createdAt: string
+    firstName: string
+    image: string
+    lastName: string
+    username: string
+  }[]
+  recentProducts: {
+    _id: string
+    name: string
+    slug: string
+    images: string[]
+    createdAt: string
+  }[]
+  topSellers: {
+    _id: string
+    username: string
+    image: string
+    totalSales: number
+    createdAt?: string
+  }[]
+  mostViewedProducts: {
+    _id: string
+    name: string
+    slug: string
+    images: string[]
+    viewcount: string[]
+  }[]
+  outOfStockProducts: {
+    _id: string
+    name: string
+    slug: string
+    images: string[]
+    viewcount: string[]
+    createdAt?: string
+  }[]
 }

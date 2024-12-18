@@ -3,10 +3,12 @@ import useAuth from "../hooks/useAuth"
 import { ICreateOrder, IOrder, IOrderSummary } from "../types/order"
 import {
   createOrderService,
+  fetchAllOrdersService,
   fetchOrderByIdService,
   fetchOrdersService,
   fetchSoldOrdersService,
   getOrdersSummaryService,
+  updateOrderItemStatusService,
   updateOrderItemTrackingService,
 } from "../services/order"
 
@@ -14,9 +16,10 @@ type ContextType = {
   orders: IOrder[]
   loading: boolean
   error: string
-  fetchOrders: () => Promise<IOrder[] | null>
+  fetchOrders: (orderId?: string) => Promise<boolean>
+  fetchAllOrders: (orderId?: string) => Promise<boolean>
   fetchOrderById: (id: string) => Promise<IOrder | null>
-  fetchSoldOrders: () => Promise<IOrder[] | null>
+  fetchSoldOrders: () => Promise<boolean>
   createOrder: (
     order: ICreateOrder
   ) => Promise<null | { order: IOrder; message: string }>
@@ -29,6 +32,11 @@ type ContextType = {
     endDate?: string
     startDate?: string
   }) => Promise<IOrderSummary | null>
+  updateOrderItemStatus: (
+    orderId: string,
+    itemId: string,
+    action: "hold" | "unhold"
+  ) => Promise<IOrder | null>
 }
 
 // Create order context
@@ -55,18 +63,33 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
   }
 
   // Function to fetch orders
-  const fetchOrders = async () => {
+  const fetchOrders = async (orderId?: string) => {
     try {
       setError("")
       setLoading(true)
-      const result = await fetchOrdersService()
+      const result = await fetchOrdersService(orderId)
       setOrders(result)
       setLoading(false)
-      return result
+      return true
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return null
+      return false
+    }
+  }
+
+  const fetchAllOrders = async (orderId?: string) => {
+    try {
+      setError("")
+      setLoading(true)
+      const result = await fetchAllOrdersService(orderId)
+      setOrders(result)
+      setLoading(false)
+      return true
+    } catch (error) {
+      handleError(error as string)
+      setLoading(false)
+      return false
     }
   }
 
@@ -78,11 +101,11 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
       const result = await fetchSoldOrdersService()
       setOrders(result)
       setLoading(false)
-      return result
+      return true
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return null
+      return false
     }
   }
 
@@ -123,16 +146,16 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
   ) => {
     try {
       setError("")
-      // setLoading(true)
+      setLoading(true)
       const result = await updateOrderItemTrackingService(orderId, itemId, body)
       setOrders((prevOrders) =>
         prevOrders.map((p) => (p._id === orderId ? result : p))
       )
-      // setLoading(false)
+      setLoading(false)
       return result
     } catch (error) {
       handleError(error as string)
-      // setLoading(false)
+      setLoading(false)
       return null
     }
   }
@@ -164,6 +187,27 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
     }
   }
 
+  const updateOrderItemStatus = async (
+    orderId: string,
+    itemId: string,
+    action: "hold" | "unhold"
+  ) => {
+    try {
+      setError("")
+      setLoading(true)
+      const result = await updateOrderItemStatusService(orderId, itemId, action)
+      setOrders((prevOrders) =>
+        prevOrders.map((p) => (p._id === orderId ? result : p))
+      )
+      setLoading(false)
+      return result
+    } catch (error) {
+      handleError(error as string)
+      setLoading(false)
+      return null
+    }
+  }
+
   return (
     <OrderContext.Provider
       value={{
@@ -175,8 +219,9 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
         createOrder,
         fetchOrderById,
         getOrdersSummary,
-
+        fetchAllOrders,
         updateOrderItemTracking,
+        updateOrderItemStatus,
       }}
     >
       {children}

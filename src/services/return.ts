@@ -2,13 +2,18 @@ import { CreateReturn, IReturn } from "../types/order"
 import { getBackendErrorMessage } from "../utils/error"
 import api from "./api"
 
-export const fetchPurchaseReturnService = async () => {
+export const fetchPurchaseReturnService = async (search?: string) => {
   try {
-    const url = "/returns/purchase"
+    let url = "/returns/purchase"
+
+    if (search) url = `${url}?${search}`
 
     const resp: {
       returns: IReturn[]
       status: boolean
+      totalPages: number
+      currentPage: number
+      total: number
     } = await api.get(url)
 
     if (!resp.status) {
@@ -16,7 +21,7 @@ export const fetchPurchaseReturnService = async () => {
       throw new Error("Fetch return failed: " + getBackendErrorMessage(resp))
     }
 
-    return resp.returns
+    return resp
   } catch (error) {
     // Handle network errors or other exceptions
     // You can log the error or perform other error-handling actions
@@ -27,13 +32,18 @@ export const fetchPurchaseReturnService = async () => {
   }
 }
 
-export const fetchSoldReturnService = async () => {
+export const fetchSoldReturnService = async (search?: string) => {
   try {
-    const url = "/returns/sold"
+    let url = "/returns/sold"
+
+    if (search) url = `${url}?${search}`
 
     const resp: {
       returns: IReturn[]
       status: boolean
+      totalPages: number
+      currentPage: number
+      total: number
     } = await api.get(url)
 
     if (!resp.status) {
@@ -41,7 +51,7 @@ export const fetchSoldReturnService = async () => {
       throw new Error("Fetch return failed: " + getBackendErrorMessage(resp))
     }
 
-    return resp.returns
+    return resp
   } catch (error) {
     // Handle network errors or other exceptions
     // You can log the error or perform other error-handling actions
@@ -52,12 +62,17 @@ export const fetchSoldReturnService = async () => {
   }
 }
 
-export const fetchAdminReturnService = async () => {
+export const fetchAdminReturnService = async (search?: string) => {
   try {
-    const url = "/returns/admin"
+    let url = "/returns/admin"
+
+    if (search) url = url + `?${search}`
 
     const resp: {
       returns: IReturn[]
+      totalPages: number
+      currentPage: number
+      total: number
       status: boolean
     } = await api.get(url)
 
@@ -66,7 +81,7 @@ export const fetchAdminReturnService = async () => {
       throw new Error("Fetch return failed: " + getBackendErrorMessage(resp))
     }
 
-    return resp.returns
+    return resp
   } catch (error) {
     // Handle network errors or other exceptions
     // You can log the error or perform other error-handling actions

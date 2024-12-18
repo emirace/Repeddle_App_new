@@ -16,23 +16,28 @@ type ContextType = {
   returns: IReturn[]
   loading: boolean
   error: string
-  fetchSoldReturns: () => Promise<IReturn[] | string>
-  fetchPurchaseReturns: () => Promise<IReturn[] | string>
-  fetchAdminReturns: () => Promise<IReturn[] | string>
-  createReturns: (body: CreateReturn) => Promise<IReturn | string>
-  fetchReturnById: (id: string) => Promise<IReturn | string>
+  fetchSoldReturns: (search?: string) => Promise<boolean>
+  fetchPurchaseReturns: (search?: string) => Promise<boolean>
+  fetchAdminReturns: (search?: string) => Promise<boolean>
+  returnsPaginate: {
+    totalPages: number
+    currentPage: number
+    total: number
+  }
+  createReturns: (body: CreateReturn) => Promise<IReturn | null>
+  fetchReturnById: (id: string) => Promise<IReturn | null>
   updateReturnStatusAdmin: (
     id: string,
     body: { status: string; adminReason: string }
-  ) => Promise<IReturn | string>
+  ) => Promise<IReturn | null>
   updateReturnStatus: (
     id: string,
     body: { status: string; trackingNumber?: string }
-  ) => Promise<IReturn | string>
+  ) => Promise<IReturn | null>
   updateReturnAddress: (
     id: string,
     body: { method: string; fee: number }
-  ) => Promise<IReturn | string>
+  ) => Promise<IReturn | null>
 }
 
 // Create return context
@@ -41,6 +46,11 @@ export const ReturnContext = createContext<ContextType | undefined>(undefined)
 export const ReturnProvider = ({ children }: PropsWithChildren) => {
   const { setAuthErrorModalOpen } = useAuth()
   const [returns, setReturns] = useState<IReturn[]>([])
+  const [returnsPaginate, setReturnsPaginate] = useState({
+    totalPages: 0,
+    currentPage: 0,
+    total: 0,
+  })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -59,47 +69,62 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
   }
 
   // Function to fetch returns
-  const fetchSoldReturns = async () => {
+  const fetchSoldReturns = async (search?: string) => {
     try {
       setError("")
       setLoading(true)
-      const result = await fetchSoldReturnService()
-      setReturns(result)
+      const result = await fetchSoldReturnService(search)
+      setReturns(result.returns)
+      setReturnsPaginate({
+        currentPage: result.currentPage,
+        total: result.total,
+        totalPages: result.totalPages,
+      })
       setLoading(false)
-      return result
+      return true
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return error as string
+      return false
     }
   }
-  const fetchPurchaseReturns = async () => {
+  const fetchPurchaseReturns = async (search?: string) => {
     try {
       setError("")
       setLoading(true)
-      const result = await fetchPurchaseReturnService()
-      setReturns(result)
+      const result = await fetchPurchaseReturnService(search)
+      setReturns(result.returns)
+      setReturnsPaginate({
+        currentPage: result.currentPage,
+        total: result.total,
+        totalPages: result.totalPages,
+      })
       setLoading(false)
-      return result
+      return true
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return error as string
+      return false
     }
   }
 
-  const fetchAdminReturns = async () => {
+  const fetchAdminReturns = async (search?: string) => {
     try {
       setError("")
       setLoading(true)
-      const result = await fetchAdminReturnService()
-      setReturns(result)
+      const result = await fetchAdminReturnService(search)
+      setReturns(result.returns)
+      setReturnsPaginate({
+        currentPage: result.currentPage,
+        total: result.total,
+        totalPages: result.totalPages,
+      })
       setLoading(false)
-      return result
+      return true
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return error as string
+      return false
     }
   }
 
@@ -116,7 +141,7 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return error as string
+      return null
     }
   }
 
@@ -125,13 +150,11 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
     setLoading(true)
     try {
       const result = await fetchReturnByIdService(id)
-      setLoading(false)
 
       return result
     } catch (error) {
       handleError(error)
-      setLoading(false)
-      return error as string
+      return null
     }
   }
 
@@ -145,7 +168,7 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
       return result
     } catch (error) {
       handleError(error)
-      return error as string
+      return null
     }
   }
 
@@ -159,7 +182,7 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
       return result
     } catch (error) {
       handleError(error)
-      return error as string
+      return null
     }
   }
 
@@ -173,7 +196,7 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
       return result
     } catch (error) {
       handleError(error)
-      return error as string
+      return null
     }
   }
 
@@ -191,6 +214,7 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
         updateReturnStatusAdmin,
         updateReturnStatus,
         updateReturnAddress,
+        returnsPaginate,
       }}
     >
       {children}
