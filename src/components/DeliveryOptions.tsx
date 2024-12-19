@@ -473,7 +473,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             label={"--select province--"}
                             value={""}
                           />
-                          {location === "NGN"
+                          {region() === "NGN"
                             ? states.Nigeria.map((name, index) => (
                                 <Picker.Item
                                   style={{
@@ -621,7 +621,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             label={"--select province--"}
                             value={""}
                           />
-                          {location === "NGN"
+                          {region() === "NGN"
                             ? states.Nigeria.map((name, index) => (
                                 <Picker.Item
                                   style={{
@@ -907,7 +907,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             label={"--select province--"}
                             value={""}
                           />
-                          {location === "NGN"
+                          {region() === "NGN"
                             ? states.Nigeria.map((name, index) => (
                                 <Picker.Item
                                   style={{

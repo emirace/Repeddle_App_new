@@ -153,7 +153,6 @@ const Comment = ({ comment, product, setProduct }: Props) => {
 
     if (res) {
       const newProd = product
-      console.log(res)
       newProd.comments = newProd.comments?.map((com) => {
         if (com._id === comment._id) {
           console.log("here")
@@ -208,13 +207,12 @@ const Comment = ({ comment, product, setProduct }: Props) => {
               </Text>
             </View>
             <Text>{comment.comment}</Text>
-            {/* TODO: comment image  */}
-            {/* {comment.image ? (
+            {comment.image ? (
               <FullScreenImage
                 source={comment.image}
                 style={styles.commentImage}
               />
-            ) : null} */}
+            ) : null}
             <View style={styles.row}>
               <Text
                 style={{

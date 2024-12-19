@@ -13,12 +13,12 @@ import Input from "./Input"
 import { states } from "../utils/constants"
 import { Picker } from "@react-native-picker/picker"
 import useAuth from "../hooks/useAuth"
-import { CreateProductNavigationProp } from "../types/navigation/stack"
+import { ProductNavigationProp } from "../types/navigation/stack"
 import useToastNotification from "../hooks/useToastNotification"
 
 type Props = {
   isFocused: boolean
-  navigation: CreateProductNavigationProp["navigation"]
+  navigation: ProductNavigationProp["navigation"]
 }
 
 const AddAddress = ({ isFocused, navigation }: Props) => {

@@ -17,6 +17,7 @@ import * as ImagePicker from "expo-image-picker"
 import useToastNotification from "../hooks/useToastNotification"
 import useReturn from "../hooks/useReturn"
 import { baseURL } from "../services/api"
+import useMessage from "../hooks/useMessage"
 
 type Props = ReturnFormNavigationProp
 
@@ -25,6 +26,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
   const { colors } = useTheme()
   const { addNotification } = useToastNotification()
   const { createReturns } = useReturn()
+  const { createMessage, error: messageError } = useMessage()
 
   const [tab, setTab] = useState("items")
   const [current, setCurrent] = useState<OrderItem>()
@@ -37,15 +39,62 @@ const ReturnForm = ({ navigation, route }: Props) => {
   const [image, setImage] = useState("")
   const [loadingUpload, setLoadingUpload] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
+  const [messageLoading, setMessageLoading] = useState(false)
 
-  const loading = false
+  const addConversation = async (sellerId?: string, userId?: string) => {
+    if (!sellerId || !userId) return
 
-  const addConversation = async (sellerId: string, itemId: string) => {}
+    setMessageLoading(true)
+    try {
+      const convo = await createMessage({
+        participantId: sellerId,
+        type: "Chat",
+      })
+      navigation.push("Message", { id: convo._id })
+    } catch (error) {
+      addNotification({
+        message: messageError || (error as string),
+        error: true,
+      })
+    }
+
+    setMessageLoading(false)
+  }
 
   const deliverOrderHandler = async (
     deliveryStatus: string,
     orderitem: OrderItem
   ) => {
+    if (!reason.length) {
+      addNotification({
+        message: "Please select a reason for return",
+        error: true,
+      })
+      return
+    }
+    if (!sending) {
+      addNotification({
+        message: "Please select a method of sending",
+        error: true,
+      })
+      return
+    }
+    if (!refund.length) {
+      addNotification({
+        message: "Please select a method of refund",
+        error: true,
+      })
+      return
+    }
+
+    if (!current) {
+      addNotification({
+        message: "Please select the item you want to return",
+        error: true,
+      })
+      return
+    }
+
     setUpdatingStatus(true)
 
     const res = await createReturns({
@@ -57,12 +106,17 @@ const ReturnForm = ({ navigation, route }: Props) => {
       reason,
       refund,
     })
-    if (typeof res !== "string") {
+    if (res) {
       addNotification({ message: "Return logged successfully" })
+      setImage("")
+      setReason("")
+      setDescription("")
+      setSending("")
+      setRefund("")
       navigation.navigate("ReturnDetail", { id: res._id })
     } else {
       addNotification({
-        message: error ?? "Failed to update status",
+        message: error || "Failed to update status",
         error: true,
       })
     }
@@ -229,28 +283,33 @@ const ReturnForm = ({ navigation, route }: Props) => {
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.option]}
-                onPress={() =>
-                  current && addConversation(current.seller._id, current._id)
-                }
-              >
-                <View style={{ flexDirection: "row" }}>
-                  <Entypo
-                    name="message"
-                    size={18}
-                    color={colors.primary}
-                    style={{ paddingHorizontal: 20 }}
-                  />
-                  <View>
-                    <Text style={[styles.optionName]}>Message seller</Text>
+              {messageLoading ? (
+                <ActivityIndicator />
+              ) : (
+                <TouchableOpacity
+                  style={[styles.option]}
+                  onPress={() =>
+                    current && addConversation(current.seller._id, current._id)
+                  }
+                  disabled={messageLoading}
+                >
+                  <View style={{ flexDirection: "row" }}>
+                    <Entypo
+                      name="message"
+                      size={18}
+                      color={colors.primary}
+                      style={{ paddingHorizontal: 20 }}
+                    />
+                    <View>
+                      <Text style={[styles.optionName]}>Message seller</Text>
 
-                    <Text style={[styles.text3]}>
-                      Contact the seller and make complains
-                    </Text>
+                      <Text style={[styles.text3]}>
+                        Contact the seller and make complains
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              )}
               {current &&
               deliveryNumber(current.deliveryTracking.currentStatus.status) ===
                 4 ? (

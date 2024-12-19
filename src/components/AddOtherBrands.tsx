@@ -4,6 +4,7 @@ import { Button, Text, useTheme } from "react-native-paper"
 import { Ionicons } from "@expo/vector-icons"
 import useBrands from "../hooks/useBrand"
 import useAuth from "../hooks/useAuth"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = {
   setShowOtherBrand: (val: boolean) => void
@@ -14,6 +15,7 @@ const AddOtherBrands = ({ setShowOtherBrand, handleOnChange }: Props) => {
   const { colors } = useTheme()
   const { user } = useAuth()
   const { createBrand, error, loading } = useBrands()
+  const { addNotification } = useToastNotification()
 
   const [brand, setBrand] = useState("")
   const [err, setErr] = useState("")
@@ -25,9 +27,17 @@ const AddOtherBrands = ({ setShowOtherBrand, handleOnChange }: Props) => {
     })
 
     if (res) {
-      handleOnChange(brand, "brand")
+      if (user?.role === "Admin") {
+        addNotification({ message: "Brand has been added" })
+      } else {
+        addNotification({
+          message: "Brand has been added and awaiting approval",
+        })
+      }
 
+      handleOnChange(brand, "brand")
       setShowOtherBrand(false)
+      setBrand("")
       return
     }
     setErr(error)

@@ -80,6 +80,7 @@ export type IComment = {
   userId: IUser
   replies: ICommentReply[]
   likes: string[]
+  image?: string
   createdAt: string
   updatedAt: string
 }

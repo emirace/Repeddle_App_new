@@ -1,6 +1,12 @@
-export type SearchOptions = {
+export type SearchOptions = FilterOptions & {
+  // price?: string
+  order?: string
+  page?: number
+  query?: string
+}
+
+export type FilterOptions = {
   category?: string
-  price?: string
   rating?: string
   color?: string
   size?: string
@@ -13,13 +19,10 @@ export type SearchOptions = {
   deal?: string
   maxPrice?: string
   minPrice?: string
-  order?: string
-  page?: number
-  query?: number
 }
 
 export type SearchOptionsKey = keyof SearchOptions
 
 export type SearchOptionsObject = {
-  [key in SearchOptionsKey]?: string | string
+  [key in SearchOptionsKey]?: string
 }

@@ -71,7 +71,7 @@ const Home = ({ navigation }: any) => {
       if (typeof res === "string") {
         setSellerError(res)
       } else {
-        setSellers(res)
+        setSellers(res.sellers)
       }
 
       setSellerLoading(false)
