@@ -7,25 +7,27 @@ import {
   View,
 } from "react-native"
 import React from "react"
-import { Text, useTheme } from "react-native-paper"
+import { IconButton, Text, useTheme } from "react-native-paper"
 import { IReturn } from "../../types/order"
 import moment from "moment"
-import { useNavigation } from "@react-navigation/native"
-import { ReturnNavigationProp } from "../../types/navigation/stack"
+import {
+  ReturnFormNavigationProp,
+  ReturnNavigationProp,
+} from "../../types/navigation/stack"
 import { Ionicons } from "@expo/vector-icons"
 import Loader from "../../components/ui/Loader"
+import { baseURL } from "../../services/api"
 
 type Props = {
   loading: boolean
   returns: IReturn[]
   error?: string
+  navigation: ReturnFormNavigationProp["navigation"]
 }
 
-const ReturnComp = ({ loading, returns, error }: Props) => {
-  const { colors } = useTheme()
-
+const ReturnComp = ({ loading, returns, error, navigation }: Props) => {
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {loading ? (
         <Loader />
       ) : error ? (
@@ -40,7 +42,9 @@ const ReturnComp = ({ loading, returns, error }: Props) => {
         <>
           <FlatList
             data={returns}
-            renderItem={({ item }) => <RenderItem item={item} />}
+            renderItem={({ item }) => (
+              <RenderItem item={item} navigation={navigation} />
+            )}
             keyExtractor={(item) => item._id}
             style={styles.listContainer}
             ListHeaderComponent={topView}
@@ -51,15 +55,24 @@ const ReturnComp = ({ loading, returns, error }: Props) => {
   )
 }
 
-const RenderItem = ({ item }: { item: IReturn }) => {
-  const { navigation } = useNavigation<ReturnNavigationProp>()
+const RenderItem = ({
+  item,
+  navigation,
+}: {
+  item: IReturn
+  navigation: ReturnFormNavigationProp["navigation"]
+}) => {
+  console.log(item.productId)
 
   return (
-    <View style={styles.itemContainer}>
-      {item.image ? (
+    <TouchableOpacity
+      onPress={() => navigation.push("ReturnDetail", { id: item._id })}
+      style={styles.itemContainer}
+    >
+      {item.productId.images.length ? (
         <Image
           style={styles.itemImage}
-          source={{ uri: item.productId.images[0] }}
+          source={{ uri: baseURL + item.productId.images[0] }}
         />
       ) : (
         <View style={{ width: 50, height: 50, marginRight: 20 }} />
@@ -73,13 +86,8 @@ const RenderItem = ({ item }: { item: IReturn }) => {
         </Text>
       </View>
 
-      <TouchableOpacity
-        style={styles.viewDetailsButton}
-        onPress={() => navigation.push("ReturnDetail", { id: item._id })}
-      >
-        <Text style={styles.viewDetailsButtonText}>View Details</Text>
-      </TouchableOpacity>
-    </View>
+      <IconButton icon={"chevron-right"} />
+    </TouchableOpacity>
   )
 }
 
@@ -96,7 +104,9 @@ const topView = () => {
             styles.searchInput,
             {
               color: colors.onBackground,
-              backgroundColor: colors.primaryContainer,
+              // backgroundColor: colors.primaryContainer,
+              borderWidth: 1,
+              borderColor: "grey",
             },
           ]}
           placeholderTextColor={colors.onBackground}

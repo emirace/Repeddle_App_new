@@ -3,9 +3,11 @@ import React from "react"
 import { Appbar, Avatar, List, Text, useTheme } from "react-native-paper"
 import Balance from "../../section/profile/Balances"
 import { RootStackParamList } from "../../types/navigation/stack"
+import useAuth from "../../hooks/useAuth"
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { colors } = useTheme()
+  const { logout } = useAuth()
 
   return (
     <ScrollView
@@ -76,6 +78,20 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
               onPress={() => navigation.navigate(`${item.link}`)}
             />
           ))}
+          <List.Item
+            title="Log out"
+            description={"Log out of your account"}
+            titleStyle={{
+              fontSize: 22,
+            }}
+            left={() => <List.Icon icon={"power"} />}
+            right={() => <List.Icon icon="chevron-right" />}
+            descriptionStyle={{ fontSize: 18 }}
+            onPress={() => {
+              logout()
+              navigation.replace("Auth")
+            }}
+          />
         </List.Section>
       </View>
     </ScrollView>
@@ -90,7 +106,7 @@ const dashboardItems: {
 }[] = [
   {
     name: "My Profile",
-    link: "Profile",
+    link: "ProfileSettings",
     leftIcon: "account",
     description: "Manage your profile",
   },
@@ -108,7 +124,7 @@ const dashboardItems: {
   },
   {
     name: "My Earnings",
-    link: "Profile",
+    link: "ProfileSettings",
     leftIcon: "account",
     description: "See your achievements",
   },

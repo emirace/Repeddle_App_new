@@ -1,5 +1,4 @@
 import {
-  Alert,
   FlatList,
   Image,
   Pressable,
@@ -9,12 +8,13 @@ import {
   View,
 } from "react-native"
 import React, { useState } from "react"
-import { Appbar, Text, useTheme } from "react-native-paper"
+import { Appbar, Button, Text, useTheme } from "react-native-paper"
 import { FontAwesome } from "@expo/vector-icons"
 import Rating from "../components/Rating"
 import moment from "moment"
 import { IReview } from "../types/product"
 import { SellerReviewNavigationProp } from "../types/navigation/stack"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = SellerReviewNavigationProp
 
@@ -32,8 +32,11 @@ const SellerReview = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Reviews" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Reviews" />
       </Appbar.Header>
       {!reviews.length && (
         <View
@@ -67,6 +70,7 @@ type ReviewProps = {
 
 const ReviewItem = ({ item, navigation }: ReviewProps) => {
   const { colors } = useTheme()
+  const { addNotification } = useToastNotification()
 
   const [replyVisible, setReplyVisible] = useState(false)
   const [replyText, setReplyText] = useState("")
@@ -79,16 +83,14 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
 
   const handleReplySubmit = async () => {
     if (!replyText) {
-      // TODO: add notification
-      Alert.alert("Enter a reply")
+      addNotification({ message: "Enter a reply", error: true })
       return
     }
     setLoading(true)
 
     setReplyText("")
     setReplyVisible(false)
-    // TODO: add notification
-    Alert.alert("Reply submitted successfully")
+    addNotification({ message: "Reply submitted successfully" })
 
     setLoading(false)
   }
@@ -188,12 +190,14 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
               value={replyText}
               multiline
             />
-            <TouchableOpacity
-              style={[styles.submitButton, { backgroundColor: colors.primary }]}
+            <Button
               onPress={handleReplySubmit}
-            >
-              <Text style={styles.submitButtonText}>Submit</Text>
-            </TouchableOpacity>
+              children="Proceed"
+              loading={loading}
+              mode="contained"
+              style={[styles.submitButton, { backgroundColor: colors.primary }]}
+              labelStyle={styles.submitButtonText}
+            />
           </View>
         )}
       </View>

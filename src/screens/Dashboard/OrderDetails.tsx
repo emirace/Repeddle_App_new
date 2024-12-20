@@ -1,5 +1,4 @@
 import {
-  Alert,
   Image,
   Modal,
   Pressable,
@@ -13,7 +12,7 @@ import {
   View,
 } from "react-native"
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react"
-import { Appbar, Button, Text, useTheme } from "react-native-paper"
+import { Appbar, Button, IconButton, Text, useTheme } from "react-native-paper"
 import useOrder from "../../hooks/useOrder"
 import ViewShot from "react-native-view-shot"
 import * as FileSystem from "expo-file-system"
@@ -35,6 +34,9 @@ import { displayDeliveryStatus } from "../../utils/render"
 import { normaliseH } from "../../utils/normalize"
 import DeliveryHistory from "../../components/DeliveryHistory"
 import Loader from "../../components/ui/Loader"
+import useToastNotification from "../../hooks/useToastNotification"
+import { baseURL } from "../../services/api"
+import CartIcon from "../../components/ui/cartIcon"
 
 type Props = OrderDetailsNavigationProp
 
@@ -42,6 +44,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const { colors, dark } = useTheme()
   const { fetchOrderById, error, loading, updateOrderItemTracking } = useOrder()
   const { user } = useAuth()
+  const { addNotification } = useToastNotification()
   const { id } = route.params
 
   const viewShotRef = useRef<ViewShot>(null)
@@ -54,7 +57,6 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const [trackingNumber, setTrackingNumber] = useState("")
   const [afterAction, setAfterAction] = useState(false)
   const [showDelivery, setShowDelivery] = useState("")
-  const [refresh, setRefresh] = useState(true)
   const [isSeller, setIsSeller] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [showError, setShowError] = useState(false)
@@ -85,21 +87,41 @@ const OrderDetails = ({ navigation, route }: Props) => {
     setShowTracking(false)
   }
 
-  const daydiff = (x: number) =>
-    order?.createdAt
-      ? x - timeDifference(new window.Date(order.createdAt), new window.Date())
-      : 0
+  const daydiff = (start: Date | string | number, end: number) => {
+    if (!start) return 0
+    const startNum = timeDifference(new window.Date(start), new window.Date())
+    return end - startNum
+  }
 
   const generatePDF = async () => {
     if (!viewShotRef.current?.capture) return
+    console.log(viewShotRef.current.capture)
 
     // Take a snapshot of the screen
     const snapshot = await viewShotRef.current.capture()
     console.log("eeeeeeee1", snapshot)
     // Create the PDF file
+
+    const ul =
+      "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg"
     const pdfDocument = await Print.printToFileAsync({
-      html: `<html><body><img src="${snapshot}" /></body></html>`,
+      html: `<html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+      </head>
+      <body style="text-align: center;">
+        <h1 style="font-size: 50px; font-family: Helvetica Neue; font-weight: normal;">
+          Hello Expo!
+        </h1>
+        <img
+          src="${snapshot}"
+          style="width: 90vw;" />
+      </body>
+    </html>`,
     })
+    // const pdfDocument = await Print.printToFileAsync({
+    //   html: `<html><body><img src="${ul}" /></body></html>`,
+    // })
 
     console.log("eeeeeeee3", pdfDocument)
     const pdfUri = pdfDocument.uri
@@ -130,8 +152,10 @@ const OrderDetails = ({ navigation, route }: Props) => {
 
     if (nextStatus[1] === 2) {
       if (!trackingNumber) {
-        // TODO:
-        Alert.alert("Tracking number is required to dispatch item")
+        addNotification({
+          message: "Tracking number is required to dispatch item",
+          error: true,
+        })
         return
       }
     }
@@ -147,12 +171,13 @@ const OrderDetails = ({ navigation, route }: Props) => {
       }
     )
     if (res) {
-      // TODO:
-      Alert.alert("Item status has been updated")
+      addNotification({ message: "Item status has been updated" })
       setOrder(res)
     } else {
-      // TODO:
-      Alert.alert(error ?? "Failed to update status")
+      addNotification({
+        message: error ?? "Failed to update status",
+        error: true,
+      })
     }
 
     setUpdatingStatus(false)
@@ -189,6 +214,8 @@ const OrderDetails = ({ navigation, route }: Props) => {
   let shippingPrice = 0
   let itemsPrice = 0
 
+  console.log(JSON.stringify(order))
+
   return (
     <View style={[styles.container]}>
       <Appbar.Header
@@ -198,11 +225,21 @@ const OrderDetails = ({ navigation, route }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
-        <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.push("Cart")}
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content title="Order Details" titleStyle={{ color: "white" }} />
+        <Appbar.Content
+          style={{ flex: 0 }}
+          title={
+            <View>
+              <CartIcon
+                iconColor="white"
+                onPress={() => navigation.push("Cart")}
+              />
+            </View>
+          }
         />
       </Appbar.Header>
 
@@ -211,7 +248,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
       ) : showError && error ? (
         <Text1 style={{ color: "red" }}>{error}</Text1>
       ) : order ? (
-        <ViewShot ref={viewShotRef}>
+        <ViewShot ref={viewShotRef} style={{ flex: 1 }}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View
               style={[
@@ -251,25 +288,8 @@ const OrderDetails = ({ navigation, route }: Props) => {
               >
                 <Text style={styles.printText}>Print Invoice</Text>
               </TouchableOpacity>
-              {!isSeller &&
-                daydiff(3) > 0 &&
-                deliveryNumber(
-                  order.items[0].deliveryTracking.currentStatus.status
-                ) > 3 && (
-                  <Pressable
-                    onPress={() =>
-                      navigation.push("ReturnForm", {
-                        orderItems: order.items,
-                        orderId: id,
-                        waybillNumber: trackingNumber,
-                      })
-                    }
-                  >
-                    <Text1 style={{ fontWeight: "bold" }}>Log a return</Text1>
-                    <Text style={{ color: "red" }}>{daydiff(3)} days left</Text>
-                  </Pressable>
-                )}
             </View>
+
             {order.items.map((orderitem) =>
               isSeller ? (
                 orderitem.seller._id === user?._id && (
@@ -348,11 +368,11 @@ const OrderDetails = ({ navigation, route }: Props) => {
                             }
                           >
                             <Text style={styles.link}>
-                              Comfirm you have recieved your order
+                              Confirm you have received your order
                             </Text>
                           </Pressable>
                         )}
-                      {user && order && (
+                      {orderitem.seller._id === user?._id && (
                         <View>
                           {showTracking ? (
                             <View style={styles.trackingCont}>
@@ -361,33 +381,27 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                 value={trackingNumber}
                                 onChangeText={(e) => setTrackingNumber(e)}
                               />
-                              <TouchableOpacity
-                                style={{
-                                  borderRadius: 5,
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                }}
+
+                              <IconButton
+                                size={20}
                                 onPress={() => comfirmWaybill(orderitem)}
-                              >
-                                <Ionicons
-                                  name="checkmark-sharp"
-                                  size={20}
-                                  color="white"
-                                />
-                              </TouchableOpacity>
+                                disabled={updatingStatus}
+                                icon={"checkmark-sharp"}
+                                iconColor="white"
+                                containerColor={colors.primary}
+                              />
                             </View>
                           ) : (
                             <>
-                              {orderitem.deliveryTracking.currentStatus._id && (
+                              {orderitem.trackingNumber && (
                                 <Text1 style={[{ marginRight: 20 }]}>
-                                  Tracking Number:{" "}
-                                  {orderitem.deliveryTracking.currentStatus._id}
+                                  Tracking Number: {orderitem.trackingNumber}
                                 </Text1>
                               )}
 
                               {deliveryNumber(
                                 orderitem.deliveryTracking.currentStatus.status
-                              ) < 3 && (
+                              ) < 4 && (
                                 <Button
                                   onPress={() => updateTracking(orderitem)}
                                   children={`Mark as ${
@@ -410,7 +424,9 @@ const OrderDetails = ({ navigation, route }: Props) => {
                     <View style={styles.detailButton}>
                       <View style={styles.orderItem}>
                         <Image
-                          source={{ uri: orderitem.product.images[0] }}
+                          source={{
+                            uri: baseURL + orderitem.product.images[0],
+                          }}
                           style={styles.image}
                         />
                         <View style={styles.details1}>
@@ -445,7 +461,10 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           <Text style={styles.link}>Buy Again</Text>
                         </Pressable>
                         {user?.role === "Admin" &&
-                          +daydiff(13) <= 0 &&
+                          +daydiff(
+                            orderitem.deliveryTracking.currentStatus.timestamp,
+                            13
+                          ) <= 0 &&
                           deliveryNumber(
                             orderitem.deliveryTracking.currentStatus.status
                           ) < 4 && (
@@ -490,7 +509,10 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           </Pressable>
                         )}
                         {user?.role === "Admin" &&
-                          daydiff(13) <= 0 &&
+                          daydiff(
+                            orderitem.deliveryTracking.currentStatus.timestamp,
+                            13
+                          ) <= 0 &&
                           deliveryNumber(
                             orderitem.deliveryTracking.currentStatus.status
                           ) === 4 && (
@@ -573,7 +595,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           <Text1>Buyer Information</Text1>
                           <View style={styles.userCont}>
                             <Image
-                              source={{ uri: order.buyer.image }}
+                              source={{ uri: baseURL + order.buyer.image }}
                               style={styles.userImg}
                             />
                             <View>
@@ -599,7 +621,9 @@ const OrderDetails = ({ navigation, route }: Props) => {
                             <Text1>Seller Information</Text1>
                             <View style={styles.userCont}>
                               <Image
-                                source={{ uri: orderitem.seller.image }}
+                                source={{
+                                  uri: baseURL + orderitem.seller.image,
+                                }}
                                 style={styles.userImg}
                               />
                               <View>
@@ -673,7 +697,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                       <Text1>
                         On{" "}
                         {moment(
-                          orderitem.deliveryTracking.currentStatus.status
+                          orderitem.deliveryTracking.currentStatus.timestamp
                         ).format("MMMM Do YYYY, h:mm:ss a")}
                       </Text1>
                     </View>
@@ -698,7 +722,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                               style={[styles.link, { color: colors.secondary }]}
                             >
                               {" "}
-                              Comfirm you have recieved your order
+                              Confirm you have received your order
                             </Text>
                           </Pressable>
                           <Modal
@@ -753,7 +777,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                                       setAfterAction(false)
                                     }}
                                   >
-                                    <Text style={styles.link}>Comfirm</Text>
+                                    <Text style={styles.link}>Confirm</Text>
                                   </Pressable>
                                   <Pressable
                                     style={[
@@ -796,10 +820,46 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           </Modal>
                         </>
                       )}
-                    {orderitem.deliveryTracking.currentStatus && (
+
+                    {!isSeller &&
+                      daydiff(
+                        orderitem.deliveryTracking.currentStatus.timestamp,
+                        3
+                      ) > 0 &&
+                      deliveryNumber(
+                        orderitem.deliveryTracking.currentStatus.status
+                      ) > 3 && (
+                        <Pressable
+                          onPress={() =>
+                            navigation.push("ReturnForm", {
+                              orderItems: order.items,
+                              orderId: id,
+                              waybillNumber: trackingNumber,
+                            })
+                          }
+                          style={{
+                            flexDirection: "row",
+                            gap: 4,
+                            marginVertical: 10,
+                            alignSelf: "center",
+                          }}
+                        >
+                          <Text1 style={{ fontWeight: "bold" }}>
+                            Log a return
+                          </Text1>
+                          <Text style={{ color: "red" }}>
+                            {daydiff(
+                              orderitem.deliveryTracking.currentStatus
+                                .timestamp,
+                              3
+                            )}{" "}
+                            days left
+                          </Text>
+                        </Pressable>
+                      )}
+                    {orderitem.trackingNumber && (
                       <Text1 style={{ marginRight: 20 }}>
-                        Tracking Number:{" "}
-                        {orderitem.deliveryTracking.currentStatus._id}
+                        Tracking Number: {orderitem.trackingNumber}
                       </Text1>
                     )}
                   </View>
@@ -808,8 +868,8 @@ const OrderDetails = ({ navigation, route }: Props) => {
                   <View style={styles.detailButton}>
                     <View style={styles.orderItem}>
                       <Image
-                        source={{ uri: orderitem.product.images[0] }}
-                        style={styles.image}
+                        source={{ uri: baseURL + orderitem.product.images[0] }}
+                        style={[styles.image, { backgroundColor: "black" }]}
                       />
                       <View style={styles.details1}>
                         <Text1 style={styles.name}>
@@ -928,7 +988,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                         <Text1>Seller Information</Text1>
                         <View style={styles.userCont}>
                           <Image
-                            source={{ uri: orderitem.seller.image }}
+                            source={{ uri: baseURL + orderitem.seller.image }}
                             style={styles.userImg}
                           />
                           <View>
@@ -955,7 +1015,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           <Text1>Buyer Information</Text1>
                           <View style={styles.userCont}>
                             <Image
-                              source={{ uri: order.buyer.image }}
+                              source={{ uri: baseURL + order.buyer.image }}
                               style={styles.userImg}
                             />
                             <View>
@@ -1048,7 +1108,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           {currency(region())}
                           {/* TODO: */}
                           {/* {isSeller ? shippingPrice : order.shippingPrice} */}
-                          {isSeller ? shippingPrice : order.totalAmount}
+                          {shippingPrice}
                         </Text1>
                       </View>
                       <View

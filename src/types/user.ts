@@ -58,8 +58,6 @@ export interface IUser {
 export type Wishlist = IProduct
 
 export interface UpdateFields {
-  // TODO: ask about username
-  // username: string
   firstName: string
   lastName: string
   image?: string

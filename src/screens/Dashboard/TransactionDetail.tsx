@@ -24,8 +24,14 @@ const TransactionDetail = ({ navigation, route }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Transaction Detail" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content
+          titleStyle={{ color: "white" }}
+          title="Transaction Detail"
+        />
       </Appbar.Header>
 
       <ScrollView contentContainerStyle={styles.container}>

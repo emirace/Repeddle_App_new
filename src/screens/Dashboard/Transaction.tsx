@@ -15,6 +15,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import moment from "moment"
 import { createSearchParam, currency, region } from "../../utils/common"
 import Loader from "../../components/ui/Loader"
+import CartIcon from "../../components/ui/cartIcon"
 
 type Props = TransactionNavigationProp
 
@@ -43,7 +44,7 @@ const Transaction = ({ navigation }: Props) => {
   }
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Appbar.Header
         mode="small"
         style={{
@@ -51,11 +52,21 @@ const Transaction = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Transactions" />
-        <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.push("Cart")}
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Transactions" />
+        <Appbar.Content
+          style={{ flex: 0 }}
+          title={
+            <View>
+              <CartIcon
+                iconColor="white"
+                onPress={() => navigation.push("Cart")}
+              />
+            </View>
+          }
         />
       </Appbar.Header>
       {loading ? (

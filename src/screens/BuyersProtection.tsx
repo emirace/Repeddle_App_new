@@ -4,6 +4,7 @@ import { Appbar, Text, useTheme } from "react-native-paper"
 import { normaliseH } from "../utils/normalize"
 import { goto } from "../utils/common"
 import { BuyersProtectionNavigationProp } from "../types/navigation/stack"
+import CartIcon from "../components/ui/cartIcon"
 
 type Props = BuyersProtectionNavigationProp
 
@@ -18,11 +19,24 @@ const BuyersProtection = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Buyers Protection" />
-        <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.push("Cart")}
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content
+          title="Buyers Protection"
+          titleStyle={{ color: "white" }}
+        />
+        <Appbar.Content
+          style={{ flex: 0 }}
+          title={
+            <View>
+              <CartIcon
+                iconColor="white"
+                onPress={() => navigation.push("Cart")}
+              />
+            </View>
+          }
         />
       </Appbar.Header>
       <View style={styles.body}>

@@ -4,8 +4,8 @@ import { OrderListNavigationProp } from "../../types/navigation/stack"
 import { Appbar, useTheme } from "react-native-paper"
 import Purchase from "../../section/order/Purchase"
 import Sold from "../../section/order/Sold"
-import Returns from "../../section/order/Returns"
 import TopNavigation from "../../navigations/top"
+import CartIcon from "../../components/ui/cartIcon"
 
 type Props = OrderListNavigationProp
 
@@ -17,10 +17,6 @@ const tabs = [
   {
     name: "Sold",
     component: Sold,
-  },
-  {
-    name: "Returns",
-    component: Returns,
   },
 ]
 
@@ -36,11 +32,21 @@ const OrderList = ({ navigation }: Props) => {
           backgroundColor: colors.primary,
         }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="My Orders" />
-        <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.push("Cart")}
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content title="My Orders" titleStyle={{ color: "white" }} />
+        <Appbar.Content
+          style={{ flex: 0 }}
+          title={
+            <View>
+              <CartIcon
+                iconColor="white"
+                onPress={() => navigation.push("Cart")}
+              />
+            </View>
+          }
         />
       </Appbar.Header>
       <TopNavigation tabs={tabs} />

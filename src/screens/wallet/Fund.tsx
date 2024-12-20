@@ -1,27 +1,30 @@
-import { useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
-import { Text, TextInput, Button, Appbar } from "react-native-paper";
-import { FundNavigationProp } from "../../types/navigation/stack";
+import { useState } from "react"
+import { View, StyleSheet, Alert } from "react-native"
+import { Text, TextInput, Button, Appbar } from "react-native-paper"
+import { FundNavigationProp } from "../../types/navigation/stack"
 
 const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<string>("")
 
   const handleFundWallet = () => {
     if (amount === "" || isNaN(parseFloat(amount))) {
-      Alert.alert("Invalid Amount", "Please enter a valid amount.");
-      return;
+      Alert.alert("Invalid Amount", "Please enter a valid amount.")
+      return
     }
     // Handle the wallet funding logic here
-    Alert.alert("Success", `Your wallet has been funded with ₦${amount}.`);
-  };
+    Alert.alert("Success", `Your wallet has been funded with ₦${amount}.`)
+  }
 
   return (
     <View style={styles.container}>
       <Appbar.Header mode="large">
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Fund Wallet" />
+        <Appbar.BackAction
+          iconColor="white"
+          onPress={() => navigation.goBack()}
+        />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Fund Wallet" />
         {/* <Appbar.Action icon="plus" onPress={() => {}} /> */}
-        <Appbar.Action icon="history" onPress={() => {}} />
+        <Appbar.Action iconColor="white" icon="history" onPress={() => {}} />
       </Appbar.Header>
       <View style={styles.context}>
         <View style={{ flex: 1 }}>
@@ -42,8 +45,8 @@ const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
         </Button>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -54,6 +57,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   fundButton: {},
-});
+})
 
-export default Fund;
+export default Fund

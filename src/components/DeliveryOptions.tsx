@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Alert,
   Pressable,
   ScrollView,
   StyleProp,
@@ -25,6 +24,7 @@ import SelectDropdown from "react-native-select-dropdown"
 import { fetchStations, getGigPrice } from "../services/others"
 import { IDeliveryMeta } from "../types/order"
 import useCart from "../hooks/useCart"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = {
   setShowModel: (val: boolean) => void
@@ -34,6 +34,8 @@ type Props = {
 const DeliveryOptions = ({ item, setShowModel }: Props) => {
   const { colors } = useTheme()
   const { addToCart } = useCart()
+
+  const { addNotification } = useToastNotification()
 
   const [deliveryOption, setDeliveryOption] = useState("")
   const [showMap, setShowMap] = useState(false)
@@ -218,8 +220,11 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
     if (deliveryOption === "GIG Logistics") {
       if (location1.error) {
         setLocationerror("Location is require for proper delivery")
-        // TODO: show toast
-        Alert.alert("Location is require for proper delivery")
+
+        addNotification({
+          message: "Location is require for proper delivery",
+          error: true,
+        })
         return
       }
       try {
@@ -308,11 +313,14 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
         }}
       >
         <Appbar.Action
-          iconColor={colors.onBackground}
+          iconColor="white"
           icon="arrow-left"
           onPress={() => setShowModel(false)}
         />
-        <Appbar.Content title="Select Delivery option" />
+        <Appbar.Content
+          title="Select Delivery option"
+          titleStyle={{ color: "white" }}
+        />
       </Appbar.Header>
       {/* <View style={styles.header}>
         <TouchableOpacity onPress={() => setShowModel(false)}>
@@ -1071,7 +1079,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
             ]}
             onPress={loadingGig ? undefined : validation}
           >
-            <Text1>Continue</Text1>
+            <Text style={{ color: "white" }}>Continue</Text>
           </TouchableOpacity>
         )}
       </View>

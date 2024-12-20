@@ -31,7 +31,7 @@ type ContextType = {
   products: ProductWithPagination
   loading: boolean
   error: string
-  fetchProducts: (params?: string) => Promise<boolean>
+  fetchProducts: (params?: string) => Promise<ProductWithPagination | string>
   fetchUserProducts: (params?: string) => Promise<boolean>
   fetchProductBySlug: (slug: string) => Promise<IProduct | null>
   fetchProductById: (id: string) => Promise<IProduct | string>
@@ -139,11 +139,11 @@ export const ProductProvider = ({ children }: PropsWithChildren) => {
       const result = await fetchProductsService(params)
       setProducts(result)
       setLoading(false)
-      return true
+      return result
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return false
+      return error as string
     }
   }
 

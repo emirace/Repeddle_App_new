@@ -1,16 +1,40 @@
 import { StyleSheet, View } from "react-native"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import ReturnComp from "./ReturnComp"
-import { returns } from "../../utils/data"
+import useReturn from "../../hooks/useReturn"
+import { IReturn } from "../../types/order"
+import { ReturnFormNavigationProp } from "../../types/navigation/stack"
 
-type Props = {}
+type Props = {
+  navigation: any
+}
 
-const SoldReturn = (props: Props) => {
-  const loading = false
-  const error = ""
-  const returnData = returns
+const SoldReturn = ({ navigation }: Props) => {
+  const { fetchSoldReturns, loading } = useReturn()
 
-  return <ReturnComp loading={loading} returns={returnData} error={error} />
+  const [query, setQuery] = useState("")
+  const [returns, setReturns] = useState<IReturn[]>([])
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    const getReturn = async () => {
+      const res = await fetchSoldReturns()
+      if (typeof res !== "string") {
+        setReturns(res)
+      } else setError(res)
+    }
+
+    getReturn()
+  }, [])
+
+  return (
+    <ReturnComp
+      loading={loading}
+      navigation={navigation}
+      returns={returns}
+      error={error}
+    />
+  )
 }
 
 export default SoldReturn

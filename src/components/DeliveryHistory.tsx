@@ -36,7 +36,7 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 1 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 1 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -46,20 +46,20 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 1 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 1 ? "green" : "grey" },
               ]}
             />
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 2 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 2 ? "green" : "grey" },
               ]}
             />
             <View style={styles.boxCont}>
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 2 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 2 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -69,20 +69,20 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 2 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 2 ? "green" : "grey" },
               ]}
             />
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 3 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 3 ? "green" : "grey" },
               ]}
             />
             <View style={styles.boxCont}>
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 3 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 3 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -92,20 +92,20 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 3 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 3 ? "green" : "grey" },
               ]}
             />
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 4 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 4 ? "green" : "grey" },
               ]}
             />
             <View style={styles.boxCont}>
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 4 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 4 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -115,20 +115,20 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 4 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 4 ? "green" : "grey" },
               ]}
             />
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 5 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 5 ? "green" : "grey" },
               ]}
             />
             <View style={styles.boxCont}>
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 5 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 5 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -138,17 +138,17 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
           </>
         ) : status < 12 ? (
           <>
-            <View
+            {/* <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 6 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 6 ? "green" : "grey" },
               ]}
-            />
+            /> */}
             <View style={styles.boxCont}>
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 6 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 6 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -158,7 +158,7 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 6 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 6 ? "green" : "grey" },
               ]}
             />
             {status > 7 ? (
@@ -166,14 +166,14 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
                 <View
                   style={[
                     styles.line,
-                    { backgroundColor: status >= 8 ? '"#7de317"' : "grey" },
+                    { backgroundColor: status >= 8 ? "green" : "grey" },
                   ]}
                 />
                 <View style={styles.boxCont}>
                   <View
                     style={[
                       styles.box,
-                      { backgroundColor: status >= 8 ? '"#7de317"' : "grey" },
+                      { backgroundColor: status >= 8 ? "green" : "grey" },
                     ]}
                   >
                     <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -183,7 +183,7 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
                 <View
                   style={[
                     styles.line,
-                    { backgroundColor: status >= 8 ? '"#7de317"' : "grey" },
+                    { backgroundColor: status >= 8 ? "green" : "grey" },
                   ]}
                 />
               </>
@@ -192,7 +192,7 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
                 <View
                   style={[
                     styles.line,
-                    { backgroundColor: status >= 7 ? '"#7de317"' : "grey" },
+                    { backgroundColor: status >= 7 ? "green" : "grey" },
                   ]}
                 />
                 <View style={styles.boxCont}>
@@ -213,14 +213,14 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 9 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 9 ? "green" : "grey" },
               ]}
             />
             <View style={styles.boxCont}>
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 9 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 9 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -230,20 +230,20 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 9 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 9 ? "green" : "grey" },
               ]}
             />
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 10 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 10 ? "green" : "grey" },
               ]}
             />
             <View style={styles.boxCont}>
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 10 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 10 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -253,20 +253,20 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 10 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 10 ? "green" : "grey" },
               ]}
             />
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 11 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 11 ? "green" : "grey" },
               ]}
             />
             <View style={styles.boxCont}>
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 11 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 11 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -279,14 +279,14 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 13 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 13 ? "green" : "grey" },
               ]}
             />
             <View style={styles.boxCont}>
               <View
                 style={[
                   styles.box,
-                  { backgroundColor: status >= 13 ? '"#7de317"' : "grey" },
+                  { backgroundColor: status >= 13 ? "green" : "grey" },
                 ]}
               >
                 <Ionicons name="checkmark-sharp" size={13} color="white" />
@@ -296,7 +296,7 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 13 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 13 ? "green" : "grey" },
               ]}
             />
           </>
@@ -305,7 +305,7 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
             <View
               style={[
                 styles.line,
-                { backgroundColor: status >= 12 ? '"#7de317"' : "grey" },
+                { backgroundColor: status >= 12 ? "green" : "grey" },
               ]}
             />
             <View style={styles.boxCont}>
@@ -371,7 +371,6 @@ const styles = StyleSheet.create({
   box: {
     width: 20,
     height: 20,
-    backgroundColor: "grey",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
