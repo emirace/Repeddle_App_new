@@ -4,23 +4,23 @@ import {
   ActivityIndicator,
   Image,
   ImageBackground,
-} from "react-native"
-import React from "react"
-import homeStyles from "./homeStyles"
-import { TopSellers } from "../../types/user"
-import { TouchableOpacity } from "react-native-gesture-handler"
-import { Text, useTheme } from "react-native-paper"
-import { MainScreenNavigationProp } from "../../types/navigation/stack"
+} from "react-native";
+import React from "react";
+import homeStyles from "./homeStyles";
+import { TopSellers } from "../../types/user";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { Text, useTheme } from "react-native-paper";
+import { MainScreenNavigationProp } from "../../types/navigation/stack";
 
 type Props = {
-  isLoading?: boolean
-  error?: string
-  seller: TopSellers[]
-  navigation: MainScreenNavigationProp["navigation"]
-}
+  isLoading?: boolean;
+  error?: string;
+  seller: TopSellers[];
+  navigation: MainScreenNavigationProp["navigation"];
+};
 
 const TopSellersHome = ({ isLoading, seller, error, navigation }: Props) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return (
     <>
@@ -34,7 +34,7 @@ const TopSellersHome = ({ isLoading, seller, error, navigation }: Props) => {
         <ActivityIndicator size={"large"} color={colors.primary} />
       ) : error ? (
         <Text>{error}</Text>
-      ) : !seller.length ? (
+      ) : !seller?.length ? (
         <Text style={{ textAlign: "center" }}>No Seller Found</Text>
       ) : (
         // <Text>{seller.error}</Text>
@@ -54,15 +54,15 @@ const TopSellersHome = ({ isLoading, seller, error, navigation }: Props) => {
         </View>
       )}
     </>
-  )
-}
+  );
+};
 
 const RenderTopSeller = ({
   item,
   navigation,
 }: {
-  item: TopSellers
-  navigation: MainScreenNavigationProp["navigation"]
+  item: TopSellers;
+  navigation: MainScreenNavigationProp["navigation"];
 }) => (
   <TouchableOpacity
     onPress={() =>
@@ -87,6 +87,6 @@ const RenderTopSeller = ({
       <Text style={homeStyles.sellerName}>{item.username}</Text>
     </ImageBackground>
   </TouchableOpacity>
-)
+);
 
-export default TopSellersHome
+export default TopSellersHome;

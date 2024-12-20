@@ -3,23 +3,23 @@ import {
   TouchableOpacity,
   View,
   useWindowDimensions,
-} from "react-native"
-import React from "react"
-import CarouselItem from "react-native-reanimated-carousel"
-import { LinearGradient } from "expo-linear-gradient"
-import homeStyles from "./homeStyles"
+} from "react-native";
+import React from "react";
+import CarouselItem from "react-native-reanimated-carousel";
+import { LinearGradient } from "expo-linear-gradient";
+import homeStyles from "./homeStyles";
 import {
   MainScreenNavigationProp,
   RootStackParamList,
-} from "../../types/navigation/stack"
-import { Text, useTheme } from "react-native-paper"
+} from "../../types/navigation/stack";
+import { Text, useTheme } from "react-native-paper";
 
 const entries: {
-  title: string
-  subtitle: string
-  illustration: string
-  button: string
-  screen: keyof RootStackParamList
+  title: string;
+  subtitle: string;
+  illustration: string;
+  button: string;
+  screen: keyof RootStackParamList;
 }[] = [
   {
     title:
@@ -45,18 +45,18 @@ const entries: {
     button: "discover",
     screen: "Sell",
   },
-]
+];
 
-type Entry = typeof entries
+type Entry = typeof entries;
 
 const RenderItemSlider = ({
   item,
   navigation,
 }: {
-  item: Entry[number]
-  navigation: MainScreenNavigationProp["navigation"]
+  item: Entry[number];
+  navigation: MainScreenNavigationProp["navigation"];
 }) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return (
     <View style={homeStyles.item}>
@@ -86,17 +86,17 @@ const RenderItemSlider = ({
         </View>
       </LinearGradient>
     </View>
-  )
-}
+  );
+};
 
-type Props = { navigation: MainScreenNavigationProp["navigation"] }
+type Props = { navigation: MainScreenNavigationProp["navigation"] };
 
 const Carousel = ({ navigation }: Props) => {
-  const { width } = useWindowDimensions()
+  const { width } = useWindowDimensions();
 
   return (
     <View>
-      <CarouselItem
+      {/* <CarouselItem
         loop
         width={width}
         height={width * 0.8}
@@ -111,9 +111,9 @@ const Carousel = ({ navigation }: Props) => {
           parallaxScrollingScale: 0.9,
           parallaxScrollingOffset: 50,
         }}
-      />
+      /> */}
     </View>
-  )
-}
+  );
+};
 
-export default Carousel
+export default Carousel;
