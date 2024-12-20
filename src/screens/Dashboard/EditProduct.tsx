@@ -34,6 +34,7 @@ import * as ImagePicker from "expo-image-picker"
 import Loader from "../../components/ui/Loader"
 import { baseURL } from "../../services/api"
 import useToastNotification from "../../hooks/useToastNotification"
+import CartIcon from "../../components/ui/cartIcon"
 
 type Props = EditProductNavigationProp
 
@@ -408,10 +409,16 @@ const EditProduct = ({ navigation, route }: Props) => {
           onPress={() => navigation.goBack()}
         />
         <Appbar.Content titleStyle={{ color: "white" }} title="Edit Product" />
-        <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.push("Cart")}
-          iconColor="white"
+        <Appbar.Content
+          style={{ flex: 0 }}
+          title={
+            <View>
+              <CartIcon
+                iconColor="white"
+                onPress={() => navigation.push("Cart")}
+              />
+            </View>
+          }
         />
       </Appbar.Header>
       {loading ? (

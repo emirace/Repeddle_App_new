@@ -1,25 +1,28 @@
-import { Alert, Pressable, StyleSheet, View } from "react-native"
+import { Pressable, StyleSheet, View } from "react-native"
 import React, { useEffect, useState } from "react"
-import { Appbar, Text, useTheme } from "react-native-paper"
+import { Appbar, Portal, Text, useTheme } from "react-native-paper"
 import { FlatList } from "react-native-gesture-handler"
 import useAuth from "../../hooks/useAuth"
-import ProductItem from "../../components/ProductItem"
-import { IProduct } from "../../types/product"
 import { WishlistNavigationProp } from "../../types/navigation/stack"
 import { Wishlist as WishlistType } from "../../types/user"
 import Loader from "../../components/ui/Loader"
 import useToastNotification from "../../hooks/useToastNotification"
+import WishlistItem from "../../components/WishlistItem"
+import CartIcon from "../../components/ui/cartIcon"
 
 type Props = WishlistNavigationProp
-const numColumns = 2
 
 const Wishlist = ({ navigation }: Props) => {
   const { colors } = useTheme()
   const { addNotification } = useToastNotification()
-  const { removeFromWishlist, user, error, getWishlist } = useAuth()
+  const { error, getWishlist } = useAuth()
 
   const [wishlist, setWishlist] = useState<WishlistType[]>([])
   const [loading, setLoading] = useState(false)
+
+  const removeWish = (id: string) => {
+    setWishlist((prev) => prev.filter((val) => val._id !== id))
+  }
 
   useEffect(() => {
     const getList = async () => {
@@ -34,90 +37,71 @@ const Wishlist = ({ navigation }: Props) => {
     getList()
   }, [])
 
-  const formatData = (data: IProduct[]) => {
-    const totalRows = Math.floor(data.length / numColumns)
-    let totalLastRow = data.length - totalRows * numColumns
-    if (totalLastRow !== 0 && totalLastRow !== numColumns) {
-      const empty = { ...data[0], empty: true }
-      data.push(empty)
-    }
-    return data
-  }
-
   return (
-    <View style={styles.container}>
-      <Appbar.Header
-        mode="small"
-        style={{
-          justifyContent: "space-between",
-          backgroundColor: colors.primary,
-        }}
-      >
-        <Appbar.BackAction
-          iconColor="white"
-          onPress={() => navigation.goBack()}
-        />
-        <Appbar.Content titleStyle={{ color: "white" }} title="Wishlist" />
-        <Appbar.Action
-          icon="cart-outline"
-          iconColor="white"
-          onPress={() => navigation.push("Cart")}
-        />
-      </Appbar.Header>
-      {loading && <Loader />}
-      {!loading &&
-        (wishlist.length > 0 ? (
-          <View style={styles.cartList}>
-            <FlatList
-              data={formatData(wishlist)}
-              renderItem={({ item }) => (
-                <RenderItem item={item} navigation={navigation} />
-              )}
-              keyExtractor={(item) => item._id}
-              numColumns={numColumns}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        ) : (
-          <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "row",
-              marginTop: 20,
-            }}
-          >
-            <Text style={{ textAlign: "center" }}>No item in Wishlist 😍 </Text>
-
-            <Pressable onPress={() => navigation.push("Main")}>
-              <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
-                Go Shopping
+    <Portal.Host>
+      <View style={styles.container}>
+        <Appbar.Header
+          mode="small"
+          style={{
+            justifyContent: "space-between",
+            backgroundColor: colors.primary,
+          }}
+        >
+          <Appbar.BackAction
+            iconColor="white"
+            onPress={() => navigation.goBack()}
+          />
+          <Appbar.Content titleStyle={{ color: "white" }} title="Wishlist" />
+          <Appbar.Content
+            style={{ flex: 0 }}
+            title={
+              <View>
+                <CartIcon
+                  iconColor="white"
+                  onPress={() => navigation.push("Cart")}
+                />
+              </View>
+            }
+          />
+        </Appbar.Header>
+        {loading && <Loader />}
+        {!loading &&
+          (wishlist.length > 0 ? (
+            <View style={styles.cartList}>
+              <FlatList
+                data={wishlist}
+                renderItem={({ item }) => (
+                  <WishlistItem
+                    removeWish={removeWish}
+                    item={item}
+                    navigation={navigation}
+                  />
+                )}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+          ) : (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "row",
+                marginTop: 20,
+              }}
+            >
+              <Text style={{ textAlign: "center" }}>
+                No item in Wishlist 😍{" "}
               </Text>
-            </Pressable>
-          </View>
-        ))}
-    </View>
-  )
-}
 
-const RenderItem = ({
-  item,
-  navigation,
-}: {
-  item: IProduct & { empty?: boolean }
-  navigation: WishlistNavigationProp["navigation"]
-}) => {
-  let { itemStyles, invisible } = styles
-
-  if (item.empty) return <View style={[itemStyles, invisible]}></View>
-
-  return (
-    <View style={itemStyles}>
-      <ProductItem
-        navigate={(slug: string) => navigation.push("Product", { slug })}
-        product={item}
-      />
-    </View>
+              <Pressable onPress={() => navigation.push("Main")}>
+                <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
+                  Go Shopping
+                </Text>
+              </Pressable>
+            </View>
+          ))}
+      </View>
+    </Portal.Host>
   )
 }
 
@@ -128,13 +112,4 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cartList: { padding: 10 },
-  itemStyles: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    margin: 10,
-    height: 300,
-    borderRadius: 15,
-  },
-  invisible: { backgroundColor: "transparent" },
 })

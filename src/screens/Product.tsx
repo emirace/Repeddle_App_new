@@ -205,17 +205,21 @@ const Product = ({ navigation, route }: Props) => {
     const quantity = existItem ? existItem.quantity + 1 : 1
 
     if (!selectedSize && product.sizes.length > 0) {
-      Alert.alert("Select Size")
+      addNotification({ message: "Select Size", error: true })
       return
     }
 
     if (user && product.seller._id === user._id) {
-      Alert.alert("You can't buy your product")
+      addNotification({ message: "You can't buy your product", error: true })
+      return
     }
 
     const data = await fetchProductBySlug(product.slug)
     if (!data?.countInStock || data?.countInStock < quantity) {
-      Alert.alert("Sorry. Product is out of stock")
+      addNotification({
+        message: "Sorry. Product is out of stock",
+        error: true,
+      })
       return
     }
 

@@ -12,6 +12,7 @@ import { Appbar, useTheme } from "react-native-paper"
 import ImageViewer from "react-native-image-zoom-viewer"
 import { Ionicons } from "@expo/vector-icons"
 import { SizeChartNavigationProp } from "../types/navigation/stack"
+import CartIcon from "../components/ui/cartIcon"
 
 type Props = SizeChartNavigationProp
 
@@ -92,10 +93,16 @@ const SizeChart = ({ navigation }: Props) => {
           onPress={() => navigation.goBack()}
         />
         <Appbar.Content title="Size Chart" titleStyle={{ color: "white" }} />
-        <Appbar.Action
-          icon="cart-outline"
-          onPress={() => navigation.push("Cart")}
-          iconColor="white"
+        <Appbar.Content
+          style={{ flex: 0 }}
+          title={
+            <View>
+              <CartIcon
+                iconColor="white"
+                onPress={() => navigation.push("Cart")}
+              />
+            </View>
+          }
         />
       </Appbar.Header>
 
