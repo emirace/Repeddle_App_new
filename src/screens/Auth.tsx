@@ -317,7 +317,7 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={0}
-        snapPoints={["50%"]}
+        snapPoints={["80%"]}
         backgroundStyle={{
           backgroundColor: colors.elevation.level1,
         }}
