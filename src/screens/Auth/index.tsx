@@ -1,33 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   ImageBackground,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
   Dimensions,
   Image,
-  StatusBar,
   Platform,
   ImageSourcePropType,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import {
-  ActivityIndicator,
-  Button,
-  IconButton,
-  List,
-  Text,
-  useTheme,
-} from "react-native-paper";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import CustomBackdrop from "../../components/CustomBackdrop";
+import { Button, IconButton, Text, useTheme } from "react-native-paper";
 import { AuthNavigationProp } from "../../types/navigation/stack";
 import useAuth from "../../hooks/useAuth";
-import ForgetPassword from "../../components/auth/ForgetPassword";
-import Login from "../../components/auth/Login";
-import SignUp from "../../components/auth/Signup";
-import Step from "../../components/auth/Signup/step";
 
 interface OnboardingItem {
   id: string;
@@ -73,102 +58,12 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
   const { colors, dark } = useTheme();
   const { loading, user } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [email, setEmail] = useState("");
-
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const bottomSheetModalRef2 = useRef<BottomSheetModal>(null);
-  const bottomSheetModalRef3 = useRef<BottomSheetModal>(null);
-  const bottomSheetModalRef4 = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
     if (user) {
       navigation.replace("Main");
     }
   }, [user]);
-
-  const openBottomSheet = () => {
-    if (bottomSheetModalRef.current) {
-      bottomSheetModalRef.current.present();
-    }
-  };
-
-  const openBottomSheet2 = () => {
-    if (bottomSheetModalRef2.current) {
-      bottomSheetModalRef2.current.present();
-    }
-  };
-
-  const openBottomSheet23 = () => {
-    if (bottomSheetModalRef3.current) {
-      bottomSheetModalRef3.current.present();
-    }
-  };
-
-  const openBottomSheet4 = () => {
-    if (bottomSheetModalRef4.current) {
-      bottomSheetModalRef4.current.present();
-    }
-  };
-
-  const gotoLogin = () => {
-    if (bottomSheetModalRef2.current) {
-      bottomSheetModalRef2.current.dismiss();
-    }
-
-    if (bottomSheetModalRef3.current) {
-      bottomSheetModalRef3.current.dismiss();
-    }
-    if (bottomSheetModalRef4.current) {
-      bottomSheetModalRef4.current.dismiss();
-    }
-    openBottomSheet();
-  };
-
-  const gotoSignUp = () => {
-    if (bottomSheetModalRef.current) {
-      bottomSheetModalRef.current.dismiss();
-    }
-
-    if (bottomSheetModalRef3.current) {
-      bottomSheetModalRef3.current.dismiss();
-    }
-    if (bottomSheetModalRef4.current) {
-      bottomSheetModalRef4.current.dismiss();
-    }
-    openBottomSheet2();
-  };
-
-  const gotoForgetPassword = () => {
-    if (bottomSheetModalRef2.current) {
-      bottomSheetModalRef2.current.dismiss();
-    }
-
-    if (bottomSheetModalRef.current) {
-      bottomSheetModalRef.current.dismiss();
-    }
-
-    if (bottomSheetModalRef4.current) {
-      bottomSheetModalRef4.current.dismiss();
-    }
-
-    openBottomSheet23();
-  };
-
-  const gotoToken = () => {
-    if (bottomSheetModalRef2.current) {
-      bottomSheetModalRef2.current.dismiss();
-    }
-
-    if (bottomSheetModalRef.current) {
-      bottomSheetModalRef.current.dismiss();
-    }
-
-    if (bottomSheetModalRef3.current) {
-      bottomSheetModalRef3.current.dismiss();
-    }
-
-    openBottomSheet4();
-  };
 
   if (loading) {
     return (
@@ -292,7 +187,7 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
             I don't have an account{" "}
             <Text
               style={{ color: colors.primary, fontWeight: "600" }}
-              onPress={openBottomSheet2}
+              onPress={() => navigation.push("SignUp")}
             >
               Sign up
             </Text>
@@ -313,60 +208,6 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
           </View>
         </View>
       </View>
-
-      <BottomSheetModal
-        ref={bottomSheetModalRef2}
-        index={0}
-        snapPoints={["50%"]}
-        backgroundStyle={{
-          backgroundColor: colors.elevation.level1,
-        }}
-        // style={{ ...tabBarShadowStyle }}
-        handleIndicatorStyle={{
-          backgroundColor: colors.primary,
-        }}
-        backdropComponent={(props) => <CustomBackdrop {...props} />}
-      >
-        <SignUp
-          gotoLogin={gotoLogin}
-          gotoToken={gotoToken}
-          email={email}
-          setEmail={setEmail}
-        />
-      </BottomSheetModal>
-
-      <BottomSheetModal
-        ref={bottomSheetModalRef3}
-        index={0}
-        snapPoints={["50%"]}
-        backgroundStyle={{
-          backgroundColor: colors.elevation.level1,
-        }}
-        // style={{ ...tabBarShadowStyle }}
-        handleIndicatorStyle={{
-          backgroundColor: colors.primary,
-        }}
-        backdropComponent={(props) => <CustomBackdrop {...props} />}
-      >
-        <ForgetPassword gotoLogin={gotoLogin} />
-      </BottomSheetModal>
-
-      <BottomSheetModal
-        ref={bottomSheetModalRef4}
-        index={0}
-        snapPoints={["100%"]}
-        backgroundStyle={{
-          backgroundColor: colors.background,
-        }}
-        enablePanDownToClose={false}
-        handleComponent={null}
-        handleIndicatorStyle={{
-          backgroundColor: colors.primary,
-        }}
-        backdropComponent={(props) => <CustomBackdrop {...props} />}
-      >
-        <Step gotoSignUp={gotoSignUp} gotoLogin={gotoLogin} email={email} />
-      </BottomSheetModal>
     </View>
   );
 };
