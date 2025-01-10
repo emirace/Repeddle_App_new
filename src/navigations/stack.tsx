@@ -1,35 +1,36 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { RootStackParamList } from "../types/navigation/stack"
-import MainBottomNav from "./bottom"
-import Sell from "../screens/Sell"
-import Search from "../screens/Search"
-import Product from "../screens/Product"
-import Chat from "../screens/chat/Chat"
-import ProfileSettings from "../screens/Dashboard/ProfileSettings"
-import ProductList from "../screens/Dashboard/ProductList"
-import OrderList from "../screens/Dashboard/OrderList"
-import EditProduct from "../screens/Dashboard/EditProduct"
-import OrderDetails from "../screens/Dashboard/OrderDetails"
-import BuyersProtection from "../screens/BuyersProtection"
-import SizeChart from "../screens/SizeChart"
-import Cart from "../screens/Cart"
-import Checkout from "../screens/Checkout"
-import PaymentMethod from "../screens/PaymentMethod"
-import SellerReview from "../screens/SellerReview"
-import Wishlist from "../screens/Dashboard/Wishlist"
-import ReturnDetail from "../screens/Dashboard/ReturnDetail"
-import ReturnForm from "../screens/ReturnForm"
-import Return from "../screens/Dashboard/Return"
-import Transaction from "../screens/Dashboard/Transaction"
-import TransactionDetail from "../screens/Dashboard/TransactionDetail"
-import Wallet from "../screens/wallet/Fund"
-import Fund from "../screens/wallet/Fund"
-import Withdraw from "../screens/wallet/Withdraw"
-import Auth from "../screens/Auth"
-import MyAccount from "../screens/profile/MyAccount"
-import Appearance from "../screens/profile/Appearance"
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../types/navigation/stack";
+import MainBottomNav from "./bottom";
+import Sell from "../screens/Sell";
+import Search from "../screens/Search";
+import Product from "../screens/Product";
+import Chat from "../screens/chat/Chat";
+import ProfileSettings from "../screens/Dashboard/ProfileSettings";
+import ProductList from "../screens/Dashboard/ProductList";
+import OrderList from "../screens/Dashboard/OrderList";
+import EditProduct from "../screens/Dashboard/EditProduct";
+import OrderDetails from "../screens/Dashboard/OrderDetails";
+import BuyersProtection from "../screens/BuyersProtection";
+import SizeChart from "../screens/SizeChart";
+import Cart from "../screens/Cart";
+import Checkout from "../screens/Checkout";
+import PaymentMethod from "../screens/PaymentMethod";
+import SellerReview from "../screens/SellerReview";
+import Wishlist from "../screens/Dashboard/Wishlist";
+import ReturnDetail from "../screens/Dashboard/ReturnDetail";
+import ReturnForm from "../screens/ReturnForm";
+import Return from "../screens/Dashboard/Return";
+import Transaction from "../screens/Dashboard/Transaction";
+import TransactionDetail from "../screens/Dashboard/TransactionDetail";
+import Wallet from "../screens/wallet/Fund";
+import Fund from "../screens/wallet/Fund";
+import Withdraw from "../screens/wallet/Withdraw";
+import Auth from "../screens/Auth";
+import MyAccount from "../screens/profile/MyAccount";
+import Appearance from "../screens/profile/Appearance";
+import Login from "../screens/Auth/Login";
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function MainStackNav() {
   return (
@@ -42,6 +43,11 @@ function MainStackNav() {
       <Stack.Screen
         name="Auth"
         component={Auth}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -173,7 +179,7 @@ function MainStackNav() {
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
-  )
+  );
 }
 
-export default MainStackNav
+export default MainStackNav;
