@@ -6,6 +6,7 @@ import { ITransaction } from "../transactions";
 export type RootStackParamList = {
   Auth: undefined;
   Login: undefined;
+  ForgetPassword: undefined;
   Main: undefined;
   Appearance: undefined;
   Search: { filter?: FilterOptions; query?: string };
@@ -51,6 +52,11 @@ export type AuthNavigationProp = NativeStackScreenProps<
 export type LoginNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Login"
+>;
+
+export type ForgetPasswordNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "ForgetPassword"
 >;
 
 export type SearchScreenNavigationProp = NativeStackScreenProps<

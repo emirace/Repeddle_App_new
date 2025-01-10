@@ -29,6 +29,7 @@ import Auth from "../screens/Auth";
 import MyAccount from "../screens/profile/MyAccount";
 import Appearance from "../screens/profile/Appearance";
 import Login from "../screens/Auth/Login";
+import ForgetPassword from "../screens/Auth/ForgetPassword";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -48,6 +49,11 @@ function MainStackNav() {
       <Stack.Screen
         name="Login"
         component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ForgetPassword"
+        component={ForgetPassword}
         options={{ headerShown: false }}
       />
       <Stack.Screen

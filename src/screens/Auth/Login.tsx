@@ -42,7 +42,7 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation }) => {
   };
 
   const handleForgotPassword = () => {
-    // gotoForgetPassword();
+    navigation.push("ForgetPassword");
   };
 
   const isValidEmail = (email: string): boolean => {
