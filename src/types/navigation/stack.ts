@@ -6,6 +6,8 @@ import { ITransaction } from "../transactions";
 export type RootStackParamList = {
   Auth: undefined;
   Login: undefined;
+  SignUp: undefined;
+  Step: { email: string };
   ForgetPassword: undefined;
   Main: undefined;
   Appearance: undefined;
@@ -52,6 +54,15 @@ export type AuthNavigationProp = NativeStackScreenProps<
 export type LoginNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Login"
+>;
+export type SignUpNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "SignUp"
+>;
+
+export type StepNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Step"
 >;
 
 export type ForgetPasswordNavigationProp = NativeStackScreenProps<

@@ -29,6 +29,8 @@ import Auth from "../screens/Auth";
 import MyAccount from "../screens/profile/MyAccount";
 import Appearance from "../screens/profile/Appearance";
 import Login from "../screens/Auth/Login";
+import SignUp from "../screens/Auth/Signup";
+import Step from "../screens/Auth/Signup/step";
 import ForgetPassword from "../screens/Auth/ForgetPassword";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -49,6 +51,16 @@ function MainStackNav() {
       <Stack.Screen
         name="Login"
         component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Step"
+        component={Step}
         options={{ headerShown: false }}
       />
       <Stack.Screen
