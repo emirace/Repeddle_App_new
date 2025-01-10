@@ -21,13 +21,13 @@ import {
   useTheme,
 } from "react-native-paper";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import CustomBackdrop from "../components/CustomBackdrop";
-import { AuthNavigationProp } from "../types/navigation/stack";
-import useAuth from "../hooks/useAuth";
-import ForgetPassword from "../components/auth/ForgetPassword";
-import Login from "../components/auth/Login";
-import SignUp from "../components/auth/Signup";
-import Step from "../components/auth/Signup/step";
+import CustomBackdrop from "../../components/CustomBackdrop";
+import { AuthNavigationProp } from "../../types/navigation/stack";
+import useAuth from "../../hooks/useAuth";
+import ForgetPassword from "../../components/auth/ForgetPassword";
+import Login from "../../components/auth/Login";
+import SignUp from "../../components/auth/Signup";
+import Step from "../../components/auth/Signup/step";
 
 interface OnboardingItem {
   id: string;
@@ -39,28 +39,28 @@ interface OnboardingItem {
 const data: OnboardingItem[] = [
   {
     id: "1",
-    backgroundImage: require("../../assets/images/onboarding1.jpg"),
+    backgroundImage: require("../../../assets/images/onboarding1.jpg"),
     header: "Join the Fashion Revolution",
     description:
       "Discover the power of pre-loved fashion. Shop sustainably, save money, and make a positive impact on the environment. Together, we can reduce fashion waste in Africa.",
   },
   {
     id: "2",
-    backgroundImage: require("../../assets/images/onboarding2.jpg"),
+    backgroundImage: require("../../../assets/images/onboarding2.jpg"),
     header: "Thrift with Purpose",
     description:
       "Embrace a new way of shopping. Our marketplace connects you with like-minded individuals who care about style and sustainability. Find unique pieces and contribute to a greener planet",
   },
   {
     id: "3",
-    backgroundImage: require("../../assets/images/onboarding3.jpg"),
+    backgroundImage: require("../../../assets/images/onboarding3.jpg"),
     header: "Sustainable Style, Made Simple",
     description:
       "Navigate a curated collection of pre-loved fashion items. Our user-friendly platform makes it easy to find and purchase quality pieces, helping you stay stylish while supporting the environment",
   },
   {
     id: "4",
-    backgroundImage: require("../../assets/images/onboarding4.jpg"),
+    backgroundImage: require("../../../assets/images/onboarding4.jpg"),
     header: "Fashion for a Better Future",
     description:
       "Join a community dedicated to conscious consumption. By choosing pre-loved items, you're not just saving money—you're also playing a part in solving Africa’s fashion waste crisis. Let's build a sustainable future together.",
@@ -283,7 +283,7 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
             marginBottom: 20,
             borderRadius: 5,
           }}
-          onPress={openBottomSheet}
+          onPress={() => navigation.push("Login")}
         >
           Sign in
         </Button>
@@ -313,26 +313,6 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
           </View>
         </View>
       </View>
-
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        index={0}
-        snapPoints={["50%"]}
-        backgroundStyle={{
-          backgroundColor: colors.elevation.level1,
-        }}
-        // style={{ ...tabBarShadowStyle }}
-        handleIndicatorStyle={{
-          backgroundColor: colors.primary,
-        }}
-        backdropComponent={(props) => <CustomBackdrop {...props} />}
-      >
-        <Login
-          navigation={navigation}
-          route={route}
-          gotoForgetPassword={gotoForgetPassword}
-        />
-      </BottomSheetModal>
 
       <BottomSheetModal
         ref={bottomSheetModalRef2}

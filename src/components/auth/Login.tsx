@@ -85,8 +85,8 @@ const Login: React.FC<
         style={styles.input}
         autoCapitalize="none"
         keyboardType="email-address"
-        onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
+        // onFocus={handleOnFocus}
+        // onBlur={handleOnBlur}
       />
       <TextInput
         label="Password"
@@ -103,8 +103,8 @@ const Login: React.FC<
         }
         style={styles.input}
         secureTextEntry={!showPassword}
-        onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
+        // onFocus={handleOnFocus}
+        // onBlur={handleOnBlur}
       />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <Button
