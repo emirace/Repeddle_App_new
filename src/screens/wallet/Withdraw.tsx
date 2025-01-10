@@ -2,9 +2,13 @@ import * as React from "react"
 import { View, StyleSheet, Alert } from "react-native"
 import { Text, TextInput, Button, Card, Appbar } from "react-native-paper"
 import { WithdrawNavigationProp } from "../../types/navigation/stack"
+import useWallet from "../../hooks/useWallet"
+import useToastNotification from "../../hooks/useToastNotification"
 
 const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
   const [amount, setAmount] = React.useState("")
+  const { withdrawWalletFlutter, loading, fetchWallet } = useWallet()
+  const { addNotification } = useToastNotification()
 
   // Example user account information
   const accountInfo = {
@@ -13,16 +17,20 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
     accountName: "John Doe",
   }
 
-  const handleWithdraw = () => {
+  const handleWithdraw = async () => {
     if (amount === "" || isNaN(parseFloat(amount))) {
       Alert.alert("Invalid Amount", "Please enter a valid amount.")
       return
     }
-    // Handle the withdrawal logic here
-    Alert.alert(
-      "Success",
-      `You have withdrawn ₦${amount} to ${accountInfo.accountName}.`
-    )
+    const { error, result } = await withdrawWalletFlutter(parseInt(amount))
+
+    if (!error) {
+      addNotification({ message: result, error: true })
+      await fetchWallet()
+      setAmount("")
+    } else {
+      addNotification({ message: result, error: true })
+    }
   }
 
   return (
