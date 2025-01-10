@@ -63,6 +63,7 @@ const VideoPickerComponent = ({ setShowVideoModal }: Props) => {
     // Calculate the current currentDistance between the start and end sliders
     const currentDistance = Math.abs(endValue - startValue)
     if (currentDistance > maxDistance) {
+      // TODO: check
       if (startValue !== sliderValues[0]) {
         setSliderValues([startValue, startValue + maxDistance])
         multiSliderRef.current.state.positionTwo =

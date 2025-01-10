@@ -68,13 +68,14 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
     const file = photo as File
     const bodyFormData = new FormData()
     bodyFormData.append("file", file)
-    // setLoadingUpload(true)
+    setLoadingUpload(true)
     try {
       const res = await uploadImage(file)
       setImage(res)
     } catch (error) {
       addNotification({ message: error as string, error: true })
     }
+    setLoadingUpload(false)
   }
 
   const submitCommentHandler = async () => {
@@ -84,7 +85,10 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
     }
     setLoadingCreateReview(true)
 
-    const res = await commentProduct(product._id, newComment)
+    const res = await commentProduct(product._id, {
+      comment: newComment,
+      image,
+    })
 
     if (res) {
       const newProd = product
@@ -97,8 +101,6 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
 
     setLoadingCreateReview(false)
   }
-
-  console.log(product.comments)
 
   return (
     <View style={styles.container}>

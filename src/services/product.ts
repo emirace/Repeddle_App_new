@@ -19,8 +19,6 @@ export const fetchProductsService = async (
       url = url + `?${params}`
     }
 
-    console.log(url)
-
     const resp: { data: ProductWithPagination; status: boolean } =
       await api.get(url)
 
@@ -144,6 +142,32 @@ export const fetchProductByIdService = async (
   }
 }
 
+export const makeUnavailableService = async (
+  id: string
+): Promise<{ product: IProduct; message?: string }> => {
+  try {
+    const data: {
+      status: boolean
+      product: IProduct
+      message?: string
+    } = await api.patch(`/products/${id}/unavailable`)
+
+    // if (!data.status) {
+    //   // Handle Fetch product error, e.g., display an error message to the user
+    //   throw new Error("Fetch product failed: " + getBackendErrorMessage(data))
+    // }
+
+    return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Fetch product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
 export const updateProductService = async (
   id: string,
   product: ICreateProduct
@@ -154,10 +178,10 @@ export const updateProductService = async (
       product: IProduct
     } = await api.put(`/products/${id}`, product)
 
-    if (!data.status) {
-      // Handle Update product error, e.g., display an error message to the user
-      throw new Error("Update product failed: " + getBackendErrorMessage(data))
-    }
+    // if (!data.status) {
+    //   // Handle Update product error, e.g., display an error message to the user
+    //   throw new Error("Update product failed: " + getBackendErrorMessage(data))
+    // }
 
     return data.product
   } catch (error) {
@@ -238,11 +262,14 @@ export const unlikeProductService = async (id: string) => {
   }
 }
 
-export const commentProductService = async (id: string, comment: string) => {
+export const commentProductService = async (
+  id: string,
+  comment: { comment: string; image?: string }
+) => {
   try {
     const data: { comment: IComment } = await api.post(
       `/products/${id}/comments`,
-      { comment }
+      comment
     )
 
     // if (!data.status) {
@@ -317,7 +344,7 @@ export const replyProductCommentService = async (
   comment: string
 ) => {
   try {
-    const data: { message: string; comment: ICommentReply } = await api.post(
+    const data: { message: string; comment: IComment } = await api.post(
       `/products/${id}/comments/${commentId}/reply`,
       { comment }
     )
@@ -411,6 +438,59 @@ export const createProductReviewService = async (
     // }
 
     return data
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Create review product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const addProductViewCountService = async (
+  id: string,
+  hashed: string
+) => {
+  try {
+    await api.post(`/products/${id}/view`, { hashed })
+
+    // if (!data.status) {
+    //   // Handle Create review product error, e.g., display an error message to the user
+    //   throw new Error(
+    //     "Create review product failed: " + getBackendErrorMessage(data)
+    //   )
+    // }
+
+    return true
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Create review product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
+export const addProductShareCountService = async (
+  id: string,
+  userId: string
+) => {
+  try {
+    await api.post(`/products/${id}/view`, {
+      hashed: Math.random().toString().slice(2),
+      user: userId,
+    })
+
+    // if (!data.status) {
+    //   // Handle Create review product error, e.g., display an error message to the user
+    //   throw new Error(
+    //     "Create review product failed: " + getBackendErrorMessage(data)
+    //   )
+    // }
+
+    return true
   } catch (error) {
     // Handle network errors or other exceptions
     // You can log the error or perform other error-handling actions

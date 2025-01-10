@@ -1,5 +1,4 @@
 import {
-  Alert,
   Animated,
   Dimensions,
   FlatList,
@@ -27,12 +26,7 @@ import ProductItem from "../components/ProductItem"
 import { ProductNavigationProp } from "../types/navigation/stack"
 import useProducts from "../hooks/useProducts"
 import useAuth from "../hooks/useAuth"
-import {
-  AntDesign,
-  FontAwesome,
-  FontAwesome5,
-  Ionicons,
-} from "@expo/vector-icons"
+import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons"
 import RebundlePoster from "../components/RebundlePoster"
 import moment from "moment"
 import {
@@ -43,7 +37,6 @@ import {
   region,
 } from "../utils/common"
 import Rating from "../components/Rating"
-import MyButton from "../components/MyButton"
 import ImageCarousel from "../components/ImageCarousel"
 import RebundleLabel from "../components/RebundleLabel"
 import CollapsibleSection from "../components/CollapsibleSection"
@@ -58,6 +51,7 @@ import * as Sharing from "expo-sharing"
 import Loader from "../components/ui/Loader"
 import CartIcon from "../components/ui/cartIcon"
 import useToastNotification from "../hooks/useToastNotification"
+import useMessage from "../hooks/useMessage"
 
 type Props = ProductNavigationProp
 
@@ -65,6 +59,7 @@ const Product = ({ navigation, route }: Props) => {
   const { colors } = useTheme()
   const { fetchProductBySlug, error, likeProduct, unlikeProduct } =
     useProducts()
+  const { createMessage, error: messageError } = useMessage()
   const { cart, addToCart } = useCart()
   const { getRecently, storeRecently } = useStore()
   const {
@@ -88,6 +83,7 @@ const Product = ({ navigation, route }: Props) => {
   const [liking, setLiking] = useState(false)
   const [addToWish, setAddToWish] = useState(false)
   const [adding, setAdding] = useState(false)
+  const [messageLoading, setMessageLoading] = useState(false)
 
   useEffect(() => {
     const fetchProd = async () => {
@@ -185,8 +181,7 @@ const Product = ({ navigation, route }: Props) => {
   }, [product?.costPrice, product?.sellingPrice])
 
   const sizeHandler = (item: string) => {
-    if (!product) return
-    const current = product.sizes.filter((s) => s.size === item)
+    const current = product?.sizes.filter((s) => s.size === item) ?? []
     if (current.length > 0) {
       setSize(`${item} ( ${current[0].quantity} left)`)
       setSelectSize(item)
@@ -206,12 +201,12 @@ const Product = ({ navigation, route }: Props) => {
 
     if (!selectedSize && product.sizes.length > 0) {
       addNotification({ message: "Select Size", error: true })
-      return
+      return setAdding(false)
     }
 
     if (user && product.seller._id === user._id) {
       addNotification({ message: "You can't buy your product", error: true })
-      return
+      return setAdding(false)
     }
 
     const data = await fetchProductBySlug(product.slug)
@@ -220,10 +215,9 @@ const Product = ({ navigation, route }: Props) => {
         message: "Sorry. Product is out of stock",
         error: true,
       })
-      return
+      return setAdding(false)
     }
 
-    console.log(quantity)
     addNotification({ message: "item added to cart" })
 
     addToCart({
@@ -281,7 +275,27 @@ const Product = ({ navigation, route }: Props) => {
   }
 
   // TODO:
-  const addConversation = async (id: string, id2: string) => {}
+  const addConversation = async () => {
+    if (!product?.seller._id || !user?._id) return
+
+    setMessageLoading(true)
+
+    try {
+      const convo = await createMessage({
+        participantId: product.seller._id,
+        type: "Chat",
+      })
+
+      navigation.push("Message", { id: convo._id })
+    } catch (error) {
+      addNotification({
+        message: messageError || (error as string),
+        error: true,
+      })
+    }
+
+    setMessageLoading(false)
+  }
 
   const saveItem = async () => {
     if (!product) return
@@ -598,16 +612,10 @@ const Product = ({ navigation, route }: Props) => {
                     </TouchableOpacity>
                     <Text>
                       {product.seller?.address?.state},
-                      {product.seller.region === "NGN"
-                        ? "Nigeria"
-                        : "South Africa"}
+                      {product.region === "NGN" ? "Nigeria" : "South Africa"}
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      addConversation(product.seller._id, product._id)
-                    }
-                  >
+                  <TouchableOpacity onPress={addConversation}>
                     <Ionicons
                       name="chatbubble-ellipses"
                       size={24}

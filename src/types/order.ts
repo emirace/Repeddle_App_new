@@ -19,7 +19,7 @@ export type OrderItem = {
   selectedSize: string
   selectedColor: string
   trackingNumber?: string
-  onHold?: boolean
+  isHold?: boolean
   deliveryOption: {
     fee: number
     method: string

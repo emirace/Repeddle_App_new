@@ -46,11 +46,18 @@ export type IPayment = {
 
 export type IWallet = {
   balance: number
-  currency: string
+  currency: "NGN" | "ZAR"
 }
 
 export type IFund = {
   amount: number
   transactionId: string
   paymentProvider: string
+}
+
+export type TransactionPagination = {
+  totalDocs: number
+  totalPages: number
+  currentPage: number
+  pageSize: number
 }

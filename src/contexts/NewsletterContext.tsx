@@ -5,6 +5,7 @@ import {
   createNewsLetterService,
   deleteNewsLetterService,
   fetchNewsletterService,
+  unsubscribeNewsLetterService,
 } from "../services/newsletter"
 
 type ContextType = {
@@ -16,6 +17,7 @@ type ContextType = {
   deleteNewsletter: (
     id: string
   ) => Promise<{ message?: string; success: boolean }>
+  unsubscribeNewsletter: () => Promise<{ message?: string; success: boolean }>
 }
 
 // Create newsletter context
@@ -91,10 +93,26 @@ export const NewsletterProvider = ({ children }: PropsWithChildren) => {
     }
   }
 
+  const unsubscribeNewsletter = async () => {
+    try {
+      setError("")
+      setLoading(true)
+      const data = await unsubscribeNewsLetterService()
+
+      setLoading(false)
+      return { message: data.message, success: true }
+    } catch (error) {
+      handleError(error as string)
+      setLoading(false)
+      return { message: error as string, success: false }
+    }
+  }
+
   return (
     <NewsletterContext.Provider
       value={{
         fetchNewsletter,
+        unsubscribeNewsletter,
         loading,
         error,
         createNewsletter,

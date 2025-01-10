@@ -1,10 +1,8 @@
-import { ITransaction } from "./../types/transactions"
+import { ITransaction, TransactionPagination } from "./../types/transactions"
 import { getBackendErrorMessage } from "../utils/error"
 import api from "./api"
 
-export const fetchTransactionsService = async (
-  params?: string
-): Promise<ITransaction[]> => {
+export const fetchTransactionsService = async (params?: string) => {
   try {
     let url = "/transactions"
 
@@ -12,8 +10,11 @@ export const fetchTransactionsService = async (
       url = url + `?${params}`
     }
 
-    const resp: { transactions: ITransaction[]; status: boolean } =
-      await api.get(url)
+    const resp: {
+      transactions: ITransaction[]
+      status: boolean
+      pagination: TransactionPagination
+    } = await api.get(url)
 
     if (!resp.status) {
       // Handle Fetch transactions error, e.g., display an error message to the user
@@ -22,7 +23,7 @@ export const fetchTransactionsService = async (
       )
     }
 
-    return resp.transactions
+    return resp
   } catch (error) {
     // Handle network errors or other exceptions
     // You can log the error or perform other error-handling actions
@@ -33,9 +34,7 @@ export const fetchTransactionsService = async (
   }
 }
 
-export const fetchUserTransactionsService = async (
-  params?: string
-): Promise<ITransaction[]> => {
+export const fetchUserTransactionsService = async (params?: string) => {
   try {
     let url = "/transactions/user"
 
@@ -43,8 +42,11 @@ export const fetchUserTransactionsService = async (
       url = url + `?${params}`
     }
 
-    const resp: { transactions: ITransaction[]; status: boolean } =
-      await api.get(url)
+    const resp: {
+      transactions: ITransaction[]
+      status: boolean
+      pagination: TransactionPagination
+    } = await api.get(url)
 
     if (!resp.status) {
       // Handle Fetch transactions error, e.g., display an error message to the user
@@ -53,7 +55,7 @@ export const fetchUserTransactionsService = async (
       )
     }
 
-    return resp.transactions
+    return resp
   } catch (error) {
     // Handle network errors or other exceptions
     // You can log the error or perform other error-handling actions
@@ -69,7 +71,7 @@ export const fetchTransactionByIdService = async (
 ): Promise<ITransaction> => {
   try {
     const resp: { transaction: ITransaction; status: boolean } = await api.get(
-      `/transactions/user/${id}`
+      `/transactions/${id}`
     )
 
     if (!resp.status) {

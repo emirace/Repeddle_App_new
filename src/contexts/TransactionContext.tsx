@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useState } from "react"
 import useAuth from "../hooks/useAuth"
-import { ITransaction } from "../types/transactions"
+import { ITransaction, TransactionPagination } from "../types/transactions"
 import {
   fetchTransactionByIdService,
   fetchTransactionsService,
@@ -9,6 +9,7 @@ import {
 
 type ContextType = {
   transactions: ITransaction[]
+  transactionsPagination: TransactionPagination
   loading: boolean
   error: string
   fetchTransactions: (params?: string) => Promise<boolean>
@@ -24,6 +25,13 @@ export const TransactionContext = createContext<ContextType | undefined>(
 export const TransactionProvider = ({ children }: PropsWithChildren) => {
   const { setAuthErrorModalOpen } = useAuth()
   const [transactions, setTransactions] = useState<ITransaction[]>([])
+  const [transactionsPagination, setTransactionsPagination] =
+    useState<TransactionPagination>({
+      currentPage: 0,
+      pageSize: 0,
+      totalDocs: 0,
+      totalPages: 0,
+    })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -47,7 +55,8 @@ export const TransactionProvider = ({ children }: PropsWithChildren) => {
       setError("")
       setLoading(true)
       const result = await fetchTransactionsService(params)
-      setTransactions(result)
+      setTransactions(result.transactions)
+      setTransactionsPagination(result.pagination)
       setLoading(false)
       return true
     } catch (error) {
@@ -63,7 +72,8 @@ export const TransactionProvider = ({ children }: PropsWithChildren) => {
       setError("")
       setLoading(true)
       const result = await fetchUserTransactionsService(val)
-      setTransactions(result)
+      setTransactions(result.transactions)
+      setTransactionsPagination(result.pagination)
       setLoading(false)
       return true
     } catch (error) {
@@ -90,6 +100,7 @@ export const TransactionProvider = ({ children }: PropsWithChildren) => {
         fetchTransactions,
         fetchUserTransactions,
         fetchTransactionById,
+        transactionsPagination,
         transactions,
         loading,
         error,

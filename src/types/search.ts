@@ -24,5 +24,5 @@ export type FilterOptions = {
 export type SearchOptionsKey = keyof SearchOptions
 
 export type SearchOptionsObject = {
-  [key in SearchOptionsKey]?: string | number
+  [key in SearchOptionsKey]?: string
 }

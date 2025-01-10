@@ -87,3 +87,33 @@ export const deleteNewsLetterService = async (
     throw getBackendErrorMessage(error)
   }
 }
+
+export const unsubscribeNewsLetterService = async (): Promise<{
+  status: boolean
+  message: string
+}> => {
+  try {
+    const data: { status: boolean; message: string } = await api.delete(
+      `/newsletters/unsubscribe`
+    )
+
+    if (!data.status) {
+      // Handle unsubscribe newsletter error, e.g., display an error message to the user
+      throw new Error(
+        "unsubscribe newsletter failed: " + getBackendErrorMessage(data)
+      )
+    }
+
+    return { status: true, message: data.message }
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error(
+      "Unsubscribe newsletter error:",
+      getBackendErrorMessage(error)
+    )
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}

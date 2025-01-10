@@ -5,12 +5,13 @@ import { FontAwesome } from "@expo/vector-icons"
 import Rating from "./Rating"
 import useAuth from "../hooks/useAuth"
 import moment from "moment"
-import { Review as ReviewType } from "../types/product"
+import { IReview as ReviewType } from "../types/product"
 
 type Props = {
   review: ReviewType
 }
 
+// TODO: review
 const Review = ({ review }: Props) => {
   const { user } = useAuth()
 
@@ -25,18 +26,18 @@ const Review = ({ review }: Props) => {
         <FontAwesome
           style={styles.icon}
           name={
-            review.like === "yes"
+            review.like
               ? "thumbs-up"
-              : review.like === "no"
-              ? "thumbs-down"
-              : "smile-o"
+              : // : review.like === "no"
+                // ? "thumbs-down"
+                "smile-o"
           }
           color={
-            review.like === "yes"
+            review.like
               ? "#eb9f40"
-              : review.like === "no"
-              ? "red"
-              : "grey"
+              : // : review.like === "no"
+                // ? "red"
+                "grey"
           }
           size={18}
         />
