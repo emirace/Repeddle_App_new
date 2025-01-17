@@ -31,7 +31,7 @@ import Appearance from "../screens/profile/Appearance";
 import Login from "../screens/Auth/Login";
 import SignUp from "../screens/Auth/Signup";
 import Step from "../screens/Auth/Signup/step";
-import ForgetPassword from "../screens/Auth/ForgetPassword";
+import ForgetPassword from "../screens/Auth/ForgetPassWord";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

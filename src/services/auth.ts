@@ -33,7 +33,10 @@ export async function forgetPasswordService(userData: {
 }): Promise<any> {
   try {
     console.log(userData, "body");
-    const data = await api.post("/users/forgot-password", userData);
+    const data = await api.post("/users/forgot-password", {
+      ...userData,
+      mode: "otp",
+    });
 
     if (!data.status) {
       const errorMessage = getBackendErrorMessage(data.data);
@@ -55,11 +58,12 @@ export async function forgetPasswordService(userData: {
 
 export async function verifyEmailService(tokenData: {
   token: string;
+  type: string;
   mode: string;
 }): Promise<any> {
   try {
     const data = await api.get(
-      `/users/verify-email/${tokenData.token}?mode=${tokenData.mode}`
+      `/users/verify-email/${tokenData.token}?mode=${tokenData.mode}&type=${tokenData.type}`
     );
     console.log(data);
 
@@ -90,7 +94,10 @@ export async function registerUserService(credentials: {
   phone: string;
 }): Promise<any> {
   try {
-    const data = await api.post("/users/register", credentials);
+    const data = await api.post("/users/register", {
+      ...credentials,
+      mode: "otp",
+    });
 
     if (!data.status) {
       const errorMessage = getBackendErrorMessage(data.data);
@@ -301,6 +308,7 @@ export async function resetUserPasswordService(
   try {
     const data = await api.post(`/users/reset-password/${token}`, {
       password,
+      mode: "otp",
     });
 
     if (!data.status) {

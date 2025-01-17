@@ -7,11 +7,10 @@ import {
   Text,
   useTheme,
 } from "react-native-paper";
-import useAuth from "../../../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 
 interface TokenComponentProps {
   onVerify: () => void;
-  back: () => void;
   email: string;
   setToken: (value: string) => void;
 }
@@ -19,10 +18,9 @@ interface TokenComponentProps {
 const Token: React.FC<TokenComponentProps> = ({
   onVerify,
   email,
-  back,
   setToken,
 }) => {
-  const { sendVerifyOtp, verifyEmail, error } = useAuth();
+  const { sendForgetPasswordEmail, verifyEmail, error } = useAuth();
   const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
   const [sendingOtp, setSendingOtp] = useState(false);
@@ -80,7 +78,7 @@ const Token: React.FC<TokenComponentProps> = ({
 
   const handleResend = async () => {
     setSendingOtp(true);
-    const result = await sendVerifyOtp({ email });
+    const result = await sendForgetPasswordEmail({ email });
     if (result) {
       setResendTimer(60);
     }
@@ -90,7 +88,7 @@ const Token: React.FC<TokenComponentProps> = ({
 
   const handleVerify = async () => {
     setLoading(true);
-    const result = await verifyEmail({ token: otp, type: "email" });
+    const result = await verifyEmail({ token: otp, type: "password" });
     if (result) {
       setToken(otp);
       onVerify();
@@ -100,15 +98,6 @@ const Token: React.FC<TokenComponentProps> = ({
 
   return (
     <View style={styles.container}>
-      <Appbar.Header>
-        <Appbar.BackAction
-          onPress={() => {
-            back();
-          }}
-          iconColor="white"
-        />
-        <Appbar.Content titleStyle={{ color: "white" }} title="Verify Token" />
-      </Appbar.Header>
       <View style={styles.content}>
         <View>
           <Text style={{ fontWeight: "600", fontSize: 17, marginBottom: 5 }}>

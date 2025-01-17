@@ -1,8 +1,15 @@
 // MainBottomNav.tsx
 import React, { useRef } from "react";
-import { StyleProp, View, ViewStyle, Platform } from "react-native";
+import {
+  StyleProp,
+  View,
+  ViewStyle,
+  Platform,
+  Pressable,
+  Text,
+} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Icon } from "react-native-paper";
+import { Icon, useTheme } from "react-native-paper";
 import { lightTheme } from "../constant/theme";
 import useCart from "../hooks/useCart";
 import { MainScreenNavigationProp } from "../types/navigation/stack";
@@ -26,14 +33,14 @@ const Tab = createBottomTabNavigator();
 const tabBarStyle: StyleProp<ViewStyle> = {
   elevation: 0,
   shadowOpacity: 0,
-  position: "absolute",
   borderTopWidth: 0,
-  bottom: 25,
-  left: 20,
-  right: 20,
   borderRadius: 20,
   height: 90,
-  paddingTop: Platform.OS === "ios" ? 30 : 0,
+  position: "absolute",
+  // height: 60,
+  backgroundColor: "transparent",
+  bottom: 0,
+  // paddingTop: Platform.OS === "ios" ? 30 : 0,
 };
 
 const tabBarShadowStyle: StyleProp<ViewStyle> = {
@@ -49,6 +56,31 @@ const tabBarBadgeStyle: StyleProp<ViewStyle> = {
   top: Platform.OS === "android" ? 10 : -10,
   right: -5,
   backgroundColor: lightTheme.colors.primary,
+};
+
+const CustomBottomTabBar2 = (props: any) => {
+  const { colors } = useTheme();
+
+  return (
+    <View style={{ position: "relative", flex: 1 }}>
+      <Pressable
+        onPress={props.onPress}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: Platform.OS === "ios" ? -50 : 0,
+          backgroundColor: colors.background,
+          borderTopWidth: 1,
+          borderTopColor: "#8a171920",
+          paddingBottom: Platform.OS === "ios" ? 30 : 0,
+        }}
+      >
+        {props.children}
+      </Pressable>
+    </View>
+  );
 };
 
 const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
@@ -95,7 +127,8 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
         initialRouteName="Home"
         screenOptions={{
           tabBarActiveTintColor: lightTheme.colors.primary,
-          tabBarStyle: { ...tabBarStyle, ...tabBarShadowStyle },
+          tabBarInactiveTintColor: lightTheme.colors.secondary,
+          tabBarStyle,
           tabBarShowLabel: false,
           tabBarBadgeStyle: tabBarBadgeStyle,
           headerShown: false,
@@ -125,7 +158,7 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
                       onPress={() => navigation.push("Sell")}
                     />
                   )
-                : undefined,
+                : (props) => <CustomBottomTabBar2 {...props} />,
             }}
           />
         ))}
