@@ -1,35 +1,35 @@
-import React, { useState } from "react"
-import Token from "./Token"
-import Password from "./Password"
-import AccountCreated from "./AccountCreated"
-import { StepNavigationProp } from "../../../../types/navigation/stack"
+import React, { useState } from "react";
+import Token from "./Token";
+import Password from "./Password";
+import AccountCreated from "./AccountCreated";
+import { StepNavigationProp } from "../../../../types/navigation/stack";
 
 interface Props {
-  gotoSignUp: () => void
-  gotoLogin: () => void
-  email: string
+  gotoSignUp: () => void;
+  gotoLogin: () => void;
+  email: string;
 }
 const Step: React.FC<StepNavigationProp> = ({
   route,
   navigation: { navigate },
 }) => {
-  const [step, setStep] = useState("TOKEN")
-  const [token, setToken] = useState<string>("")
-  const { email } = route.params
+  const [step, setStep] = useState("TOKEN");
+  const [token, setToken] = useState<string>("");
+  const { email } = route.params;
 
   const gotoSignUp = () => {
-    navigate("SignUp")
-  }
+    navigate("SignUp");
+  };
   const gotoLogin = () => {
-    navigate("Login")
-  }
+    navigate("Login");
+  };
 
   const onVerify = () => {
-    setStep("PASSWORD")
-  }
+    setStep("PASSWORD");
+  };
   const onSuccess = () => {
-    setStep("SUCCESS")
-  }
+    setStep("SUCCESS");
+  };
   const CurrentScreen = () => {
     switch (step) {
       case "PASSWORD":
@@ -39,10 +39,10 @@ const Step: React.FC<StepNavigationProp> = ({
             onSuccess={onSuccess}
             token={token}
           />
-        )
+        );
 
       case "SUCCESS":
-        return <AccountCreated gotoLogin={gotoLogin} />
+        return <AccountCreated gotoLogin={gotoLogin} />;
 
       default:
         return (
@@ -51,12 +51,11 @@ const Step: React.FC<StepNavigationProp> = ({
             onVerify={onVerify}
             back={gotoSignUp}
             setToken={setToken}
-            token={token}
           />
-        )
+        );
     }
-  }
-  return <CurrentScreen />
-}
+  };
+  return <CurrentScreen />;
+};
 
-export default Step
+export default Step;

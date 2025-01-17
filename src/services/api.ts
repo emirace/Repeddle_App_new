@@ -5,7 +5,7 @@ import axios, {
 } from "axios";
 import * as SecureStore from "expo-secure-store";
 
-// export const baseURL = 'http://172.20.10.3:5000';
+// export const baseURL = "http://192.168.0.131:5001";
 export const baseURL = "https://repeddle-backend.onrender.com";
 
 const api = axios.create({

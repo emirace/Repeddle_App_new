@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { Appbar, Button, TextInput, useTheme } from "react-native-paper";
-import useAuth from "../../../../hooks/useAuth";
-import useToastNotification from "../../../../hooks/useToastNotification";
+import useAuth from "../../../hooks/useAuth";
+import useToastNotification from "../../../hooks/useToastNotification";
 
 interface Props {
   back: () => void;
@@ -10,25 +10,17 @@ interface Props {
   token: string;
 }
 const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
-  const { registerUser, error: regError } = useAuth();
+  const { resetPassword, error: regError } = useAuth();
   const [loading, setLoading] = useState(false);
   const { addNotification } = useToastNotification();
   const { colors } = useTheme();
 
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    username: "",
     password: "",
     confirmPassword: "",
   });
 
   const [formError, setFormError] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    username: "",
     password: "",
     confirmPassword: "",
   });
@@ -42,30 +34,6 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
   };
 
   const validateForm = () => {
-    if (form["firstName"].length < 3) {
-      setFormError({
-        ...formError,
-        firstName: `First name must be at least 3 characters`,
-      });
-      return false;
-    }
-
-    if (form["lastName"].length < 3) {
-      setFormError({
-        ...formError,
-        lastName: `Last name must be at least 3 characters`,
-      });
-      return false;
-    }
-
-    if (form.username.length < 3) {
-      setFormError({
-        ...formError,
-        username: `Username must be at least 3 characters`,
-      });
-      return false;
-    }
-
     if (form.password.length < 6) {
       setFormError({
         ...formError,
@@ -113,15 +81,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
       return;
     }
     setLoading(true);
-    const { firstName, lastName, password, phone, username } = form;
-    const result = await registerUser({
-      password,
-      token,
-      firstName,
-      lastName,
-      phone,
-      username,
-    });
+    const { password } = form;
+    const result = await resetPassword(password, token);
     if (result) {
       onSuccess();
     } else {
@@ -135,83 +96,16 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Appbar.Header>
-        <Appbar.BackAction
-          onPress={() => {
-            back();
-          }}
-          iconColor={colors.onBackground}
-        />
-        <Appbar.Content
-          titleStyle={{ color: colors.onBackground }}
-          title="Create New Account"
-        />
-      </Appbar.Header>
       <View style={{ flex: 1, padding: 20, justifyContent: "space-between" }}>
         <View>
+          <Text
+            style={{ fontSize: 35, marginBottom: 20, fontWeight: "medium" }}
+          >
+            Reset Password
+          </Text>
           <View>
             <TextInput
-              label="First Name"
-              value={form.firstName}
-              onChangeText={(text) => {
-                formChange("firstName", text);
-                formErrorChange("firstName", "");
-              }}
-              style={styles.input}
-            />
-            {formError.firstName ? (
-              <Text style={styles.errorText}>{formError.firstName}</Text>
-            ) : null}
-          </View>
-
-          <View>
-            <TextInput
-              label="Last Name"
-              value={form.lastName}
-              onChangeText={(text) => {
-                formChange("lastName", text);
-                formErrorChange("lastName", "");
-              }}
-              style={styles.input}
-            />
-            {formError.lastName ? (
-              <Text style={styles.errorText}>{formError.lastName}</Text>
-            ) : null}
-          </View>
-
-          <View>
-            <TextInput
-              label="Username"
-              value={form.username}
-              onChangeText={(text) => {
-                formChange("username", text);
-                formErrorChange("username", "");
-              }}
-              style={styles.input}
-            />
-            {formError.username ? (
-              <Text style={styles.errorText}>{formError.username}</Text>
-            ) : null}
-          </View>
-
-          <View>
-            <TextInput
-              label="Phone"
-              value={form.phone}
-              onChangeText={(text) => {
-                formChange("phone", text);
-                formErrorChange("phone", "");
-              }}
-              style={styles.input}
-            />
-            {formError.phone ? (
-              <Text style={styles.errorText}>{formError.phone}</Text>
-            ) : null}
-          </View>
-
-          <View>
-            <TextInput
-              label="Password"
+              label="New Password"
               value={form.password}
               onChangeText={(text) => {
                 formChange("password", text);

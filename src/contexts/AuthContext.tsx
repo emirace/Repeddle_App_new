@@ -34,7 +34,10 @@ export const AuthContext = createContext<{
   setAuthErrorModalOpen: (value: boolean) => void;
   sendVerifyEmail: (credentials: { email: string }) => Promise<boolean>;
   sendVerifyOtp: (credentials: { email: string }) => Promise<boolean>;
-  verifyEmail: (credentials: { token: string }) => Promise<boolean>;
+  verifyEmail: (credentials: {
+    token: string;
+    type: string;
+  }) => Promise<boolean>;
   registerUser: (tokenData: {
     token: string;
     username: string;
@@ -115,11 +118,12 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  const verifyEmail = async (tokenData: { token: string }) => {
+  const verifyEmail = async (tokenData: { token: string; type: string }) => {
     try {
       setError("");
       const response = await verifyEmailService({
         token: tokenData.token,
+        type: tokenData.type,
         mode: "otp",
       });
       return !!response;
