@@ -25,6 +25,8 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const { navigate } = navigation;
+
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -39,7 +41,7 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation }) => {
       setLoading(true);
       const result = await login({ email, password });
       if (result) {
-        navigation.navigate("Main");
+        navigate("Main");
       } else {
         setError(loginError || "");
       }
@@ -117,6 +119,15 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation }) => {
         >
           Sign in
         </Button>
+        <Text style={styles.registerText}>
+          Don't have an account{" "}
+          <Text
+            style={{ color: colors.primary, fontWeight: "600" }}
+            onPress={() => navigate("SignUp")}
+          >
+            Sign Up
+          </Text>
+        </Text>
         <TouchableOpacity onPress={handleForgotPassword}>
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
@@ -161,6 +172,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
   },
+  registerText: { textAlign: "center", marginTop: 20 },
   description: {
     fontSize: 16,
     opacity: 0.5,

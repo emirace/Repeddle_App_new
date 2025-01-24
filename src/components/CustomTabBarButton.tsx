@@ -24,7 +24,7 @@ const CustomTabBarButton: React.FC<CustomTabBarButtonProps> = ({ onPress }) => {
       />
       <View
         style={{
-          marginTop: -(Platform.OS === "ios" ? 36 : 18),
+          marginTop: - 36,
           justifyContent: "center",
           alignItems: "center",
           position: "absolute",
