@@ -1,5 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
 import {
   TextInput,
   Button,
@@ -52,7 +58,7 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Image
         source={{
           uri: dark
@@ -130,7 +136,7 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation }) => {
           />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Image, ScrollView } from "react-native";
 import {
   TextInput,
   Button,
@@ -51,7 +51,7 @@ const SignUp: React.FC<SignUpNavigationProp> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Image
         source={{
           uri: dark
@@ -116,7 +116,7 @@ const SignUp: React.FC<SignUpNavigationProp> = ({
           />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
