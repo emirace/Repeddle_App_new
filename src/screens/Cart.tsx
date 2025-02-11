@@ -69,14 +69,16 @@ const Cart = ({ navigation }: Props) => {
           onPress={() => navigation.goBack()}
         />
         <Appbar.Content titleStyle={{ color: "white" }} title="Cart" />
-        <Appbar.Content
-          title={
-            <WishlistIcon
-              iconColor="white"
-              onPress={() => navigation.push("Wishlist")}
-            />
-          }
-        />
+        {user ? (
+          <Appbar.Content
+            title={
+              <WishlistIcon
+                iconColor="white"
+                onPress={() => navigation.push("Wishlist")}
+              />
+            }
+          />
+        ) : null}
       </Appbar.Header>
       <Text style={styles.description}>
         Placing an item in your shopping cart does not reserve that item or

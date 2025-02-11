@@ -276,7 +276,7 @@ const RenderHeader = ({
         <TouchableOpacity
           onPress={() =>
             navigation.push("SellerReview", {
-              id: user._id,
+              username: user.username,
             })
           }
         >

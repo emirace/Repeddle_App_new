@@ -18,7 +18,7 @@ import useToastNotification from "../hooks/useToastNotification"
 
 type Props = SellerReviewNavigationProp
 
-const SellerReview = ({ navigation }: Props) => {
+const SellerReview = ({ navigation, route: { params } }: Props) => {
   const { colors } = useTheme()
 
   const [reviews, setReviews] = useState<IReview[]>([])

@@ -77,7 +77,7 @@ export type ProductWithPagination = Pagination & { products: IProduct[] }
 export type IComment = {
   _id: string
   comment: string
-  userId: IUser
+  userId?: IUser
   replies: ICommentReply[]
   likes: string[]
   image?: string

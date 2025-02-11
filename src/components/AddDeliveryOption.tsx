@@ -7,7 +7,7 @@ import {
 } from "react-native"
 import React, { useState } from "react"
 import MyButton from "./MyButton"
-import { Text, Tooltip, useTheme } from "react-native-paper"
+import { Text, useTheme } from "react-native-paper"
 import { FontAwesome5, Ionicons } from "@expo/vector-icons"
 import { goto } from "../utils/common"
 import Rebundle from "./Rebundle"
@@ -18,6 +18,7 @@ import {
   pudoOption,
 } from "../utils/constants"
 import { DeliveryMeta, IDeliveryOption } from "../types/product"
+import Tooltip from "./Tooltip"
 
 type Props = {
   modalVisible: boolean
@@ -170,7 +171,7 @@ const AddDeliveryOption = ({
                 />
                 <Text style={styles.name}>Paxi PEP store</Text>
                 <Tooltip
-                  title={`Store-to-store courier service anywhere in South Africa. Drop off the item at the nearest PEP store / PAXI collection point. The Buyer will collect the item from the pick-up point of their choice.`}
+                  content={`Store-to-store courier service anywhere in South Africa. Drop off the item at the nearest PEP store / PAXI collection point. The Buyer will collect the item from the pick-up point of their choice.`}
                 >
                   <Ionicons
                     name="help-circle-outline"
@@ -226,7 +227,7 @@ const AddDeliveryOption = ({
                 />
                 <Text style={styles.name}>PUDO Locker-to-Locker</Text>
                 <Tooltip
-                  title={`Locker-to-locker courier service anywhere in South Africa. Drop off the item at the nearest Pudo locker. The Buyer will collect the item from the locker of their choice. Pudo lockers are accessible 24/7, so you can drop off or pick up your package when it suits you best.
+                  content={`Locker-to-locker courier service anywhere in South Africa. Drop off the item at the nearest Pudo locker. The Buyer will collect the item from the locker of their choice. Pudo lockers are accessible 24/7, so you can drop off or pick up your package when it suits you best.
                          `}
                 >
                   <Ionicons
@@ -284,7 +285,7 @@ const AddDeliveryOption = ({
                 />
                 <Text style={styles.name}>PostNet-to-PostNet</Text>
                 <Tooltip
-                  title={`PostNet-to-PostNet courier service anywhere in South Africa. Drop off the item at the nearest PostNet counter. The Buyer will collect the item from the pick-up point of their choice. Your parcel will be delivered within 2-4 working days.
+                  content={`PostNet-to-PostNet courier service anywhere in South Africa. Drop off the item at the nearest PostNet counter. The Buyer will collect the item from the pick-up point of their choice. Your parcel will be delivered within 2-4 working days.
                           `}
                 >
                   <Ionicons
@@ -341,7 +342,7 @@ const AddDeliveryOption = ({
                 />
                 <Text style={styles.name}>Aramex Store-to-Door</Text>
                 <Tooltip
-                  title={`Store-to-door courier service anywhere in South Africa. Aramex shipment sleeves can be bought at kiosks, selected Pick n Pay and Freshstop stores nationwide. The parcel will be delivered to buyer’s door.  `}
+                  content={`Store-to-door courier service anywhere in South Africa. Aramex shipment sleeves can be bought at kiosks, selected Pick n Pay and Freshstop stores nationwide. The parcel will be delivered to buyer’s door.  `}
                 >
                   <Ionicons
                     name="help-circle-outline"

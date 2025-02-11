@@ -48,7 +48,7 @@ const Comment = ({ comment, product, setProduct }: Props) => {
   const likeComment = async () => {
     if (!user) return
 
-    if (comment.userId._id === user._id) {
+    if (comment.userId?._id === user._id) {
       addNotification({ message: "You can't like your comment", error: true })
       return
     }
@@ -158,7 +158,7 @@ const Comment = ({ comment, product, setProduct }: Props) => {
           console.log("here")
           console.log(res.comment, "comment")
           const newComment = com
-          newComment.replies = [...newComment.replies, res.comment]
+          newComment.replies = [...newComment.replies, ...res.comment.replies]
           console.log(newComment.replies)
           return newComment
         }
@@ -193,15 +193,17 @@ const Comment = ({ comment, product, setProduct }: Props) => {
           ]}
         ></View>
         <View style={styles.row}>
-          <Image
-            source={{ uri: baseURL + comment.userId.image }}
-            style={styles.image}
-            resizeMode="cover"
-          />
+          {comment.userId?.image ? (
+            <Image
+              source={{ uri: baseURL + comment.userId.image }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          ) : null}
 
           <View style={styles.content}>
             <View style={{ flexDirection: "row" }}>
-              <Text style={[styles.username]}>{comment.userId.username}</Text>
+              <Text style={[styles.username]}>{comment.userId?.username}</Text>
               <Text style={styles.time}>
                 {moment(comment.createdAt).fromNow()}
               </Text>

@@ -626,7 +626,7 @@ const Product = ({ navigation, route }: Props) => {
                 <TouchableOpacity
                   onPress={() =>
                     navigation.push("SellerReview", {
-                      id: product.seller._id,
+                      username: product.seller.username,
                     })
                   }
                 >

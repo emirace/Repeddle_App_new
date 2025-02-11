@@ -31,7 +31,7 @@ const Wishlist = ({ navigation }: Props) => {
       const res = await getWishlist()
       if (res) setWishlist(res)
       else
-        addNotification({ message: error ?? "An error occurred", error: true })
+        addNotification({ message: error || "An error occurred", error: true })
       setLoading(false)
     }
 
