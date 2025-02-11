@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 5,
   },
   row: { flexDirection: "row" },
-  username: { fontWeight: "bold" },
+  username: { fontFamily: "absential-sans-bold" },
   commentImage: { width: "100%", height: 100, marginVertical: 10 },
   formContainer: {
     margin: 10,
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   name: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   time: {
     color: "grey",

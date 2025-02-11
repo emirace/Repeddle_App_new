@@ -42,7 +42,7 @@ const emptyProduct = {
 const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   const bottomSheetRef = useRef<BottomSheetModal>(null)
   const snapPoints = useMemo(() => ["87%"], [])
-  const { filter, query: queryParams } = route.params
+  const params = route.params
 
   const { fetchProducts, loading } = useProducts()
   const { categories, fetchCategories } = useCategory()
@@ -52,9 +52,9 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
   const [hasResult, setHasResult] = useState(true)
   const [products, setProducts] = useState<ProductWithPagination>(emptyProduct)
   const [currentPage, setCurrentPage] = useState(1)
-  const [query, setQuery] = useState(queryParams ?? "")
+  const [query, setQuery] = useState(params?.query ?? "")
 
-  const [filters, setFilters] = useState<FilterOptions>(filter ?? {})
+  const [filters, setFilters] = useState<FilterOptions>(params?.filter || {})
 
   const fetchProd = async () => {
     setHasResult(true)

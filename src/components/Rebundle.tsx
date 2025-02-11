@@ -120,7 +120,9 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
                 loading={loadingRebundle}
                 style={[styles.button, { backgroundColor: colors.primary }]}
               >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
+                <Text
+                  style={{ color: "white", fontFamily: "chronicle-text-bold" }}
+                >
                   Activate
                 </Text>
               </Button>

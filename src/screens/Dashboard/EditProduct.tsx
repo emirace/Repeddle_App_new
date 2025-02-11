@@ -1442,7 +1442,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  title: { fontWeight: "bold", fontSize: 24, textTransform: "capitalize" },
+  title: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 24,
+    textTransform: "capitalize",
+  },
   form: { marginTop: 5, marginHorizontal: 20 },
   label: {
     textTransform: "capitalize",
@@ -1462,10 +1466,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     overflow: "hidden",
   },
-  labelMain: { fontWeight: "bold", fontSize: 18, textTransform: "uppercase" },
+  labelMain: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 18,
+    textTransform: "uppercase",
+  },
   addSize: {
     textAlign: "right",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     marginTop: 5,
   },
   textarea: {
@@ -1475,7 +1483,7 @@ const styles = StyleSheet.create({
   },
   price: {
     marginHorizontal: 5,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   checkbox: { marginRight: 10, width: 20, height: 20 },
   image: { width: "100%", flex: 1 },
@@ -1509,7 +1517,7 @@ const styles = StyleSheet.create({
   addVideo: {
     textAlign: "center",
     textTransform: "uppercase",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
   deliv: {
     flexDirection: "row",
@@ -1549,7 +1557,7 @@ const styles = StyleSheet.create({
   },
   addTagText: {
     color: "white",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
   tagList: {
     flexDirection: "row",

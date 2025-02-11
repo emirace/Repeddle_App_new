@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useCallback, useEffect } from "react"
+import { View, StyleSheet, TouchableOpacity } from "react-native"
 import {
   TextInput,
   Button,
@@ -8,9 +8,9 @@ import {
   Modal,
   IconButton,
   Icon,
-} from "react-native-paper";
-import * as SecureStore from "expo-secure-store";
-import useAuth from "../../hooks/useAuth";
+} from "react-native-paper"
+import * as SecureStore from "expo-secure-store"
+import useAuth from "../../hooks/useAuth"
 
 const LoginModal: React.FC<{ navigation: any }> = ({ navigation }) => {
   const {
@@ -19,74 +19,74 @@ const LoginModal: React.FC<{ navigation: any }> = ({ navigation }) => {
     authErrorModalOpen,
     setAuthErrorModalOpen,
     user,
-  } = useAuth();
-  const { colors } = useTheme();
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showEmail, setShowEmail] = useState(false);
-  const [loading, setLoading] = useState(false);
+  } = useAuth()
+  const { colors } = useTheme()
+  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showEmail, setShowEmail] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleTogglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+    setShowPassword(!showPassword)
+  }
 
   useEffect(() => {
     const getDetails = async () => {
-      const storeUsername = await SecureStore.getItemAsync("username");
-      const storeEmail = await SecureStore.getItemAsync("email");
+      const storeUsername = await SecureStore.getItemAsync("username")
+      const storeEmail = await SecureStore.getItemAsync("email")
       if (storeUsername) {
-        setUsername(storeUsername);
+        setUsername(storeUsername)
       }
       if (storeEmail) {
-        setEmail(storeEmail);
+        setEmail(storeEmail)
       }
       if (!storeEmail || !storeUsername) {
-        setShowEmail(true);
+        setShowEmail(true)
       }
-    };
-    getDetails();
-  }, []);
+    }
+    getDetails()
+  }, [])
 
   useEffect(() => {
     if (!user) {
-      setAuthErrorModalOpen(true);
+      setAuthErrorModalOpen(true)
     } else {
-      setAuthErrorModalOpen(false);
+      setAuthErrorModalOpen(false)
     }
-  }, [user]);
+  }, [user])
 
   const handleNotUser = () => {
-    setShowEmail(true);
-    setEmail("");
-    setUsername("");
-  };
+    setShowEmail(true)
+    setEmail("")
+    setUsername("")
+  }
 
   const handleLogin = async () => {
     // Basic email and password validation
     if (!email.trim() || !password.trim()) {
-      setError("Please enter both email and password.");
+      setError("Please enter both email and password.")
     } else if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
+      setError("Please enter a valid email address.")
     } else {
-      setLoading(true);
-      const result = await login({ email, password });
+      setLoading(true)
+      const result = await login({ email, password })
       if (result) {
-        setAuthErrorModalOpen(false);
+        setAuthErrorModalOpen(false)
       } else {
-        setError(loginError || "");
+        setError(loginError || "")
       }
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const isValidEmail = (email: string): boolean => {
     // Basic email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
 
   return (
     <Modal
@@ -118,7 +118,12 @@ const LoginModal: React.FC<{ navigation: any }> = ({ navigation }) => {
           {!showEmail ? (
             <Text>
               If you want to continue as{" "}
-              <Text style={{ color: colors.primary, fontWeight: "bold" }}>
+              <Text
+                style={{
+                  color: colors.primary,
+                  fontFamily: "absential-sans-bold",
+                }}
+              >
                 {username}
               </Text>
               , please re-write your password.
@@ -132,8 +137,8 @@ const LoginModal: React.FC<{ navigation: any }> = ({ navigation }) => {
             label="Email"
             value={email}
             onChangeText={(text) => {
-              setEmail(text);
-              setError("");
+              setEmail(text)
+              setError("")
             }}
             style={styles.input}
             autoCapitalize="none"
@@ -144,8 +149,8 @@ const LoginModal: React.FC<{ navigation: any }> = ({ navigation }) => {
           label="Password"
           value={password}
           onChangeText={(text) => {
-            setPassword(text);
-            setError("");
+            setPassword(text)
+            setError("")
           }}
           right={
             <TextInput.Icon
@@ -191,8 +196,8 @@ const LoginModal: React.FC<{ navigation: any }> = ({ navigation }) => {
         </View>
       </View>
     </Modal>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -201,7 +206,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     marginBottom: 10,
   },
   description: {
@@ -232,6 +237,6 @@ const styles = StyleSheet.create({
   socialIcon: {
     marginHorizontal: 10,
   },
-});
+})
 
-export default LoginModal;
+export default LoginModal

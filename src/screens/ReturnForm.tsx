@@ -582,7 +582,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   itemPrice: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   itemCont: {
     flexDirection: "row",

@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 5,
   },
-  TextInput: { flex: 1, height: "100%" },
+  TextInput: { flex: 1, height: "100%", fontSize: 12 },
   searchCont: {
     width: "100%",
     flexDirection: "row",

@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     fontSize: 20,
     textTransform: "capitalize",
   },

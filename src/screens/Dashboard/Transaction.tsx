@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   detailHeader: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   searchIcon: {
     position: "absolute",

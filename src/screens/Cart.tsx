@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     fontSize: 20,
     textTransform: "capitalize",
     color: "white",
@@ -310,7 +310,11 @@ const styles = StyleSheet.create({
   detail: {
     maxWidth: normaliseW(190),
   },
-  name: { fontWeight: "bold", textTransform: "capitalize", fontSize: 15 },
+  name: {
+    fontFamily: "absential-sans-bold",
+    textTransform: "capitalize",
+    fontSize: 15,
+  },
   price: {
     fontWeight: "500",
     fontSize: 18,
@@ -329,7 +333,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: SCREEN_WIDTH,
   },
-  goShoppingText: { fontWeight: "bold", marginLeft: 5 },
+  goShoppingText: { fontFamily: "chronicle-text-bold", marginLeft: 5 },
   subContainer: { paddingHorizontal: 20 },
   quantity: {
     flexDirection: "row",
@@ -342,7 +346,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginRight: 5,
   },
-  offer: { fontSize: 16, fontWeight: "bold" },
+  offer: { fontSize: 16, fontFamily: "chronicle-text-bold" },
   continueCont: {
     justifyContent: "center",
     alignItems: "center",

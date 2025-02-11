@@ -54,7 +54,11 @@ const Home = ({ navigation }: any) => {
 
       if (typeof res !== "string") {
         const newData = res
-        newData.products = [...products.products, ...newData.products]
+
+        const allProducts = [...products.products, ...newData.products]
+        newData.products = [
+          ...new Map(allProducts.map((item) => [item._id, item])).values(),
+        ]
         setProducts(newData)
       } else {
         addNotification({ message: res, error: true })
@@ -215,7 +219,7 @@ const Home = ({ navigation }: any) => {
             <Animated.Image
               source={{
                 uri:
-                  themeMode === "dark"
+                  themeMode !== "dark"
                     ? "https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif"
                     : "https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif",
               }}

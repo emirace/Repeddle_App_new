@@ -844,7 +844,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
                             alignSelf: "center",
                           }}
                         >
-                          <Text1 style={{ fontWeight: "bold" }}>
+                          <Text1 style={{ fontFamily: "chronicle-text-bold" }}>
                             Log a return
                           </Text1>
                           <Text style={{ color: "red" }}>
@@ -1199,7 +1199,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     fontSize: 20,
     textTransform: "capitalize",
     color: "white",
@@ -1218,7 +1218,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     paddingVertical: 10,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     textTransform: "uppercase",
     // width: '100%',
     marginTop: 15,
@@ -1250,7 +1250,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   itemPrice: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   actionButton: {
     // flex: 2,
@@ -1300,7 +1300,7 @@ const styles = StyleSheet.create({
   },
   username: {
     marginHorizontal: 20,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   paymentRow: {
     flexDirection: "column",
@@ -1348,7 +1348,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
   },
-  link: { color: "white", fontWeight: "bold" },
+  link: { color: "white", fontFamily: "chronicle-text-bold" },
   horizontalLine: {
     height: 1,
     width: "100%",

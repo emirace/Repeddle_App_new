@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   content: { width: "100%" },
   header: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     marginBottom: 10,
   },
   registerText: { textAlign: "center", marginTop: 20 },

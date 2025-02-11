@@ -1,98 +1,98 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useState } from "react";
-import { Appbar, Button, TextInput, useTheme } from "react-native-paper";
-import useAuth from "../../../hooks/useAuth";
-import useToastNotification from "../../../hooks/useToastNotification";
+import { View, Text, StyleSheet } from "react-native"
+import React, { useState } from "react"
+import { Appbar, Button, TextInput, useTheme } from "react-native-paper"
+import useAuth from "../../../hooks/useAuth"
+import useToastNotification from "../../../hooks/useToastNotification"
 
 interface Props {
-  back: () => void;
-  onSuccess: () => void;
-  token: string;
+  back: () => void
+  onSuccess: () => void
+  token: string
 }
 const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
-  const { resetPassword, error: regError } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const { addNotification } = useToastNotification();
-  const { colors } = useTheme();
+  const { resetPassword, error: regError } = useAuth()
+  const [loading, setLoading] = useState(false)
+  const { addNotification } = useToastNotification()
+  const { colors } = useTheme()
 
   const [form, setForm] = useState({
     password: "",
     confirmPassword: "",
-  });
+  })
 
   const [formError, setFormError] = useState({
     password: "",
     confirmPassword: "",
-  });
+  })
 
   const formChange = (key: keyof typeof form, val: string) => {
-    setForm({ ...form, [key]: val });
-  };
+    setForm({ ...form, [key]: val })
+  }
 
   const formErrorChange = (key: keyof typeof formError, val: string) => {
-    setFormError({ ...formError, [key]: val });
-  };
+    setFormError({ ...formError, [key]: val })
+  }
 
   const validateForm = () => {
     if (form.password.length < 6) {
       setFormError({
         ...formError,
         password: "Password must be at least 6 characters",
-      });
-      return false;
+      })
+      return false
     }
     if (form.password.search(/[a-z]/i) < 0) {
       setFormError({
         ...formError,
         password:
           "Password must contain at least 1 lowercase alphabetical character",
-      });
-      return false;
+      })
+      return false
     }
     if (form.password.search(/[A-Z]/) < 0) {
       setFormError({
         ...formError,
         password:
           "Password must contain at least 1 uppercase alphabetical character",
-      });
-      return false;
+      })
+      return false
     }
     if (form.password.search(/[0-9]/) < 0) {
       setFormError({
         ...formError,
         password: "Password must contain at least 1 digit",
-      });
-      return false;
+      })
+      return false
     }
 
     if (form.password !== form.confirmPassword) {
       setFormError({
         ...formError,
         confirmPassword: "Confirm password must equal password",
-      });
-      return false;
+      })
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   const handleRegister = async () => {
     if (!validateForm()) {
-      return;
+      return
     }
-    setLoading(true);
-    const { password } = form;
-    const result = await resetPassword(password, token);
+    setLoading(true)
+    const { password } = form
+    const result = await resetPassword(password, token)
     if (result) {
-      onSuccess();
+      onSuccess()
     } else {
       addNotification({
         message: regError || "Failed to register",
         error: true,
-      });
+      })
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -108,8 +108,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
               label="New Password"
               value={form.password}
               onChangeText={(text) => {
-                formChange("password", text);
-                formErrorChange("password", "");
+                formChange("password", text)
+                formErrorChange("password", "")
               }}
               style={styles.input}
               autoCapitalize="none"
@@ -124,8 +124,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
               label="Confirm Password"
               value={form.confirmPassword}
               onChangeText={(text) => {
-                formChange("confirmPassword", text);
-                formErrorChange("confirmPassword", "");
+                formChange("confirmPassword", text)
+                formErrorChange("confirmPassword", "")
               }}
               style={styles.input}
               autoCapitalize="none"
@@ -150,8 +150,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
         </Button>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     marginBottom: 16,
   },
   description: {
@@ -193,6 +193,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: "center",
   },
-});
+})
 
-export default Password;
+export default Password

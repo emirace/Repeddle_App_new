@@ -21,7 +21,7 @@ import {
   useTheme,
 } from "react-native-paper"
 import { normaliseH, normaliseW } from "../utils/normalize"
-import { IProduct, RecentProduct } from "../types/product"
+import { IProduct, RecentlyViewed } from "../types/product"
 import ProductItem from "../components/ProductItem"
 import { ProductNavigationProp } from "../types/navigation/stack"
 import useProducts from "../hooks/useProducts"
@@ -73,7 +73,7 @@ const Product = ({ navigation, route }: Props) => {
   const { params } = route
 
   const [product, setProduct] = useState<IProduct>()
-  const [recentlyViewed, setRecentlyViewed] = useState<RecentProduct[]>([])
+  const [recentlyViewed, setRecentlyViewed] = useState<RecentlyViewed[]>([])
   const [productError, setProductError] = useState("")
   const [size, setSize] = useState("")
   const [loading, setLoading] = useState(true)
@@ -603,7 +603,7 @@ const Product = ({ navigation, route }: Props) => {
                       <Text
                         style={{
                           color: colors.secondary,
-                          fontWeight: "bold",
+                          fontFamily: "chronicle-text-bold",
                           fontSize: 15,
                         }}
                       >
@@ -781,10 +781,19 @@ const Product = ({ navigation, route }: Props) => {
             </Text>
             <Text style={{ marginBottom: 10 }}>
               We advocate for{" "}
-              <Text style={{ fontWeight: "bold" }}>clean air</Text>,{" "}
-              <Text style={{ fontWeight: "bold" }}>clean water</Text> and a
-              <Text style={{ fontWeight: "bold" }}> clean environment</Text>.
-              These are not too much to ask; these are common basic living
+              <Text style={{ fontFamily: "chronicle-text-bold" }}>
+                clean air
+              </Text>
+              ,{" "}
+              <Text style={{ fontFamily: "chronicle-text-bold" }}>
+                clean water
+              </Text>{" "}
+              and a
+              <Text style={{ fontFamily: "chronicle-text-bold" }}>
+                {" "}
+                clean environment
+              </Text>
+              . These are not too much to ask; these are common basic living
               condition!!!
             </Text>
             <Text style={{ marginBottom: 10 }}>
@@ -886,7 +895,7 @@ const Product = ({ navigation, route }: Props) => {
           style={[
             {
               fontSize: 20,
-              fontWeight: "bold",
+              fontFamily: "absential-sans-bold",
               textTransform: "capitalize",
               color: "white",
               textAlign: "center",
@@ -969,7 +978,7 @@ const RenderItem = ({
   item,
   navigation,
 }: {
-  item: RecentProduct
+  item: RecentlyViewed
   navigation: ProductNavigationProp["navigation"]
 }) => {
   let { itemStyles } = styles
@@ -1025,7 +1034,7 @@ const styles = StyleSheet.create({
   rating: { flexDirection: "row", alignItems: "center" },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     paddingVertical: 10,
     textTransform: "capitalize",
     marginRight: normaliseW(10),
@@ -1035,9 +1044,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     marginHorizontal: 20,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
-  ratingText: { fontSize: 15, marginHorizontal: 5, fontWeight: "bold" },
+  ratingText: {
+    fontSize: 15,
+    marginHorizontal: 5,
+    fontFamily: "absential-sans-bold",
+  },
   ratingCount: { color: "grey" },
   description: { marginBottom: 5, marginHorizontal: 7, color: "grey" },
   section: { marginVertical: 10 },
@@ -1060,7 +1073,7 @@ const styles = StyleSheet.create({
   circletext: {
     fontSize: 14,
     textTransform: "uppercase",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
   priceCont: {
     flex: 1,
@@ -1072,7 +1085,7 @@ const styles = StyleSheet.create({
     color: "grey",
   },
   offer: {
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     marginRight: normaliseW(10),
   },
   addCartSection: {
@@ -1160,7 +1173,7 @@ const styles = StyleSheet.create({
   },
   sustainHeader: {
     textTransform: "uppercase",
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
 
   sustainCont: {
@@ -1171,7 +1184,7 @@ const styles = StyleSheet.create({
 
   sustainbold: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
   share: {
     position: "absolute",

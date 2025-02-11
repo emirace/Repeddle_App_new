@@ -360,7 +360,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                         style={{
                           color: colors.primary,
                           fontSize: 11,
-                          fontWeight: "bold",
+                          fontFamily: "chronicle-text-bold",
                           marginLeft: 10,
                         }}
                       >
@@ -1150,7 +1150,7 @@ const styles = StyleSheet.create({
   //     padding: 10,
   //     backgroundColor: colors.primary,
   //   },
-  title: { fontWeight: "bold", fontSize: 20, textTransform: "capitalize" },
+  title: {fontFamily: "absential-sans-bold", fontSize: 20, textTransform: "capitalize" },
   option: {
     flexDirection: "row",
     alignItems: "center",

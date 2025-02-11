@@ -152,7 +152,7 @@ const AddDeliveryOption = ({
           />
         </View>
         <ScrollView style={[{ marginBottom: 10, flex: 1 }]}>
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+          <Text style={{ fontSize: 16, fontFamily: "chronicle-text-bold" }}>
             Select Delivery Option
           </Text>
           <Text style={styles.info}>
@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     color: "grey",
     marginLeft: 5,
   },

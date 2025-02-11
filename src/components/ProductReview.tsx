@@ -1,17 +1,17 @@
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
-import React from "react";
-import { IProduct } from "../types/product";
-import { Ionicons } from "@expo/vector-icons";
-import { Text, useTheme } from "react-native-paper";
-import Review from "./Review";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native"
+import React from "react"
+import { IProduct } from "../types/product"
+import { Ionicons } from "@expo/vector-icons"
+import { Text, useTheme } from "react-native-paper"
+import Review from "./Review"
 
 type Props = {
-  product: IProduct;
-  setModalProductReview: (val: boolean) => void;
-};
+  product: IProduct
+  setModalProductReview: (val: boolean) => void
+}
 
 const ProductReview = ({ product, setModalProductReview }: Props) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
   return (
     <View style={styles.container}>
@@ -35,10 +35,10 @@ const ProductReview = ({ product, setModalProductReview }: Props) => {
         </ScrollView>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default ProductReview;
+export default ProductReview
 
 const styles = StyleSheet.create({
   container: {
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
   },
-  modalTitle: { fontWeight: "bold", fontSize: 20 },
+  modalTitle: { fontFamily: "absential-sans-bold", fontSize: 20 },
   heading: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -63,4 +63,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-});
+})

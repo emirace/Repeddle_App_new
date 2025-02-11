@@ -40,7 +40,7 @@ const TabBar = (props: TabBarProps<string>) => {
       indicatorStyle={{ backgroundColor: lightTheme.colors.primary }}
       labelStyle={{
         textTransform: "capitalize",
-        fontWeight: "bold",
+        fontFamily: "absential-sans-bold",
         color: colors.onBackground,
       }}
       activeColor={colors.onBackground}
@@ -150,12 +150,11 @@ const MyAccount = ({ navigation, route }: Props) => {
         <Tabs.Tab name="Liked">
           <Liked products={userData.products.liked} navigation={navigation} />
         </Tabs.Tab>
-        {/* @ts-ignore TODO: fix or ignore  */}
         {userInfo?._id === userData.user._id ? (
           <Tabs.Tab name="Wishlist">
             <Saved products={[]} navigation={navigation} />
           </Tabs.Tab>
-        ) : undefined}
+        ) : null}
       </Tabs.Container>
     </View>
   ) : null
@@ -309,7 +308,7 @@ const RenderHeader = ({
             />
             <Text>Sold</Text>
           </View>
-          <Text style={{ fontWeight: "bold" }}>
+          <Text style={{ fontFamily: "chronicle-text-bold" }}>
             {user.sold && user.sold.length}
           </Text>
         </View>
@@ -323,7 +322,7 @@ const RenderHeader = ({
             />
             <Text>Member Since</Text>
           </View>
-          <Text style={{ fontWeight: "bold" }}>
+          <Text style={{ fontFamily: "chronicle-text-bold" }}>
             {user.createdAt && user.createdAt.substring(0, 10)}
           </Text>
         </View>
@@ -337,7 +336,7 @@ const RenderHeader = ({
             />
             <Text>From</Text>
           </View>
-          <Text style={{ fontWeight: "bold" }}>
+          <Text style={{ fontFamily: "chronicle-text-bold" }}>
             {user.region === "NGN" ? "Nigeria" : "South Africa"}
           </Text>
         </View>
@@ -352,7 +351,7 @@ const RenderHeader = ({
             />
             <Text>Language</Text>
           </View>
-          <Text style={{ fontWeight: "bold" }}>English</Text>
+          <Text style={{ fontFamily: "chronicle-text-bold" }}>English</Text>
         </View>
       </View>
       <View
@@ -362,7 +361,9 @@ const RenderHeader = ({
           { backgroundColor: colors.elevation.level2 },
         ]}
       >
-        <Text style={{ fontWeight: "bold", marginBottom: 5 }}>About</Text>
+        <Text style={{ fontFamily: "chronicle-text-bold", marginBottom: 5 }}>
+          About
+        </Text>
         <Text>{user.about}</Text>
       </View>
       <View pointerEvents="box-none" style={{ margin: 10, marginBottom: 20 }}>
@@ -387,7 +388,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     fontSize: 20,
     textTransform: "capitalize",
     color: "white",
@@ -417,7 +418,7 @@ const styles = StyleSheet.create({
   },
   image: { width: 150, height: 150, borderRadius: 80 },
   username: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     marginVertical: 10,
   },
   followCont: {
@@ -432,7 +433,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonText: { fontWeight: "bold", color: "white" },
+  buttonText: { fontFamily: "chronicle-text-bold", color: "white" },
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -446,7 +447,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonOutlineText: { fontWeight: "bold" },
+  buttonOutlineText: { fontFamily: "chronicle-text-bold" },
   tab: { height: Dimensions.get("window").height - 45 },
   followButton: {
     color: "white",

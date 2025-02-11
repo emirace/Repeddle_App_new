@@ -60,7 +60,10 @@ const Purchase = (props: Props) => {
             You have not ordered any item 🛒{" "}
             <Text
               onPress={() => navigation.push("Main")}
-              style={{ color: colors.secondary, fontWeight: "bold" }}
+              style={{
+                color: colors.secondary,
+                fontFamily: "chronicle-text-bold",
+              }}
             >
               Go shoping
             </Text>

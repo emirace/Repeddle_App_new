@@ -1,19 +1,19 @@
-import { View, Text, StyleSheet } from "react-native";
-import React, { useState } from "react";
-import { Appbar, Button, TextInput, useTheme } from "react-native-paper";
-import useAuth from "../../../../hooks/useAuth";
-import useToastNotification from "../../../../hooks/useToastNotification";
+import { View, Text, StyleSheet } from "react-native"
+import React, { useState } from "react"
+import { Appbar, Button, TextInput, useTheme } from "react-native-paper"
+import useAuth from "../../../../hooks/useAuth"
+import useToastNotification from "../../../../hooks/useToastNotification"
 
 interface Props {
-  back: () => void;
-  onSuccess: () => void;
-  token: string;
+  back: () => void
+  onSuccess: () => void
+  token: string
 }
 const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
-  const { registerUser, error: regError } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const { addNotification } = useToastNotification();
-  const { colors } = useTheme();
+  const { registerUser, error: regError } = useAuth()
+  const [loading, setLoading] = useState(false)
+  const { addNotification } = useToastNotification()
+  const { colors } = useTheme()
 
   const [form, setForm] = useState({
     firstName: "",
@@ -22,7 +22,7 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
     username: "",
     password: "",
     confirmPassword: "",
-  });
+  })
 
   const [formError, setFormError] = useState({
     firstName: "",
@@ -31,89 +31,89 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
     username: "",
     password: "",
     confirmPassword: "",
-  });
+  })
 
   const formChange = (key: keyof typeof form, val: string) => {
-    setForm({ ...form, [key]: val });
-  };
+    setForm({ ...form, [key]: val })
+  }
 
   const formErrorChange = (key: keyof typeof formError, val: string) => {
-    setFormError({ ...formError, [key]: val });
-  };
+    setFormError({ ...formError, [key]: val })
+  }
 
   const validateForm = () => {
     if (form["firstName"].length < 3) {
       setFormError({
         ...formError,
         firstName: `First name must be at least 3 characters`,
-      });
-      return false;
+      })
+      return false
     }
 
     if (form["lastName"].length < 3) {
       setFormError({
         ...formError,
         lastName: `Last name must be at least 3 characters`,
-      });
-      return false;
+      })
+      return false
     }
 
     if (form.username.length < 3) {
       setFormError({
         ...formError,
         username: `Username must be at least 3 characters`,
-      });
-      return false;
+      })
+      return false
     }
 
     if (form.password.length < 6) {
       setFormError({
         ...formError,
         password: "Password must be at least 6 characters",
-      });
-      return false;
+      })
+      return false
     }
     if (form.password.search(/[a-z]/i) < 0) {
       setFormError({
         ...formError,
         password:
           "Password must contain at least 1 lowercase alphabetical character",
-      });
-      return false;
+      })
+      return false
     }
     if (form.password.search(/[A-Z]/) < 0) {
       setFormError({
         ...formError,
         password:
           "Password must contain at least 1 uppercase alphabetical character",
-      });
-      return false;
+      })
+      return false
     }
     if (form.password.search(/[0-9]/) < 0) {
       setFormError({
         ...formError,
         password: "Password must contain at least 1 digit",
-      });
-      return false;
+      })
+      return false
     }
 
     if (form.password !== form.confirmPassword) {
       setFormError({
         ...formError,
         confirmPassword: "Confirm password must equal password",
-      });
-      return false;
+      })
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   const handleRegister = async () => {
     if (!validateForm()) {
-      return;
+      return
     }
-    setLoading(true);
-    const { firstName, lastName, password, phone, username } = form;
+    setLoading(true)
+    const { firstName, lastName, password, phone, username } = form
     const result = await registerUser({
       password,
       token,
@@ -121,24 +121,24 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
       lastName,
       phone,
       username,
-    });
+    })
     if (result) {
-      onSuccess();
+      onSuccess()
     } else {
       addNotification({
         message: regError || "Failed to register",
         error: true,
-      });
+      })
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
     <View style={{ flex: 1 }}>
       <Appbar.Header>
         <Appbar.BackAction
           onPress={() => {
-            back();
+            back()
           }}
           iconColor={colors.onBackground}
         />
@@ -154,8 +154,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
               label="First Name"
               value={form.firstName}
               onChangeText={(text) => {
-                formChange("firstName", text);
-                formErrorChange("firstName", "");
+                formChange("firstName", text)
+                formErrorChange("firstName", "")
               }}
               style={styles.input}
             />
@@ -169,8 +169,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
               label="Last Name"
               value={form.lastName}
               onChangeText={(text) => {
-                formChange("lastName", text);
-                formErrorChange("lastName", "");
+                formChange("lastName", text)
+                formErrorChange("lastName", "")
               }}
               style={styles.input}
             />
@@ -184,8 +184,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
               label="Username"
               value={form.username}
               onChangeText={(text) => {
-                formChange("username", text);
-                formErrorChange("username", "");
+                formChange("username", text)
+                formErrorChange("username", "")
               }}
               style={styles.input}
             />
@@ -199,8 +199,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
               label="Phone"
               value={form.phone}
               onChangeText={(text) => {
-                formChange("phone", text);
-                formErrorChange("phone", "");
+                formChange("phone", text)
+                formErrorChange("phone", "")
               }}
               style={styles.input}
             />
@@ -214,8 +214,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
               label="Password"
               value={form.password}
               onChangeText={(text) => {
-                formChange("password", text);
-                formErrorChange("password", "");
+                formChange("password", text)
+                formErrorChange("password", "")
               }}
               style={styles.input}
               autoCapitalize="none"
@@ -230,8 +230,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
               label="Confirm Password"
               value={form.confirmPassword}
               onChangeText={(text) => {
-                formChange("confirmPassword", text);
-                formErrorChange("confirmPassword", "");
+                formChange("confirmPassword", text)
+                formErrorChange("confirmPassword", "")
               }}
               style={styles.input}
               autoCapitalize="none"
@@ -256,8 +256,8 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
         </Button>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     marginBottom: 16,
   },
   description: {
@@ -299,6 +299,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: "center",
   },
-});
+})
 
-export default Password;
+export default Password
