@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React, { useState } from "react";
-import { Appbar, Button, TextInput, useTheme } from "react-native-paper";
+import { Button, TextInput, useTheme, Text } from "react-native-paper";
 import useAuth from "../../../hooks/useAuth";
 import useToastNotification from "../../../hooks/useToastNotification";
 
@@ -87,7 +87,7 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
       onSuccess();
     } else {
       addNotification({
-        message: regError || "Failed to register",
+        message: regError || "Failed to reset password",
         error: true,
       });
     }
@@ -146,7 +146,7 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
           loading={loading}
           disabled={loading}
         >
-          Create Account
+          Reset
         </Button>
       </View>
     </View>

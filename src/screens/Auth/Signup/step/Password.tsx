@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import React, { useState } from "react";
 import { Appbar, Button, TextInput, useTheme } from "react-native-paper";
 import useAuth from "../../../../hooks/useAuth";
@@ -147,7 +147,9 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
           title="Create New Account"
         />
       </Appbar.Header>
-      <View style={{ flex: 1, padding: 20, justifyContent: "space-between" }}>
+      <ScrollView
+        style={{ flex: 1, padding: 20, justifyContent: "space-between" }}
+      >
         <View>
           <View>
             <TextInput
@@ -254,7 +256,7 @@ const Password: React.FC<Props> = ({ back, onSuccess, token }) => {
         >
           Create Account
         </Button>
-      </View>
+      </ScrollView>
     </View>
   );
 };

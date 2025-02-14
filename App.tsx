@@ -23,12 +23,12 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
-        <KeyboardAvoidingView
+        {/* <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
-        >
-          <Main />
-        </KeyboardAvoidingView>
+        > */}
+        <Main />
+        {/* </KeyboardAvoidingView> */}
       </ThemeProvider>
     </GestureHandlerRootView>
   );

@@ -42,7 +42,7 @@ const Main = () => {
   const { themeMode } = useTheme();
   const paperTheme =
     themeMode === "dark"
-      ? { ...MD3DarkTheme, colors: darkTheme.colors }
+      ? { ...MD3DarkTheme, colors: darkTheme.colors, fonts: {} }
       : { ...MD3LightTheme, colors: lightTheme.colors };
 
   return (

@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from "react";
-import { Icon, useTheme } from "react-native-paper";
+import { Icon, useTheme, Text, Button } from "react-native-paper";
 
 const Success = ({ navigation }: any) => {
   const { colors } = useTheme();
@@ -20,17 +20,16 @@ const Success = ({ navigation }: any) => {
       <Text style={styles.successText}>
         Password reset successfully. Login to continue
       </Text>
-      <Text
-        style={{
-          marginVertical: 20,
-          fontSize: 20,
-          color: colors.primary,
-          fontWeight: "600",
-        }}
+      <Button
+        mode="contained"
         onPress={() => navigation.replace("Login")}
+        style={styles.signInButton}
+        uppercase
+        contentStyle={{ height: 50 }}
+        labelStyle={{ fontWeight: "800" }}
       >
         Login
-      </Text>
+      </Button>
     </View>
   );
 };
@@ -42,5 +41,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 20,
     textAlign: "center",
+  },
+
+  signInButton: {
+    marginTop: 16,
+    borderRadius: 5,
   },
 });
