@@ -5,33 +5,52 @@ import {
   FlatList,
   ActivityIndicator,
   Animated,
-} from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { Appbar, IconButton, Portal, useTheme } from "react-native-paper";
-import useThemeContext from "../hooks/useTheme";
-import { MainScreenNavigationProp } from "../types/navigation/stack";
-import { TopSellers } from "../types/user";
-import HomeContents from "../section/home/HomeContents";
-import { IProduct, ProductWithPagination } from "../types/product";
-import homeStyles from "../section/home/homeStyles";
-import ProductItem from "../components/ProductItem";
-import useProducts from "../hooks/useProducts";
-import useUser from "../hooks/useUser";
-import SearchBar from "../components/SearchBar";
-import Announcement from "../components/Announcement";
-import CartIcon from "../components/ui/cartIcon";
-import useToastNotification from "../hooks/useToastNotification";
+  
+} from "react-native"
+import React, { useEffect, useRef, useState } from "react"
+import {
+  Appbar,
+  configureFonts,
+  IconButton,
+  MD3DarkTheme,
+  MD3LightTheme,
+  Portal,
+  Provider,
+  useTheme,
+} from "react-native-paper"
+import useThemeContext from "../hooks/useTheme"
+import { MainScreenNavigationProp } from "../types/navigation/stack"
+import { TopSellers } from "../types/user"
+import HomeContents from "../section/home/HomeContents"
+import { IProduct, ProductWithPagination } from "../types/product"
+import homeStyles from "../section/home/homeStyles"
+import ProductItem from "../components/ProductItem"
+import useProducts from "../hooks/useProducts"
+import useUser from "../hooks/useUser"
+import SearchBar from "../components/SearchBar"
+import Announcement from "../components/Announcement"
+import CartIcon from "../components/ui/cartIcon"
+import useToastNotification from "../hooks/useToastNotification"
+import { ThemeProp } from "react-native-paper/lib/typescript/types"
+import { darkTheme, lightTheme } from "../constant/theme"
 
-const WIDTH = Dimensions.get("screen").width;
+const WIDTH = Dimensions.get("screen").width
 
-type Props = MainScreenNavigationProp;
+type Props = MainScreenNavigationProp
 
-const numColumns = 2;
+const numColumns = 2
+
+const fonts = configureFonts({ config: { fontFamily: "chronicle-text" } })
 
 const Home = ({ navigation }: any) => {
-  const { themeMode } = useThemeContext();
-  const { colors } = useTheme();
-  const { addNotification } = useToastNotification();
+  const { themeMode } = useThemeContext()
+
+  const paperTheme: ThemeProp =
+    themeMode === "dark"
+      ? { ...MD3DarkTheme, colors: darkTheme.colors, fonts }
+      : { ...MD3LightTheme, colors: lightTheme.colors, fonts }
+  const { colors } = useTheme()
+  const { addNotification } = useToastNotification()
 
   const { fetchProducts, loading } = useProducts();
   const { getTopSellers } = useUser();
@@ -196,7 +215,7 @@ const Home = ({ navigation }: any) => {
   // }
 
   return (
-    <View>
+    <Provider theme={paperTheme}>
       <Appbar.Header
         mode="small"
         style={{
@@ -305,9 +324,9 @@ const Home = ({ navigation }: any) => {
         ListFooterComponent={() => <Footer isLoading={loading} />}
         style={{ paddingTop: 60, marginTop: 10 }}
       />
-    </View>
-  );
-};
+    </Provider>
+  )
+}
 
 const RenderItem = ({
   item,
