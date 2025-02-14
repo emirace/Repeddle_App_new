@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import {
   FlatList,
   View,
   StyleSheet,
   Image,
   TouchableOpacity,
-} from "react-native";
-import { Appbar, Badge, Searchbar, Text, useTheme } from "react-native-paper";
-import useMessage from "../../hooks/useMessage";
-import moment from "moment";
-import { IConversation } from "../../types/message";
-import { baseURL } from "../../services/api";
-import { markMessagesAsRead } from "../../utils/socket";
-import useAuth from "../../hooks/useAuth";
+} from "react-native"
+import { Appbar, Badge, Searchbar, Text, useTheme } from "react-native-paper"
+import useMessage from "../../hooks/useMessage"
+import moment from "moment"
+import { IConversation } from "../../types/message"
+import { baseURL } from "../../services/api"
+import { markMessagesAsRead } from "../../utils/socket"
+import useAuth from "../../hooks/useAuth"
 
 const Conversation: React.FC<any> = ({ navigation }) => {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const {
     conversations,
     getConversations,
@@ -23,29 +23,29 @@ const Conversation: React.FC<any> = ({ navigation }) => {
     setCurrentConversation,
     loading,
     isTypingList,
-  } = useMessage();
-  const { colors } = useTheme();
-  const [searchQuery, setSearchQuery] = useState("");
+  } = useMessage()
+  const { colors } = useTheme()
+  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
-    getConversations(currentTab);
-  }, [currentTab]);
+    getConversations(currentTab)
+  }, [currentTab])
 
   const filteredConversations = conversations.filter((conversation) =>
     conversation.otherUser.username
       .toLowerCase()
       .includes(searchQuery.toLowerCase())
-  );
+  )
 
   const onChangeSearch = (query: string) => {
-    setSearchQuery(query);
-  };
+    setSearchQuery(query)
+  }
 
   const openChat = (conversation: IConversation) => {
-    setCurrentConversation(conversation);
-    markMessagesAsRead(conversation._id, user!._id);
-    navigation.push("Chat");
-  };
+    setCurrentConversation(conversation)
+    markMessagesAsRead(conversation._id, user!._id)
+    navigation.push("Chat")
+  }
 
   const renderSkeleton = () => (
     <View style={styles.skeletonItem}>
@@ -70,7 +70,7 @@ const Conversation: React.FC<any> = ({ navigation }) => {
         />
       </View>
     </View>
-  );
+  )
 
   return (
     <View style={styles.container}>
@@ -132,8 +132,8 @@ const Conversation: React.FC<any> = ({ navigation }) => {
         style={styles.list}
       />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   lastMessage: {
     fontSize: 14,
@@ -205,6 +205,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     borderRadius: 4,
   },
-});
+})
 
-export default Conversation;
+export default Conversation

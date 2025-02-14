@@ -1,10 +1,11 @@
 import { FontAwesome5, Ionicons } from "@expo/vector-icons"
 import React, { useState } from "react"
 import { StyleSheet, Switch, TextInput, View } from "react-native"
-import { Button, IconButton, Text, Tooltip, useTheme } from "react-native-paper"
+import { Button, IconButton, Text, useTheme } from "react-native-paper"
 import { IRebundle } from "../types/user"
 import { currentAddress, goto, region } from "../utils/common"
 import { getBackendErrorMessage } from "../utils/error"
+import Tooltip from "./Tooltip"
 
 type Props = {
   bundle: boolean
@@ -56,7 +57,7 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
           <FontAwesome5 name="truck" size={18} color={colors.onBackground} />
           <Text style={[styles.text]}>Rebundle</Text>
           <Tooltip
-            title={`Re:bundle allows buyers to shop multiple items from your store and only pay for delivery once! The buyer will be charged delivery on their first purchase, and, if they make any additional purchases within the next 2 hours, free delivery will then automatically apply. Shops who enable bundling sell more and faster.  `}
+            content={`Re:bundle allows buyers to shop multiple items from your store and only pay for delivery once! The buyer will be charged delivery on their first purchase, and, if they make any additional purchases within the next 2 hours, free delivery will then automatically apply. Shops who enable bundling sell more and faster.  `}
           >
             <IconButton
               icon="help-circle-outline"
@@ -120,7 +121,9 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
                 loading={loadingRebundle}
                 style={[styles.button, { backgroundColor: colors.primary }]}
               >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
+                <Text
+                  style={{ color: "white", fontFamily: "chronicle-text-bold" }}
+                >
                   Activate
                 </Text>
               </Button>

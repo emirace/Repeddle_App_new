@@ -35,7 +35,7 @@ const TopNavigation = ({ tabs }: Props) => {
                 <Text
                   style={{
                     color: focused ? colors.primary : colors.onBackground,
-                    fontWeight: "bold",
+                    fontFamily: "absential-sans-bold",
                   }}
                 >
                   {tab.name}

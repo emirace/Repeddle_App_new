@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   name: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     marginRight: 10,
   },
   iconContainer: {

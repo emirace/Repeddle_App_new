@@ -270,7 +270,11 @@ const styles = StyleSheet.create({
     padding: 10,
     // backgroundColor: COLOR.orange,
   },
-  title: { fontWeight: "bold", fontSize: 20, textTransform: "capitalize" },
+  title: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 20,
+    textTransform: "capitalize",
+  },
   content: {
     padding: 5,
     width: "100%",
@@ -401,7 +405,7 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     color: "#333",
   },
   itemDate: {
@@ -439,7 +443,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     fontSize: 18,
   },
 })

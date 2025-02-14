@@ -52,7 +52,11 @@ const homeStyles = StyleSheet.create({
     backgroundColor: "white",
     paddingVertical: 10,
   },
-  title: { fontWeight: "bold", fontSize: 24, textTransform: "capitalize" },
+  title: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 24,
+    textTransform: "capitalize",
+  },
   search: {
     marginVertical: normaliseH(10),
     marginBottom: 10,
@@ -75,7 +79,7 @@ const homeStyles = StyleSheet.create({
   seeAll: {
     fontSize: 18,
     color: "#eb9f40",
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     textTransform: "capitalize",
   },
   catStyles: {
@@ -90,7 +94,7 @@ const homeStyles = StyleSheet.create({
   carText: {
     color: "black",
     fontSize: 15,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   categoryScroll: { marginBottom: 10 },
   brandScroll: { padding: 10, paddingVertical: 20 },
@@ -141,7 +145,7 @@ const homeStyles = StyleSheet.create({
   },
   classicText: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     color: "white",
     textShadowColor: "rgba(0, 0, 0, 0.8)",
     textShadowOffset: { width: -1, height: 1 },
@@ -154,12 +158,12 @@ const homeStyles = StyleSheet.create({
     color: "white",
     textTransform: "uppercase",
     borderBottomWidth: 2,
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
   sellerCont: { width: 100, height: 100, borderRadius: 10, margin: 5 },
   sellerName: {
     color: "white",
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     textTransform: "capitalize",
     bottom: 5,
     left: 10,

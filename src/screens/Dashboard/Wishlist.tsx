@@ -12,6 +12,7 @@ import CartIcon from "../../components/ui/cartIcon"
 
 type Props = WishlistNavigationProp
 
+// TODO: Fix, notification, searchbar,tooltip, should not show sell page
 const Wishlist = ({ navigation }: Props) => {
   const { colors } = useTheme()
   const { addNotification } = useToastNotification()
@@ -30,7 +31,7 @@ const Wishlist = ({ navigation }: Props) => {
       const res = await getWishlist()
       if (res) setWishlist(res)
       else
-        addNotification({ message: error ?? "An error occurred", error: true })
+        addNotification({ message: error || "An error occurred", error: true })
       setLoading(false)
     }
 
@@ -94,7 +95,12 @@ const Wishlist = ({ navigation }: Props) => {
               </Text>
 
               <Pressable onPress={() => navigation.push("Main")}>
-                <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
+                <Text
+                  style={{
+                    color: colors.secondary,
+                    fontFamily: "chronicle-text-bold",
+                  }}
+                >
                   Go Shopping
                 </Text>
               </Pressable>

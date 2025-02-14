@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     padding: normaliseH(10),
   },
   title: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     fontSize: 20,
     textTransform: "capitalize",
     color: "white",

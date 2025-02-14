@@ -67,9 +67,9 @@ const CustomBottomTabBar2 = (props: any) => {
         onPress={props.onPress}
         style={{
           position: "absolute",
-          top: 2,
+          top: 1,
           left: Platform.OS === "ios" ? -0 : -1,
-          right: 0,
+          right: -1,
           bottom: Platform.OS === "ios" ? -50 : 0,
           backgroundColor: colors.background,
           borderTopWidth: 1,

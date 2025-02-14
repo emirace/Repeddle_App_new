@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   carttext: { flexDirection: "row", alignItems: "center" },
   text: {
     color: "white",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     fontSize: 18,
     textTransform: "capitalize",
     marginLeft: 10,

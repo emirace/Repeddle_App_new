@@ -4,6 +4,7 @@ import {
   MD3LightTheme,
   PaperProvider,
   adaptNavigationTheme,
+  configureFonts,
 } from "react-native-paper";
 import {
   NavigationContainer,
@@ -29,6 +30,7 @@ import { TransactionProvider } from "./contexts/TransactionContext";
 import { ToastNotificationProvider } from "./contexts/ToastNotificationContext";
 import ToastNotification from "./components/ui/ToastNotification";
 import { ReturnProvider } from "./contexts/ReturnContext";
+import { ThemeProp } from "react-native-paper/lib/typescript/types";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -38,12 +40,14 @@ const { LightTheme, DarkTheme } = adaptNavigationTheme({
 const CombinedDefaultTheme = merge(MD3LightTheme, LightTheme);
 const CombinedDarkTheme = merge(MD3DarkTheme, DarkTheme);
 
+const fonts = configureFonts({ config: { fontFamily: "chronicle-text" } });
+
 const Main = () => {
   const { themeMode } = useTheme();
-  const paperTheme =
+  const paperTheme: ThemeProp =
     themeMode === "dark"
-      ? { ...MD3DarkTheme, colors: darkTheme.colors, fonts: {} }
-      : { ...MD3LightTheme, colors: lightTheme.colors };
+      ? { ...MD3DarkTheme, colors: darkTheme.colors, fonts }
+      : { ...MD3LightTheme, colors: lightTheme.colors, fonts };
 
   return (
     <PaperProvider theme={paperTheme}>

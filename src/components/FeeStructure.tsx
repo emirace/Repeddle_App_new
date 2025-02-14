@@ -262,13 +262,13 @@ const styles = StyleSheet.create({
 
   redTitle1: {
     fontSize: 15,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     color: "red",
     marginTop: 15,
     textDecorationLine: "underline",
   },
   boldText: {
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
   redText: {
     color: "red",

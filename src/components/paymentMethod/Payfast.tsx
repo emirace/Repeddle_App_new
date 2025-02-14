@@ -69,7 +69,7 @@ const Payfast = ({ placeOrderHandler, totalPrice }: Props) => {
       ]}
       onPress={handleSubmit}
     >
-      <Text style={{ color: "white", fontWeight: "bold" }}>
+      <Text style={{ color: "white", fontFamily: "chronicle-text-bold" }}>
         Proceed to Payment
       </Text>
     </TouchableOpacity>

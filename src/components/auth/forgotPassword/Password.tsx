@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     marginBottom: 16,
   },
   description: {

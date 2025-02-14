@@ -94,14 +94,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  title: { fontWeight: "bold", fontSize: 20, textTransform: "capitalize" },
+  title: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 20,
+    textTransform: "capitalize",
+  },
   body: {
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
     paddingHorizontal: 20,
   },
-  heading: { fontSize: 20, fontWeight: "bold", marginVertical: 10 },
+  heading: {
+    fontSize: 20,
+    fontFamily: "absential-sans-bold",
+    marginVertical: 10,
+  },
   bodyText: {
     textAlign: "justify",
     lineHeight: 20,

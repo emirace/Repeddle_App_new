@@ -899,7 +899,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     position: "relative",
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     zIndex: 1,
   },
   list: {
@@ -941,5 +941,5 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   rating: { flexDirection: "row", marginHorizontal: 5, marginVertical: 5 },
-  selected: { fontWeight: "bold", color: lightTheme.colors.primary },
+  selected: { fontFamily: "chronicle-text-bold", color: lightTheme.colors.primary },
 })

@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   welcome: {
     fontSize: 16,

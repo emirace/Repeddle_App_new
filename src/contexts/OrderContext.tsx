@@ -16,10 +16,10 @@ type ContextType = {
   orders: IOrder[]
   loading: boolean
   error: string
-  fetchOrders: (orderId?: string) => Promise<boolean>
+  fetchOrders: (orderId?: string) => Promise<IOrder[] | null>
   fetchAllOrders: (orderId?: string) => Promise<boolean>
   fetchOrderById: (id: string) => Promise<IOrder | null>
-  fetchSoldOrders: () => Promise<boolean>
+  fetchSoldOrders: () => Promise<IOrder[] | null>
   createOrder: (
     order: ICreateOrder
   ) => Promise<null | { order: IOrder; message: string }>
@@ -68,13 +68,13 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
       setError("")
       setLoading(true)
       const result = await fetchOrdersService(orderId)
-      setOrders(result)
+      // setOrders(result)
       setLoading(false)
-      return true
+      return result
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return false
+      return null
     }
   }
 
@@ -99,13 +99,13 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
       setError("")
       setLoading(true)
       const result = await fetchSoldOrdersService()
-      setOrders(result)
+      // setOrders(result)
       setLoading(false)
-      return true
+      return result
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return false
+      return null
     }
   }
 

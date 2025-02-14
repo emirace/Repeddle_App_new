@@ -8,14 +8,7 @@ import {
   View,
 } from "react-native"
 import React, { useEffect, useState } from "react"
-import {
-  Appbar,
-  Checkbox,
-  Switch,
-  Text,
-  Tooltip,
-  useTheme,
-} from "react-native-paper"
+import { Appbar, Checkbox, Switch, Text, useTheme } from "react-native-paper"
 import useProducts from "../../hooks/useProducts"
 import { IBrand, ISize } from "../../types/product"
 import { EditProductNavigationProp } from "../../types/navigation/stack"
@@ -35,6 +28,7 @@ import Loader from "../../components/ui/Loader"
 import { baseURL } from "../../services/api"
 import useToastNotification from "../../hooks/useToastNotification"
 import CartIcon from "../../components/ui/cartIcon"
+import Tooltip from "../../components/Tooltip"
 
 type Props = EditProductNavigationProp
 
@@ -577,7 +571,7 @@ const EditProduct = ({ navigation, route }: Props) => {
           )}
           <View style={styles.infoRow}>
             <Text style={[styles.label]}>condition</Text>
-            <Tooltip title="Should you not be certain which condition your product falls under when listing, we suggest you choose between the last three option depending on what you see (if your product isn’t NEW or with TAG) and take very clear visible photos indicating every little details. Also, to avoid returns and help you sell fast, give every possible information in your product description so as to clearly inform buyer about your product’s condition.">
+            <Tooltip content="Should you not be certain which condition your product falls under when listing, we suggest you choose between the last three option depending on what you see (if your product isn’t NEW or with TAG) and take very clear visible photos indicating every little details. Also, to avoid returns and help you sell fast, give every possible information in your product description so as to clearly inform buyer about your product’s condition.">
               <Ionicons
                 name="help-circle"
                 size={15}
@@ -670,7 +664,7 @@ const EditProduct = ({ navigation, route }: Props) => {
           <View style={styles.infoRow}>
             <Text style={[styles.label]}>Materials/Fibric</Text>
             <Tooltip
-              title="How do I know what the primary material of the product is?
+              content="How do I know what the primary material of the product is?
                       This information is mostly indicated on the Product
                       labels, please refer to the label detailing the
                       composition of your Product."
@@ -767,7 +761,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             </Text>
 
             <Tooltip
-              title="How can I ensure that colour of the 
+              content="How can I ensure that colour of the 
               product is clear? For you to get accuracy in 
               colour. Please take photos using a good source 
               of natural light to ensure clear colour. The 
@@ -847,7 +841,7 @@ const EditProduct = ({ navigation, route }: Props) => {
           <View style={styles.infoRow}>
             <Text style={[styles.label]}>Product images</Text>
 
-            <Tooltip title="If image size appears to be too large, you can simply crop the image on your phone and try again. This should reduce the size of the image you're trying upload.">
+            <Tooltip content="If image size appears to be too large, you can simply crop the image on your phone and try again. This should reduce the size of the image you're trying upload.">
               <Ionicons
                 name="help-circle"
                 size={15}
@@ -1035,7 +1029,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             <Text style={{ marginRight: 10 }}>Item do not require size</Text>
             <View style={styles.infoRow}>
               <Tooltip
-                title="If I feel the product and the size seems to differ from what indicated on the label, what should I do?
+                content="If I feel the product and the size seems to differ from what indicated on the label, what should I do?
               Please be advised to list the product with the size printed on the label. Mentioning the size discrepancy, you noticed in the product description helps a great deal for buyers to make informed size decision. If buyers are forewarned, they will not be disappointed. This minimizes the chances of your products been returned as a result of unfit size."
               >
                 <Ionicons
@@ -1121,7 +1115,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             <Text style={[styles.label]}>Shipping Location</Text>
 
             <Tooltip
-              title="Please select if your product can be shipped anywhere around
+              content="Please select if your product can be shipped anywhere around
               your country. If you're in Nigeria, Only select Nigeria. If
               you are selling in South Africa only select South Africa"
             >
@@ -1284,7 +1278,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               <View style={styles.infoRow}>
                 <Text style={[styles.label]}>price</Text>
 
-                <Tooltip title="Any price suggestion for my product? We encourage you to be as reasonable as possible, as over prized products are turn off to buyers. Keep in mind that our community are experienced secondhand THRIFT buyers & sellers both in vintage and luxury goods and overpricing may affect the sale of your product. However, buyers will appreciate a fairly reasonable price that’s worth the value of your product. Also, bear in mind that there might be competitive product you may be selling on our app or website, hence, be sure to beat any possible competition you can. Offer discounts, promos or free delivery where and when possible as these are great ways to sell FAST! We are doing our best to provide you with competitive goods and price suggestions for similar and previously SOLD products.">
+                <Tooltip content="Any price suggestion for my product? We encourage you to be as reasonable as possible, as over prized products are turn off to buyers. Keep in mind that our community are experienced secondhand THRIFT buyers & sellers both in vintage and luxury goods and overpricing may affect the sale of your product. However, buyers will appreciate a fairly reasonable price that’s worth the value of your product. Also, bear in mind that there might be competitive product you may be selling on our app or website, hence, be sure to beat any possible competition you can. Offer discounts, promos or free delivery where and when possible as these are great ways to sell FAST! We are doing our best to provide you with competitive goods and price suggestions for similar and previously SOLD products.">
                   <Ionicons
                     name="help-circle"
                     size={15}
@@ -1442,7 +1436,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  title: { fontWeight: "bold", fontSize: 24, textTransform: "capitalize" },
+  content: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 24,
+    textTransform: "capitalize",
+  },
   form: { marginTop: 5, marginHorizontal: 20 },
   label: {
     textTransform: "capitalize",
@@ -1462,10 +1460,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     overflow: "hidden",
   },
-  labelMain: { fontWeight: "bold", fontSize: 18, textTransform: "uppercase" },
+  labelMain: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 18,
+    textTransform: "uppercase",
+  },
   addSize: {
     textAlign: "right",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     marginTop: 5,
   },
   textarea: {
@@ -1475,7 +1477,7 @@ const styles = StyleSheet.create({
   },
   price: {
     marginHorizontal: 5,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
   checkbox: { marginRight: 10, width: 20, height: 20 },
   image: { width: "100%", flex: 1 },
@@ -1509,7 +1511,7 @@ const styles = StyleSheet.create({
   addVideo: {
     textAlign: "center",
     textTransform: "uppercase",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
   deliv: {
     flexDirection: "row",
@@ -1549,7 +1551,7 @@ const styles = StyleSheet.create({
   },
   addTagText: {
     color: "white",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
   tagList: {
     flexDirection: "row",
