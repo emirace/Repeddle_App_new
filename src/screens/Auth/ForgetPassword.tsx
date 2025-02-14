@@ -10,13 +10,13 @@ import Success from "../../components/auth/forgotPassword/Success"
 const ForgetPassword: React.FC<ForgetPasswordNavigationProp> = ({
   navigation,
 }) => {
-  const { sendForgetPasswordEmail, error: forgetError } = useAuth()
-  const { colors, dark } = useTheme()
-  const [email, setEmail] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [step, setStep] = useState("success")
-  const [token, setToken] = useState("")
+  const { sendForgetPasswordEmail, error: forgetError } = useAuth();
+  const { colors, dark } = useTheme();
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState("");
+  const [token, setToken] = useState("");
 
   const handleResetPassword = async () => {
     // Basic email validation
