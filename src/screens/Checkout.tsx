@@ -239,7 +239,9 @@ const Checkout = ({ navigation }: Props) => {
             Order Summary
           </Text>
           <View>
-            <Text style={{ fontWeight: "bold", fontSize: 15 }}>Item</Text>
+            <Text style={{ fontFamily: "absential-sans-bold", fontSize: 15 }}>
+              Item
+            </Text>
 
             {cart.map((c) => (
               <View
@@ -332,7 +334,7 @@ const Checkout = ({ navigation }: Props) => {
                 marginTop: 5,
                 fontSize: 18,
                 color: colors.primary,
-                fontWeight: "bold",
+                fontFamily: "absential-sans-bold",
               }}
             >
               {currency(cart?.[0]?.region)}
@@ -351,7 +353,7 @@ const Checkout = ({ navigation }: Props) => {
             ]}
             onPress={handleSubmit}
           >
-            <Text style={{ color: "white", fontWeight: "bold" }}>
+            <Text style={{ color: "white", fontFamily: "chronicle-text-bold" }}>
               Proceed to Payment
             </Text>
           </TouchableOpacity>
@@ -397,7 +399,10 @@ const Checkout = ({ navigation }: Props) => {
                   loading={isLoading}
                   mode="contained"
                   style={[styles.button, { backgroundColor: colors.primary }]}
-                  labelStyle={{ color: "white", fontWeight: "bold" }}
+                  labelStyle={{
+                    color: "white",
+                    fontFamily: "chronicle-text-bold",
+                  }}
                 />
               )}
             />
@@ -411,7 +416,11 @@ const Checkout = ({ navigation }: Props) => {
 export default Checkout
 
 const styles = StyleSheet.create({
-  title: { fontWeight: "bold", fontSize: 20, textTransform: "capitalize" },
+  title: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 20,
+    textTransform: "capitalize",
+  },
   content: { padding: 20, flex: 1 },
   section: {
     borderRadius: 5,
@@ -420,7 +429,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     marginBottom: 10,
   },
   itemCont: {},
@@ -435,7 +444,7 @@ const styles = StyleSheet.create({
   category: { color: "grey", textTransform: "capitalize", marginRight: 10 },
   quantity: { flexDirection: "row" },
   price: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     fontSize: 18,
     textAlign: "right",
     flex: 1,
@@ -443,7 +452,7 @@ const styles = StyleSheet.create({
   delivery: { padding: 5 },
   edit: {
     fontSize: 13,
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     paddingTop: 10,
   },
   checkout: {

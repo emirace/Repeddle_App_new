@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
   circletext: {
     fontSize: 14,
     textTransform: "uppercase",
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
   },
 })

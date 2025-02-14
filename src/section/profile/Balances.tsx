@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   balanceAmount: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     height: 30,
     textAlign: "center",
   },

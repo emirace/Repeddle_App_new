@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     fontSize: 18,
   },
   itemStyles: {

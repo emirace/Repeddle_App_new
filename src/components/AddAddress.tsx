@@ -218,7 +218,7 @@ const AddAddress = ({ isFocused, navigation }: Props) => {
                 textAlign: "center",
               }}
             >
-              Note: This can be editted later in your profile screen
+              Note: This can be edited later in your profile screen
             </Text>
             <View
               style={{
@@ -231,7 +231,7 @@ const AddAddress = ({ isFocused, navigation }: Props) => {
                 style={{
                   color: "#eb9f40",
                   textDecorationLine: "underline",
-                  fontWeight: "bold",
+                  fontFamily: "chronicle-text-bold",
                 }}
                 onPress={() => goto(`${currentAddress(region())}/sell`)}
               >
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     fontSize: 20,
     textTransform: "capitalize",
     color: "white",
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
   },
-  modalTitle: { fontWeight: "bold", fontSize: 20 },
+  modalTitle: { fontFamily: "chronicle-text-bold", fontSize: 20 },
   heading: {
     flexDirection: "row",
     justifyContent: "space-between",

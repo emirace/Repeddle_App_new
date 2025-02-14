@@ -53,7 +53,10 @@ const Sold = (props: Props) => {
             You have not sold any item 💰{" "}
             <Text
               onPress={() => navigation.push("Sell")}
-              style={{ color: colors.secondary, fontWeight: "bold" }}
+              style={{
+                color: colors.secondary,
+                fontFamily: "chronicle-text-bold",
+              }}
             >
               Sell
             </Text>

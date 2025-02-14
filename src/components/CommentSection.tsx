@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   container: { marginHorizontal: 10, marginBottom: 20 },
   headerCont: { marginBottom: 20 },
   header: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     fontSize: 20,
     lineHeight: 25,
   },
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     marginTop: 10,
   },
-  buttonText: { color: "#fff", fontWeight: "bold" },
+  buttonText: { color: "#fff", fontFamily: "chronicle-text-bold" },
   centeredView: {
     justifyContent: "center",
     alignItems: "center",
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: Dimensions.get("screen").width * 0.9,
   },
-  modalTitle: { fontWeight: "bold", fontSize: 20 },
+  modalTitle: { fontFamily: "absential-sans-bold", fontSize: 20 },
   heading: {
     flexDirection: "row",
     justifyContent: "space-between",

@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Image,
   View,
   Dimensions,
   FlatList,
@@ -8,7 +7,7 @@ import {
   Animated,
 } from "react-native"
 import React, { useEffect, useRef, useState } from "react"
-import { Appbar, IconButton, Searchbar, useTheme } from "react-native-paper"
+import { Appbar, IconButton, Portal, useTheme } from "react-native-paper"
 import useThemeContext from "../hooks/useTheme"
 import { MainScreenNavigationProp } from "../types/navigation/stack"
 import { TopSellers } from "../types/user"
@@ -54,7 +53,11 @@ const Home = ({ navigation }: any) => {
 
       if (typeof res !== "string") {
         const newData = res
-        newData.products = [...products.products, ...newData.products]
+
+        const allProducts = [...products.products, ...newData.products]
+        newData.products = [
+          ...new Map(allProducts.map((item) => [item._id, item])).values(),
+        ]
         setProducts(newData)
       } else {
         addNotification({ message: res, error: true })
@@ -215,7 +218,7 @@ const Home = ({ navigation }: any) => {
             <Animated.Image
               source={{
                 uri:
-                  themeMode === "dark"
+                  themeMode !== "dark"
                     ? "https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif"
                     : "https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif",
               }}
@@ -258,17 +261,19 @@ const Home = ({ navigation }: any) => {
               />
             </View>
           </View>
-          <View style={styles.content}>
-            <Animated.View
-              style={[
-                styles.bottomHeader,
-                searchAnimation,
-                { backgroundColor: "transparent" },
-              ]}
-            >
-              <SearchBar onPress={handleSearch} />
-            </Animated.View>
-          </View>
+          <Portal>
+            <View style={styles.content}>
+              <Animated.View
+                style={[
+                  styles.bottomHeader,
+                  searchAnimation,
+                  { backgroundColor: "transparent" },
+                ]}
+              >
+                <SearchBar onPress={handleSearch} />
+              </Animated.View>
+            </View>
+          </Portal>
         </View>
       </Appbar.Header>
 
@@ -349,10 +354,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
+    ...StyleSheet.absoluteFillObject,
     paddingHorizontal: 20,
-    zIndex: 20,
-    position: "absolute",
-    bottom: -50,
+    // zIndex: 20000000000,
+    // position: "absolute",
+    top: 120,
   },
   bottomHeader: {
     // height: 1,

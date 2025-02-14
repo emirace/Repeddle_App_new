@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { View, TextInput, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react"
+import { View, TextInput, StyleSheet } from "react-native"
 import {
   ActivityIndicator,
   Appbar,
   Button,
   Text,
   useTheme,
-} from "react-native-paper";
-import useAuth from "../../../../hooks/useAuth";
+} from "react-native-paper"
+import useAuth from "../../../../hooks/useAuth"
 
 interface TokenComponentProps {
-  onVerify: () => void;
-  back: () => void;
-  email: string;
-  setToken: (value: string) => void;
+  onVerify: () => void
+  back: () => void
+  email: string
+  setToken: (value: string) => void
 }
 
 const Token: React.FC<TokenComponentProps> = ({
@@ -22,88 +22,88 @@ const Token: React.FC<TokenComponentProps> = ({
   back,
   setToken,
 }) => {
-  const { sendVerifyOtp, verifyEmail, error } = useAuth();
-  const { colors } = useTheme();
-  const [loading, setLoading] = useState(false);
-  const [sendingOtp, setSendingOtp] = useState(false);
-  const [resendTimer, setResendTimer] = useState<number>(60);
-  const [otp, setOtp] = useState("");
+  const { sendVerifyOtp, verifyEmail, error } = useAuth()
+  const { colors } = useTheme()
+  const [loading, setLoading] = useState(false)
+  const [sendingOtp, setSendingOtp] = useState(false)
+  const [resendTimer, setResendTimer] = useState<number>(60)
+  const [otp, setOtp] = useState("")
   const inputRefs: React.RefObject<TextInput>[] = Array.from(
     { length: 5 },
     () => React.createRef()
-  );
+  )
 
   useEffect(() => {
     // Focus the first input when the component mounts
-    inputRefs[0].current?.focus();
-  }, []);
+    inputRefs[0].current?.focus()
+  }, [])
 
   useEffect(() => {
     // Decrease the countdown timer every second
     const timerInterval = setInterval(() => {
-      setResendTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
-    }, 1000);
+      setResendTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0))
+    }, 1000)
 
     // Clear the interval when the component is unmounted
-    return () => clearInterval(timerInterval);
-  }, []);
+    return () => clearInterval(timerInterval)
+  }, [])
 
   const handleInputChange = (index: number, text: string) => {
     setOtp((prevToken) => {
       // Copy the previous otp to modify the character at the current index
-      const newToken = prevToken.split("");
-      newToken[index] = text;
+      const newToken = prevToken.split("")
+      newToken[index] = text
 
       // Join the modified characters to form the updated otp
-      const updatedToken = newToken.join("");
+      const updatedToken = newToken.join("")
 
       // If the current input is not empty, move focus to the next input
       if (text && index < 4) {
-        inputRefs[index + 1].current?.focus();
+        inputRefs[index + 1].current?.focus()
       }
 
       // Notify the parent component of the updated otp
       // onTokenChange(updatedToken);
 
-      return updatedToken;
-    });
-  };
+      return updatedToken
+    })
+  }
 
   const handleInputKeyPress = (index: number, key: string) => {
     // If the backspace key is pressed and the current input is empty,
     // move focus to the previous input and delete the character there
     if (key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs[index - 1].current?.focus();
-      handleInputChange(index - 1, "");
+      inputRefs[index - 1].current?.focus()
+      handleInputChange(index - 1, "")
     }
-  };
+  }
 
   const handleResend = async () => {
-    setSendingOtp(true);
-    const result = await sendVerifyOtp({ email });
+    setSendingOtp(true)
+    const result = await sendVerifyOtp({ email })
     if (result) {
-      setResendTimer(60);
+      setResendTimer(60)
     }
-    setSendingOtp(false);
+    setSendingOtp(false)
     // Add logic to resend the OTP
-  };
+  }
 
   const handleVerify = async () => {
-    setLoading(true);
-    const result = await verifyEmail({ token: otp, type: "email" });
+    setLoading(true)
+    const result = await verifyEmail({ token: otp, type: "email" })
     if (result) {
-      setToken(otp);
-      onVerify();
+      setToken(otp)
+      onVerify()
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
     <View style={styles.container}>
       <Appbar.Header>
         <Appbar.BackAction
           onPress={() => {
-            back();
+            back()
           }}
           iconColor="white"
         />
@@ -150,7 +150,12 @@ const Token: React.FC<TokenComponentProps> = ({
             ) : resendTimer > 0 ? (
               <Text>
                 Resend OTP in{" "}
-                <Text style={{ fontWeight: "bold", color: colors.primary }}>
+                <Text
+                  style={{
+                    fontFamily: "chronicle-text-bold",
+                    color: colors.primary,
+                  }}
+                >
                   {`${Math.floor(resendTimer / 60)
                     .toString()
                     .padStart(2, "0")}:${(resendTimer % 60)
@@ -162,7 +167,7 @@ const Token: React.FC<TokenComponentProps> = ({
             ) : (
               <Button
                 onPress={handleResend}
-                labelStyle={{ fontWeight: "bold" }}
+                labelStyle={{ fontFamily: "chronicle-text-bold" }}
               >
                 Resend OTP
               </Button>
@@ -183,8 +188,8 @@ const Token: React.FC<TokenComponentProps> = ({
         </Button>
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -213,6 +218,6 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     borderRadius: 5,
   },
-});
+})
 
-export default Token;
+export default Token

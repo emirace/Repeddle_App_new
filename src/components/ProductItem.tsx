@@ -51,8 +51,9 @@ const ProductItem = ({ navigate, product: product1 }: Props) => {
       return null
     }
     return (
-      ((product.costPrice - product.sellingPrice) / product.costPrice) * 100
-    )
+      ((product.costPrice - product.sellingPrice) / product.costPrice) *
+      100
+    ).toFixed(0)
   }
 
   const toggleLikes = async () => {
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
   priceContainer: {
     flexDirection: "row",

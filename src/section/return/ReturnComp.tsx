@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     color: "#333",
   },
   itemDate: {
@@ -175,6 +175,6 @@ const styles = StyleSheet.create({
   },
   viewDetailsButtonText: {
     color: "#fff",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
 })

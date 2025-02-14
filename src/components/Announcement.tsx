@@ -6,9 +6,10 @@ import {
   View,
 } from "react-native"
 import React, { useState } from "react"
-import { Text, Tooltip, useTheme } from "react-native-paper"
+import { Text, useTheme } from "react-native-paper"
 import Carousel from "react-native-reanimated-carousel"
 import { MainScreenNavigationProp } from "../types/navigation/stack"
+import Tooltip from "./Tooltip"
 
 type Props = {
   navigation: MainScreenNavigationProp["navigation"]
@@ -32,6 +33,10 @@ const Announcement = ({ navigation }: Props) => {
     if (value === "SIGN UP") {
       navigation.push("Auth")
     }
+  }
+
+  const changeAutoPlay = () => {
+    setAutoplay(!autoplay)
   }
 
   return (
@@ -64,9 +69,9 @@ const Announcement = ({ navigation }: Props) => {
           </Text>
           {item.textButton === "DETAILS" ? (
             <Tooltip
-              title="Sell more than 10,400 brand names you love. To give you unmatched user experiencd and support the growth of your business as part of our thrift secondhand community, you will not be charge Repeddle seller's commision fee."
-              // position="top"
-              enterTouchDelay={1}
+              content="Sell more than 10,400 brand names you love. To give you unmatched user experienced and support the growth of your business as part of our thrift secondhand community, you will not be charge Repeddle seller's commision fee."
+              onClose={changeAutoPlay}
+              onClick={changeAutoPlay}
             >
               <Text
                 style={{
@@ -76,7 +81,6 @@ const Announcement = ({ navigation }: Props) => {
                   fontSize: 11,
                   fontFamily: "chronicle-text",
                 }}
-                onPress={() => setAutoplay(!autoplay)}
               >
                 {item.textButton}
               </Text>

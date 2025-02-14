@@ -18,7 +18,7 @@ import useToastNotification from "../hooks/useToastNotification"
 
 type Props = SellerReviewNavigationProp
 
-const SellerReview = ({ navigation }: Props) => {
+const SellerReview = ({ navigation, route: { params } }: Props) => {
   const { colors } = useTheme()
 
   const [reviews, setReviews] = useState<IReview[]>([])
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     // flex: 1,
   },
   reviewerName: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     fontSize: 16,
 
     // marginBottom: 4,
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   reviewRating: {
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     fontSize: 16,
     marginBottom: 8,
     color: "#333333",
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   },
   replyButtonText: {
     color: "#FFFFFF",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     fontSize: 14,
   },
   replyInputContainer: {
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: "#FFFFFF",
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
     fontSize: 14,
   },
   icon: {

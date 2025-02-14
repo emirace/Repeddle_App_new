@@ -41,15 +41,17 @@ const TransactionDetail = ({ navigation, route }: Props) => {
             <Divider />
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{ fontWeight: "bold" }}>Transaction Id</Text>
+            <Text style={{ fontFamily: "chronicle-text-bold" }}>
+              Transaction Id
+            </Text>
             <Text>{transaction._id}</Text>
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{ fontWeight: "bold" }}>Reference</Text>
+            <Text style={{ fontFamily: "chronicle-text-bold" }}>Reference</Text>
             <Text>{transaction.type}</Text>
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{ fontWeight: "bold" }}>Amount</Text>
+            <Text style={{ fontFamily: "chronicle-text-bold" }}>Amount</Text>
             <Text>
               {currency(region())} {transaction.amount}{" "}
               <Text style={{ color: colors.secondary }}>
@@ -58,15 +60,15 @@ const TransactionDetail = ({ navigation, route }: Props) => {
             </Text>
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{ fontWeight: "bold" }}>Type</Text>
+            <Text style={{ fontFamily: "chronicle-text-bold" }}>Type</Text>
             <Text>{transaction.type}</Text>
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{ fontWeight: "bold" }}>Purpose</Text>
+            <Text style={{ fontFamily: "chronicle-text-bold" }}>Purpose</Text>
             <Text>{transaction.description}</Text>
           </View>
           <View style={styles.itemContainer}>
-            <Text style={{ fontWeight: "bold" }}>Date</Text>
+            <Text style={{ fontFamily: "chronicle-text-bold" }}>Date</Text>
             <Text>
               {moment(transaction.createdAt).format("hh:mm a - ddd MMM YYYY")}
             </Text>

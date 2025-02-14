@@ -95,7 +95,9 @@ const PaymentMethod = ({ navigation }: Props) => {
           ]}
           onPress={handleSubmit}
         >
-          <Text style={{ color: "white", fontWeight: "bold" }}>Continue</Text>
+          <Text style={{ color: "white", fontFamily: "chronicle-text-bold" }}>
+            Continue
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -142,7 +144,11 @@ const Radio = ({ label, paymentMethodName, onPress }: RadioProps) => {
 }
 
 const styles = StyleSheet.create({
-  title: { fontWeight: "bold", fontSize: 20, textTransform: "capitalize" },
+  title: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 20,
+    textTransform: "capitalize",
+  },
   button: {
     height: 40,
     justifyContent: "center",

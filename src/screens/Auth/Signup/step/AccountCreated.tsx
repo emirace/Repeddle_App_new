@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     marginVertical: 20,
   },
   instruction: {
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff", // Adjust the color as needed
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "chronicle-text-bold",
   },
 })
 

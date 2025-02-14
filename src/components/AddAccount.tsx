@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontWeight: "bold",
+    fontFamily: "absential-sans-bold",
     fontSize: 20,
     textTransform: "capitalize",
     color: "white",
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
   },
-  modalTitle: { fontWeight: "bold", fontSize: 20 },
+  modalTitle: { fontFamily: "absential-sans-bold", fontSize: 20 },
   heading: {
     flexDirection: "row",
     justifyContent: "space-between",
