@@ -1,8 +1,8 @@
-import "react-native-gesture-handler"
-import Main from "./src"
-import { GestureHandlerRootView } from "react-native-gesture-handler"
-import { ThemeProvider } from "./src/contexts/ThemeContext"
-import { useFonts } from "expo-font"
+import "react-native-gesture-handler";
+import Main from "./src";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ThemeProvider } from "./src/contexts/ThemeContext";
+import { useFonts } from "expo-font";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -13,10 +13,10 @@ export default function App() {
     "absential-sans-light": require("./assets/fonts/AbsentiaSansLight.ttf"),
     "absential-sans-medium": require("./assets/fonts/AbsentiaSansMedium.ttf"),
     "absential-sans-regular": require("./assets/fonts/AbsentiaSansRegular.ttf"),
-  })
+  });
 
   if (!fontsLoaded) {
-    return null
+    return null;
   }
 
   return (
@@ -25,5 +25,5 @@ export default function App() {
         <Main />
       </ThemeProvider>
     </GestureHandlerRootView>
-  )
+  );
 }

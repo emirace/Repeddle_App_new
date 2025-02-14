@@ -1,53 +1,53 @@
-import merge from "deepmerge"
+import merge from "deepmerge";
 import {
   MD3DarkTheme,
   MD3LightTheme,
   PaperProvider,
   adaptNavigationTheme,
   configureFonts,
-} from "react-native-paper"
+} from "react-native-paper";
 import {
   NavigationContainer,
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme,
-} from "@react-navigation/native"
-import MessageProvider from "./contexts/MessageContext"
-import { AuthProvider } from "./contexts/AuthContext"
-import { StatusBar } from "expo-status-bar"
-import useTheme from "./hooks/useTheme"
-import { darkTheme, lightTheme } from "./constant/theme"
-import MainStackNav from "./navigations/stack"
-import { CartProvider } from "./contexts/CartContext"
-import { ProductProvider } from "./contexts/ProductContext"
-import { UserProvider } from "./contexts/UserContext"
-import { BrandProvider } from "./contexts/BrandContext"
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
-import { NewsletterProvider } from "./contexts/NewsletterContext"
-import { OrderProvider } from "./contexts/OrderContext"
-import { CategoryProvider } from "./contexts/CategoryContext"
-import { StoreProvider } from "./contexts/StoreContext"
-import { TransactionProvider } from "./contexts/TransactionContext"
-import { ToastNotificationProvider } from "./contexts/ToastNotificationContext"
-import ToastNotification from "./components/ui/ToastNotification"
-import { ReturnProvider } from "./contexts/ReturnContext"
-import { ThemeProp } from "react-native-paper/lib/typescript/types"
+} from "@react-navigation/native";
+import MessageProvider from "./contexts/MessageContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { StatusBar } from "expo-status-bar";
+import useTheme from "./hooks/useTheme";
+import { darkTheme, lightTheme } from "./constant/theme";
+import MainStackNav from "./navigations/stack";
+import { CartProvider } from "./contexts/CartContext";
+import { ProductProvider } from "./contexts/ProductContext";
+import { UserProvider } from "./contexts/UserContext";
+import { BrandProvider } from "./contexts/BrandContext";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { NewsletterProvider } from "./contexts/NewsletterContext";
+import { OrderProvider } from "./contexts/OrderContext";
+import { CategoryProvider } from "./contexts/CategoryContext";
+import { StoreProvider } from "./contexts/StoreContext";
+import { TransactionProvider } from "./contexts/TransactionContext";
+import { ToastNotificationProvider } from "./contexts/ToastNotificationContext";
+import ToastNotification from "./components/ui/ToastNotification";
+import { ReturnProvider } from "./contexts/ReturnContext";
+import { ThemeProp } from "react-native-paper/lib/typescript/types";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
   reactNavigationDark: NavigationDarkTheme,
-})
+});
 
-const CombinedDefaultTheme = merge(MD3LightTheme, LightTheme)
-const CombinedDarkTheme = merge(MD3DarkTheme, DarkTheme)
+const CombinedDefaultTheme = merge(MD3LightTheme, LightTheme);
+const CombinedDarkTheme = merge(MD3DarkTheme, DarkTheme);
 
-const fonts = configureFonts({ config: { fontFamily: "chronicle-text" } })
+const fonts = configureFonts({ config: { fontFamily: "chronicle-text" } });
 
 const Main = () => {
-  const { themeMode } = useTheme()
+  const { themeMode } = useTheme();
   const paperTheme: ThemeProp =
     themeMode === "dark"
       ? { ...MD3DarkTheme, colors: darkTheme.colors, fonts }
-      : { ...MD3LightTheme, colors: lightTheme.colors, fonts }
+      : { ...MD3LightTheme, colors: lightTheme.colors, fonts };
 
   return (
     <PaperProvider theme={paperTheme}>
@@ -93,7 +93,7 @@ const Main = () => {
         </AuthProvider>
       </NavigationContainer>
     </PaperProvider>
-  )
-}
+  );
+};
 
-export default Main
+export default Main;

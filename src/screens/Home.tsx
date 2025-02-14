@@ -5,6 +5,7 @@ import {
   FlatList,
   ActivityIndicator,
   Animated,
+  
 } from "react-native"
 import React, { useEffect, useRef, useState } from "react"
 import {
@@ -51,78 +52,78 @@ const Home = ({ navigation }: any) => {
   const { colors } = useTheme()
   const { addNotification } = useToastNotification()
 
-  const { fetchProducts, loading } = useProducts()
-  const { getTopSellers } = useUser()
+  const { fetchProducts, loading } = useProducts();
+  const { getTopSellers } = useUser();
 
   const [products, setProducts] = useState<ProductWithPagination>({
     currentPage: 0,
     products: [],
     totalCount: 0,
     totalPages: 0,
-  })
-  const [sellers, setSellers] = useState<TopSellers[]>([])
-  const [sellerLoading, setSellerLoading] = useState(false)
-  const [sellerError, setSellerError] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
+  });
+  const [sellers, setSellers] = useState<TopSellers[]>([]);
+  const [sellerLoading, setSellerLoading] = useState(false);
+  const [sellerError, setSellerError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetchProducts(`page=${currentPage}`)
+      const res = await fetchProducts(`page=${currentPage}`);
 
       if (typeof res !== "string") {
-        const newData = res
+        const newData = res;
 
-        const allProducts = [...products.products, ...newData.products]
+        const allProducts = [...products.products, ...newData.products];
         newData.products = [
           ...new Map(allProducts.map((item) => [item._id, item])).values(),
-        ]
-        setProducts(newData)
+        ];
+        setProducts(newData);
       } else {
-        addNotification({ message: res, error: true })
+        addNotification({ message: res, error: true });
       }
-    }
+    };
 
-    fetchData()
-  }, [currentPage])
+    fetchData();
+  }, [currentPage]);
 
   useEffect(() => {
     const fetchSellers = async () => {
-      setSellerLoading(true)
-      const res = await getTopSellers()
+      setSellerLoading(true);
+      const res = await getTopSellers();
       if (typeof res === "string") {
-        setSellerError(res)
+        setSellerError(res);
       } else {
-        setSellers(res.sellers)
+        setSellers(res.sellers);
       }
 
-      setSellerLoading(false)
-    }
+      setSellerLoading(false);
+    };
 
-    fetchSellers()
-  }, [])
+    fetchSellers();
+  }, []);
 
   const formatData = (data: IProduct[]) => {
-    const isEven = data.length % numColumns === 0
+    const isEven = data.length % numColumns === 0;
 
     if (!isEven) {
-      const empty = { ...data[0], empty: true }
-      data.push(empty)
+      const empty = { ...data[0], empty: true };
+      data.push(empty);
     }
 
-    return data
-  }
+    return data;
+  };
 
   const handleMore = () => {
     if (currentPage < products.totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handleSearch = (val: string) => {
-    navigation.push("Search", { query: val })
-  }
+    navigation.push("Search", { query: val });
+  };
 
-  const animatedValue = useRef(new Animated.Value(0)).current
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
   const searchAnimation = {
     transform: [
@@ -151,7 +152,7 @@ const Home = ({ navigation }: any) => {
     //   outputRange: [55, 1],
     //   extrapolate: "clamp",
     // }),
-  }
+  };
 
   const logoAnimation = {
     transform: [
@@ -175,7 +176,7 @@ const Home = ({ navigation }: any) => {
       outputRange: [1, 0],
       extrapolate: "clamp",
     }),
-  }
+  };
 
   const logo2Animation = {
     transform: [
@@ -199,7 +200,7 @@ const Home = ({ navigation }: any) => {
       outputRange: [0, 1],
       extrapolate: "clamp",
     }),
-  }
+  };
 
   // const headerAnimation = {
   //   transform: [
@@ -254,8 +255,8 @@ const Home = ({ navigation }: any) => {
               source={{
                 uri:
                   themeMode === "dark"
-                    ? "https://res.cloudinary.com/emirace/image/upload/v1658136004/Reppedle_Black_ebqmot.gif"
-                    : "https://res.cloudinary.com/emirace/image/upload/v1658136003/Reppedle_White_d56cic.gif",
+                    ? "https://res.cloudinary.com/emirace/image/upload/v1658136003/Reppedle_White_d56cic.gif"
+                    : "https://res.cloudinary.com/emirace/image/upload/v1658136004/Reppedle_Black_ebqmot.gif",
               }}
               style={[
                 {
@@ -314,8 +315,8 @@ const Home = ({ navigation }: any) => {
           />
         )}
         onScroll={(e) => {
-          const offsetY = e.nativeEvent.contentOffset.y
-          animatedValue.setValue(offsetY)
+          const offsetY = e.nativeEvent.contentOffset.y;
+          animatedValue.setValue(offsetY);
         }}
         scrollEventThrottle={16}
         onEndReached={handleMore}
@@ -331,12 +332,12 @@ const RenderItem = ({
   item,
   navigation,
 }: {
-  item: IProduct & { empty?: boolean }
-  navigation: MainScreenNavigationProp["navigation"]
+  item: IProduct & { empty?: boolean };
+  navigation: MainScreenNavigationProp["navigation"];
 }) => {
-  let { itemStyles, invisible } = homeStyles
+  let { itemStyles, invisible } = homeStyles;
 
-  if (item.empty) return <View style={[itemStyles, invisible]}></View>
+  if (item.empty) return <View style={[itemStyles, invisible]}></View>;
 
   return (
     <View style={itemStyles}>
@@ -345,11 +346,11 @@ const RenderItem = ({
         product={item}
       />
     </View>
-  )
-}
+  );
+};
 
 const Footer = ({ isLoading }: { isLoading?: boolean }) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return (
     <View
@@ -362,10 +363,10 @@ const Footer = ({ isLoading }: { isLoading?: boolean }) => {
         <ActivityIndicator size="large" color={colors.primary} />
       ) : null}
     </View>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
 
 const styles = StyleSheet.create({
   container: {
@@ -382,4 +383,4 @@ const styles = StyleSheet.create({
     // height: 1,
     paddingHorizontal: 10,
   },
-})
+});
