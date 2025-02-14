@@ -303,12 +303,12 @@ const Sell = ({ navigation }: any) => {
     const file = photo as File
     const bodyFormData = new FormData()
     bodyFormData.append("file", file)
-    // setLoadingUpload(true)
+    setLoadingUpload(true)
     try {
       const res = await uploadImage(file)
       handleOnChange(res, key)
     } catch (error) {
-      //   addNotification({message:(error as string),error:true})
+      addNotification({ message: error as string, error: true })
     }
   }
 

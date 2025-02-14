@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Image,
   View,
   Dimensions,
   FlatList,
@@ -8,7 +7,7 @@ import {
   Animated,
 } from "react-native"
 import React, { useEffect, useRef, useState } from "react"
-import { Appbar, IconButton, Searchbar, useTheme } from "react-native-paper"
+import { Appbar, IconButton, Portal, useTheme } from "react-native-paper"
 import useThemeContext from "../hooks/useTheme"
 import { MainScreenNavigationProp } from "../types/navigation/stack"
 import { TopSellers } from "../types/user"
@@ -262,17 +261,19 @@ const Home = ({ navigation }: any) => {
               />
             </View>
           </View>
-          <View style={styles.content}>
-            <Animated.View
-              style={[
-                styles.bottomHeader,
-                searchAnimation,
-                { backgroundColor: "transparent" },
-              ]}
-            >
-              <SearchBar onPress={handleSearch} />
-            </Animated.View>
-          </View>
+          <Portal>
+            <View style={styles.content}>
+              <Animated.View
+                style={[
+                  styles.bottomHeader,
+                  searchAnimation,
+                  { backgroundColor: "transparent" },
+                ]}
+              >
+                <SearchBar onPress={handleSearch} />
+              </Animated.View>
+            </View>
+          </Portal>
         </View>
       </Appbar.Header>
 
@@ -353,10 +354,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
+    ...StyleSheet.absoluteFillObject,
     paddingHorizontal: 20,
-    zIndex: 20,
-    position: "absolute",
-    bottom: -50,
+    // zIndex: 20000000000,
+    // position: "absolute",
+    top: 120,
   },
   bottomHeader: {
     // height: 1,

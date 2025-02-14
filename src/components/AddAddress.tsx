@@ -218,7 +218,7 @@ const AddAddress = ({ isFocused, navigation }: Props) => {
                 textAlign: "center",
               }}
             >
-              Note: This can be editted later in your profile screen
+              Note: This can be edited later in your profile screen
             </Text>
             <View
               style={{
