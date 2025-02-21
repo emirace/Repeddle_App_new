@@ -33,18 +33,17 @@ const AddAccount = ({
   const { updateUser, loading, error: userError, user } = useAuth()
   const { addNotification } = useToastNotification()
 
-  // const [showAccount, setShowAccount] = useState(true)
   const [input, setInput] = useState({
     accountName: "",
     accountNumber: "",
     bankName: "",
-  })
+  });
 
   const [error, setError] = useState({
     accountName: "",
     accountNumber: "",
     bankName: "",
-  })
+  });
 
   // useEffect(() => {
   //   const checkSeller = () => {
@@ -60,20 +59,21 @@ const AddAccount = ({
   //   checkSeller()
   // }, [user, isFocused])
 
+
   const handleOnChange = (text: string, inputVal: keyof typeof input) => {
-    setInput((prevState) => ({ ...prevState, [inputVal]: text }))
-  }
+    setInput((prevState) => ({ ...prevState, [inputVal]: text }));
+  };
 
   const handleError = (errorMessage: string, inputVal: keyof typeof error) => {
-    setError((prevState) => ({ ...prevState, [inputVal]: errorMessage }))
-  }
+    setError((prevState) => ({ ...prevState, [inputVal]: errorMessage }));
+  };
 
   const submitHandler = async () => {
     const res = await updateUser({
       accountName: input.accountName,
       accountNumber: +input.accountNumber,
       bankName: input.bankName,
-    })
+    });
     if (res) {
       addNotification({ message: "Account Verified Successfully" })
       // setShowAccount(false)
@@ -81,29 +81,29 @@ const AddAccount = ({
       addNotification({
         message: userError ?? "Failed to verify account",
         error: true,
-      })
+      });
     }
-  }
+  };
 
   const validate = () => {
-    let valid = true
+    let valid = true;
     if (!input.accountNumber) {
-      handleError("Enter a valid account number", "accountNumber")
-      valid = false
+      handleError("Enter a valid account number", "accountNumber");
+      valid = false;
     }
     if (!input.accountName) {
-      handleError("Enter a valid account name", "accountName")
-      valid = false
+      handleError("Enter a valid account name", "accountName");
+      valid = false;
     }
     if (!input.bankName) {
-      handleError("Select a valid bank", "bankName")
-      valid = false
+      handleError("Select a valid bank", "bankName");
+      valid = false;
     }
 
     if (valid) {
-      submitHandler()
+      submitHandler();
     }
-  }
+  };
 
   return (
     <Modal
@@ -141,7 +141,7 @@ const AddAccount = ({
               placeholder={input.accountName}
               error={error.accountName}
               onFocus={() => {
-                handleError("", "accountName")
+                handleError("", "accountName");
               }}
             />
             <Text1 style={styles.label}>Account Number</Text1>
@@ -152,7 +152,7 @@ const AddAccount = ({
               placeholder={input.accountNumber ? `${input.accountNumber}` : ""}
               error={error.accountNumber}
               onFocus={() => {
-                handleError("", "accountNumber")
+                handleError("", "accountNumber");
               }}
             />
             <Text1 style={styles.label}>Bank Name</Text1>
@@ -165,8 +165,8 @@ const AddAccount = ({
                 color: "grey",
               }}
               onValueChange={(itemValue, itemIndex) => {
-                handleOnChange(itemValue, "bankName")
-                handleError("", "bankName")
+                handleOnChange(itemValue, "bankName");
+                handleError("", "bankName");
               }}
             >
               <Picker.Item
@@ -218,16 +218,16 @@ const AddAccount = ({
         </View>
       </View>
     </Modal>
-  )
-}
+  );
+};
 
-type TextProps = PropsWithChildren<{ style: StyleProp<TextStyle> }>
+type TextProps = PropsWithChildren<{ style: StyleProp<TextStyle> }>;
 
 const Text1 = ({ children, style }: TextProps) => {
-  return <Text style={[styles.label, style]}>{children}</Text>
-}
+  return <Text style={[styles.label, style]}>{children}</Text>;
+};
 
-export default AddAccount
+export default AddAccount;
 
 const styles = StyleSheet.create({
   container: {
@@ -272,4 +272,4 @@ const styles = StyleSheet.create({
     width: "60%",
     alignItems: "center",
   },
-})
+});
