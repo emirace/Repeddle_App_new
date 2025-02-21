@@ -44,7 +44,7 @@ const HomeContents = ({
           <Text style={[homeStyles.category]}>New Deals</Text>
           <View style={homeStyles.dash} />
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.push("Search", {})}>
           <Text style={homeStyles.seeAll}>see all</Text>
         </TouchableOpacity>
       </View>
