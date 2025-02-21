@@ -78,7 +78,7 @@ const Announcement = ({ navigation }: Props) => {
                   textAlign: "center",
                   color: colors.primary,
                   marginLeft: 5,
-                  fontSize: 11,
+                  fontSize: 12,
                   fontFamily: "chronicle-text",
                 }}
               >
@@ -92,7 +92,7 @@ const Announcement = ({ navigation }: Props) => {
                   textAlign: "center",
                   color: colors.primary,
                   marginLeft: 5,
-                  fontSize: 11,
+                  fontSize: 12,
                   fontFamily: "chronicle-text",
                 }}
               >

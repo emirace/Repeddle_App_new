@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Appbar, Checkbox, Switch, Text, useTheme } from "react-native-paper"
 import useCategory from "../hooks/useCategory"
 import { IBrand, ISize } from "../types/product"
@@ -35,14 +35,28 @@ import { useIsFocused } from "@react-navigation/native"
 import useToastNotification from "../hooks/useToastNotification"
 import CartIcon from "../components/ui/cartIcon"
 import Tooltip from "../components/Tooltip"
+import useUser from "../hooks/useUser"
 
 const Sell = ({ navigation }: any) => {
+  const { user } = useAuth()
+  const accountVerified = useMemo(
+    () => !!user?.bankName && !!user?.accountName && user?.role !== "Seller",
+    [user?.bankName, user?.accountName, user?.role]
+  )
+  const addressVerified = useMemo(
+    () =>
+      !!user?.address?.street &&
+      !!user?.address?.state &&
+      user?.role !== "Seller",
+    [user?.address, user?.role]
+  )
+  const [isClosed, setIsClosed] = useState(false)
+
   const { colors } = useTheme()
   const { fetchBrands, brands } = useBrands()
   const { categories, fetchCategories } = useCategory()
   const { createProduct, error } = useProducts()
   const { addNotification } = useToastNotification()
-  const { user } = useAuth()
   const isFocused = useIsFocused()
 
   const [input, setInput] = useState({
@@ -363,8 +377,19 @@ const Sell = ({ navigation }: any) => {
         />
       </Appbar.Header>
 
-      <AddAccount navigation={navigation} isFocused={isFocused} />
-      <AddAddress navigation={navigation} isFocused={isFocused} />
+      <AddAccount
+        navigation={navigation}
+        isFocused={isFocused}
+        accountVerified={accountVerified || isClosed}
+        setIsClosed={setIsClosed}
+      />
+      <AddAddress
+        navigation={navigation}
+        isFocused={isFocused}
+        addressVerified={addressVerified || isClosed}
+        setIsClosed={setIsClosed}
+      />
+
       {!categories ? (
         <ActivityIndicator size={"large"} color={colors.primary} />
       ) : (

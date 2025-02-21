@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native"
 import React, { PropsWithChildren, useEffect, useState } from "react"
-import { Button, Text, useTheme } from "react-native-paper"
+import { Button, IconButton, Text, useTheme } from "react-native-paper"
 import { currentAddress, goto, region } from "../utils/common"
 import Input from "./Input"
 import { states } from "../utils/constants"
@@ -19,14 +19,21 @@ import useToastNotification from "../hooks/useToastNotification"
 type Props = {
   isFocused: boolean
   navigation: ProductNavigationProp["navigation"]
+  addressVerified: boolean
+  setIsClosed: (val: boolean) => void
 }
 
-const AddAddress = ({ isFocused, navigation }: Props) => {
+const AddAddress = ({
+  isFocused,
+  navigation,
+  addressVerified,
+  setIsClosed,
+}: Props) => {
   const { colors } = useTheme()
   const { updateUser, loading, error: userError, user } = useAuth()
   const { addNotification } = useToastNotification()
 
-  const [showAddress, setShowAddress] = useState(false)
+  // const [showAddress, setShowAddress] = useState(true)
   const [input, setInput] = useState({
     street: user?.address?.street ?? "",
     apartment: user?.address?.apartment ?? "",
@@ -41,19 +48,19 @@ const AddAddress = ({ isFocused, navigation }: Props) => {
     state: "",
   })
 
-  useEffect(() => {
-    const checkSeller = () => {
-      const verified = user?.address?.street && user?.address?.state
-      if (isFocused === true) {
-        if (user?.role !== "Seller" || !verified) {
-          setShowAddress(true)
-        }
-      } else {
-        setShowAddress(false)
-      }
-    }
-    checkSeller()
-  }, [user, isFocused])
+  // useEffect(() => {
+  //   const checkSeller = () => {
+  //     const verified = user?.address?.street && user?.address?.state
+  //     if (isFocused === true) {
+  //       if (user?.role !== "Seller" || !verified) {
+  //         setShowAddress(true)
+  //       }
+  //     } else {
+  //       setShowAddress(false)
+  //     }
+  //   }
+  //   checkSeller()
+  // }, [user, isFocused])
 
   const handleOnChange = (text: string, inputVal: keyof typeof input) => {
     setInput((prevState) => ({ ...prevState, [inputVal]: text }))
@@ -98,7 +105,7 @@ const AddAddress = ({ isFocused, navigation }: Props) => {
     })
     if (res) {
       addNotification({ message: "Address Verified Successfully" })
-      setShowAddress(false)
+      // setShowAddress(false)
     } else {
       addNotification({
         message: userError ?? "Failed to verify address",
@@ -111,9 +118,9 @@ const AddAddress = ({ isFocused, navigation }: Props) => {
     <Modal
       animationType="slide"
       transparent={true}
-      visible={showAddress}
+      visible={!addressVerified}
       onRequestClose={() => {
-        setShowAddress(false)
+        setIsClosed(true)
         navigation.push("Main")
       }}
     >
@@ -121,8 +128,15 @@ const AddAddress = ({ isFocused, navigation }: Props) => {
         <View
           style={[styles.modalView, { backgroundColor: colors.background }]}
         >
+          <IconButton
+            icon={"close"}
+            style={{ position: "absolute", right: 10, top: 0 }}
+            onPress={() => {
+              setIsClosed(true)
+              navigation.push("Main")
+            }}
+          />
           <View style={styles.heading}>
-            <TouchableOpacity></TouchableOpacity>
             <Text style={[styles.modalTitle]}>Add Address</Text>
           </View>
           <Text style={{ marginTop: 10 }}>
