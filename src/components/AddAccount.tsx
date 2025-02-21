@@ -5,28 +5,34 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { PropsWithChildren, useEffect, useState } from "react";
-import { Button, Text, useTheme } from "react-native-paper";
-import { region } from "../utils/common";
-import Input from "./Input";
-import useAuth from "../hooks/useAuth";
-import { SellNavigationProp } from "../types/navigation/stack";
-import { Picker } from "@react-native-picker/picker";
-import { banks } from "../utils/constants";
-import useToastNotification from "../hooks/useToastNotification";
+} from "react-native"
+import React, { PropsWithChildren, useEffect, useState } from "react"
+import { Button, IconButton, Text, useTheme } from "react-native-paper"
+import { region } from "../utils/common"
+import Input from "./Input"
+import useAuth from "../hooks/useAuth"
+import { SellNavigationProp } from "../types/navigation/stack"
+import { Picker } from "@react-native-picker/picker"
+import { banks } from "../utils/constants"
+import useToastNotification from "../hooks/useToastNotification"
 
 type Props = {
-  isFocused: boolean;
-  navigation: SellNavigationProp["navigation"];
-};
+  isFocused: boolean
+  navigation: SellNavigationProp["navigation"]
+  accountVerified: boolean
+  setIsClosed: (val: boolean) => void
+}
 
-const AddAccount = ({ isFocused, navigation }: Props) => {
-  const { colors } = useTheme();
-  const { updateUser, loading, error: userError, user } = useAuth();
-  const { addNotification } = useToastNotification();
+const AddAccount = ({
+  isFocused,
+  navigation,
+  accountVerified,
+  setIsClosed,
+}: Props) => {
+  const { colors } = useTheme()
+  const { updateUser, loading, error: userError, user } = useAuth()
+  const { addNotification } = useToastNotification()
 
-  const [showAccount, setShowAccount] = useState(false);
   const [input, setInput] = useState({
     accountName: "",
     accountNumber: "",
@@ -39,19 +45,20 @@ const AddAccount = ({ isFocused, navigation }: Props) => {
     bankName: "",
   });
 
-  useEffect(() => {
-    const checkSeller = () => {
-      const verified = user?.bankName && user?.accountName && user?.accountName;
-      if (isFocused === true) {
-        if (!verified || user?.role !== "Seller") {
-          setShowAccount(true);
-        }
-      } else {
-        setShowAccount(false);
-      }
-    };
-    checkSeller();
-  }, [user, isFocused]);
+  // useEffect(() => {
+  //   const checkSeller = () => {
+  //     const verified = user?.bankName && user?.accountName && user?.accountName
+  //     if (isFocused === true) {
+  //       if (!verified || user?.role !== "Seller") {
+  //         setShowAccount(true)
+  //       }
+  //     } else {
+  //       setShowAccount(false)
+  //     }
+  //   }
+  //   checkSeller()
+  // }, [user, isFocused])
+
 
   const handleOnChange = (text: string, inputVal: keyof typeof input) => {
     setInput((prevState) => ({ ...prevState, [inputVal]: text }));
@@ -68,8 +75,8 @@ const AddAccount = ({ isFocused, navigation }: Props) => {
       bankName: input.bankName,
     });
     if (res) {
-      addNotification({ message: "Account Verified Successfully" });
-      setShowAccount(false);
+      addNotification({ message: "Account Verified Successfully" })
+      // setShowAccount(false)
     } else {
       addNotification({
         message: userError ?? "Failed to verify account",
@@ -102,16 +109,21 @@ const AddAccount = ({ isFocused, navigation }: Props) => {
     <Modal
       animationType="slide"
       transparent={true}
-      visible={showAccount}
+      visible={!accountVerified}
       onRequestClose={() => {
-        setShowAccount(!showAccount);
-        navigation.push("Main");
+        setIsClosed(true)
+        navigation.push("Main")
       }}
     >
       <View style={[styles.centeredView]}>
         <View
           style={[styles.modalView, { backgroundColor: colors.background }]}
         >
+          <IconButton
+            icon={"close"}
+            style={{ position: "absolute", right: 12, top: 0 }}
+            onPress={() => navigation.push("Main")}
+          />
           <View style={styles.heading}>
             <TouchableOpacity></TouchableOpacity>
             <Text style={[styles.modalTitle]}>Add Bank Account</Text>

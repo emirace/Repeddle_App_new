@@ -211,6 +211,7 @@ const Home = ({ navigation }: any) => {
         style={{
           zIndex: 20,
           paddingTop: 13,
+          paddingHorizontal: 0,
         }}
       >
         <View>
@@ -221,7 +222,7 @@ const Home = ({ navigation }: any) => {
               justifyContent: "space-between",
               alignItems: "center",
               paddingBottom: 10,
-              marginTop: 15,
+              marginTop: 20,
             }}
           >
             {/* <Animated.Image
