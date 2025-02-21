@@ -5,7 +5,7 @@ import {
   FlatList,
   ActivityIndicator,
   Animated,
-  
+  Image,
 } from "react-native"
 import React, { useEffect, useRef, useState } from "react"
 import {
@@ -31,99 +31,89 @@ import SearchBar from "../components/SearchBar"
 import Announcement from "../components/Announcement"
 import CartIcon from "../components/ui/cartIcon"
 import useToastNotification from "../hooks/useToastNotification"
-import { ThemeProp } from "react-native-paper/lib/typescript/types"
-import { darkTheme, lightTheme } from "../constant/theme"
 
 const WIDTH = Dimensions.get("screen").width
 
-type Props = MainScreenNavigationProp
-
 const numColumns = 2
-
-const fonts = configureFonts({ config: { fontFamily: "chronicle-text" } })
 
 const Home = ({ navigation }: any) => {
   const { themeMode } = useThemeContext()
 
-  const paperTheme: ThemeProp =
-    themeMode === "dark"
-      ? { ...MD3DarkTheme, colors: darkTheme.colors, fonts }
-      : { ...MD3LightTheme, colors: lightTheme.colors, fonts }
   const { colors } = useTheme()
   const { addNotification } = useToastNotification()
 
-  const { fetchProducts, loading } = useProducts();
-  const { getTopSellers } = useUser();
+  const { fetchProducts, loading } = useProducts()
+  const { getTopSellers } = useUser()
 
   const [products, setProducts] = useState<ProductWithPagination>({
     currentPage: 0,
     products: [],
     totalCount: 0,
     totalPages: 0,
-  });
-  const [sellers, setSellers] = useState<TopSellers[]>([]);
-  const [sellerLoading, setSellerLoading] = useState(false);
-  const [sellerError, setSellerError] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  })
+  const [sellers, setSellers] = useState<TopSellers[]>([])
+  const [sellerLoading, setSellerLoading] = useState(false)
+  const [sellerError, setSellerError] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetchProducts(`page=${currentPage}`);
+      const res = await fetchProducts(`page=${currentPage}`)
 
       if (typeof res !== "string") {
-        const newData = res;
+        const newData = res
 
-        const allProducts = [...products.products, ...newData.products];
+        const allProducts = [...products.products, ...newData.products]
         newData.products = [
           ...new Map(allProducts.map((item) => [item._id, item])).values(),
-        ];
-        setProducts(newData);
+        ]
+        setProducts(newData)
       } else {
-        addNotification({ message: res, error: true });
+        addNotification({ message: res, error: true })
       }
-    };
+    }
 
-    fetchData();
-  }, [currentPage]);
+    fetchData()
+  }, [currentPage])
 
   useEffect(() => {
     const fetchSellers = async () => {
-      setSellerLoading(true);
-      const res = await getTopSellers();
+      setSellerLoading(true)
+      const res = await getTopSellers()
       if (typeof res === "string") {
-        setSellerError(res);
+        setSellerError(res)
       } else {
-        setSellers(res.sellers);
+        setSellers(res.sellers)
       }
 
-      setSellerLoading(false);
-    };
-
-    fetchSellers();
-  }, []);
-
-  const formatData = (data: IProduct[]) => {
-    const isEven = data.length % numColumns === 0;
-
-    if (!isEven) {
-      const empty = { ...data[0], empty: true };
-      data.push(empty);
+      setSellerLoading(false)
     }
 
-    return data;
-  };
+    fetchSellers()
+  }, [])
+
+  const formatData = (data: IProduct[]) => {
+    const isEven = data.length % numColumns === 0
+
+    if (!isEven) {
+      const empty = { ...data[0], empty: true }
+      data.push(empty)
+    }
+
+    return data
+  }
 
   const handleMore = () => {
     if (currentPage < products.totalPages) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage(currentPage + 1)
     }
-  };
+  }
 
   const handleSearch = (val: string) => {
-    navigation.push("Search", { query: val });
-  };
+    navigation.push("Search", { query: val })
+  }
 
-  const animatedValue = useRef(new Animated.Value(0)).current;
+  const animatedValue = useRef(new Animated.Value(0)).current
 
   const searchAnimation = {
     transform: [
@@ -152,7 +142,7 @@ const Home = ({ navigation }: any) => {
     //   outputRange: [55, 1],
     //   extrapolate: "clamp",
     // }),
-  };
+  }
 
   const logoAnimation = {
     transform: [
@@ -176,7 +166,7 @@ const Home = ({ navigation }: any) => {
       outputRange: [1, 0],
       extrapolate: "clamp",
     }),
-  };
+  }
 
   const logo2Animation = {
     transform: [
@@ -200,7 +190,7 @@ const Home = ({ navigation }: any) => {
       outputRange: [0, 1],
       extrapolate: "clamp",
     }),
-  };
+  }
 
   // const headerAnimation = {
   //   transform: [
@@ -215,7 +205,7 @@ const Home = ({ navigation }: any) => {
   // }
 
   return (
-    <Provider theme={paperTheme}>
+    <View>
       <Appbar.Header
         mode="small"
         style={{
@@ -234,7 +224,7 @@ const Home = ({ navigation }: any) => {
               marginTop: 15,
             }}
           >
-            <Animated.Image
+            {/* <Animated.Image
               source={{
                 uri:
                   themeMode !== "dark"
@@ -250,8 +240,8 @@ const Home = ({ navigation }: any) => {
                 logoAnimation,
               ]}
               alt="logo"
-            />
-            <Animated.Image
+            /> */}
+            <Image
               source={{
                 uri:
                   themeMode === "dark"
@@ -260,17 +250,15 @@ const Home = ({ navigation }: any) => {
               }}
               style={[
                 {
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
                   width: 60,
-                  marginLeft: 10,
-                  height: 60,
                   resizeMode: "contain",
+                  backgroundColor: "black",
                 },
-                logo2Animation,
               ]}
             />
+            <View style={{ flex: 1 }}>
+              <SearchBar onPress={handleSearch} />
+            </View>
             <View style={{ flexDirection: "row", marginRight: 6 }}>
               <IconButton icon="bell-outline" iconColor={colors.onBackground} />
 
@@ -280,19 +268,6 @@ const Home = ({ navigation }: any) => {
               />
             </View>
           </View>
-          <Portal>
-            <View style={styles.content}>
-              <Animated.View
-                style={[
-                  styles.bottomHeader,
-                  searchAnimation,
-                  { backgroundColor: "transparent" },
-                ]}
-              >
-                <SearchBar onPress={handleSearch} />
-              </Animated.View>
-            </View>
-          </Portal>
         </View>
       </Appbar.Header>
 
@@ -314,17 +289,13 @@ const Home = ({ navigation }: any) => {
             products={products.products}
           />
         )}
-        onScroll={(e) => {
-          const offsetY = e.nativeEvent.contentOffset.y;
-          animatedValue.setValue(offsetY);
-        }}
         scrollEventThrottle={16}
         onEndReached={handleMore}
         onEndReachedThreshold={0}
         ListFooterComponent={() => <Footer isLoading={loading} />}
-        style={{ paddingTop: 60, marginTop: 10 }}
+        style={{ marginTop: 10 }}
       />
-    </Provider>
+    </View>
   )
 }
 
@@ -332,12 +303,12 @@ const RenderItem = ({
   item,
   navigation,
 }: {
-  item: IProduct & { empty?: boolean };
-  navigation: MainScreenNavigationProp["navigation"];
+  item: IProduct & { empty?: boolean }
+  navigation: MainScreenNavigationProp["navigation"]
 }) => {
-  let { itemStyles, invisible } = homeStyles;
+  let { itemStyles, invisible } = homeStyles
 
-  if (item.empty) return <View style={[itemStyles, invisible]}></View>;
+  if (item.empty) return <View style={[itemStyles, invisible]}></View>
 
   return (
     <View style={itemStyles}>
@@ -346,11 +317,11 @@ const RenderItem = ({
         product={item}
       />
     </View>
-  );
-};
+  )
+}
 
 const Footer = ({ isLoading }: { isLoading?: boolean }) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
   return (
     <View
@@ -363,24 +334,24 @@ const Footer = ({ isLoading }: { isLoading?: boolean }) => {
         <ActivityIndicator size="large" color={colors.primary} />
       ) : null}
     </View>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   content: {
-    ...StyleSheet.absoluteFillObject,
-    paddingHorizontal: 20,
+    // ...StyleSheet.absoluteFillObject,
+    // paddingHorizontal: 20,
     // zIndex: 20000000000,
     // position: "absolute",
-    top: 120,
+    // top: 120,
   },
   bottomHeader: {
     // height: 1,
     paddingHorizontal: 10,
   },
-});
+})
