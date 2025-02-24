@@ -179,7 +179,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
       setShowAlert(false)
     } else
       addNotification({
-        message: error ?? "Failed to add to wishlist",
+        message: error || "Failed to add to wishlist",
         error: true,
       })
 

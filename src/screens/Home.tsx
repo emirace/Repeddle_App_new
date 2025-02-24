@@ -210,7 +210,7 @@ const Home = ({ navigation }: any) => {
         mode="small"
         style={{
           zIndex: 20,
-          paddingTop: 13,
+          paddingTop: 15,
           paddingHorizontal: 0,
         }}
       >
@@ -222,7 +222,7 @@ const Home = ({ navigation }: any) => {
               justifyContent: "space-between",
               alignItems: "center",
               paddingBottom: 10,
-              marginTop: 20,
+              marginTop: 22,
             }}
           >
             {/* <Animated.Image

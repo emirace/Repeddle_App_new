@@ -4,46 +4,46 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useState } from "react";
-import { Text, useTheme } from "react-native-paper";
-import Carousel from "react-native-reanimated-carousel";
-import { MainScreenNavigationProp } from "../types/navigation/stack";
-import Tooltip from "./Tooltip";
+} from "react-native"
+import React, { useState } from "react"
+import { Text, useTheme } from "react-native-paper"
+import Carousel from "react-native-reanimated-carousel"
+import { MainScreenNavigationProp } from "../types/navigation/stack"
+import Tooltip from "./Tooltip"
 
 type Props = {
-  navigation: MainScreenNavigationProp["navigation"];
-};
+  navigation: MainScreenNavigationProp["navigation"]
+}
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get("window")
 const data = [
   { textButton: "SIGN UP", text: "List All Item For Free" },
   {
     textButton: "DETAILS",
     text: "No Selling Fees, Hurry, Start Selling, Limited Offer!!",
   },
-];
+]
 
 const Announcement = ({ navigation }: Props) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
-  const [autoplay, setAutoplay] = useState(true);
+  const [autoplay, setAutoplay] = useState(true)
 
   const action = (value: string) => {
     if (value === "SIGN UP") {
-      navigation.push("Auth");
+      navigation.push("Auth")
     }
-  };
+  }
 
   const changeAutoPlay = () => {
-    setAutoplay(!autoplay);
-  };
+    setAutoplay(!autoplay)
+  }
 
   return (
     <Carousel
       loop
       width={width}
-      height={18}
+      height={20}
       autoPlay={autoplay}
       data={data}
       scrollAnimationDuration={10000}
@@ -66,11 +66,10 @@ const Announcement = ({ navigation }: Props) => {
               <Text
                 style={{
                   textAlign: "center",
-                  color: colors.primary,
+                  color: "white",
                   marginLeft: 5,
                   fontSize: 12,
                   fontFamily: "chronicle-text",
-                  fontSize: 12,
                 }}
               >
                 {item.text}
@@ -79,7 +78,7 @@ const Announcement = ({ navigation }: Props) => {
                     textAlign: "center",
                     color: colors.primary,
                     marginLeft: 5,
-                    fontSize: 11,
+                    fontSize: 12,
                     fontFamily: "chronicle-text",
                   }}
                 >
@@ -93,11 +92,10 @@ const Announcement = ({ navigation }: Props) => {
               <Text
                 style={{
                   textAlign: "center",
-                  color: colors.primary,
+                  color: "white",
                   marginLeft: 5,
                   fontSize: 12,
                   fontFamily: "chronicle-text",
-                  fontSize: 12,
                 }}
               >
                 {item.text}
@@ -119,9 +117,9 @@ const Announcement = ({ navigation }: Props) => {
         </View>
       )}
     />
-  );
-};
+  )
+}
 
-export default Announcement;
+export default Announcement
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})

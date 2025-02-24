@@ -1,12 +1,5 @@
-import {
-  Modal,
-  StyleProp,
-  StyleSheet,
-  TextStyle,
-  TouchableOpacity,
-  View,
-} from "react-native"
-import React, { PropsWithChildren, useEffect, useState } from "react"
+import { Modal, StyleProp, StyleSheet, TextStyle, View } from "react-native"
+import React, { PropsWithChildren, useState } from "react"
 import { Button, IconButton, Text, useTheme } from "react-native-paper"
 import { currentAddress, goto, region } from "../utils/common"
 import Input from "./Input"
@@ -30,10 +23,10 @@ const AddAddress = ({
   setIsClosed,
 }: Props) => {
   const { colors } = useTheme()
-  const { updateUser, loading, error: userError, user } = useAuth()
+  const { updateUser, error: userError, user } = useAuth()
   const { addNotification } = useToastNotification()
 
-  // const [showAddress, setShowAddress] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [input, setInput] = useState({
     street: user?.address?.street ?? "",
     apartment: user?.address?.apartment ?? "",
@@ -94,6 +87,7 @@ const AddAddress = ({
     }
   }
   const submitHandler = async () => {
+    setIsSubmitting(true)
     const res = await updateUser({
       address: {
         state: input.state,
@@ -108,10 +102,12 @@ const AddAddress = ({
       // setShowAddress(false)
     } else {
       addNotification({
-        message: userError ?? "Failed to verify address",
+        message: userError || "Failed to verify address",
         error: true,
       })
     }
+
+    setIsSubmitting(false)
   }
 
   return (
@@ -173,7 +169,7 @@ const AddAddress = ({
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "state")
@@ -257,8 +253,9 @@ const AddAddress = ({
               mode="contained"
               style={{ borderRadius: 5 }}
               children="Submit"
-              loading={loading}
+              loading={isSubmitting}
               onPress={validate}
+              disabled={isSubmitting}
             />
           </View>
         </View>

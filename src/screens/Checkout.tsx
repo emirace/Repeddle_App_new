@@ -58,7 +58,7 @@ const Checkout = ({ navigation }: Props) => {
   const onApprove = async (response: RedirectParams) => {
     const order1 = await placeOrderHandler({
       paymentMethod: "Flutterwave",
-      transId: response.transaction_id ?? response.tx_ref,
+      transId: response.transaction_id || response.tx_ref,
     })
     if (order1) {
       clearCart()

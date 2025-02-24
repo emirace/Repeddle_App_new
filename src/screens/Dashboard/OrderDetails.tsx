@@ -175,7 +175,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
       setOrder(res)
     } else {
       addNotification({
-        message: error ?? "Failed to update status",
+        message: error || "Failed to update status",
         error: true,
       })
     }
