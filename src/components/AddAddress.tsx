@@ -24,7 +24,6 @@ const AddAddress = ({
 }: Props) => {
   const { colors } = useTheme()
   const { updateUser, error: userError, user } = useAuth()
-  const { addNotification } = useToastNotification()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [input, setInput] = useState({
@@ -33,6 +32,11 @@ const AddAddress = ({
     state: user?.address?.state ?? "",
     zipcode: user?.address?.zipcode?.toString() ?? "",
   })
+
+  const [notification, setNotification] = useState<{
+    message: string
+    error: boolean
+  }>()
 
   const [error, setError] = useState({
     street: "",
@@ -87,6 +91,7 @@ const AddAddress = ({
     }
   }
   const submitHandler = async () => {
+    setNotification(undefined)
     setIsSubmitting(true)
     const res = await updateUser({
       address: {
@@ -98,10 +103,13 @@ const AddAddress = ({
       role: "Seller",
     })
     if (res) {
-      addNotification({ message: "Address Verified Successfully" })
+      setNotification({
+        message: "Address Verified Successfully",
+        error: false,
+      })
       // setShowAddress(false)
     } else {
-      addNotification({
+      setNotification({
         message: userError || "Failed to verify address",
         error: true,
       })
@@ -248,6 +256,17 @@ const AddAddress = ({
                 Easy Steps To Sell
               </Text>
             </View>
+
+            {notification?.message ? (
+              <Text
+                style={{
+                  color: notification.error ? colors.error : "green",
+                  marginVertical: 5,
+                }}
+              >
+                {notification.message}
+              </Text>
+            ) : null}
 
             <Button
               mode="contained"

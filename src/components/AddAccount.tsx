@@ -31,7 +31,6 @@ const AddAccount = ({
 }: Props) => {
   const { colors } = useTheme()
   const { updateUser, error: userError, user } = useAuth()
-  const { addNotification } = useToastNotification()
 
   const [input, setInput] = useState({
     accountName: "",
@@ -39,6 +38,10 @@ const AddAccount = ({
     bankName: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [notification, setNotification] = useState<{
+    message: string
+    error: boolean
+  }>()
 
   const [error, setError] = useState({
     accountName: "",
@@ -69,6 +72,7 @@ const AddAccount = ({
   }
 
   const submitHandler = async () => {
+    setNotification(undefined)
     setIsSubmitting(true)
     const res = await updateUser({
       accountName: input.accountName,
@@ -76,10 +80,13 @@ const AddAccount = ({
       bankName: input.bankName,
     })
     if (res) {
-      addNotification({ message: "Account Verified Successfully" })
+      setNotification({
+        message: "Account Verified Successfully",
+        error: false,
+      })
       // setShowAccount(false)
     } else {
-      addNotification({
+      setNotification({
         message: userError || "Failed to verify account",
         error: true,
       })
@@ -208,6 +215,17 @@ const AddAccount = ({
               Note: This cannot be change once saved, contact support to make
               any changes.
             </Text>
+
+            {notification?.message ? (
+              <Text
+                style={{
+                  color: notification.error ? colors.error : "green",
+                  marginVertical: 5,
+                }}
+              >
+                {notification.message}
+              </Text>
+            ) : null}
 
             <Button
               mode="contained"
