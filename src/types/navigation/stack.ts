@@ -5,7 +5,7 @@ import { ITransaction } from "../transactions"
 
 export type RootStackParamList = {
   Auth: undefined
-  Login: undefined
+  Login: undefined | { back?: boolean }
   SignUp: undefined
   Step: { email: string }
   ForgetPassword: undefined

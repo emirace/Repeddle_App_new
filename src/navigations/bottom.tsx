@@ -1,34 +1,27 @@
 // MainBottomNav.tsx
-import React, { useRef } from "react";
-import {
-  StyleProp,
-  View,
-  ViewStyle,
-  Platform,
-  Pressable,
-  Text,
-} from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Icon, useTheme } from "react-native-paper";
-import { lightTheme } from "../constant/theme";
-import useCart from "../hooks/useCart";
-import { MainScreenNavigationProp } from "../types/navigation/stack";
-import Home from "../screens/Home";
-import Category from "../screens/Category";
-import Chat from "../screens/chat/Conversation";
-import CustomTabBarButton from "../components/CustomTabBarButton";
-import Conversation from "../screens/chat/Conversation";
-import Profile from "../screens/profile";
+import React from "react"
+import { StyleProp, View, ViewStyle, Platform, Pressable } from "react-native"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { Icon, useTheme } from "react-native-paper"
+import { lightTheme } from "../constant/theme"
+import { MainScreenNavigationProp } from "../types/navigation/stack"
+import Home from "../screens/Home"
+import Category from "../screens/Category"
+import CustomTabBarButton from "../components/CustomTabBarButton"
+import Conversation from "../screens/chat/Conversation"
+import Profile from "../screens/profile"
+import useAuth from "../hooks/useAuth"
 
 type TabConfiguration = {
-  name: string;
-  component: React.ComponentType<any>;
-  iconSource: { selected: string; unselected: string };
-  badge?: any;
-  floatingButton?: boolean;
-};
+  name: string
+  component: React.ComponentType<any>
+  iconSource: { selected: string; unselected: string }
+  badge?: any
+  floatingButton?: boolean
+  requiresAuth?: boolean
+}
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator()
 
 const tabBarStyle: StyleProp<ViewStyle> = {
   elevation: 0,
@@ -41,7 +34,7 @@ const tabBarStyle: StyleProp<ViewStyle> = {
   backgroundColor: "transparent",
   bottom: 0,
   // paddingTop: Platform.OS === "ios" ? 30 : 0,
-};
+}
 
 const tabBarShadowStyle: StyleProp<ViewStyle> = {
   shadowColor: lightTheme.colors.secondary,
@@ -49,17 +42,17 @@ const tabBarShadowStyle: StyleProp<ViewStyle> = {
   shadowOpacity: 0.1,
   shadowRadius: 3.5,
   elevation: 5,
-};
+}
 
 const tabBarBadgeStyle: StyleProp<ViewStyle> = {
   position: "absolute",
   top: Platform.OS === "android" ? 10 : -10,
   right: -5,
   backgroundColor: lightTheme.colors.primary,
-};
+}
 
 const CustomBottomTabBar2 = (props: any) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
 
   return (
     <View style={{ position: "relative", flex: 1 }}>
@@ -80,14 +73,11 @@ const CustomBottomTabBar2 = (props: any) => {
         {props.children}
       </Pressable>
     </View>
-  );
-};
+  )
+}
 
-const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
-  navigation,
-  route,
-}) => {
-  const { cart } = useCart();
+const MainBottomNav: React.FC<MainScreenNavigationProp> = ({ navigation }) => {
+  const { user } = useAuth()
 
   const tabConfigurations: TabConfiguration[] = [
     {
@@ -108,18 +98,20 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
       component: Home,
       iconSource: { selected: "plus", unselected: "plus-outline" },
       floatingButton: true,
+      requiresAuth: true,
     },
     {
       name: "Chat",
       component: Conversation,
       iconSource: { selected: "chat", unselected: "chat-outline" },
+      requiresAuth: true,
     },
     {
       name: "Profile",
       component: Profile,
       iconSource: { selected: "account", unselected: "account-outline" },
     },
-  ];
+  ]
 
   return (
     <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -155,16 +147,29 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({
               tabBarButton: config.floatingButton
                 ? (props) => (
                     <CustomTabBarButton
-                      onPress={() => navigation.push("Sell")}
+                      onPress={() =>
+                        user
+                          ? navigation.push("Sell")
+                          : navigation.push("Login", { back: true })
+                      }
                     />
                   )
-                : (props) => <CustomBottomTabBar2 {...props} />,
+                : (props) => (
+                    <CustomBottomTabBar2
+                      {...props}
+                      onPress={
+                        config.requiresAuth && !user
+                          ? () => navigation.push("Login", { back: true })
+                          : props.onPress
+                      }
+                    />
+                  ),
             }}
           />
         ))}
       </Tab.Navigator>
     </View>
-  );
-};
+  )
+}
 
-export default MainBottomNav;
+export default MainBottomNav
