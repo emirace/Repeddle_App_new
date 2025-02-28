@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { View, StyleSheet } from "react-native"
 import { Text, Button, IconButton, useTheme } from "react-native-paper"
+import useAuth from "../../hooks/useAuth"
+import { ProfileSettingsNavigationProp } from "../../types/navigation/stack"
 
 const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { colors } = useTheme()
   const [show, setShow] = useState(true)
+  const { user } = useAuth()
+
   return (
     <View
       style={[styles.container, { backgroundColor: colors.elevation.level2 }]}
@@ -20,12 +24,12 @@ const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
           />
         </View>
         <Text style={styles.balanceAmount}>
-          {show ? "₦350000.50" : "*****"}
+          {show ? "₦ " + (user?.balance || 0) : "*****"}
         </Text>
       </View>
       <Button
         mode="text"
-        onPress={() => console.log("Transaction History Pressed")}
+        onPress={() => navigation.push("Transaction")}
         style={styles.historyButton}
       >
         Transaction History

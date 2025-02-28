@@ -69,16 +69,19 @@ const Cart = ({ navigation }: Props) => {
           onPress={() => navigation.goBack()}
         />
         <Appbar.Content titleStyle={{ color: "white" }} title="Cart" />
-        {user ? (
-          <Appbar.Content
-            title={
-              <WishlistIcon
-                iconColor="white"
-                onPress={() => navigation.push("Wishlist")}
-              />
-            }
-          />
-        ) : null}
+
+        <Appbar.Content
+          title={
+            <WishlistIcon
+              iconColor="white"
+              onPress={() =>
+                user
+                  ? navigation.push("Wishlist")
+                  : navigation.push("Login", { back: true })
+              }
+            />
+          }
+        />
       </Appbar.Header>
       <Text style={styles.description}>
         Placing an item in your shopping cart does not reserve that item or
@@ -179,7 +182,7 @@ const RenderItem = ({ item, navigation }: RenderProps) => {
       setShowAlert(false)
     } else
       addNotification({
-        message: error ?? "Failed to add to wishlist",
+        message: error || "Failed to add to wishlist",
         error: true,
       })
 

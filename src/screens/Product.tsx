@@ -322,7 +322,7 @@ const Product = ({ navigation, route }: Props) => {
       if (res) addNotification({ message: res })
       else
         addNotification({
-          message: wishListError ?? "Failed to remove from wishlist",
+          message: wishListError || "Failed to remove from wishlist",
           error: true,
         })
     } else {
@@ -330,7 +330,7 @@ const Product = ({ navigation, route }: Props) => {
       if (res) addNotification({ message: res })
       else
         addNotification({
-          message: wishListError ?? "Failed to add to wishlist",
+          message: wishListError || "Failed to add to wishlist",
           error: true,
         })
     }

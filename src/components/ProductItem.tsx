@@ -117,7 +117,7 @@ const ProductItem = ({ navigate, product: product1 }: Props) => {
       if (res) addNotification({ message: res })
       else
         addNotification({
-          message: wishlistError ?? "Failed to add to wishlist",
+          message: wishlistError || "Failed to add to wishlist",
           error: true,
         })
     } else {
@@ -125,7 +125,7 @@ const ProductItem = ({ navigate, product: product1 }: Props) => {
       if (res) addNotification({ message: res })
       else
         addNotification({
-          message: wishlistError ?? "Failed to add to wishlist",
+          message: wishlistError || "Failed to add to wishlist",
           error: true,
         })
     }

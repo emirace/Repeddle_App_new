@@ -1,12 +1,5 @@
-import {
-  Modal,
-  StyleProp,
-  StyleSheet,
-  TextStyle,
-  TouchableOpacity,
-  View,
-} from "react-native"
-import React, { PropsWithChildren, useEffect, useState } from "react"
+import { Modal, StyleProp, StyleSheet, TextStyle, View } from "react-native"
+import React, { PropsWithChildren, useState } from "react"
 import { Button, IconButton, Text, useTheme } from "react-native-paper"
 import { currentAddress, goto, region } from "../utils/common"
 import Input from "./Input"
@@ -30,16 +23,20 @@ const AddAddress = ({
   setIsClosed,
 }: Props) => {
   const { colors } = useTheme()
-  const { updateUser, loading, error: userError, user } = useAuth()
-  const { addNotification } = useToastNotification()
+  const { updateUser, error: userError, user } = useAuth()
 
-  // const [showAddress, setShowAddress] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [input, setInput] = useState({
     street: user?.address?.street ?? "",
     apartment: user?.address?.apartment ?? "",
     state: user?.address?.state ?? "",
     zipcode: user?.address?.zipcode?.toString() ?? "",
   })
+
+  const [notification, setNotification] = useState<{
+    message: string
+    error: boolean
+  }>()
 
   const [error, setError] = useState({
     street: "",
@@ -94,6 +91,8 @@ const AddAddress = ({
     }
   }
   const submitHandler = async () => {
+    setNotification(undefined)
+    setIsSubmitting(true)
     const res = await updateUser({
       address: {
         state: input.state,
@@ -104,14 +103,19 @@ const AddAddress = ({
       role: "Seller",
     })
     if (res) {
-      addNotification({ message: "Address Verified Successfully" })
+      setNotification({
+        message: "Address Verified Successfully",
+        error: false,
+      })
       // setShowAddress(false)
     } else {
-      addNotification({
-        message: userError ?? "Failed to verify address",
+      setNotification({
+        message: userError || "Failed to verify address",
         error: true,
       })
     }
+
+    setIsSubmitting(false)
   }
 
   return (
@@ -173,7 +177,7 @@ const AddAddress = ({
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "state")
@@ -253,12 +257,24 @@ const AddAddress = ({
               </Text>
             </View>
 
+            {notification?.message ? (
+              <Text
+                style={{
+                  color: notification.error ? colors.error : "green",
+                  marginVertical: 5,
+                }}
+              >
+                {notification.message}
+              </Text>
+            ) : null}
+
             <Button
               mode="contained"
               style={{ borderRadius: 5 }}
               children="Submit"
-              loading={loading}
+              loading={isSubmitting}
               onPress={validate}
+              disabled={isSubmitting}
             />
           </View>
         </View>

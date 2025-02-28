@@ -7,7 +7,7 @@ import useAuth from "../../hooks/useAuth"
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { colors } = useTheme()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
 
   return (
     <ScrollView
@@ -20,19 +20,31 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
         paddingBottom: 130,
       }}
     >
-      <Appbar.Header>
-        <View style={styles.userInfo}>
-          <Avatar.Icon size={48} icon="account" />
-          <View style={{ marginLeft: 10 }}>
-            <Text style={styles.greeting}>Hi, Emmanuel</Text>
-            <Text style={styles.welcome}>Welcome, let's make payments!</Text>
+      {user ? (
+        <Appbar.Header>
+          <View style={styles.userInfo}>
+            <Avatar.Icon size={48} icon="account" />
+            <View style={{ marginLeft: 10 }}>
+              <Text style={styles.greeting}>Hi, {user?.username}</Text>
+              <Text style={styles.welcome}>Welcome, let's make payments!</Text>
+            </View>
           </View>
-        </View>
-        <Appbar.Action icon="face-agent" onPress={() => {}} />
-        <Appbar.Action icon="bell-outline" onPress={() => {}} />
-      </Appbar.Header>
+          <Appbar.Action icon="face-agent" onPress={() => {}} />
+          <Appbar.Action icon="bell-outline" onPress={() => {}} />
+        </Appbar.Header>
+      ) : (
+        <Appbar.Header>
+          <View style={styles.userInfo}>
+            <Avatar.Icon size={48} icon="account" />
+            <View style={{ marginLeft: 10 }}>
+              <Text style={styles.greeting}>Hi, </Text>
+              <Text style={styles.welcome}>Welcome, please login</Text>
+            </View>
+          </View>
+        </Appbar.Header>
+      )}
       <View>
-        <Balance navigation={navigation} />
+        {user ? <Balance navigation={navigation} /> : null}
         <List.Section>
           <List.Subheader>General</List.Subheader>
 
@@ -62,37 +74,39 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
             onPress={() => navigation.push("Appearance")}
           />
         </List.Section>
-        <List.Section>
-          <List.Subheader>Dashboard</List.Subheader>
-          {dashboardItems.map((item) => (
+        {user ? (
+          <List.Section>
+            <List.Subheader>Dashboard</List.Subheader>
+            {dashboardItems.map((item) => (
+              <List.Item
+                key={item.name}
+                title={item.name}
+                description={item.description}
+                titleStyle={{
+                  fontSize: 22,
+                }}
+                left={() => <List.Icon icon={item.leftIcon} />}
+                right={() => <List.Icon icon="chevron-right" />}
+                descriptionStyle={{ fontSize: 18 }}
+                onPress={() => navigation.navigate(`${item.link}`)}
+              />
+            ))}
             <List.Item
-              key={item.name}
-              title={item.name}
-              description={item.description}
+              title="Log out"
+              description={"Log out of your account"}
               titleStyle={{
                 fontSize: 22,
               }}
-              left={() => <List.Icon icon={item.leftIcon} />}
+              left={() => <List.Icon icon={"power"} />}
               right={() => <List.Icon icon="chevron-right" />}
               descriptionStyle={{ fontSize: 18 }}
-              onPress={() => navigation.navigate(`${item.link}`)}
+              onPress={() => {
+                logout()
+                navigation.replace("Auth")
+              }}
             />
-          ))}
-          <List.Item
-            title="Log out"
-            description={"Log out of your account"}
-            titleStyle={{
-              fontSize: 22,
-            }}
-            left={() => <List.Icon icon={"power"} />}
-            right={() => <List.Icon icon="chevron-right" />}
-            descriptionStyle={{ fontSize: 18 }}
-            onPress={() => {
-              logout()
-              navigation.replace("Auth")
-            }}
-          />
-        </List.Section>
+          </List.Section>
+        ) : null}
       </View>
     </ScrollView>
   )

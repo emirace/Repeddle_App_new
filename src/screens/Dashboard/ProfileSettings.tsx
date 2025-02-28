@@ -310,12 +310,12 @@ const ProfileSettings = ({ navigation }: Props) => {
       const resp = await deleteNewsletter(user._id)
       if (resp.success) {
         addNotification({
-          message: resp.message ?? "Unsubscribed from newsletter",
+          message: resp.message || "Unsubscribed from newsletter",
         })
         setNewsletterStatus(false)
       } else {
         addNotification({
-          message: newsletterError ?? "failed to unsubscribe from newsletter",
+          message: newsletterError || "failed to unsubscribe from newsletter",
           error: true,
         })
       }
@@ -326,7 +326,7 @@ const ProfileSettings = ({ navigation }: Props) => {
         setNewsletterStatus(true)
       } else {
         addNotification({
-          message: newsletterError ?? "failed to subscribe to newsletter",
+          message: newsletterError || "failed to subscribe to newsletter",
           error: true,
         })
       }

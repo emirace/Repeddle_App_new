@@ -30,20 +30,24 @@ const AddAccount = ({
   setIsClosed,
 }: Props) => {
   const { colors } = useTheme()
-  const { updateUser, loading, error: userError, user } = useAuth()
-  const { addNotification } = useToastNotification()
+  const { updateUser, error: userError, user } = useAuth()
 
   const [input, setInput] = useState({
     accountName: "",
     accountNumber: "",
     bankName: "",
-  });
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [notification, setNotification] = useState<{
+    message: string
+    error: boolean
+  }>()
 
   const [error, setError] = useState({
     accountName: "",
     accountNumber: "",
     bankName: "",
-  });
+  })
 
   // useEffect(() => {
   //   const checkSeller = () => {
@@ -59,51 +63,56 @@ const AddAccount = ({
   //   checkSeller()
   // }, [user, isFocused])
 
-
   const handleOnChange = (text: string, inputVal: keyof typeof input) => {
-    setInput((prevState) => ({ ...prevState, [inputVal]: text }));
-  };
+    setInput((prevState) => ({ ...prevState, [inputVal]: text }))
+  }
 
   const handleError = (errorMessage: string, inputVal: keyof typeof error) => {
-    setError((prevState) => ({ ...prevState, [inputVal]: errorMessage }));
-  };
+    setError((prevState) => ({ ...prevState, [inputVal]: errorMessage }))
+  }
 
   const submitHandler = async () => {
+    setNotification(undefined)
+    setIsSubmitting(true)
     const res = await updateUser({
       accountName: input.accountName,
       accountNumber: +input.accountNumber,
       bankName: input.bankName,
-    });
+    })
     if (res) {
-      addNotification({ message: "Account Verified Successfully" })
+      setNotification({
+        message: "Account Verified Successfully",
+        error: false,
+      })
       // setShowAccount(false)
     } else {
-      addNotification({
-        message: userError ?? "Failed to verify account",
+      setNotification({
+        message: userError || "Failed to verify account",
         error: true,
-      });
+      })
     }
-  };
+    setIsSubmitting(false)
+  }
 
   const validate = () => {
-    let valid = true;
+    let valid = true
     if (!input.accountNumber) {
-      handleError("Enter a valid account number", "accountNumber");
-      valid = false;
+      handleError("Enter a valid account number", "accountNumber")
+      valid = false
     }
     if (!input.accountName) {
-      handleError("Enter a valid account name", "accountName");
-      valid = false;
+      handleError("Enter a valid account name", "accountName")
+      valid = false
     }
     if (!input.bankName) {
-      handleError("Select a valid bank", "bankName");
-      valid = false;
+      handleError("Select a valid bank", "bankName")
+      valid = false
     }
 
     if (valid) {
-      submitHandler();
+      submitHandler()
     }
-  };
+  }
 
   return (
     <Modal
@@ -141,7 +150,7 @@ const AddAccount = ({
               placeholder={input.accountName}
               error={error.accountName}
               onFocus={() => {
-                handleError("", "accountName");
+                handleError("", "accountName")
               }}
             />
             <Text1 style={styles.label}>Account Number</Text1>
@@ -152,7 +161,7 @@ const AddAccount = ({
               placeholder={input.accountNumber ? `${input.accountNumber}` : ""}
               error={error.accountNumber}
               onFocus={() => {
-                handleError("", "accountNumber");
+                handleError("", "accountNumber")
               }}
             />
             <Text1 style={styles.label}>Bank Name</Text1>
@@ -165,8 +174,8 @@ const AddAccount = ({
                 color: "grey",
               }}
               onValueChange={(itemValue, itemIndex) => {
-                handleOnChange(itemValue, "bankName");
-                handleError("", "bankName");
+                handleOnChange(itemValue, "bankName")
+                handleError("", "bankName")
               }}
             >
               <Picker.Item
@@ -207,27 +216,39 @@ const AddAccount = ({
               any changes.
             </Text>
 
+            {notification?.message ? (
+              <Text
+                style={{
+                  color: notification.error ? colors.error : "green",
+                  marginVertical: 5,
+                }}
+              >
+                {notification.message}
+              </Text>
+            ) : null}
+
             <Button
               mode="contained"
               style={{ borderRadius: 5 }}
               children="Submit"
-              loading={loading}
+              loading={isSubmitting}
+              disabled={isSubmitting}
               onPress={validate}
             />
           </View>
         </View>
       </View>
     </Modal>
-  );
-};
+  )
+}
 
-type TextProps = PropsWithChildren<{ style: StyleProp<TextStyle> }>;
+type TextProps = PropsWithChildren<{ style: StyleProp<TextStyle> }>
 
 const Text1 = ({ children, style }: TextProps) => {
-  return <Text style={[styles.label, style]}>{children}</Text>;
-};
+  return <Text style={[styles.label, style]}>{children}</Text>
+}
 
-export default AddAccount;
+export default AddAccount
 
 const styles = StyleSheet.create({
   container: {
@@ -272,4 +293,4 @@ const styles = StyleSheet.create({
     width: "60%",
     alignItems: "center",
   },
-});
+})

@@ -4,31 +4,31 @@ import { OrderItem } from "../order";
 import { ITransaction } from "../transactions";
 
 export type RootStackParamList = {
-  Auth: undefined;
-  Login: undefined;
-  SignUp: undefined;
-  Step: { email: string };
-  ForgetPassword: undefined;
-  Main: undefined;
-  Appearance: undefined;
-  Search: { filter?: FilterOptions; query?: string };
-  Product: { slug: string };
-  Chat: { conversationId: string };
-  Sell: undefined;
-  ProfileSettings: undefined;
-  ProductList: undefined;
-  OrderList: undefined;
-  EditProduct: { id: string };
-  OrderDetails: { id: string };
-  MyAccount: { username: string };
-  BuyersProtection: undefined;
-  SizeChart: undefined;
-  Cart: undefined;
-  Checkout: undefined;
-  PaymentMethod: undefined;
-  SellerReview: { username: string };
-  Wishlist: undefined;
-  ReturnDetail: { id: string };
+  Auth: undefined
+  Login: undefined | { back?: boolean }
+  SignUp: undefined
+  Step: { email: string }
+  ForgetPassword: undefined
+  Main: undefined
+  Appearance: undefined
+  Search: { filter?: FilterOptions; query?: string }
+  Product: { slug: string }
+  Chat: { conversationId: string }
+  Sell: undefined
+  ProfileSettings: undefined
+  ProductList: undefined
+  OrderList: undefined
+  EditProduct: { id: string }
+  OrderDetails: { id: string }
+  MyAccount: { username: string }
+  BuyersProtection: undefined
+  SizeChart: undefined
+  Cart: undefined
+  Checkout: undefined
+  PaymentMethod: undefined
+  SellerReview: { username: string }
+  Wishlist: undefined
+  ReturnDetail: { id: string }
   ReturnForm: {
     orderItems: OrderItem[];
     orderId: string;

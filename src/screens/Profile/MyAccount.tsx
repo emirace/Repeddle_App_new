@@ -57,15 +57,19 @@ const MyAccount = ({ navigation, route }: Props) => {
   const { addNotification } = useToastNotification()
 
   const [userData, setUserData] = useState<UserByUsername>()
+  const [fetchingUser, setFetchingUser] = useState(true)
 
   useEffect(() => {
     const fetchUser = async () => {
+      setFetchingUser(true)
       const res = await getUserByUsername(username)
       if (typeof res !== "string") {
         setUserData(res)
       } else {
         addNotification({ message: res, error: true })
       }
+
+      setFetchingUser(false)
     }
 
     fetchUser()
@@ -87,7 +91,7 @@ const MyAccount = ({ navigation, route }: Props) => {
     [userData, userInfo]
   )
 
-  return loadingUser ? (
+  return fetchingUser ? (
     <Loader />
   ) : userData ? (
     <View style={styles.container}>
@@ -192,7 +196,7 @@ const RenderHeader = ({
         addNotification({ message: res })
       } else {
         addNotification({
-          message: error ?? "failed to unfollow user",
+          message: error || "failed to unfollow user",
           error: true,
         })
       }
@@ -202,7 +206,7 @@ const RenderHeader = ({
         addNotification({ message: res })
       } else {
         addNotification({
-          message: error ?? "failed to follow user",
+          message: error || "failed to follow user",
           error: true,
         })
       }

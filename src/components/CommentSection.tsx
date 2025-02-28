@@ -92,7 +92,7 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
 
     if (res) {
       const newProd = product
-      newProd.comments = [...(newProd.comments ?? []), res.comment]
+      newProd.comments = [...(newProd.comments || []), res.comment]
       setProduct(newProd)
 
       addNotification({ message: "Comment added to product" })
