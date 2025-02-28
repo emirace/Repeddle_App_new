@@ -33,6 +33,8 @@ import SignUp from "../screens/Auth/Signup";
 import Step from "../screens/Auth/Signup/step";
 import ForgetPassword from "../screens/Auth/ForgetPassword";
 import Category from "../screens/Category";
+import SubCategories from "../screens/Category/SubCategories";
+import Brand from "../screens/Brand";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -201,6 +203,18 @@ function MainStackNav() {
       <Stack.Screen
         name="Category"
         component={Category}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="SubCategories"
+        component={SubCategories}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Brand"
+        component={Brand}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
