@@ -25,6 +25,7 @@ type Props = {
   navigation: SellNavigationProp["navigation"]
   accountVerified: boolean
   setIsClosed: (val: boolean) => void
+  setIsClosedAccount: (val: boolean) => void
 }
 
 const AddAccount = ({
@@ -32,6 +33,7 @@ const AddAccount = ({
   navigation,
   accountVerified,
   setIsClosed,
+  setIsClosedAccount,
 }: Props) => {
   const { colors } = useTheme()
   const { updateUser, error: userError, user } = useAuth()
@@ -125,6 +127,7 @@ const AddAccount = ({
       visible={!accountVerified}
       onRequestClose={() => {
         setIsClosed(true)
+        setIsClosedAccount(true)
         navigation.push("Main")
       }}
     >

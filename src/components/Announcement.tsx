@@ -59,7 +59,7 @@ const Announcement = ({ navigation }: Props) => {
         >
           {item.textButton === "DETAILS" ? (
             <Tooltip
-              content="Sell more than 10,400 brand names you love. To give you unmatched user experienced and support the growth of your business as part of our thrift secondhand community, you will not be charge Repeddle seller's commision fee."
+              content="Sell more than 10,400 brand names you love. Listing is just a few steps away!"
               onClose={changeAutoPlay}
               onClick={changeAutoPlay}
             >
