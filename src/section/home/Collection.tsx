@@ -1,16 +1,16 @@
-import { FlatList, Image, TouchableOpacity, View } from "react-native"
-import React from "react"
-import { Text, useTheme } from "react-native-paper"
-import homeStyles from "./homeStyles"
-import { MainScreenNavigationProp } from "../../types/navigation/stack"
-import { FilterOptions } from "../../types/search"
+import { FlatList, Image, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { Text, useTheme } from "react-native-paper";
+import homeStyles from "./homeStyles";
+import { MainScreenNavigationProp } from "../../types/navigation/stack";
+import { FilterOptions } from "../../types/search";
 
 type Props = {
-  navigation: MainScreenNavigationProp["navigation"]
-}
+  navigation: MainScreenNavigationProp["navigation"];
+};
 
 const Collection = ({ navigation }: Props) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
   return (
     <>
       <View style={[homeStyles.catTitle]}>
@@ -20,7 +20,7 @@ const Collection = ({ navigation }: Props) => {
             style={[homeStyles.dash, { backgroundColor: colors.tertiary }]}
           />
         </View>
-        <TouchableOpacity onPress={() => navigation.push("Categories")}>
+        <TouchableOpacity onPress={() => navigation.push("Category")}>
           <Text style={homeStyles.seeAll}>see all</Text>
         </TouchableOpacity>
       </View>
@@ -123,16 +123,16 @@ const Collection = ({ navigation }: Props) => {
         </View>
       </View>
     </>
-  )
-}
+  );
+};
 
-export default Collection
+export default Collection;
 
 const images: {
-  key: string
-  text: string
-  filter?: FilterOptions
-  search?: string
+  key: string;
+  text: string;
+  filter?: FilterOptions;
+  search?: string;
 }[] = [
   {
     key: "https://repeddle.com/images/engin-akyurt-xbFtknoQG_Y-unsplash.webp",
@@ -163,16 +163,16 @@ const images: {
     key: "https://repeddle.com/images/ahmed-carter-GP3-QpmTgPk-unsplash.webp",
     text: "let's go party",
   },
-]
+];
 
 const RenderItemcat = ({
   item,
   navigation,
 }: {
-  item: (typeof images)[number]
-  navigation: MainScreenNavigationProp["navigation"]
+  item: (typeof images)[number];
+  navigation: MainScreenNavigationProp["navigation"];
 }) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return (
     <TouchableOpacity
@@ -199,5 +199,5 @@ const RenderItemcat = ({
         {item.text}
       </Text>
     </TouchableOpacity>
-  )
-}
+  );
+};

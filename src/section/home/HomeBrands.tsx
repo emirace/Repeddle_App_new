@@ -1,12 +1,12 @@
-import { FlatList, Image, TouchableOpacity, View } from "react-native"
-import React from "react"
-import homeStyles from "./homeStyles"
-import { Text, useTheme } from "react-native-paper"
-import { MainScreenNavigationProp } from "../../types/navigation/stack"
+import { FlatList, Image, TouchableOpacity, View } from "react-native";
+import React from "react";
+import homeStyles from "./homeStyles";
+import { Text, useTheme } from "react-native-paper";
+import { MainScreenNavigationProp } from "../../types/navigation/stack";
 
 type Props = {
-  navigation: MainScreenNavigationProp["navigation"]
-}
+  navigation: MainScreenNavigationProp["navigation"];
+};
 
 const HomeBrands = ({ navigation }: Props) => {
   return (
@@ -48,17 +48,17 @@ const HomeBrands = ({ navigation }: Props) => {
         />
       </View>
     </>
-  )
-}
+  );
+};
 
 const RenderItemcat = ({
   item,
   navigation,
 }: {
-  item: (typeof brands)[number]
-  navigation: MainScreenNavigationProp["navigation"]
+  item: (typeof brands)[number];
+  navigation: MainScreenNavigationProp["navigation"];
 }) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
   return (
     <TouchableOpacity
       onPress={() =>
@@ -82,11 +82,14 @@ const RenderItemcat = ({
         {item.text}
       </Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const brands = [
-  { key: "https://repeddle.com/images/Picture1.webp", text: "Puma" },
+  {
+    key: "https://res.cloudinary.com/emirace/image/upload/v1692426674/usljgmtg7fb5wi0m5o4r.jpg",
+    text: "Puma",
+  },
   { key: "https://repeddle.com/images/Picture1.webp", text: "Patagonia" },
   {
     key: "https://repeddle.com/images/lucas-hoang-O0e6Ka5vYSs-unsplash.webp",
@@ -101,6 +104,6 @@ const brands = [
     text: "addidas",
   },
   { key: "https://repeddle.com/images/A.mcqueen.webp", text: "A. Mcqueen" },
-]
+];
 
-export default HomeBrands
+export default HomeBrands;
