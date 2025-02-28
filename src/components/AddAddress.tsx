@@ -24,6 +24,7 @@ type Props = {
   navigation: ProductNavigationProp["navigation"]
   addressVerified: boolean
   setIsClosed: (val: boolean) => void
+  setIsClosedOther: (val: boolean) => void
 }
 
 const AddAddress = ({
@@ -31,6 +32,7 @@ const AddAddress = ({
   navigation,
   addressVerified,
   setIsClosed,
+  setIsClosedOther,
 }: Props) => {
   const { colors } = useTheme()
   const { updateUser, error: userError, user } = useAuth()
@@ -134,6 +136,7 @@ const AddAddress = ({
       visible={!addressVerified}
       onRequestClose={() => {
         setIsClosed(true)
+        setIsClosedOther(true)
         navigation.push("Main")
       }}
     >
