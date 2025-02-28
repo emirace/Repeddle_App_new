@@ -51,6 +51,7 @@ const Sell = ({ navigation }: any) => {
     [user?.address, user?.role]
   )
   const [isClosed, setIsClosed] = useState(false)
+  const [isClosedAccount, setIsClosedAccount] = useState(false)
 
   const { colors } = useTheme()
   const { fetchBrands, brands } = useBrands()
@@ -382,12 +383,14 @@ const Sell = ({ navigation }: any) => {
         isFocused={isFocused}
         accountVerified={accountVerified || isClosed}
         setIsClosed={setIsClosed}
+        setIsClosedAccount={setIsClosedAccount}
       />
       <AddAddress
         navigation={navigation}
         isFocused={isFocused}
-        addressVerified={addressVerified || isClosed}
-        setIsClosed={setIsClosed}
+        addressVerified={addressVerified || isClosedAccount}
+        setIsClosed={setIsClosedAccount}
+        setIsClosedOther={setIsClosed}
       />
 
       {!categories ? (
