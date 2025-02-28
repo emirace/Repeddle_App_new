@@ -1,5 +1,9 @@
 import {
+  Dimensions,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
+  ScrollView,
   StyleProp,
   StyleSheet,
   TextStyle,
@@ -125,118 +129,125 @@ const AddAccount = ({
       }}
     >
       <View style={[styles.centeredView]}>
-        <View
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={[styles.modalView, { backgroundColor: colors.background }]}
         >
-          <IconButton
-            icon={"close"}
-            style={{ position: "absolute", right: 12, top: 0 }}
-            onPress={() => navigation.push("Main")}
-          />
-          <View style={styles.heading}>
-            <TouchableOpacity></TouchableOpacity>
-            <Text style={[styles.modalTitle]}>Add Bank Account</Text>
-          </View>
-          <Text1 style={{ marginTop: 10 }}>
-            To become a Seller, kindly provide your banking details where you
-            can transfer your earnings deposited in your Repeddle wallet
-          </Text1>
-          <View style={{ paddingVertical: 20 }}>
-            <Text1 style={styles.label}>Account Name</Text1>
-            <Input
-              value={input.accountName}
-              icon="pencil-outline"
-              onChangeText={(text) => handleOnChange(text, "accountName")}
-              placeholder={input.accountName}
-              error={error.accountName}
-              onFocus={() => {
-                handleError("", "accountName")
-              }}
-            />
-            <Text1 style={styles.label}>Account Number</Text1>
-            <Input
-              value={input.accountNumber}
-              icon="pencil-outline"
-              onChangeText={(text) => handleOnChange(text, "accountNumber")}
-              placeholder={input.accountNumber ? `${input.accountNumber}` : ""}
-              error={error.accountNumber}
-              onFocus={() => {
-                handleError("", "accountNumber")
-              }}
-            />
-            <Text1 style={styles.label}>Bank Name</Text1>
-
-            <Picker
-              selectedValue={input.bankName}
-              style={{
-                backgroundColor: colors.elevation.level2,
-                padding: 5,
-                color: "grey",
-              }}
-              onValueChange={(itemValue, itemIndex) => {
-                handleOnChange(itemValue, "bankName")
-                handleError("", "bankName")
-              }}
-            >
-              <Picker.Item
-                style={{
-                  backgroundColor: colors.elevation.level2,
-                  color: colors.onBackground,
-                }}
-                label={"--select bank--"}
-                value={""}
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View>
+              <IconButton
+                icon={"close"}
+                style={{ position: "absolute", right: 0, top: -15 }}
+                onPress={() => navigation.push("Main")}
               />
-              {region() === "NGN"
-                ? banks.Nigeria.map((name, index) => (
-                    <Picker.Item
-                      style={{
-                        backgroundColor: colors.elevation.level2,
-                        color: colors.onBackground,
-                      }}
-                      key={index}
-                      //   label={name}
-                      value={name}
-                    />
-                  ))
-                : banks.SouthAfrica.map((name, index) => (
-                    <Picker.Item
-                      style={{
-                        backgroundColor: colors.elevation.level2,
-                        color: colors.onBackground,
-                      }}
-                      key={index}
-                      //   label={name}
-                      value={name}
-                    />
-                  ))}
-            </Picker>
+              <View style={styles.heading}>
+                <TouchableOpacity></TouchableOpacity>
+                <Text style={[styles.modalTitle]}>Add Bank Account</Text>
+              </View>
+              <Text1 style={{ marginTop: 10 }}>
+                To become a Seller, kindly provide your banking details where
+                you can transfer your earnings deposited in your Repeddle wallet
+              </Text1>
+              <View style={{ paddingVertical: 20 }}>
+                <Text1 style={styles.label}>Account Name</Text1>
+                <Input
+                  value={input.accountName}
+                  icon="pencil-outline"
+                  onChangeText={(text) => handleOnChange(text, "accountName")}
+                  placeholder={input.accountName}
+                  error={error.accountName}
+                  onFocus={() => {
+                    handleError("", "accountName")
+                  }}
+                />
+                <Text1 style={styles.label}>Account Number</Text1>
+                <Input
+                  value={input.accountNumber}
+                  icon="pencil-outline"
+                  onChangeText={(text) => handleOnChange(text, "accountNumber")}
+                  placeholder={
+                    input.accountNumber ? `${input.accountNumber}` : ""
+                  }
+                  error={error.accountNumber}
+                  onFocus={() => {
+                    handleError("", "accountNumber")
+                  }}
+                />
+                <Text1 style={styles.label}>Bank Name</Text1>
 
-            <Text style={{ color: colors.error, marginVertical: 5 }}>
-              Note: This cannot be change once saved, contact support to make
-              any changes.
-            </Text>
+                <Picker
+                  selectedValue={input.bankName}
+                  style={{
+                    backgroundColor: colors.elevation.level2,
+                    padding: 5,
+                    color: "grey",
+                  }}
+                  onValueChange={(itemValue, itemIndex) => {
+                    handleOnChange(itemValue, "bankName")
+                    handleError("", "bankName")
+                  }}
+                >
+                  <Picker.Item
+                    style={{
+                      backgroundColor: colors.elevation.level2,
+                      color: colors.onBackground,
+                    }}
+                    label={"--select bank--"}
+                    value={""}
+                  />
+                  {region() === "NGN"
+                    ? banks.Nigeria.map((name, index) => (
+                        <Picker.Item
+                          style={{
+                            backgroundColor: colors.elevation.level2,
+                            color: colors.onBackground,
+                          }}
+                          key={index}
+                          //   label={name}
+                          value={name}
+                        />
+                      ))
+                    : banks.SouthAfrica.map((name, index) => (
+                        <Picker.Item
+                          style={{
+                            backgroundColor: colors.elevation.level2,
+                            color: colors.onBackground,
+                          }}
+                          key={index}
+                          //   label={name}
+                          value={name}
+                        />
+                      ))}
+                </Picker>
 
-            {notification?.message ? (
-              <Text
-                style={{
-                  color: notification.error ? colors.error : "green",
-                  marginVertical: 5,
-                }}
-              >
-                {notification.message}
-              </Text>
-            ) : null}
+                <Text style={{ color: colors.error, marginVertical: 5 }}>
+                  Note: This cannot be change once saved, contact support to
+                  make any changes.
+                </Text>
 
-            <Button
-              mode="contained"
-              style={{ borderRadius: 5 }}
-              children="Submit"
-              loading={isSubmitting}
-              disabled={isSubmitting}
-              onPress={validate}
-            />
-          </View>
-        </View>
+                {notification?.message ? (
+                  <Text
+                    style={{
+                      color: notification.error ? colors.error : "green",
+                      marginVertical: 5,
+                    }}
+                  >
+                    {notification.message}
+                  </Text>
+                ) : null}
+
+                <Button
+                  mode="contained"
+                  style={{ borderRadius: 5 }}
+                  children="Submit"
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                  onPress={validate}
+                />
+              </View>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </View>
     </Modal>
   )
@@ -285,6 +296,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderRadius: 5,
+    height: "auto",
+    maxHeight: Math.min(Dimensions.get("screen").height * 0.8, 530),
   },
   modalTitle: { fontFamily: "absential-sans-bold", fontSize: 20 },
   heading: {
