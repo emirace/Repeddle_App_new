@@ -10,45 +10,52 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { PropsWithChildren, useState } from "react"
-import { Appbar, Button, Switch, Text, useTheme } from "react-native-paper"
-import useAuth from "../../hooks/useAuth"
-import { FontAwesome5, Ionicons } from "@expo/vector-icons"
-import { Picker } from "@react-native-picker/picker"
-import DateTimePicker from "@react-native-community/datetimepicker"
-import * as ImagePicker from "expo-image-picker"
-import { banks, states } from "../../utils/constants"
-import { region, timeDifference, uploadImage } from "../../utils/common"
-import moment from "moment"
-import { normaliseH } from "../../utils/normalize"
-import MyButton from "../../components/MyButton"
-import { UpdateUser } from "../../types/user"
-import Input from "../../components/Input"
-import useNewsletter from "../../hooks/useNewsletter"
-import Rebundle from "../../components/Rebundle"
-import { ProfileSettingsNavigationProp } from "../../types/navigation/stack"
-import useToastNotification from "../../hooks/useToastNotification"
-import { baseURL } from "../../services/api"
+} from "react-native";
+import React, { PropsWithChildren, useState } from "react";
+import {
+  ActivityIndicator,
+  Appbar,
+  Button,
+  Switch,
+  Text,
+  useTheme,
+} from "react-native-paper";
+import useAuth from "../../hooks/useAuth";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { Picker } from "@react-native-picker/picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import * as ImagePicker from "expo-image-picker";
+import { banks, states } from "../../utils/constants";
+import { region, timeDifference, uploadImage } from "../../utils/common";
+import moment from "moment";
+import { normaliseH } from "../../utils/normalize";
+import MyButton from "../../components/MyButton";
+import { UpdateUser } from "../../types/user";
+import Input from "../../components/Input";
+import useNewsletter from "../../hooks/useNewsletter";
+import Rebundle from "../../components/Rebundle";
+import { ProfileSettingsNavigationProp } from "../../types/navigation/stack";
+import useToastNotification from "../../hooks/useToastNotification";
+import { baseURL } from "../../services/api";
 
-type Props = ProfileSettingsNavigationProp
+type Props = ProfileSettingsNavigationProp;
 
 const ProfileSettings = ({ navigation }: Props) => {
-  const { user, loading, updateUser } = useAuth()
-  const { colors } = useTheme()
-  const { addNotification } = useToastNotification()
+  const { user, loading, updateUser } = useAuth();
+  const { colors } = useTheme();
+  const { addNotification } = useToastNotification();
 
   const {
     createNewsletter,
     deleteNewsletter,
     error: newsletterError,
-  } = useNewsletter()
+  } = useNewsletter();
 
-  const [username, setUsername] = useState("")
+  const [username, setUsername] = useState("");
 
-  const [image, setImage] = useState("")
-  const [removingLetter, setRemovingLetter] = useState(false)
-  const [loadingUpload, setLoadingUpload] = useState(false)
+  const [image, setImage] = useState("");
+  const [removingLetter, setRemovingLetter] = useState(false);
+  const [loadingUpload, setLoadingUpload] = useState(false);
 
   // moment.locale()
 
@@ -74,7 +81,7 @@ const ProfileSettings = ({ navigation }: Props) => {
     bankName: user?.bankName,
     accountNumber: user?.accountNumber,
     newsletter: user?.allowNewsletter,
-  })
+  });
 
   const [error, setError] = useState({
     email: "",
@@ -97,49 +104,49 @@ const ProfileSettings = ({ navigation }: Props) => {
     bankName: "",
     accountNumber: "",
     newsletter: "",
-  })
+  });
 
   const addressValidate = () => {
-    Keyboard.dismiss()
-    let valid = true
+    Keyboard.dismiss();
+    let valid = true;
     if (!input.street) {
-      handleError("Enter your street", "street")
-      valid = false
+      handleError("Enter your street", "street");
+      valid = false;
     }
     // if (!input.apartment) {
     //   handleError('Enter your apartment', 'apartment');
     //   valid = false;
     // }
     if (!input.state) {
-      handleError("Select your state", "state")
-      valid = false
+      handleError("Select your state", "state");
+      valid = false;
     }
     if (!input.zipcode) {
-      handleError("Enter your zip code", "zipcode")
-      valid = false
+      handleError("Enter your zip code", "zipcode");
+      valid = false;
     }
 
     // if (valid) {
     //   submitHandler2();
     // }
-  }
+  };
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [newsletterStatus, setNewsletterStatus] = useState(input.newsletter)
-  const [show, setShow] = useState(false)
-  const [showAddress, setShowAddress] = useState(false)
-  const [showAccount, setShowAccount] = useState(false)
-  const [bundle, setBundle] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [newsletterStatus, setNewsletterStatus] = useState(input.newsletter);
+  const [show, setShow] = useState(false);
+  const [showAddress, setShowAddress] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
+  const [bundle, setBundle] = useState(false);
 
   const handleOnChange = (
     text: string | undefined,
     inputVal: keyof typeof input
   ) => {
-    setInput((prevState) => ({ ...prevState, [inputVal]: text }))
-  }
+    setInput((prevState) => ({ ...prevState, [inputVal]: text }));
+  };
   const handleError = (errorMessage: string, errVal: keyof typeof error) => {
-    setError((prevState) => ({ ...prevState, [errVal]: errorMessage }))
-  }
+    setError((prevState) => ({ ...prevState, [errVal]: errorMessage }));
+  };
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -148,60 +155,60 @@ const ProfileSettings = ({ navigation }: Props) => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-    })
+    });
 
     if (!result.canceled) {
-      let localUri = result.assets[0].uri
-      let filename = localUri.split("/").pop()
-      if (!filename) return
-      let match = /\.(\w+)$/.exec(filename)
-      let type = match ? `image/${match[1]}` : `image`
+      let localUri = result.assets[0].uri;
+      let filename = localUri.split("/").pop();
+      if (!filename) return;
+      let match = /\.(\w+)$/.exec(filename);
+      let type = match ? `image/${match[1]}` : `image`;
 
-      uploadImageHandler({ uri: localUri, name: filename, type })
-      console.log({ uri: localUri, name: filename, type })
+      uploadImageHandler({ uri: localUri, name: filename, type });
+      console.log({ uri: localUri, name: filename, type });
     }
-  }
+  };
 
   const uploadImageHandler = async (photo: any) => {
-    const file = photo as File
-    const bodyFormData = new FormData()
-    bodyFormData.append("file", file)
-    setLoadingUpload(true)
+    const file = photo as File;
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+    setLoadingUpload(true);
     try {
-      const res = await uploadImage(file)
-      setImage(res)
+      const res = await uploadImage(file);
+      setImage(res);
     } catch (error) {
-      addNotification({ message: error as string, error: true })
+      addNotification({ message: error as string, error: true });
     }
 
-    setLoadingUpload(false)
-  }
+    setLoadingUpload(false);
+  };
 
   const daydiff = input.usernameLastUpdate
     ? 30 - timeDifference(new Date(input.usernameLastUpdate), new Date())
-    : 0
+    : 0;
 
   const validate = () => {
-    Keyboard.dismiss()
-    let valid = true
+    Keyboard.dismiss();
+    let valid = true;
     if (!input.firstName) {
-      handleError("Please enter your first Name", "firstName")
-      valid = false
+      handleError("Please enter your first Name", "firstName");
+      valid = false;
     }
     if (!input.lastName) {
-      handleError("Please enter your last Name", "lastName")
-      valid = false
+      handleError("Please enter your last Name", "lastName");
+      valid = false;
     }
 
     if (input.confirmPassword) {
       if (input.password !== input.confirmPassword) {
-        handleError("Passwords do not match", "confirmPassword")
-        valid = false
+        handleError("Passwords do not match", "confirmPassword");
+        valid = false;
       }
     }
     if (!input.email) {
-      handleError("Please enter an email", "email")
-      valid = false
+      handleError("Please enter an email", "email");
+      valid = false;
     } else if (
       !input.email
         .toLowerCase()
@@ -209,28 +216,28 @@ const ProfileSettings = ({ navigation }: Props) => {
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         )
     ) {
-      valid = false
-      handleError("Please input a valid email", "email")
+      valid = false;
+      handleError("Please input a valid email", "email");
     }
     if (input.password) {
       if (input.password.length < 6) {
-        valid = false
-        handleError("Your password must be at least 6 characters", "password")
+        valid = false;
+        handleError("Your password must be at least 6 characters", "password");
       } else if (input.password.search(/[a-z]/i) < 0) {
         handleError(
           "Password must contain at least 1 lowercase alphabetical character",
           "password"
-        )
-        valid = false
+        );
+        valid = false;
       } else if (input.password.search(/[A-Z]/) < 0) {
         handleError(
           "Password must contain at least 1 uppercase alphabetical character",
           "password"
-        )
-        valid = false
+        );
+        valid = false;
       } else if (input.password.search(/[0-9]/) < 0) {
-        handleError("Password must contain at least 1 digit", "password")
-        valid = false
+        handleError("Password must contain at least 1 digit", "password");
+        valid = false;
       }
     }
 
@@ -243,42 +250,42 @@ const ProfileSettings = ({ navigation }: Props) => {
             {
               text: "Cancel",
               onPress: () => {
-                return
+                return;
               },
               style: "cancel",
             },
             { text: "OK", onPress: () => submitHandler() },
           ],
           { cancelable: false }
-        )
+        );
       } else {
-        submitHandler()
+        submitHandler();
       }
     }
-  }
+  };
 
   const accountValidate = () => {
-    let valid = true
+    let valid = true;
     if (!input.accountNumber) {
-      handleError("Enter a valid account number", "accountNumber")
-      valid = false
+      handleError("Enter a valid account number", "accountNumber");
+      valid = false;
     }
     if (!input.accountName) {
-      handleError("Enter a valid account name", "accountName")
-      valid = false
+      handleError("Enter a valid account name", "accountName");
+      valid = false;
     }
     if (!input.bankName) {
-      handleError("Select a valid bank", "bankName")
-      valid = false
+      handleError("Select a valid bank", "bankName");
+      valid = false;
     }
 
     // if (valid) {
     //   submitHandler();
     // }
-  }
+  };
 
   const submitHandler = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     const data: UpdateUser = {
       firstName: input.firstName!,
@@ -292,48 +299,53 @@ const ProfileSettings = ({ navigation }: Props) => {
         street: input.state ?? "",
         zipcode: input.zipcode ?? 0,
       },
+    };
+
+    if (image) data.image = image;
+    try {
+      const res = await updateUser(data);
+
+      if (res) {
+        addNotification({ message: "Updated sucessfully" });
+      }
+    } catch (error: any) {
+      addNotification({ message: error, error: true });
+    } finally {
+      setIsLoading(false);
     }
-
-    if (image) data.image = image
-
-    const res = await updateUser(data)
-
-    if (res) {
-      addNotification({ message: "" })
-    }
-  }
+  };
 
   const handleNewsletter = async () => {
-    setRemovingLetter(true)
+    setRemovingLetter(true);
     if (newsletterStatus) {
-      if (!user?._id) return
-      const resp = await deleteNewsletter(user._id)
+      if (!user?._id) return;
+      const resp = await deleteNewsletter(user._id);
       if (resp.success) {
         addNotification({
           message: resp.message || "Unsubscribed from newsletter",
-        })
-        setNewsletterStatus(false)
+        });
+        setNewsletterStatus(false);
       } else {
         addNotification({
           message: newsletterError || "failed to unsubscribe from newsletter",
           error: true,
-        })
+        });
       }
     } else {
-      const resp = await createNewsletter(user!.email)
+      const resp = await createNewsletter(user!.email);
       if (resp) {
-        addNotification({ message: "Subscribed from newsletter" })
-        setNewsletterStatus(true)
+        addNotification({ message: "Subscribed from newsletter" });
+        setNewsletterStatus(true);
       } else {
         addNotification({
           message: newsletterError || "failed to subscribe to newsletter",
           error: true,
-        })
+        });
       }
     }
 
-    setRemovingLetter(false)
-  }
+    setRemovingLetter(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -359,17 +371,21 @@ const ProfileSettings = ({ navigation }: Props) => {
         <View style={{ alignItems: "center" }}>
           <View style={styles.image}>
             <Image
-              source={{ uri: image || baseURL + user?.image }}
+              source={{ uri: image ? baseURL + image : baseURL + user?.image }}
               style={{ width: 80, height: 80, borderRadius: 40 }}
             />
-            <Ionicons
-              onPress={pickImage}
-              disabled={loadingUpload}
-              style={styles.edit}
-              name="camera-outline"
-              size={18}
-              color={colors.background}
-            />
+            {loadingUpload ? (
+              <ActivityIndicator />
+            ) : (
+              <Ionicons
+                onPress={pickImage}
+                disabled={loadingUpload}
+                style={styles.edit}
+                name="camera-outline"
+                size={18}
+                color={colors.background}
+              />
+            )}
           </View>
         </View>
         <View
@@ -403,14 +419,14 @@ const ProfileSettings = ({ navigation }: Props) => {
             value={input.username}
             icon="pencil"
             onChangeText={(text) => {
-              handleOnChange(text, "username")
-              setUsername(text)
+              handleOnChange(text, "username");
+              setUsername(text);
             }}
             placeholder="Username"
             error={error.username}
             editable={daydiff < 0}
             onFocus={() => {
-              handleError("", "username")
+              handleError("", "username");
             }}
           />
           <Text1 style={styles.label}>First Name</Text1>
@@ -421,7 +437,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             placeholder="First Name"
             error={error.firstName}
             onFocus={() => {
-              handleError("", "firstName")
+              handleError("", "firstName");
             }}
           />
           <Text1 style={styles.label}>Last Name</Text1>
@@ -432,7 +448,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             placeholder="Last Name"
             error={error.lastName}
             onFocus={() => {
-              handleError("", "lastName")
+              handleError("", "lastName");
             }}
           />
           <Text1 style={styles.label}>Email</Text1>
@@ -443,7 +459,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             placeholder="Email"
             error={error.email}
             onFocus={() => {
-              handleError("", "email")
+              handleError("", "email");
             }}
           />
           <Text1 style={styles.label}>Phone</Text1>
@@ -455,7 +471,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             error={error.phone}
             keyboardType="numeric"
             onFocus={() => {
-              handleError("", "phone")
+              handleError("", "phone");
             }}
           />
           <Text1 style={styles.label}>Date of birth</Text1>
@@ -488,8 +504,8 @@ const ProfileSettings = ({ navigation }: Props) => {
               mode={"date"}
               is24Hour={true}
               onChange={(event, selectedDate) => {
-                setShow(false)
-                return handleOnChange(selectedDate?.toString(), "dob")
+                setShow(false);
+                return handleOnChange(selectedDate?.toString(), "dob");
               }}
             />
           )}
@@ -501,7 +517,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             password
             error={error.password}
             onFocus={() => {
-              handleError("", "password")
+              handleError("", "password");
             }}
           />
           <Text1 style={styles.label}>Confirm Password</Text1>
@@ -512,7 +528,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             password
             error={error.confirmPassword}
             onFocus={() => {
-              handleError("", "confirmPassword")
+              handleError("", "confirmPassword");
             }}
           />
           <Text1 style={styles.label}>About</Text1>
@@ -607,7 +623,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             transparent={true}
             visible={showAddress}
             onRequestClose={() => {
-              setShowAddress(!showAddress)
+              setShowAddress(!showAddress);
             }}
           >
             <View style={[styles.centeredView]}>
@@ -639,7 +655,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                     placeholder={input.street}
                     error={error.street}
                     onFocus={() => {
-                      handleError("", "street")
+                      handleError("", "street");
                     }}
                   />
                   <Text1 style={styles.label}>Apartment/Complex</Text1>
@@ -650,7 +666,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                     placeholder={input.apartment}
                     error={error.apartment}
                     onFocus={() => {
-                      handleError("", "apartment")
+                      handleError("", "apartment");
                     }}
                   />
                   <Text1 style={styles.label}>Province</Text1>
@@ -662,8 +678,8 @@ const ProfileSettings = ({ navigation }: Props) => {
                       color: "grey",
                     }}
                     onValueChange={(itemValue, itemIndex) => {
-                      handleOnChange(itemValue, "state")
-                      handleError("", "state")
+                      handleOnChange(itemValue, "state");
+                      handleError("", "state");
                     }}
                   >
                     <Picker.Item
@@ -706,7 +722,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                     placeholder={`${input.zipcode || ""}`}
                     error={error.zipcode}
                     onFocus={() => {
-                      handleError("", "zipcode")
+                      handleError("", "zipcode");
                     }}
                   />
 
@@ -729,7 +745,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             transparent={true}
             visible={showAccount}
             onRequestClose={() => {
-              setShowAccount(!showAccount)
+              setShowAccount(!showAccount);
             }}
           >
             <View style={[styles.centeredView]}>
@@ -762,7 +778,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                     placeholder={input.accountName}
                     error={error.accountName}
                     onFocus={() => {
-                      handleError("", "accountName")
+                      handleError("", "accountName");
                     }}
                   />
                   <Text1 style={styles.label}>Account Number</Text1>
@@ -774,7 +790,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                     }
                     error={error.accountNumber}
                     onFocus={() => {
-                      handleError("", "accountNumber")
+                      handleError("", "accountNumber");
                     }}
                   />
                   <Text1 style={styles.label}>Bank Name</Text1>
@@ -786,8 +802,8 @@ const ProfileSettings = ({ navigation }: Props) => {
                       color: "grey",
                     }}
                     onValueChange={(itemValue, itemIndex) => {
-                      handleOnChange(itemValue, "bankName")
-                      handleError("", "bankName")
+                      handleOnChange(itemValue, "bankName");
+                      handleError("", "bankName");
                     }}
                   >
                     <Picker.Item
@@ -856,7 +872,7 @@ const ProfileSettings = ({ navigation }: Props) => {
           {!isLoading && <Rebundle bundle={bundle} setBundle={setBundle} />}
         </View>
       </ScrollView>
-      <View style={{ margin: 10 }}>
+      <View style={{ margin: 15 }}>
         <Button
           onPress={validate}
           children="Update"
@@ -870,17 +886,17 @@ const ProfileSettings = ({ navigation }: Props) => {
         />
       </View>
     </View>
-  )
-}
+  );
+};
 
 const Text1 = ({
   children,
   style,
 }: PropsWithChildren<{ style?: StyleProp<TextStyle> }>) => {
-  return <Text style={[styles.label, style]}>{children}</Text>
-}
+  return <Text style={[styles.label, style]}>{children}</Text>;
+};
 
-export default ProfileSettings
+export default ProfileSettings;
 
 const styles = StyleSheet.create({
   container: {
@@ -963,4 +979,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-})
+});

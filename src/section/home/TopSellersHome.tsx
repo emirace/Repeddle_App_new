@@ -11,6 +11,7 @@ import { TopSellers } from "../../types/user";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 import { MainScreenNavigationProp } from "../../types/navigation/stack";
+import { baseURL } from "../../services/api";
 
 type Props = {
   isLoading?: boolean;
@@ -71,7 +72,7 @@ const RenderTopSeller = ({
   >
     <ImageBackground
       imageStyle={homeStyles.sellerCont}
-      source={{ uri: item?.image }}
+      source={{ uri: baseURL + item?.image }}
       resizeMode="cover"
       style={homeStyles.sellerCont}
     >
