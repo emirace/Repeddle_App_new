@@ -2,33 +2,34 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { FilterOptions, SearchOptions } from "../search";
 import { OrderItem } from "../order";
 import { ITransaction } from "../transactions";
+import { ICategory } from "../category";
 
 export type RootStackParamList = {
-  Auth: undefined
-  Login: undefined | { back?: boolean }
-  SignUp: undefined
-  Step: { email: string }
-  ForgetPassword: undefined
-  Main: undefined
-  Appearance: undefined
-  Search: { filter?: FilterOptions; query?: string }
-  Product: { slug: string }
-  Chat: { conversationId: string }
-  Sell: undefined
-  ProfileSettings: undefined
-  ProductList: undefined
-  OrderList: undefined
-  EditProduct: { id: string }
-  OrderDetails: { id: string }
-  MyAccount: { username: string }
-  BuyersProtection: undefined
-  SizeChart: undefined
-  Cart: undefined
-  Checkout: undefined
-  PaymentMethod: undefined
-  SellerReview: { username: string }
-  Wishlist: undefined
-  ReturnDetail: { id: string }
+  Auth: undefined;
+  Login: undefined | { back?: boolean };
+  SignUp: undefined;
+  Step: { email: string };
+  ForgetPassword: undefined;
+  Main: undefined;
+  Appearance: undefined;
+  Search: { filter?: FilterOptions; query?: string };
+  Product: { slug: string };
+  Chat: { conversationId: string };
+  Sell: undefined;
+  ProfileSettings: undefined;
+  ProductList: undefined;
+  OrderList: undefined;
+  EditProduct: { id: string };
+  OrderDetails: { id: string };
+  MyAccount: { username: string };
+  BuyersProtection: undefined;
+  SizeChart: undefined;
+  Cart: undefined;
+  Checkout: undefined;
+  PaymentMethod: undefined;
+  SellerReview: { username: string };
+  Wishlist: undefined;
+  ReturnDetail: { id: string };
   ReturnForm: {
     orderItems: OrderItem[];
     orderId: string;
@@ -40,6 +41,8 @@ export type RootStackParamList = {
   Fund: undefined;
   Withdraw: undefined;
   Category: undefined;
+  SubCategories: { category: ICategory };
+  Brand: undefined;
 };
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -196,4 +199,14 @@ export type TransactionDetailNavigationProp = NativeStackScreenProps<
 export type CategoryNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Category"
+>;
+
+export type SubCategoriesNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "SubCategories"
+>;
+
+export type BrandNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Brand"
 >;
