@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 16,
-    fontFamily: "absential-sans-bold",
+    fontFamily: "absential-sans-medium",
     color: "#333",
   },
   itemDate: {
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontFamily: "chronicle-text-bold",
-    fontSize: 18,
+    fontFamily: "chronicle-text",
+    fontSize: 16,
   },
 })

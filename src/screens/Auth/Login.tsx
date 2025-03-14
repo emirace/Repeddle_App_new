@@ -39,7 +39,10 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation, route }) => {
       setError("Please enter a valid email address.")
     } else {
       setLoading(true)
-      const result = await login({ email, password })
+      const result = await login({
+        email: email.trim().toLowerCase(),
+        password,
+      })
       if (result) {
         route.params?.back ? navigation.pop() : navigate("Main")
       } else {
