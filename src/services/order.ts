@@ -105,13 +105,30 @@ export const createOrderService = async (
   }
 }
 
-export const fetchSoldOrdersService = async (): Promise<IOrder[]> => {
+export type FetchSoldOrderParams = {
+  page?: number
+  orderId?: string
+  startDate?: string
+  endDate?: string
+  limit?: number
+}
+
+export const fetchSoldOrdersService = async (
+  params?: FetchSoldOrderParams
+): Promise<IOrder[]> => {
   try {
+    let url = "/orders/sold"
+
+    if (params) {
+      const p = Object.entries(params).map(([k, v]) => [k, v.toString()])
+      url = url + `?${new URLSearchParams(p).toString()}`
+    }
+
     const data: {
       status: boolean
       orders: IOrder[]
       message: string
-    } = await api.get(`/orders/sold`)
+    } = await api.get(url)
 
     if (!data.status) {
       // Handle Fetch order error, e.g., display an error message to the user

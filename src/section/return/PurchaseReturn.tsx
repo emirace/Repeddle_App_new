@@ -14,7 +14,12 @@ const PurchaseReturn = ({ navigation }: Props) => {
   const { fetchPurchaseReturns } = useReturn()
 
   const [query, setQuery] = useState("")
-  const [returns, setReturns] = useState<IReturn[]>([])
+  const [returns, setReturns] = useState<{
+    returns: IReturn[]
+    currentPage: number
+    total: number
+    totalPages: number
+  }>()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -38,7 +43,7 @@ const PurchaseReturn = ({ navigation }: Props) => {
     <ReturnComp
       navigation={navigation}
       loading={loading}
-      returns={returns}
+      returns={returns?.returns || []}
       error={error}
     />
   )

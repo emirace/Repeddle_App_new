@@ -6,6 +6,7 @@ import {
   fetchAllOrdersService,
   fetchOrderByIdService,
   fetchOrdersService,
+  FetchSoldOrderParams,
   fetchSoldOrdersService,
   getOrdersSummaryService,
   updateOrderItemStatusService,
@@ -19,7 +20,7 @@ type ContextType = {
   fetchOrders: (orderId?: string) => Promise<IOrder[] | null>
   fetchAllOrders: (orderId?: string) => Promise<boolean>
   fetchOrderById: (id: string) => Promise<IOrder | null>
-  fetchSoldOrders: () => Promise<IOrder[] | null>
+  fetchSoldOrders: (params?: FetchSoldOrderParams) => Promise<IOrder[] | null>
   createOrder: (
     order: ICreateOrder
   ) => Promise<null | { order: IOrder; message: string }>
@@ -31,7 +32,7 @@ type ContextType = {
   getOrdersSummary: (val: {
     endDate?: string
     startDate?: string
-  }) => Promise<IOrderSummary | null>
+  }) => Promise<IOrderSummary | string>
   updateOrderItemStatus: (
     orderId: string,
     itemId: string,
@@ -94,11 +95,11 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
   }
 
   // Function to fetch orders
-  const fetchSoldOrders = async () => {
+  const fetchSoldOrders = async (params?: FetchSoldOrderParams) => {
     try {
       setError("")
       setLoading(true)
-      const result = await fetchSoldOrdersService()
+      const result = await fetchSoldOrdersService(params)
       // setOrders(result)
       setLoading(false)
       return result
@@ -183,7 +184,7 @@ export const OrderProvider = ({ children }: PropsWithChildren) => {
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return null
+      return error as string
     }
   }
 
