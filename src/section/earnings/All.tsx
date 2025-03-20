@@ -30,6 +30,7 @@ const All = (props: Props) => {
       let totalSale = 0
       const orderData1 = res.dailySoldOrders.map((x) => {
         totalSale = totalSale + Number(x.sales)
+        console.log(totalSale)
         return {
           name: moment(`${x._id}`).format("D MMM"),
           order: x.orders,
@@ -49,18 +50,13 @@ const All = (props: Props) => {
       setLoading(true)
 
       const [summary, orders] = await Promise.all([
-        getOrdersSummary({
-          endDate: to.toString(),
-          startDate: from.toString(),
-        }),
+        getOrdersSummary({}),
 
-        fetchSoldOrders({
-          endDate: to.toString(),
-          startDate: from.toString(),
-        }),
+        fetchSoldOrders(),
       ])
 
       handleSummary(summary)
+      console.log(summary)
       if (orders?.length) {
         setOrder(orders)
       }
@@ -78,7 +74,7 @@ const All = (props: Props) => {
   return (
     <View style={{ paddingHorizontal: 10 }}>
       <FlatList
-        renderItem={RenderItem}
+        renderItem={({ item }) => <RenderItem item={item} />}
         keyExtractor={(item, index) => index.toString()}
         showsVerticalScrollIndicator={false}
         data={order}

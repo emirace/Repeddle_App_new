@@ -188,7 +188,7 @@ const dashboardItems: {
   },
   {
     name: "My Earnings",
-    link: "ProfileSettings",
+    link: "Earnings",
     leftIcon: "account",
     description: "See your achievements",
   },

@@ -78,12 +78,12 @@ const Today = () => {
   return (
     <View style={{ paddingHorizontal: 10 }}>
       <FlatList
-        renderItem={RenderItem}
+        renderItem={({ item }) => <RenderItem item={item} />}
         keyExtractor={(item, index) => index.toString()}
         showsVerticalScrollIndicator={false}
         data={order}
         ListHeaderComponent={() => (
-          <TopView totalSales={40} orderData={orderData} />
+          <TopView totalSales={totalSales} orderData={orderData} />
         )}
       />
     </View>

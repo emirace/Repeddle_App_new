@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native"
-import { useTheme } from "react-native-paper"
 
 export const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -8,7 +7,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
-    backgroundColor: useTheme().colors.primary,
+    backgroundColor: "#eb9f40",
   },
   title: {
     fontWeight: "bold",

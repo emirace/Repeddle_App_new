@@ -119,9 +119,9 @@ export const fetchSoldOrdersService = async (
   try {
     let url = "/orders/sold"
 
-    if (params) {
-      const p = Object.entries(params).map(([k, v]) => [k, v.toString()])
-      url = url + `?${new URLSearchParams(p).toString()}`
+    if (params && Object.keys(params).length > 0) {
+      const p = Object.entries(params).map(([k, v]) => k + "=" + v)
+      url = url + "?" + p.join("&")
     }
 
     const data: {

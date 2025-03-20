@@ -1,7 +1,7 @@
 import React from "react"
 import { EarningsNavigationProp } from "../../types/navigation/stack"
-import { TouchableOpacity, View } from "react-native"
-import { Appbar, IconButton, Text, useTheme } from "react-native-paper"
+import { View } from "react-native"
+import { Appbar, useTheme } from "react-native-paper"
 import CartIcon from "../../components/ui/cartIcon"
 import EarningNavigation from "../../section/earnings/EarningTopNavigation"
 
@@ -23,7 +23,7 @@ const Earnings = ({ navigation }: Props) => {
           iconColor="white"
           onPress={() => navigation.goBack()}
         />
-        <Appbar.Content titleStyle={{ color: "white" }} title="Wishlist" />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Earnings" />
         <Appbar.Content
           style={{ flex: 0 }}
           title={

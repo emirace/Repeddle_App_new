@@ -79,7 +79,7 @@ const ThisMonth = () => {
   return (
     <View style={{ paddingHorizontal: 10 }}>
       <FlatList
-        renderItem={RenderItem}
+        renderItem={({ item }) => <RenderItem item={item} />}
         keyExtractor={(item, index) => index.toString()}
         showsVerticalScrollIndicator={false}
         data={order}
