@@ -1,20 +1,20 @@
-import { StyleSheet, ScrollView, View } from "react-native"
-import React from "react"
-import { Appbar, Avatar, List, Text, useTheme } from "react-native-paper"
-import Balance from "../../section/profile/Balances"
-import { RootStackParamList } from "../../types/navigation/stack"
-import useAuth from "../../hooks/useAuth"
+import { StyleSheet, ScrollView, View } from "react-native";
+import React from "react";
+import { Appbar, Avatar, List, Text, useTheme } from "react-native-paper";
+import Balance from "../../section/profile/Balances";
+import { RootStackParamList } from "../../types/navigation/stack";
+import useAuth from "../../hooks/useAuth";
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { colors } = useTheme()
-  const { logout, user } = useAuth()
+  const { colors } = useTheme();
+  const { logout, user } = useAuth();
 
   return (
     <ScrollView
       style={{
         flex: 1,
         backgroundColor: colors.background,
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
       }}
       contentContainerStyle={{
         paddingBottom: 130,
@@ -23,14 +23,22 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
       {user ? (
         <Appbar.Header>
           <View style={styles.userInfo}>
-            <Avatar.Icon size={48} icon="account" />
+            <Avatar.Icon size={30} icon="account" />
             <View style={{ marginLeft: 10 }}>
               <Text style={styles.greeting}>Hi, {user?.username}</Text>
               <Text style={styles.welcome}>Welcome, let's make payments!</Text>
             </View>
           </View>
-          <Appbar.Action icon="face-agent" onPress={() => {}} />
-          <Appbar.Action icon="bell-outline" onPress={() => {}} />
+          <Appbar.Action
+            icon="face-agent"
+            onPress={() => {}}
+            style={{ width: 30 }}
+          />
+          <Appbar.Action
+            icon="bell-outline"
+            onPress={() => {}}
+            style={{ width: 30 }}
+          />
         </Appbar.Header>
       ) : (
         <Appbar.Header>
@@ -46,48 +54,69 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
       <View>
         {user ? <Balance navigation={navigation} /> : null}
         <List.Section>
-          <List.Subheader>General</List.Subheader>
+          <List.Subheader
+            style={{
+              paddingVertical: 5,
+              backgroundColor: colors.elevation.level1,
+            }}
+          >
+            General
+          </List.Subheader>
 
           <List.Item
             title="Notification"
             description="Control your notification"
             titleStyle={{
-              fontSize: 22,
+              fontSize: 20,
             }}
-            descriptionStyle={{ fontSize: 18 }}
+            descriptionStyle={{ fontSize: 16 }}
             left={() => <List.Icon icon="bell-outline" />}
             right={() => <List.Icon icon="chevron-right" />}
             // onPress={() => navigation.navigate('Appearance')}
           />
         </List.Section>
         <List.Section>
-          <List.Subheader>Appearance</List.Subheader>
+          <List.Subheader
+            style={{
+              paddingVertical: 5,
+              backgroundColor: colors.elevation.level1,
+            }}
+          >
+            Appearance
+          </List.Subheader>
           <List.Item
             title="Theme"
             description="Select your prefered theme"
             titleStyle={{
-              fontSize: 22,
+              fontSize: 18,
             }}
             left={() => <List.Icon icon="theme-light-dark" />}
             right={() => <List.Icon icon="chevron-right" />}
-            descriptionStyle={{ fontSize: 18 }}
+            descriptionStyle={{ fontSize: 16 }}
             onPress={() => navigation.push("Appearance")}
           />
         </List.Section>
         {user ? (
           <List.Section>
-            <List.Subheader>Dashboard</List.Subheader>
+            <List.Subheader
+              style={{
+                paddingVertical: 5,
+                backgroundColor: colors.elevation.level1,
+              }}
+            >
+              Dashboard
+            </List.Subheader>
             {dashboardItems.map((item) => (
               <List.Item
                 key={item.name}
                 title={item.name}
                 description={item.description}
                 titleStyle={{
-                  fontSize: 22,
+                  fontSize: 18,
                 }}
                 left={() => <List.Icon icon={item.leftIcon} />}
                 right={() => <List.Icon icon="chevron-right" />}
-                descriptionStyle={{ fontSize: 18 }}
+                descriptionStyle={{ fontSize: 16 }}
                 onPress={() => navigation.navigate(`${item.link}`)}
               />
             ))}
@@ -95,28 +124,28 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
               title="Log out"
               description={"Log out of your account"}
               titleStyle={{
-                fontSize: 22,
+                fontSize: 18,
               }}
               left={() => <List.Icon icon={"power"} />}
               right={() => <List.Icon icon="chevron-right" />}
-              descriptionStyle={{ fontSize: 18 }}
+              descriptionStyle={{ fontSize: 16 }}
               onPress={() => {
-                logout()
-                navigation.replace("Auth")
+                logout();
+                navigation.replace("Auth");
               }}
             />
           </List.Section>
         ) : null}
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
 const dashboardItems: {
-  name: string
-  link: keyof RootStackParamList
-  leftIcon: string
-  description: string
+  name: string;
+  link: keyof RootStackParamList;
+  leftIcon: string;
+  description: string;
 }[] = [
   {
     name: "My Profile",
@@ -160,7 +189,7 @@ const dashboardItems: {
     leftIcon: "cash",
     description: "View all your transactions",
   },
-]
+];
 
 const styles = StyleSheet.create({
   userInfo: {
@@ -169,13 +198,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   greeting: {
-    fontSize: 24,
+    fontSize: 16,
     fontFamily: "absential-sans-bold",
+    textTransform: "capitalize",
   },
   welcome: {
     fontSize: 16,
     color: "gray",
   },
-})
+});
 
-export default Profile
+export default Profile;

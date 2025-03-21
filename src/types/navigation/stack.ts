@@ -43,6 +43,7 @@ export type RootStackParamList = {
   Category: undefined;
   SubCategories: { category: ICategory };
   Brand: undefined;
+  Profile: undefined;
 };
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -209,4 +210,9 @@ export type SubCategoriesNavigationProp = NativeStackScreenProps<
 export type BrandNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Brand"
+>;
+
+export type ProfileNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Profile"
 >;

@@ -31,6 +31,7 @@ import { ToastNotificationProvider } from "./contexts/ToastNotificationContext";
 import ToastNotification from "./components/ui/ToastNotification";
 import { ReturnProvider } from "./contexts/ReturnContext";
 import { ThemeProp } from "react-native-paper/lib/typescript/types";
+import { WalletProvider } from "./contexts/WalletContext";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -74,8 +75,10 @@ const Main = () => {
                                 <TransactionProvider>
                                   <MessageProvider>
                                     <ReturnProvider>
-                                      <ToastNotification />
-                                      <MainStackNav />
+                                      <WalletProvider>
+                                        <ToastNotification />
+                                        <MainStackNav />
+                                      </WalletProvider>
                                     </ReturnProvider>
                                   </MessageProvider>
                                 </TransactionProvider>
