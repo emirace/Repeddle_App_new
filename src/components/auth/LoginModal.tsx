@@ -72,7 +72,10 @@ const LoginModal: React.FC<{ navigation: any }> = ({ navigation }) => {
       setError("Please enter a valid email address.")
     } else {
       setLoading(true)
-      const result = await login({ email, password })
+      const result = await login({
+        email: email.trim().toLowerCase(),
+        password,
+      })
       if (result) {
         setAuthErrorModalOpen(false)
       } else {

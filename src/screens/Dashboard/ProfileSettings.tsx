@@ -171,7 +171,10 @@ const ProfileSettings = ({ navigation }: Props) => {
       const res = await uploadImage(file)
       setImage(res)
     } catch (error) {
-      addNotification({ message: error as string, error: true })
+      addNotification({
+        message: (error as string) || "Failed to upload image",
+        error: true,
+      })
     }
 
     setLoadingUpload(false)
@@ -301,6 +304,8 @@ const ProfileSettings = ({ navigation }: Props) => {
     if (res) {
       addNotification({ message: "" })
     }
+
+    setIsLoading(false)
   }
 
   const handleNewsletter = async () => {
@@ -357,7 +362,7 @@ const ProfileSettings = ({ navigation }: Props) => {
         style={styles.content}
       >
         <View style={{ alignItems: "center" }}>
-          <View style={styles.image}>
+          <View style={[styles.image, { backgroundColor: colors.primary }]}>
             <Image
               source={{ uri: image || baseURL + user?.image }}
               style={{ width: 80, height: 80, borderRadius: 40 }}
@@ -368,7 +373,7 @@ const ProfileSettings = ({ navigation }: Props) => {
               style={styles.edit}
               name="camera-outline"
               size={18}
-              color={colors.background}
+              color={colors.onBackground}
             />
           </View>
         </View>
@@ -861,6 +866,7 @@ const ProfileSettings = ({ navigation }: Props) => {
           onPress={validate}
           children="Update"
           loading={isLoading}
+          disabled={isLoading}
           mode="contained"
           style={{
             backgroundColor: colors.primary,

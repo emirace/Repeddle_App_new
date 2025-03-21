@@ -16,9 +16,39 @@ type ContextType = {
   returns: IReturn[]
   loading: boolean
   error: string
-  fetchSoldReturns: (search?: string) => Promise<boolean>
-  fetchPurchaseReturns: (search?: string) => Promise<boolean>
-  fetchAdminReturns: (search?: string) => Promise<boolean>
+  fetchSoldReturns: (
+    search?: string
+  ) => Promise<
+    | string
+    | {
+        returns: IReturn[]
+        currentPage: number
+        total: number
+        totalPages: number
+      }
+  >
+  fetchPurchaseReturns: (
+    search?: string
+  ) => Promise<
+    | string
+    | {
+        returns: IReturn[]
+        currentPage: number
+        total: number
+        totalPages: number
+      }
+  >
+  fetchAdminReturns: (
+    search?: string
+  ) => Promise<
+    | string
+    | {
+        returns: IReturn[]
+        currentPage: number
+        total: number
+        totalPages: number
+      }
+  >
   returnsPaginate: {
     totalPages: number
     currentPage: number
@@ -81,11 +111,16 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
         totalPages: result.totalPages,
       })
       setLoading(false)
-      return true
+      return {
+        currentPage: result.currentPage,
+        total: result.total,
+        totalPages: result.totalPages,
+        returns: result.returns,
+      }
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return false
+      return error as string
     }
   }
   const fetchPurchaseReturns = async (search?: string) => {
@@ -100,11 +135,16 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
         totalPages: result.totalPages,
       })
       setLoading(false)
-      return true
+      return {
+        currentPage: result.currentPage,
+        total: result.total,
+        totalPages: result.totalPages,
+        returns: result.returns,
+      }
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return false
+      return error as string
     }
   }
 
@@ -120,11 +160,16 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
         totalPages: result.totalPages,
       })
       setLoading(false)
-      return true
+      return {
+        currentPage: result.currentPage,
+        total: result.total,
+        totalPages: result.totalPages,
+        returns: result.returns,
+      }
     } catch (error) {
       handleError(error as string)
       setLoading(false)
-      return false
+      return error as string
     }
   }
 

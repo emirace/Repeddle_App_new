@@ -1,6 +1,5 @@
-
-import React, { useState } from "react";
-import { View, StyleSheet, Image, ScrollView } from "react-native";
+import React, { useState } from "react"
+import { View, StyleSheet, Image, ScrollView } from "react-native"
 import {
   TextInput,
   Button,
@@ -37,7 +36,7 @@ const SignUp: React.FC<SignUpNavigationProp> = ({
       setLoading(true)
       const result = await sendVerifyOtp({ email })
       if (result) {
-        navigate("Step", { email })
+        navigate("Step", { email: email.trim().toLowerCase() })
       } else {
         setError(signInError || "")
       }
@@ -118,8 +117,8 @@ const SignUp: React.FC<SignUpNavigationProp> = ({
         </View>
       </View>
     </ScrollView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { WishlistNavigationProp } from "../types/navigation/stack"
 import { IProduct } from "../types/product"
 import {
@@ -46,13 +46,14 @@ const WishlistItem = ({ item, navigation, removeWish }: Props) => {
   const [showSize, setShowSize] = useState(false)
   const [size, setSize] = useState("")
 
-  const discount = () => {
+  const discount = useMemo(() => {
     if (!item.costPrice) return null
     if (item.costPrice === item.sellingPrice) {
       return null
     }
-    return ((item.costPrice - item.sellingPrice) / item.costPrice) * 100
-  }
+    const value = ((item.costPrice - item.sellingPrice) / item.costPrice) * 100
+    return value % 1 !== 0 ? value.toFixed(2) : value.toString()
+  }, [item.costPrice, item.sellingPrice])
 
   const sizeHandler = (itemSize: string) => {
     const current = item.sizes.filter((s) => s.size === itemSize)
@@ -132,9 +133,9 @@ const WishlistItem = ({ item, navigation, removeWish }: Props) => {
             <View style={[styles.shades, { backgroundColor: "gray" }]}>
               <Text style={styles.shadesText}>SOLD</Text>
             </View>
-          ) : discount() ? (
+          ) : discount ? (
             <View style={styles.shades}>
-              <Text style={styles.shadesText}>{discount()}% OFF</Text>
+              <Text style={styles.shadesText}>{discount}% OFF</Text>
             </View>
           ) : null}
         </View>
@@ -170,6 +171,7 @@ const WishlistItem = ({ item, navigation, removeWish }: Props) => {
                 borderRadius: 5,
                 flex: 1,
               }}
+              size={20}
               iconColor="white"
               containerColor={colors.primary}
               disabled={
@@ -185,6 +187,7 @@ const WishlistItem = ({ item, navigation, removeWish }: Props) => {
               mode="contained"
               icon={"trash-can-outline"}
               onPress={() => setShowRemove(true)}
+              size={20}
               style={{
                 borderRadius: 5,
                 flex: 1,
@@ -328,8 +331,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   titleText: {
-    fontSize: 18,
-    fontFamily: "absential-sans-bold",
+    fontSize: 16,
+    fontFamily: "absential-sans-medium",
   },
   discount: {
     textDecorationLine: "line-through",
