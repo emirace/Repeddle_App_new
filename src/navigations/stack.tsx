@@ -35,6 +35,7 @@ import ForgetPassword from "../screens/Auth/ForgetPassword";
 import Category from "../screens/Category";
 import SubCategories from "../screens/Category/SubCategories";
 import Brand from "../screens/Brand";
+import Earnings from "../screens/Dashboard/Earnings";
 import Profile from "../screens/profile";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -216,6 +217,12 @@ function MainStackNav() {
       <Stack.Screen
         name="Brand"
         component={Brand}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Earnings"
+        component={Earnings}
         options={{ headerShown: false }}
       />
       <Stack.Screen

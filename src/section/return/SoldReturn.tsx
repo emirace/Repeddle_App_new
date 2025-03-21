@@ -13,7 +13,12 @@ const SoldReturn = ({ navigation }: Props) => {
   const { fetchSoldReturns, loading } = useReturn()
 
   const [query, setQuery] = useState("")
-  const [returns, setReturns] = useState<IReturn[]>([])
+  const [returns, setReturns] = useState<{
+    returns: IReturn[]
+    currentPage: number
+    total: number
+    totalPages: number
+  }>()
   const [error, setError] = useState("")
 
   useEffect(() => {
@@ -31,7 +36,7 @@ const SoldReturn = ({ navigation }: Props) => {
     <ReturnComp
       loading={loading}
       navigation={navigation}
-      returns={returns}
+      returns={returns?.returns || []}
       error={error}
     />
   )

@@ -14,6 +14,9 @@ const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
       style={[styles.container, { backgroundColor: colors.elevation.level2 }]}
     >
       <View style={styles.balanceContainer}>
+        <Text style={styles.balanceAmount}>
+          {show ? "₦ " + (user?.balance || 0) : "*****"}
+        </Text>
         <View style={styles.balanceTextContainer}>
           <IconButton icon="wallet" iconColor={colors.primary} size={20} />
           <Text style={styles.balanceLabel}>Current Repeddle Balance</Text>
@@ -23,17 +26,8 @@ const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
             onPress={() => setShow(!show)}
           />
         </View>
-        <Text style={styles.balanceAmount}>
-          {show ? "₦ " + (user?.balance || 0) : "*****"}
-        </Text>
       </View>
-      <Button
-        mode="text"
-        onPress={() => navigation.push("Transaction")}
-        style={styles.historyButton}
-      >
-        Transaction History
-      </Button>
+
       <View style={styles.buttonCont}>
         <Button
           mode="contained"
@@ -52,16 +46,26 @@ const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
           Request Payout
         </Button>
       </View>
+      <Button
+        mode="text"
+        onPress={() => navigation.push("Transaction")}
+        style={styles.historyButton}
+      >
+        Transaction History
+      </Button>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 10,
+    gap: 10,
   },
   balanceContainer: {
+    gap: 6,
     alignItems: "center",
   },
   balanceTextContainer: {
@@ -79,11 +83,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   historyButton: {
-    marginVertical: 10,
+    margin: 0,
   },
   buttonCont: {
     flexDirection: "row",
     gap: 10,
+    // marginVertical: 10,
   },
   addButton: {
     flex: 1,

@@ -4,6 +4,7 @@ import { Appbar, Avatar, List, Text, useTheme } from "react-native-paper";
 import Balance from "../../section/profile/Balances";
 import { RootStackParamList } from "../../types/navigation/stack";
 import useAuth from "../../hooks/useAuth";
+import { baseURL } from "../../services/api";
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { colors } = useTheme();
@@ -21,29 +22,43 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
       }}
     >
       {user ? (
-        <Appbar.Header>
+        <Appbar.Header style={{ height: 80, paddingHorizontal: 0 }}>
           <View style={styles.userInfo}>
-            <Avatar.Icon size={30} icon="account" />
+            {user.image ? (
+              <Avatar.Image
+                size={30}
+                source={{ uri: baseURL + user.image }}
+                style={{ marginRight: 10 }}
+              />
+            ) : (
+              <Avatar.Icon size={30} icon="account" />
+            )}
             <View style={{ marginLeft: 10 }}>
               <Text style={styles.greeting}>Hi, {user?.username}</Text>
-              <Text style={styles.welcome}>Welcome, let's make payments!</Text>
+              <Text
+                numberOfLines={2}
+                ellipsizeMode="middle"
+                style={styles.welcome}
+              >
+                Welcome, let's make payments!
+              </Text>
             </View>
           </View>
           <Appbar.Action
             icon="face-agent"
+            style={{ height: 30, width: 30 }}
             onPress={() => {}}
-            style={{ width: 30 }}
           />
           <Appbar.Action
             icon="bell-outline"
+            style={{ height: 30, width: 30 }}
             onPress={() => {}}
-            style={{ width: 30 }}
           />
         </Appbar.Header>
       ) : (
         <Appbar.Header>
           <View style={styles.userInfo}>
-            <Avatar.Icon size={48} icon="account" />
+            <Avatar.Icon size={30} icon="account" />
             <View style={{ marginLeft: 10 }}>
               <Text style={styles.greeting}>Hi, </Text>
               <Text style={styles.welcome}>Welcome, please login</Text>
@@ -53,11 +68,12 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
       )}
       <View>
         {user ? <Balance navigation={navigation} /> : null}
-        <List.Section>
+        <List.Section style={{ marginBottom: 5, marginTop: 20 }}>
           <List.Subheader
             style={{
-              paddingVertical: 5,
-              backgroundColor: colors.elevation.level1,
+              paddingVertical: 6,
+              borderRadius: 10,
+              backgroundColor: colors.elevation.level2,
             }}
           >
             General
@@ -67,19 +83,21 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
             title="Notification"
             description="Control your notification"
             titleStyle={{
-              fontSize: 20,
+              fontSize: 18,
             }}
-            descriptionStyle={{ fontSize: 16 }}
+            style={{ paddingVertical: 5 }}
+            descriptionStyle={{ fontSize: 14 }}
             left={() => <List.Icon icon="bell-outline" />}
             right={() => <List.Icon icon="chevron-right" />}
             // onPress={() => navigation.navigate('Appearance')}
           />
         </List.Section>
-        <List.Section>
+        <List.Section style={{ marginVertical: 5 }}>
           <List.Subheader
             style={{
-              paddingVertical: 5,
-              backgroundColor: colors.elevation.level1,
+              paddingVertical: 6,
+              borderRadius: 10,
+              backgroundColor: colors.elevation.level2,
             }}
           >
             Appearance
@@ -92,22 +110,24 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
             }}
             left={() => <List.Icon icon="theme-light-dark" />}
             right={() => <List.Icon icon="chevron-right" />}
-            descriptionStyle={{ fontSize: 16 }}
+            descriptionStyle={{ fontSize: 14 }}
             onPress={() => navigation.push("Appearance")}
           />
         </List.Section>
         {user ? (
-          <List.Section>
+          <List.Section style={{ marginVertical: 5 }}>
             <List.Subheader
               style={{
-                paddingVertical: 5,
-                backgroundColor: colors.elevation.level1,
+                paddingVertical: 6,
+                borderRadius: 10,
+                backgroundColor: colors.elevation.level2,
               }}
             >
               Dashboard
             </List.Subheader>
             {dashboardItems.map((item) => (
               <List.Item
+                style={{ paddingVertical: 5 }}
                 key={item.name}
                 title={item.name}
                 description={item.description}
@@ -116,7 +136,7 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
                 }}
                 left={() => <List.Icon icon={item.leftIcon} />}
                 right={() => <List.Icon icon="chevron-right" />}
-                descriptionStyle={{ fontSize: 16 }}
+                descriptionStyle={{ fontSize: 14 }}
                 onPress={() => navigation.navigate(`${item.link}`)}
               />
             ))}
@@ -128,11 +148,12 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
               }}
               left={() => <List.Icon icon={"power"} />}
               right={() => <List.Icon icon="chevron-right" />}
-              descriptionStyle={{ fontSize: 16 }}
+              descriptionStyle={{ fontSize: 14 }}
               onPress={() => {
                 logout();
                 navigation.replace("Auth");
               }}
+              style={{ paddingVertical: 5 }}
             />
           </List.Section>
         ) : null}
@@ -167,7 +188,7 @@ const dashboardItems: {
   },
   {
     name: "My Earnings",
-    link: "ProfileSettings",
+    link: "Earnings",
     leftIcon: "account",
     description: "See your achievements",
   },
@@ -198,12 +219,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   greeting: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "absential-sans-bold",
-    textTransform: "capitalize",
   },
   welcome: {
-    fontSize: 16,
+    fontSize: 13,
     color: "gray",
   },
 });

@@ -24,13 +24,13 @@ const Appearance: React.FC<AppearanceNavigationProp> = ({ navigation }) => {
           <Checkbox.Item
             label={option}
             key={option}
-            // labelStyle={{ fontSize: 20 }}
             status={
               selectedThemeMode === option.toLowerCase()
                 ? "checked"
                 : "unchecked"
             }
             onPress={() => handleClick(option)}
+            style={{ paddingVertical: 5 }}
           />
         ))}
       </View>

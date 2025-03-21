@@ -44,6 +44,7 @@ export type RootStackParamList = {
   SubCategories: { category: ICategory };
   Brand: undefined;
   Profile: undefined;
+  Earnings: undefined;
 };
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -190,6 +191,11 @@ export type ReturnNavigationProp = NativeStackScreenProps<
 export type TransactionNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Transaction"
+>;
+
+export type EarningsNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Earnings"
 >;
 
 export type TransactionDetailNavigationProp = NativeStackScreenProps<

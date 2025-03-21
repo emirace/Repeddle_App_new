@@ -178,7 +178,10 @@ const ProfileSettings = ({ navigation }: Props) => {
       const res = await uploadImage(file);
       setImage(res);
     } catch (error) {
-      addNotification({ message: error as string, error: true });
+      addNotification({
+        message: (error as string) || "Failed to upload image",
+        error: true,
+      });
     }
 
     setLoadingUpload(false);
@@ -369,7 +372,7 @@ const ProfileSettings = ({ navigation }: Props) => {
         style={styles.content}
       >
         <View style={{ alignItems: "center" }}>
-          <View style={styles.image}>
+          <View style={[styles.image, { backgroundColor: colors.primary }]}>
             <Image
               source={{ uri: image ? baseURL + image : baseURL + user?.image }}
               style={{ width: 80, height: 80, borderRadius: 40 }}
@@ -877,6 +880,7 @@ const ProfileSettings = ({ navigation }: Props) => {
           onPress={validate}
           children="Update"
           loading={isLoading}
+          disabled={isLoading}
           mode="contained"
           style={{
             backgroundColor: colors.primary,
