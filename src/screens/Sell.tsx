@@ -10,7 +10,14 @@ import {
   View,
 } from "react-native"
 import React, { useEffect, useMemo, useState } from "react"
-import { Appbar, Checkbox, Switch, Text, useTheme } from "react-native-paper"
+import {
+  Appbar,
+  Button,
+  Checkbox,
+  Switch,
+  Text,
+  useTheme,
+} from "react-native-paper"
 import useCategory from "../hooks/useCategory"
 import { IBrand, ISize } from "../types/product"
 import Input from "../components/Input"
@@ -115,6 +122,7 @@ const Sell = ({ navigation }: any) => {
     { name: "Pick up from Seller", value: 0 },
   ])
   const [queryBrand, setQueryBrand] = useState("")
+  const [updating, setUpdating] = useState(false)
   const [searchBrand, setSearchBrand] = useState<IBrand[]>([])
   const [showOtherBrand, setShowOtherBrand] = useState(false)
   const [showFeeStructure, setShowFeeStructure] = useState(false)
@@ -216,6 +224,8 @@ const Sell = ({ navigation }: any) => {
     if (input.image3) images.push(input.image3)
     if (input.image4) images.push(input.image4)
 
+    setUpdating(true)
+
     const res = await createProduct({
       name: input.name,
       images,
@@ -248,6 +258,8 @@ const Sell = ({ navigation }: any) => {
     } else {
       addNotification({ message: error, error: true })
     }
+
+    setUpdating(false)
   }
 
   const handleTags = (tag: string) => {
@@ -413,6 +425,7 @@ const Sell = ({ navigation }: any) => {
             onChangeText={(text) => handleOnChange(text, "name")}
             placeholder="Product Name"
             value={input.name}
+            style={{ color: colors.onBackground }}
           />
           {validationError.name && (
             <Text style={{ color: "red", fontSize: 12 }}>
@@ -426,7 +439,7 @@ const Sell = ({ navigation }: any) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "mainCategory")
@@ -467,7 +480,7 @@ const Sell = ({ navigation }: any) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "category")
@@ -511,7 +524,7 @@ const Sell = ({ navigation }: any) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "subCategory")
@@ -584,7 +597,7 @@ const Sell = ({ navigation }: any) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "condition")
@@ -668,7 +681,7 @@ const Sell = ({ navigation }: any) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "material")
@@ -714,7 +727,10 @@ const Sell = ({ navigation }: any) => {
               handleOnChange("", "brand")
               setQueryBrand(text)
             }}
-            style={[styles.textInput, { borderColor: colors.outline }]}
+            style={[
+              styles.textInput,
+              { borderColor: colors.outline, color: colors.onBackground },
+            ]}
             cursorColor={colors.onBackground}
           />
           {searchBrand &&
@@ -793,7 +809,7 @@ const Sell = ({ navigation }: any) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "color")
@@ -1054,6 +1070,7 @@ const Sell = ({ navigation }: any) => {
                         onChangeText={(text) => {
                           setTempSize(text)
                         }}
+                        style={{ color: colors.onBackground }}
                         onBlur={() => sizeHandler(tempSize)}
                       />
                     </View>
@@ -1064,6 +1081,7 @@ const Sell = ({ navigation }: any) => {
                         onChangeText={(text) =>
                           addSizeQuantity(tempSize, +text)
                         }
+                        style={{ color: colors.onBackground }}
                       />
                     </View>
                   </View>
@@ -1120,7 +1138,7 @@ const Sell = ({ navigation }: any) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "location")
@@ -1165,7 +1183,7 @@ const Sell = ({ navigation }: any) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "keyFeatures")
@@ -1279,6 +1297,7 @@ const Sell = ({ navigation }: any) => {
                 placeholder="Actual price"
                 onFocus={() => {}}
                 keyboardType="numeric"
+                style={{ color: colors.onBackground }}
               />
               {validationError.price && (
                 <Text style={{ color: "red", fontSize: 12 }}>
@@ -1290,6 +1309,7 @@ const Sell = ({ navigation }: any) => {
               <Text style={[styles.label]}>discount(%)</Text>
               <Input
                 keyboardType="numeric"
+                style={{ color: colors.onBackground }}
                 onChangeText={(text) => {
                   if (text) {
                     if (input.price) {
@@ -1344,7 +1364,10 @@ const Sell = ({ navigation }: any) => {
           <TextInput
             style={[
               styles.textarea,
-              { backgroundColor: colors.elevation.level2 },
+              {
+                backgroundColor: colors.elevation.level2,
+                color: colors.onBackground,
+              },
             ]}
             multiline={true}
             placeholder="  Specs"
@@ -1392,7 +1415,7 @@ const Sell = ({ navigation }: any) => {
                 ]}
               >
                 <TextInput
-                  style={[styles.tagInput]}
+                  style={[styles.tagInput, { color: colors.onBackground }]}
                   value={input.tag}
                   onChangeText={(value) => handleOnChange(value, "tag")}
                 />
@@ -1427,11 +1450,15 @@ const Sell = ({ navigation }: any) => {
           </View>
 
           <View style={{ marginBottom: 10 }}>
-            <MyButton
-              icon="add-circle-outline"
-              text={"Add Product"}
+            <Button
+              mode="contained"
+              loading={updating}
+              disabled={updating}
               onPress={() => validation()}
-            />
+              style={{ borderRadius: 10 }}
+            >
+              Add Product
+            </Button>
           </View>
         </ScrollView>
       )}

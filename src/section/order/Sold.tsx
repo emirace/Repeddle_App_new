@@ -23,7 +23,8 @@ type Props = {}
 
 const Sold = (props: Props) => {
   const { colors } = useTheme()
-  const { loading, fetchSoldOrders, error } = useOrder()
+  const [loading, setIsLoading] = useState(true)
+  const { fetchSoldOrders, error } = useOrder()
   const { addNotification } = useToastNotification()
 
   const [orders, setOrders] = useState<IOrder[]>([])
@@ -32,12 +33,14 @@ const Sold = (props: Props) => {
 
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true)
       const res = await fetchSoldOrders()
       if (res) {
         setOrders([...res])
       } else {
         addNotification({ message: error, error: true })
       }
+      setIsLoading(false)
     }
 
     getData()

@@ -26,19 +26,36 @@ type Props = ProductListNavigationProp
 
 const ProductList = ({ navigation }: Props) => {
   const { colors } = useTheme()
-  const { products, fetchUserProducts, loading, error, deleteProduct } =
-    useProducts()
+  const { products, fetchUserProducts, error, deleteProduct } = useProducts()
+  const [loading, setLoading] = useState(true)
   const { addNotification } = useToastNotification()
 
   const [isSearchVisible, setIsSearchVisible] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [searchDebouncedQuery, setSearchDebouncedQuery] = useState("")
   const [searchResults, setSearchResults] = useState<IProduct[]>([])
   const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
-    fetchUserProducts(`page=${currentPage}`)
-    // TODO: search filter
+    const fet = async () => {
+      setLoading(true)
+      await fetchUserProducts(
+        `page=${currentPage}&orderId=${searchDebouncedQuery}`
+      )
+      setLoading(false)
+    }
+    fet()
   }, [currentPage])
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchDebouncedQuery(searchQuery)
+    }, 500)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [searchQuery])
 
   const handleMore = () => {
     if (currentPage < products.totalPages) {

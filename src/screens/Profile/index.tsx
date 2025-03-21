@@ -1,6 +1,13 @@
 import { StyleSheet, ScrollView, View } from "react-native"
 import React from "react"
-import { Appbar, Avatar, List, Text, useTheme } from "react-native-paper"
+import {
+  Appbar,
+  Avatar,
+  Button,
+  List,
+  Text,
+  useTheme,
+} from "react-native-paper"
 import Balance from "../../section/profile/Balances"
 import { RootStackParamList } from "../../types/navigation/stack"
 import useAuth from "../../hooks/useAuth"
@@ -57,11 +64,31 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
         </Appbar.Header>
       ) : (
         <Appbar.Header>
-          <View style={styles.userInfo}>
-            <Avatar.Icon size={30} icon="account" />
-            <View style={{ marginLeft: 10 }}>
-              <Text style={styles.greeting}>Hi, </Text>
-              <Text style={styles.welcome}>Welcome, please login</Text>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <View style={styles.userInfo}>
+              <Avatar.Icon size={30} icon="account" />
+              <View style={{ marginLeft: 10 }}>
+                <Text style={styles.greeting}>Hi, </Text>
+                <Text style={styles.welcome}>Welcome, please login</Text>
+              </View>
+              <Button
+                mode="contained"
+                style={{
+                  borderRadius: 10,
+                  marginLeft: "auto",
+                }}
+                onPress={() => navigation.push("Login", { back: true })}
+              >
+                Login
+              </Button>
             </View>
           </View>
         </Appbar.Header>

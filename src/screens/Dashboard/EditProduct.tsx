@@ -8,7 +8,14 @@ import {
   View,
 } from "react-native"
 import React, { useEffect, useState } from "react"
-import { Appbar, Checkbox, Switch, Text, useTheme } from "react-native-paper"
+import {
+  Appbar,
+  Button,
+  Checkbox,
+  Switch,
+  Text,
+  useTheme,
+} from "react-native-paper"
 import useProducts from "../../hooks/useProducts"
 import { IBrand, ISize } from "../../types/product"
 import { EditProductNavigationProp } from "../../types/navigation/stack"
@@ -35,7 +42,9 @@ type Props = EditProductNavigationProp
 const EditProduct = ({ navigation, route }: Props) => {
   const { colors } = useTheme()
 
-  const { loading, fetchProductById, error, updateProduct } = useProducts()
+  const [loading, setLoading] = useState(true)
+  const [updating, setUpdating] = useState(false)
+  const { fetchProductById, error, updateProduct } = useProducts()
   const { fetchBrands, brands } = useBrands()
   const { fetchCategories, categories } = useCategory()
   const { addNotification } = useToastNotification()
@@ -207,6 +216,7 @@ const EditProduct = ({ navigation, route }: Props) => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      setLoading(true)
       const res = await fetchProductById(route.params.id)
       if (typeof res !== "string") {
         setInput({
@@ -235,10 +245,14 @@ const EditProduct = ({ navigation, route }: Props) => {
         })
 
         setTags(tags)
+        setPrice(res.costPrice?.toString() || "")
+        setDiscount(res.sellingPrice?.toString() || "")
         setColorsVal(res.color ?? colorsVal)
+        setTags(res.tags)
       } else {
         addNotification({ message: res, error: true })
       }
+      setLoading(false)
     }
 
     fetchProduct()
@@ -344,6 +358,7 @@ const EditProduct = ({ navigation, route }: Props) => {
   }
 
   const submitHandler = async () => {
+    setUpdating(true)
     if (addSize === false && sizes.length === 0) {
       addNotification({ message: "Please add size", error: true })
       return
@@ -382,11 +397,13 @@ const EditProduct = ({ navigation, route }: Props) => {
     })
 
     if (res) {
+      addNotification({ message: "Product Updated", error: false })
       if (navigation.canGoBack()) return navigation.goBack()
       navigation.push("ProductList")
     } else {
       addNotification({ message: error, error: true })
     }
+    setUpdating(false)
   }
 
   return (
@@ -431,6 +448,8 @@ const EditProduct = ({ navigation, route }: Props) => {
             onChangeText={(text) => handleOnChange(text, "name")}
             placeholder="Product Name"
             value={input.name}
+            placeholderTextColor={"grey"}
+            style={{ color: colors.onBackground }}
           />
           {validationError.name && (
             <Text style={{ color: "red", fontSize: 12 }}>
@@ -444,7 +463,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue) =>
                 handleOnChange(itemValue, "mainCategory")
@@ -484,7 +503,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue) =>
                 handleOnChange(itemValue, "category")
@@ -528,7 +547,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue) =>
                 handleOnChange(itemValue, "subCategory")
@@ -600,7 +619,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "condition")
@@ -684,7 +703,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "material")
@@ -727,6 +746,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               styles.textInput,
               { color: colors.onBackground, borderColor: colors.outline },
             ]}
+            placeholderTextColor={"grey"}
             cursorColor={colors.onBackground}
           />
           {searchBrand &&
@@ -735,7 +755,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                 <TouchableOpacity
                   style={styles.listItem}
                   onPress={() => {
-                    handleOnChange(p.name, "brand")
+                    handleOnChange("", "brand")
                     setQueryBrand(p.name)
                     setSearchBrand([])
                   }}
@@ -785,7 +805,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "color")
@@ -1067,6 +1087,8 @@ const EditProduct = ({ navigation, route }: Props) => {
                         onChangeText={(text) => {
                           setTempSize(text)
                         }}
+                        placeholderTextColor={"grey"}
+                        style={{ color: colors.onBackground }}
                         onBlur={() => sizeHandler(tempSize)}
                       />
                     </View>
@@ -1074,9 +1096,11 @@ const EditProduct = ({ navigation, route }: Props) => {
                       <Input
                         placeholder="Quantity"
                         keyboardType="numeric"
+                        placeholderTextColor={"grey"}
                         onChangeText={(text) =>
                           addSizeQuantity(tempSize, +text)
                         }
+                        style={{ color: colors.onBackground }}
                       />
                     </View>
                   </View>
@@ -1179,7 +1203,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               style={{
                 backgroundColor: colors.elevation.level2,
                 padding: 5,
-                color: "grey",
+                color: colors.onBackground,
               }}
               onValueChange={(itemValue) =>
                 handleOnChange(itemValue, "keyFeatures")
@@ -1292,6 +1316,8 @@ const EditProduct = ({ navigation, route }: Props) => {
                 placeholder="Actual price"
                 onFocus={() => {}}
                 keyboardType="numeric"
+                placeholderTextColor={"grey"}
+                style={{ color: colors.onBackground, paddingLeft: 0 }}
               />
               {validationError.price && (
                 <Text style={{ color: "red", fontSize: 12 }}>
@@ -1303,6 +1329,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               <Text style={[styles.label]}>discount(%)</Text>
               <Input
                 keyboardType="numeric"
+                placeholderTextColor={"grey"}
                 onChangeText={(text) => {
                   if (text) {
                     if (input.price) {
@@ -1315,6 +1342,9 @@ const EditProduct = ({ navigation, route }: Props) => {
                 }}
                 placeholder="Discount in percentage"
                 onFocus={() => {}}
+                textAlign="left"
+                textAlignVertical="top"
+                style={{ color: colors.onBackground, paddingLeft: 0 }}
               />
             </View>
           </View>
@@ -1336,7 +1366,10 @@ const EditProduct = ({ navigation, route }: Props) => {
           <TextInput
             style={[
               styles.textarea,
-              { backgroundColor: colors.elevation.level2 },
+              {
+                backgroundColor: colors.elevation.level2,
+                color: colors.onBackground,
+              },
             ]}
             multiline={true}
             textAlignVertical="top"
@@ -1383,7 +1416,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                 ]}
               >
                 <TextInput
-                  style={[styles.tagInput]}
+                  style={[styles.tagInput, { color: colors.onBackground }]}
                   value={input.tag}
                   onChangeText={(value) => handleOnChange(value, "tag")}
                 />
@@ -1417,11 +1450,15 @@ const EditProduct = ({ navigation, route }: Props) => {
             </View>
           </View>
           <View style={{ marginBottom: 10 }}>
-            <MyButton
-              icon="add-circle-outline"
-              text={"Update Product"}
+            <Button
+              mode="contained"
+              loading={updating}
+              disabled={updating}
               onPress={() => validation()}
-            />
+              style={{ borderRadius: 10 }}
+            >
+              Update Product
+            </Button>
           </View>
         </ScrollView>
       )}
