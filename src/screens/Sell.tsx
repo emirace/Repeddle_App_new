@@ -101,7 +101,6 @@ const Sell = ({ navigation }: any) => {
   const [sizesError, setSizesError] = useState("")
   const [addSize, setAddSize] = useState(sizes.length < 1)
   const [showCondition, setShowCondition] = useState(false)
-  const [price, setPrice] = useState("")
   const [showVideoModal, setShowVideoModal] = useState(false)
   const [tags, setTags] = useState<string[]>([])
   const [colorsVal, setColorsVal] = useState<string[]>([])

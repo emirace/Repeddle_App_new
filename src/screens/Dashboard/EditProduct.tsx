@@ -194,8 +194,7 @@ const EditProduct = ({ navigation, route }: Props) => {
   }
   const [refresh, setRefresh] = useState(false)
   const addSizesCont = () => {
-    sizesInputCounts.push(1)
-    setRefresh(!refresh)
+    setSizesInputCounts([...sizesInputCounts, 1])
   }
 
   const pickImage = async (key: keyof typeof input) => {
@@ -407,6 +406,7 @@ const EditProduct = ({ navigation, route }: Props) => {
 
     if (res) {
       addNotification({ message: "Product Updated", error: false })
+      setRefresh(!refresh)
       if (navigation.canGoBack()) return navigation.goBack()
       navigation.push("ProductList")
     } else {
