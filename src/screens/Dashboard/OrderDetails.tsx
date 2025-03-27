@@ -374,15 +374,14 @@ const OrderDetails = ({ navigation, route }: Props) => {
                     },
                   ]}
                 >
-                  {/* TODO: ask about payment status  */}
-                  {/* <Text1 style={styles.name}>Payment Status</Text1>
+                  <Text1 style={styles.name}>Payment Status</Text1>
                   <View style={styles.itemNum}>
-                    {order.isPaid ? (
+                    {order.paymentMethod ? (
                       <Text style={{ color: colors.primary }}>Paid</Text>
                     ) : (
                       <Text style={{ color: colors.secondary }}>Not Paid</Text>
                     )}
-                  </View> */}
+                  </View>
                   <View style={styles.horizontalLine} />
                   <Text1 style={styles.name}>Payment Method</Text1>
                   <View style={styles.itemNum}>
@@ -411,8 +410,13 @@ const OrderDetails = ({ navigation, route }: Props) => {
                         <Text1 style={styles.deliveryKey}>Shipping Fee:</Text1>
                         <Text1 style={styles.deliveryValue}>
                           {currency(region())}
-                          {/* TODO: */}
-                          {/* {isSeller ? shippingPrice : order.shippingPrice} */}
+
+                          {isSeller
+                            ? shippingPrice
+                            : order.items.reduce(
+                                (prev, curr) => prev + curr.deliveryOption.fee,
+                                0
+                              )}
                           {shippingPrice}
                         </Text1>
                       </View>
@@ -426,7 +430,12 @@ const OrderDetails = ({ navigation, route }: Props) => {
                           <Text1 style={styles.itemPrice}>
                             {currency(region())}
                             {isSeller
-                              ? itemsPrice + shippingPrice
+                              ? itemsPrice +
+                                order.items.reduce(
+                                  (prev, curr) =>
+                                    prev + curr.deliveryOption.fee,
+                                  0
+                                )
                               : order.totalAmount}
                           </Text1>
                         </Text1>
@@ -441,7 +450,12 @@ const OrderDetails = ({ navigation, route }: Props) => {
                             <Text1 style={styles.value}>
                               {" "}
                               {currency(region())}
-                              {itemsPrice + shippingPrice}
+                              {itemsPrice +
+                                order.items.reduce(
+                                  (prev, curr) =>
+                                    prev + curr.deliveryOption.fee,
+                                  0
+                                )}
                             </Text1>
                           </View>
                           <View style={styles.itemNum}>
@@ -453,7 +467,12 @@ const OrderDetails = ({ navigation, route }: Props) => {
                               {currency(region())}
                               {(
                                 (7.9 / 100) *
-                                (itemsPrice + shippingPrice)
+                                (itemsPrice +
+                                  order.items.reduce(
+                                    (prev, curr) =>
+                                      prev + curr.deliveryOption.fee,
+                                    0
+                                  ))
                               ).toFixed(2)}
                             </Text1>
                           </View>
@@ -464,8 +483,18 @@ const OrderDetails = ({ navigation, route }: Props) => {
                               {currency(region())}
                               {(
                                 itemsPrice +
-                                shippingPrice -
-                                (7.9 / 100) * (itemsPrice + shippingPrice)
+                                order.items.reduce(
+                                  (prev, curr) =>
+                                    prev + curr.deliveryOption.fee,
+                                  0
+                                ) -
+                                (7.9 / 100) *
+                                  (itemsPrice +
+                                    order.items.reduce(
+                                      (prev, curr) =>
+                                        prev + curr.deliveryOption.fee,
+                                      0
+                                    ))
                               ).toFixed(2)}
                             </Text1>
                           </View>

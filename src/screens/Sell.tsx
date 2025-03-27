@@ -80,7 +80,8 @@ const Sell = ({ navigation }: any) => {
     category: "",
     description: "",
     brand: "",
-    price: "",
+    costPrice: "",
+    sellingPrice: "",
     specification: "",
     condition: "New",
     keyFeatures: "",
@@ -101,7 +102,6 @@ const Sell = ({ navigation }: any) => {
   const [addSize, setAddSize] = useState(sizes.length < 1)
   const [showCondition, setShowCondition] = useState(false)
   const [price, setPrice] = useState("")
-  const [discount, setDiscount] = useState("")
   const [showVideoModal, setShowVideoModal] = useState(false)
   const [tags, setTags] = useState<string[]>([])
   const [colorsVal, setColorsVal] = useState<string[]>([])
@@ -167,9 +167,13 @@ const Sell = ({ navigation }: any) => {
       handleError("Select brand", "brand")
       valid = false
     }
-    if (!input.price) {
-      handleError("Enter a valid price", "price")
+    if (!input.costPrice) {
+      handleError("Enter a valid price", "costPrice")
       valid = false
+    }
+
+    if (input.sellingPrice && input.sellingPrice > input.costPrice) {
+      handleError("Selling price must be less than cost price", "sellingPrice")
     }
     // if (!input.shippingLocation) {
     //   handleError("Select shipping location", "shippingLocation");
@@ -235,8 +239,8 @@ const Sell = ({ navigation }: any) => {
       category: input.category,
       description: input.description,
       brand: input.brand,
-      sellingPrice: +input.price,
-      costPrice: +discount,
+      sellingPrice: +input.sellingPrice,
+      costPrice: +input.costPrice,
       deliveryOption,
       meta: meta,
       tags,
@@ -277,7 +281,7 @@ const Sell = ({ navigation }: any) => {
       return
     }
     if (tag.length > 0) {
-      tags.push(tag)
+      setTags([...tags, tag])
       handleOnChange("", "tag")
     }
   }
@@ -286,6 +290,16 @@ const Sell = ({ navigation }: any) => {
     const newtags = tags.filter((data) => data != tag)
     setTags(newtags)
   }
+
+  const discount = useMemo(() => {
+    if (parseInt(input.costPrice) < parseInt(input?.sellingPrice ?? "0"))
+      return 0
+    return (
+      ((parseInt(input.costPrice) - parseInt(input?.sellingPrice ?? "0")) /
+        parseInt(input.costPrice)) *
+      100
+    )
+  }, [input.costPrice, input?.sellingPrice])
 
   useEffect(() => {
     fetchCategories()
@@ -444,6 +458,7 @@ const Sell = ({ navigation }: any) => {
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "mainCategory")
               }
+              mode="dropdown"
             >
               <Picker.Item
                 style={{
@@ -472,7 +487,6 @@ const Sell = ({ navigation }: any) => {
               {validationError.mainCategory}
             </Text>
           )}
-
           <Text style={[styles.label]}>Category</Text>
           <View style={styles.picker}>
             <Picker
@@ -485,6 +499,7 @@ const Sell = ({ navigation }: any) => {
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "category")
               }
+              mode="dropdown"
             >
               <Picker.Item
                 style={{
@@ -529,6 +544,7 @@ const Sell = ({ navigation }: any) => {
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "subCategory")
               }
+              mode="dropdown"
             >
               <Picker.Item
                 style={{
@@ -580,7 +596,6 @@ const Sell = ({ navigation }: any) => {
               <Text style={styles.infoLink}>help?</Text>
             </TouchableOpacity>
           </View>
-
           <Modal
             animationType="slide"
             transparent={true}
@@ -602,6 +617,7 @@ const Sell = ({ navigation }: any) => {
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "condition")
               }
+              mode="dropdown"
             >
               <Picker.Item
                 style={{
@@ -686,6 +702,7 @@ const Sell = ({ navigation }: any) => {
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "material")
               }
+              mode="dropdown"
             >
               <Picker.Item
                 style={{
@@ -727,14 +744,21 @@ const Sell = ({ navigation }: any) => {
               handleOnChange("", "brand")
               setQueryBrand(text)
             }}
+            value={input.brand.length > 0 ? input.brand : queryBrand}
             style={[
               styles.textInput,
               { borderColor: colors.outline, color: colors.onBackground },
             ]}
             cursorColor={colors.onBackground}
-          />
+            onBlur={() => input.brand.length > 0 && setQueryBrand("")}
+          />{" "}
+          {validationError.brand && (
+            <Text style={{ color: "red", fontSize: 12 }}>
+              {validationError.brand}
+            </Text>
+          )}
           {searchBrand &&
-            queryBrand &&
+            queryBrand.length > 0 &&
             [
               ...searchBrand,
               { name: "Other", _id: Math.random().toString() },
@@ -762,7 +786,6 @@ const Sell = ({ navigation }: any) => {
                 </TouchableOpacity>
               </View>
             ))}
-
           <Modal
             animationType="slide"
             transparent={true}
@@ -815,6 +838,7 @@ const Sell = ({ navigation }: any) => {
                 handleOnChange(itemValue, "color")
                 setColorsVal([...colorsVal, itemValue])
               }}
+              mode="dropdown"
             >
               <Picker.Item
                 style={{
@@ -831,8 +855,8 @@ const Sell = ({ navigation }: any) => {
                     color: colors.onBackground,
                   }}
                   key={index}
-                  //   label={c}
-                  value={c}
+                  label={c.name}
+                  value={c.id}
                 />
               ))}
             </Picker>
@@ -946,7 +970,6 @@ const Sell = ({ navigation }: any) => {
               ADD SHORT VIDEO
             </Text>
           </TouchableOpacity>
-
           <Modal
             animationType="slide"
             transparent={true}
@@ -957,7 +980,6 @@ const Sell = ({ navigation }: any) => {
           >
             <VideoPickerComponent setShowVideoModal={setShowVideoModal} />
           </Modal>
-
           <View style={[{ flexDirection: "row" }]}>
             <View style={{ flex: 1, paddingRight: 10 }}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -1114,7 +1136,6 @@ const Sell = ({ navigation }: any) => {
           {sizesError && (
             <Text style={{ color: "red", fontSize: 12 }}>{sizesError}</Text>
           )}
-
           <View style={styles.infoRow}>
             <Text style={[styles.label]}>Shipping location</Text>
 
@@ -1188,6 +1209,7 @@ const Sell = ({ navigation }: any) => {
               onValueChange={(itemValue, itemIndex) =>
                 handleOnChange(itemValue, "keyFeatures")
               }
+              mode="dropdown"
             >
               <Picker.Item
                 style={{
@@ -1215,7 +1237,6 @@ const Sell = ({ navigation }: any) => {
               {validationError.keyFeatures}
             </Text>
           )}
-
           <Text style={[styles.label]}>Delivery options</Text>
           {deliveryOption.map((d) => (
             <View key={d.name} style={styles.deliv}>
@@ -1259,24 +1280,42 @@ const Sell = ({ navigation }: any) => {
               Add More Delivery Option
             </Text>
           </TouchableOpacity>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", marginTop: 6 }}
+          >
             <Text style={[styles.price, { color: colors.primary }]}>
               {currency(region())}
-              {discount || price}
+              {input.sellingPrice || input.costPrice}
             </Text>
-            <Text
-              style={[
-                styles.price,
-                {
-                  textDecorationLine: "line-through",
-                  color: colors.primary,
-                  fontWeight: "400",
-                },
-              ]}
-            >
-              {currency(region())}
-              {discount ? input.price : null}
-            </Text>
+            {discount ? (
+              <Text
+                style={[
+                  styles.price,
+                  {
+                    textDecorationLine: "line-through",
+                    color: colors.primary,
+                    fontWeight: "400",
+                  },
+                ]}
+              >
+                {currency(region())}
+                {input.costPrice}
+              </Text>
+            ) : null}
+
+            {discount ? (
+              <Text
+                style={[
+                  styles.price,
+                  {
+                    color: colors.secondary,
+                    fontWeight: "400",
+                  },
+                ]}
+              >
+                {discount.toFixed()}% discount
+              </Text>
+            ) : null}
           </View>
           <View style={{ flexDirection: "row", flex: 1 }}>
             <View style={{ flex: 1 }}>
@@ -1293,41 +1332,34 @@ const Sell = ({ navigation }: any) => {
                 </Tooltip>
               </View>
               <Input
-                onChangeText={(text) => handleOnChange(text, "price")}
+                onChangeText={(text) => handleOnChange(text, "costPrice")}
                 placeholder="Actual price"
                 onFocus={() => {}}
                 keyboardType="numeric"
                 style={{ color: colors.onBackground }}
+                value={input.costPrice}
               />
-              {validationError.price && (
+              {validationError.costPrice && (
                 <Text style={{ color: "red", fontSize: 12 }}>
-                  {validationError.price}
+                  {validationError.costPrice}
                 </Text>
               )}
             </View>
             <View style={{ flex: 1, marginLeft: 10 }}>
-              <Text style={[styles.label]}>discount(%)</Text>
+              <Text style={[styles.label]}>Selling Price</Text>
               <Input
                 keyboardType="numeric"
                 style={{ color: colors.onBackground }}
-                onChangeText={(text) => {
-                  if (text) {
-                    if (input.price) {
-                      const value = ((+price * (100 - +text)) / 100).toFixed(2)
-                      setDiscount(value)
-                    }
-                  } else {
-                    setDiscount("")
-                  }
-                }}
-                placeholder="Discount in %"
+                onChangeText={(text) => handleOnChange(text, "sellingPrice")}
+                placeholder="Selling Price"
                 onFocus={() => {}}
+                value={input.sellingPrice}
               />
-              {/* {validationError.discount && (
+              {validationError.sellingPrice && (
                 <Text style={{ color: "red", fontSize: 12 }}>
-                  {validationError.discount}
+                  {validationError.sellingPrice}
                 </Text>
-              )} */}
+              )}
             </View>
           </View>
           <Text style={[styles.info, { padding: 0, color: colors.secondary }]}>
@@ -1377,13 +1409,11 @@ const Sell = ({ navigation }: any) => {
             onChangeText={(text) => handleOnChange(text, "specification")}
             value={input.specification}
           />
-
           {validationError.specification && (
             <Text style={{ color: "red", fontSize: 12 }}>
               {validationError.specification}
             </Text>
           )}
-
           <Text style={[styles.label]}>description</Text>
           <TextInput
             style={[
@@ -1391,6 +1421,7 @@ const Sell = ({ navigation }: any) => {
               {
                 backgroundColor: colors.elevation.level2,
                 color: colors.onBackground,
+                minHeight: 80,
               },
             ]}
             multiline={true}
@@ -1399,6 +1430,7 @@ const Sell = ({ navigation }: any) => {
             numberOfLines={10}
             onChangeText={(text) => handleOnChange(text, "description")}
             value={input.description}
+            textAlignVertical="top"
           />
           {validationError.description && (
             <Text style={{ color: "red", fontSize: 12 }}>
@@ -1426,6 +1458,11 @@ const Sell = ({ navigation }: any) => {
                   <Text style={styles.addTagText}>Add</Text>
                 </TouchableOpacity>
               </View>
+              {validationError.tag && (
+                <Text style={{ color: "red", fontSize: 12 }}>
+                  {validationError.tag}
+                </Text>
+              )}
               <View style={styles.tagList}>
                 {tags.map((t, i) => (
                   <View
@@ -1448,7 +1485,6 @@ const Sell = ({ navigation }: any) => {
               </View>
             </View>
           </View>
-
           <View style={{ marginBottom: 10 }}>
             <Button
               mode="contained"
@@ -1509,9 +1545,10 @@ const styles = StyleSheet.create({
   },
   textarea: {
     borderRadius: 5,
-    marginVertical: normaliseH(10),
+    // marginVertical: normaliseH(10),
   },
   price: {
+    fontSize: 16,
     marginHorizontal: 5,
     fontFamily: "absential-sans-bold",
   },
