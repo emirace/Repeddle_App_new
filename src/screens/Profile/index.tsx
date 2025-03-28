@@ -54,12 +54,12 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
           <Appbar.Action
             icon="face-agent"
             style={{ height: 30, width: 30 }}
-            onPress={() => {}}
+            onPress={() => navigation.push("Support")}
           />
           <Appbar.Action
             icon="bell-outline"
             style={{ height: 30, width: 30 }}
-            onPress={() => {}}
+            onPress={() => navigation.push("Notification")}
           />
         </Appbar.Header>
       ) : (

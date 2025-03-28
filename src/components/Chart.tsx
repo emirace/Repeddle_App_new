@@ -1,25 +1,25 @@
-import { Dimensions } from "react-native"
-import React from "react"
-import { currency, region } from "../utils/common"
-import { useTheme } from "react-native-paper"
-import { LineChart } from "react-native-chart-kit"
+import { Dimensions } from "react-native";
+import React from "react";
+import { currency, region } from "../utils/common";
+import { useTheme } from "react-native-paper";
+import { LineChart } from "react-native-chart-kit";
 
-type Data = { name: string; order: number; earning: number; totalSale: number }
+type Data = { name: string; order: number; earning: number; totalSale: number };
 
 type Props = {
-  data: Data[]
-}
+  data: Data[];
+};
 
 const Chart = ({ data }: Props) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   function getList(data: Data[], property: string) {
     if (!data || !Array.isArray(data) || data.length < 1) {
       return [{ name: "Today", earning: 0, totalSale: 0, order: 0 }].map(
         (obj) => obj[property]
-      )
+      );
     }
-    return data.map((obj) => obj[property])
+    return data.map((obj) => obj[property]);
   }
 
   return (
@@ -59,7 +59,7 @@ const Chart = ({ data }: Props) => {
         borderRadius: 5,
       }}
     />
-  )
-}
+  );
+};
 
-export default Chart
+export default Chart;

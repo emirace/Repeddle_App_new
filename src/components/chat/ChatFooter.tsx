@@ -1,12 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { View, Text, StyleSheet, Animated, Image } from "react-native";
 import { useTheme, ActivityIndicator } from "react-native-paper";
 import { IConversation } from "../../types/message";
+import { baseURL } from "../../services/api";
 
 interface ISending {
   value: boolean;
   message: string;
   failed: boolean;
+  image: string;
 }
 
 interface IChatFooterProps {
@@ -103,6 +105,12 @@ const ChatFooter: React.FC<IChatFooterProps> = ({
           <View
             style={[styles.sendingMessage, { backgroundColor: colors.primary }]}
           >
+            {sending.image && (
+              <Image
+                source={{ uri: baseURL + sending.image }}
+                style={{ width: 200, height: 200 }}
+              />
+            )}
             <Text style={styles.sendingMessageText}>{sending.message}</Text>
             <View style={styles.sendingStatusText}>
               {sending.failed ? (
