@@ -65,14 +65,26 @@ const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Appbar.Header mode="large">
+      <Appbar.Header mode="small" style={{ backgroundColor: colors.primary }}>
         <Appbar.BackAction
           iconColor="black"
           onPress={() => navigation.goBack()}
         />
-        <Appbar.Content titleStyle={{ color: "black" }} title="Fund Wallet" />
-        {/* <Appbar.Action icon="plus" onPress={() => {}} /> */}
-        <Appbar.Action iconColor="black" icon="history" onPress={() => {}} />
+        <Appbar.Content titleStyle={{ color: "white" }} title="Fund Wallet" />
+        <Appbar.Action
+          icon="minus"
+          iconColor="white"
+          onPress={() => {
+            navigation.navigate("Withdraw")
+          }}
+        />
+        <Appbar.Action
+          iconColor="white"
+          icon="history"
+          onPress={() => {
+            navigation.navigate("Transaction")
+          }}
+        />
       </Appbar.Header>
       <ScrollView contentContainerStyle={styles.context}>
         <View style={{ flex: 1 }}>

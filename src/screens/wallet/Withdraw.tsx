@@ -1,6 +1,13 @@
 import * as React from "react"
 import { View, StyleSheet, Alert } from "react-native"
-import { Text, TextInput, Button, Card, Appbar } from "react-native-paper"
+import {
+  Text,
+  TextInput,
+  Button,
+  Card,
+  Appbar,
+  useTheme,
+} from "react-native-paper"
 import { WithdrawNavigationProp } from "../../types/navigation/stack"
 import useWallet from "../../hooks/useWallet"
 import useToastNotification from "../../hooks/useToastNotification"
@@ -9,6 +16,7 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
   const [amount, setAmount] = React.useState("")
   const { withdrawWalletFlutter, loading, fetchWallet } = useWallet()
   const { addNotification } = useToastNotification()
+  const { colors } = useTheme()
 
   // Example user account information
   const accountInfo = {
@@ -35,7 +43,7 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Appbar.Header mode="large">
+      <Appbar.Header style={{ backgroundColor: colors.primary }}>
         <Appbar.BackAction
           iconColor="white"
           onPress={() => navigation.goBack()}
@@ -44,8 +52,20 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
           titleStyle={{ color: "white" }}
           title="Withdraw Funds"
         />
-        <Appbar.Action iconColor="white" icon="plus" onPress={() => {}} />
-        <Appbar.Action iconColor="white" icon="history" onPress={() => {}} />
+        <Appbar.Action
+          iconColor="white"
+          icon="plus"
+          onPress={() => {
+            navigation.navigate("Fund")
+          }}
+        />
+        <Appbar.Action
+          iconColor="white"
+          icon="history"
+          onPress={() => {
+            navigation.navigate("Transaction")
+          }}
+        />
       </Appbar.Header>
       <View style={{ flex: 1, padding: 20 }}>
         <View style={{ flex: 1 }}>

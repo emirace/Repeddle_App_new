@@ -39,12 +39,15 @@ import Earnings from "../screens/Dashboard/Earnings";
 import Profile from "../screens/profile";
 import MobileNotification from "../screens/Notification";
 import Support from "../screens/profile/Support";
+import { useMemo } from "react";
+import * as SecureStore from "expo-secure-store";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function MainStackNav() {
+  const token = useMemo(() => SecureStore.getItem("authToken"), []);
   return (
-    <Stack.Navigator initialRouteName={"Auth"}>
+    <Stack.Navigator initialRouteName={!token ? "Auth" : "Main"}>
       <Stack.Screen
         name="Main"
         component={MainBottomNav}

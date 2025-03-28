@@ -10,8 +10,8 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { PropsWithChildren, useState } from "react";
+} from "react-native"
+import React, { PropsWithChildren, useState } from "react"
 import {
   ActivityIndicator,
   Appbar,
@@ -126,10 +126,36 @@ const ProfileSettings = ({ navigation }: Props) => {
       valid = false;
     }
 
-    // if (valid) {
-    //   submitHandler2();
-    // }
-  };
+    if (valid) {
+      handleAddressChange()
+    }
+  }
+
+  const handleAddressChange = async () => {
+    setIsLoading(true)
+    const res = await updateUser({
+      address: {
+        state: input.state,
+        street: input.street,
+        apartment: input.apartment,
+        zipcode: input.zipcode,
+      },
+    })
+    if (res) {
+      addNotification({
+        message: "Address Updated Successfully",
+        error: false,
+      })
+      // setShowAddress(false)
+    } else {
+      addNotification({
+        message: userError || "Failed to verify address",
+        error: true,
+      })
+    }
+
+    setIsLoading(false)
+  }
 
   const [isLoading, setIsLoading] = useState(false);
   const [newsletterStatus, setNewsletterStatus] = useState(input.newsletter);
@@ -282,10 +308,32 @@ const ProfileSettings = ({ navigation }: Props) => {
       valid = false;
     }
 
-    // if (valid) {
-    //   submitHandler();
-    // }
-  };
+    if (valid) {
+      handleAccount()
+    }
+  }
+
+  const handleAccount = async () => {
+    setIsLoading(true)
+    const res = await updateUser({
+      accountName: input.accountName,
+      accountNumber: input.accountNumber,
+      bankName: input.bankName,
+    })
+    if (res) {
+      addNotification({
+        message: "Account Updated Successfully",
+        error: false,
+      })
+      // setShowAccount(false)
+    } else {
+      addNotification({
+        message: userError || "Failed to verify account",
+        error: true,
+      })
+    }
+    setIsLoading(false)
+  }
 
   const submitHandler = async () => {
     setIsLoading(true);
@@ -318,7 +366,27 @@ const ProfileSettings = ({ navigation }: Props) => {
     }
   };
 
-  const handleNewsletter = async () => {
+  const handleNewsletter = async (val: boolean) => {
+    setRemovingLetter(true)
+    const resp = await updateUser({ allowNewsletter: val })
+    if (resp) {
+      setNewsletterStatus(val)
+      setInput({ ...input, newsletter: val })
+      addNotification({
+        message: val
+          ? "Subscribed to newsletter"
+          : "Unsubscribed from newsletter",
+      })
+    } else {
+      addNotification({
+        message: val
+          ? "Failed to subscribe to newsletter"
+          : "Failed to unsubscribe from newsletter",
+        error: true,
+      })
+    }
+  }
+<!--   const handleNewsletter = async () => {
     setRemovingLetter(true);
     if (newsletterStatus) {
       if (!user?._id) return;
@@ -348,7 +416,7 @@ const ProfileSettings = ({ navigation }: Props) => {
     }
 
     setRemovingLetter(false);
-  };
+  }; -->
 
   return (
     <View style={styles.container}>
@@ -372,7 +440,12 @@ const ProfileSettings = ({ navigation }: Props) => {
         style={styles.content}
       >
         <View style={{ alignItems: "center" }}>
-          <View style={[styles.image, { backgroundColor: colors.primary }]}>
+          <View
+            style={[
+              styles.image,
+              { backgroundColor: colors.primary, borderRadius: 40 },
+            ]}
+          >
             <Image
               source={{ uri: image ? baseURL + image : baseURL + user?.image }}
               style={{ width: 80, height: 80, borderRadius: 40 }}
@@ -425,6 +498,7 @@ const ProfileSettings = ({ navigation }: Props) => {
               handleOnChange(text, "username");
               setUsername(text);
             }}
+            style={{ color: colors.onBackground }}
             placeholder="Username"
             error={error.username}
             editable={daydiff < 0}
@@ -439,6 +513,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             onChangeText={(text) => handleOnChange(text, "firstName")}
             placeholder="First Name"
             error={error.firstName}
+            style={{ color: colors.onBackground }}
             onFocus={() => {
               handleError("", "firstName");
             }}
@@ -450,6 +525,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             onChangeText={(text) => handleOnChange(text, "lastName")}
             placeholder="Last Name"
             error={error.lastName}
+            style={{ color: colors.onBackground }}
             onFocus={() => {
               handleError("", "lastName");
             }}
@@ -460,6 +536,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             icon="mail-outline"
             onChangeText={(text) => handleOnChange(text, "email")}
             placeholder="Email"
+            style={{ color: colors.onBackground }}
             error={error.email}
             onFocus={() => {
               handleError("", "email");
@@ -472,6 +549,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             onChangeText={(text) => handleOnChange(text, "phone")}
             placeholder="Phone"
             error={error.phone}
+            style={{ color: colors.onBackground }}
             keyboardType="numeric"
             onFocus={() => {
               handleError("", "phone");
@@ -519,6 +597,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             placeholder="Password"
             password
             error={error.password}
+            style={{ color: colors.onBackground }}
             onFocus={() => {
               handleError("", "password");
             }}
@@ -529,6 +608,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             onChangeText={(text) => handleOnChange(text, "confirmPassword")}
             placeholder="Confirm Password"
             password
+            style={{ color: colors.onBackground }}
             error={error.confirmPassword}
             onFocus={() => {
               handleError("", "confirmPassword");
@@ -631,7 +711,10 @@ const ProfileSettings = ({ navigation }: Props) => {
           >
             <View style={[styles.centeredView]}>
               <View
-                style={[styles.modalView, { backgroundColor: colors.backdrop }]}
+                style={[
+                  styles.modalView,
+                  { backgroundColor: colors.background },
+                ]}
               >
                 <View style={styles.heading}>
                   <Text style={[styles.modalTitle]}>Add Address</Text>
@@ -654,6 +737,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Input
                     value={input.street}
                     icon="pencil-outline"
+                    style={{ color: colors.onBackground }}
                     onChangeText={(text) => handleOnChange(text, "street")}
                     placeholder={input.street}
                     error={error.street}
@@ -664,6 +748,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Text1 style={styles.label}>Apartment/Complex</Text1>
                   <Input
                     value={input.apartment}
+                    style={{ color: colors.onBackground }}
                     icon="pencil-outline"
                     onChangeText={(text) => handleOnChange(text, "apartment")}
                     placeholder={input.apartment}
@@ -678,7 +763,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                     style={{
                       backgroundColor: colors.elevation.level2,
                       padding: 5,
-                      color: "grey",
+                      color: colors.onBackground,
                     }}
                     onValueChange={(itemValue, itemIndex) => {
                       handleOnChange(itemValue, "state");
@@ -721,6 +806,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Input
                     value={input.zipcode?.toString()}
                     icon="pencil-outline"
+                    style={{ color: colors.onBackground }}
                     onChangeText={(text) => handleOnChange(text, "zipcode")}
                     placeholder={`${input.zipcode || ""}`}
                     error={error.zipcode}
@@ -753,7 +839,10 @@ const ProfileSettings = ({ navigation }: Props) => {
           >
             <View style={[styles.centeredView]}>
               <View
-                style={[styles.modalView, { backgroundColor: colors.backdrop }]}
+                style={[
+                  styles.modalView,
+                  { backgroundColor: colors.background },
+                ]}
               >
                 <View style={styles.heading}>
                   <Text style={[styles.modalTitle]}>Add Bank Account</Text>
@@ -776,6 +865,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Text1 style={styles.label}>Account Name</Text1>
                   <Input
                     value={input.accountName}
+                    style={{ color: colors.onBackground }}
                     icon="pencil-outline"
                     onChangeText={(text) => handleOnChange(text, "accountName")}
                     placeholder={input.accountName}
@@ -788,6 +878,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Input
                     value={input.accountNumber?.toString()}
                     icon="pencil-outline"
+                    style={{ color: colors.onBackground }}
                     onChangeText={(text) =>
                       handleOnChange(text, "accountNumber")
                     }
@@ -802,7 +893,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                     style={{
                       backgroundColor: colors.elevation.level2,
                       padding: 5,
-                      color: "grey",
+                      color: colors.onBackground,
                     }}
                     onValueChange={(itemValue, itemIndex) => {
                       handleOnChange(itemValue, "bankName");
@@ -863,14 +954,18 @@ const ProfileSettings = ({ navigation }: Props) => {
             <View style={[styles.row, { marginBottom: 10 }]}>
               <Text style={[]}>Subscribe to newsletter</Text>
             </View>
-            <Switch
-              trackColor={{ false: "#767577", true: "#dedede" }}
-              thumbColor={newsletterStatus ? colors.primary : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={handleNewsletter}
-              value={newsletterStatus}
-              disabled={removingLetter}
-            />
+            {removingLetter ? (
+              <ActivityIndicator size="small" />
+            ) : (
+              <Switch
+                trackColor={{ false: "#767577", true: "#dedede" }}
+                thumbColor={newsletterStatus ? colors.primary : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={handleNewsletter}
+                value={newsletterStatus}
+                disabled={removingLetter}
+              />
+            )}
           </View>
           {!isLoading && <Rebundle bundle={bundle} setBundle={setBundle} />}
         </View>
