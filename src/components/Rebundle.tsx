@@ -6,6 +6,7 @@ import { IRebundle } from "../types/user"
 import { currentAddress, goto, region } from "../utils/common"
 import { getBackendErrorMessage } from "../utils/error"
 import Tooltip from "./Tooltip"
+import useAuth from "../hooks/useAuth"
 
 type Props = {
   bundle: boolean
@@ -14,6 +15,7 @@ type Props = {
 
 const Rebundle = ({ bundle, setBundle }: Props) => {
   const { colors } = useTheme()
+  const { updateUser } = useAuth()
 
   const [rebundleStatus, setRebundleStatus] = useState(bundle)
   const [rebundleCount, setRebundleCount] = useState("")
@@ -42,7 +44,7 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
     try {
       setLoadingRebundle(true)
       // TODO: handle bundle
-      // setBundle(data.status)
+      await updateUser({ rebundle: value })
       setLoadingRebundle(false)
     } catch (err) {
       setLoadingRebundle(false)
@@ -98,6 +100,7 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
                 borderWidth: 1,
                 borderRadius: 5,
                 borderColor: colors.primary,
+                backgroundColor: colors.elevation.level2,
               }}
             >
               <TextInput
@@ -105,8 +108,10 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
                   backgroundColor: colors.elevation.level2,
                   flex: 1,
                   height: 40,
+                  paddingLeft: 10,
                   borderTopLeftRadius: 5,
                   borderBottomLeftRadius: 5,
+                  color: colors.onBackground,
                 }}
                 keyboardType="numeric"
                 onChangeText={(text) => setRebundleCount(text)}
@@ -119,13 +124,9 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
                 mode="contained"
                 onPress={() => handleRebundle()}
                 loading={loadingRebundle}
-                style={[styles.button, { backgroundColor: colors.primary }]}
+                style={[styles.button]}
               >
-                <Text
-                  style={{ color: "white", fontFamily: "chronicle-text-bold" }}
-                >
-                  Activate
-                </Text>
+                Activate
               </Button>
             </View>
             {rebundleError ? (
@@ -148,8 +149,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   button: {
-    padding: 5,
-    paddingHorizontal: 20,
+    // padding: 5,
+    paddingHorizontal: 10,
     height: 40,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
