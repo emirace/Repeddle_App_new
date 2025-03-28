@@ -2,7 +2,7 @@ import { Dimensions } from "react-native";
 import React from "react";
 import { currency, region } from "../utils/common";
 import { useTheme } from "react-native-paper";
-// import { LineChart } from "react-native-chart-kit"
+import { LineChart } from "react-native-chart-kit";
 
 type Data = { name: string; order: number; earning: number; totalSale: number };
 
@@ -23,43 +23,42 @@ const Chart = ({ data }: Props) => {
   }
 
   return (
-    <></>
-    // <LineChart
-    //   data={{
-    //     labels: getList(data, "name"),
-    //     datasets: [
-    //       {
-    //         data: getList(data, "earning"),
-    //       },
-    //     ],
-    //   }}
-    //   width={Dimensions.get("window").width - 20} // from react-native
-    //   height={220}
-    //   yAxisLabel={currency(region())}
-    //   // yAxisSuffix="k"
-    //   yAxisInterval={1} // optional, defaults to 1
-    //   chartConfig={{
-    //     backgroundColor: colors.secondary,
-    //     // backgroundGradientFrom: colors.secondary,
-    //     // backgroundGradientTo: colors.secondary,
-    //     decimalPlaces: 0, // optional, defaults to 2dp
-    //     color: (opacity = 1) => colors.secondary,
-    //     // propsForBackgroundLines: {'DD':"black"},
-    //     labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    <LineChart
+      data={{
+        labels: getList(data, "name"),
+        datasets: [
+          {
+            data: getList(data, "earning"),
+          },
+        ],
+      }}
+      width={Dimensions.get("window").width - 20} // from react-native
+      height={220}
+      yAxisLabel={currency(region())}
+      // yAxisSuffix="k"
+      yAxisInterval={1} // optional, defaults to 1
+      chartConfig={{
+        backgroundColor: colors.secondary,
+        // backgroundGradientFrom: colors.secondary,
+        // backgroundGradientTo: colors.secondary,
+        decimalPlaces: 0, // optional, defaults to 2dp
+        color: (opacity = 1) => colors.secondary,
+        // propsForBackgroundLines: {'DD':"black"},
+        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
 
-    //     propsForDots: {
-    //       r: "5",
-    //       strokeWidth: "2",
-    //       stroke: colors.primary,
-    //       fill: colors.primary,
-    //     },
-    //   }}
-    //   bezier
-    //   style={{
-    //     marginVertical: 8,
-    //     borderRadius: 5,
-    //   }}
-    // />
+        propsForDots: {
+          r: "5",
+          strokeWidth: "2",
+          stroke: colors.primary,
+          fill: colors.primary,
+        },
+      }}
+      bezier
+      style={{
+        marginVertical: 8,
+        borderRadius: 5,
+      }}
+    />
   );
 };
 
