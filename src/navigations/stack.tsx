@@ -36,14 +36,14 @@ import Category from "../screens/Category"
 import SubCategories from "../screens/Category/SubCategories"
 import Brand from "../screens/Brand"
 import Earnings from "../screens/Dashboard/Earnings"
+import Profile from "../screens/profile";
 import { useMemo } from "react"
 import * as SecureStore from "expo-secure-store"
 
-const Stack = createNativeStackNavigator<RootStackParamList>()
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function MainStackNav() {
   const token = useMemo(() => SecureStore.getItem("authToken"), [])
-
   return (
     <Stack.Navigator initialRouteName={!token ? "Auth" : "Main"}>
       <Stack.Screen
@@ -228,8 +228,13 @@ function MainStackNav() {
         component={Earnings}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
-  )
+  );
 }
 
-export default MainStackNav
+export default MainStackNav;

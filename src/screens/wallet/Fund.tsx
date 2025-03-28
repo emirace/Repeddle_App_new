@@ -1,89 +1,73 @@
-import { useState } from "react"
-import { View, StyleSheet, Alert } from "react-native"
-import { Text, TextInput, Button, Appbar, useTheme } from "react-native-paper"
-import { FundNavigationProp } from "../../types/navigation/stack"
-import useAuth from "../../hooks/useAuth"
-import { generateTransactionRef, region } from "../../utils/common"
-import PayWithFlutterwave from "flutterwave-react-native"
-import Payfast from "../../components/paymentMethod/Payfast"
-import useToastNotification from "../../hooks/useToastNotification"
-import FlutterwaveInitError from "flutterwave-react-native/dist/utils/FlutterwaveInitError"
-import { RedirectParams } from "flutterwave-react-native/dist/PayWithFlutterwave"
-import useWallet from "../../hooks/useWallet"
+import { useState } from "react";
+import { View, StyleSheet, Alert, ScrollView } from "react-native";
+import {
+  Text,
+  TextInput,
+  Button,
+  Appbar,
+  ActivityIndicator,
+} from "react-native-paper";
+import { FundNavigationProp } from "../../types/navigation/stack";
+import useWallet from "../../hooks/useWallet";
+import useToastNotification from "../../hooks/useToastNotification";
+import PayWithFlutterwave from "flutterwave-react-native";
+import useAuth from "../../hooks/useAuth";
+import { generateTransactionRef } from "../../utils/common";
+import { API_KEY } from "../../utils/constants";
 
 const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
-  const [amount, setAmount] = useState<string>("")
-  const [isLoading, setIsLoading] = useState(false)
+  const { fundWalletFlutter } = useWallet();
+  const { addNotification } = useToastNotification();
+  const { user } = useAuth();
+  const [amount, setAmount] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { user } = useAuth()
-  const { addNotification } = useToastNotification()
-  const { colors } = useTheme()
-  const { fundWalletFlutter } = useWallet()
-
-  const onAbort = () => {
-    setIsLoading(false)
-  }
-
-  const onError = (err: FlutterwaveInitError) => {
-    setIsLoading(false)
-    addNotification({
-      message: err.message || "Failed to fund wallet",
-      error: true,
-    })
-  }
-
-  const handleFundWallet = async ({
-    paymentMethod,
-    transId,
-  }: {
-    paymentMethod: string
-    transId: string
-  }) => {
+  const onApprove = async (result: any) => {
     if (amount === "" || isNaN(parseFloat(amount))) {
-      Alert.alert("Invalid Amount", "Please enter a valid amount.")
-      return
+      addNotification({
+        message: "Invalid Amount, Please enter a valid amount.",
+        error: true,
+      });
+      return;
     }
-    // Handle the wallet funding logic here
-    Alert.alert("Success", `Your wallet has been funded with ₦${amount}.`)
-    return undefined
-  }
-
-  const onApprove = async (res: RedirectParams) => {
-    const { error, result } = await fundWalletFlutter({
+    await fundWalletFlutter({
       amount: parseInt(amount),
-      paymentProvider: "Flutterwave",
-      transactionId: res.transaction_id?.toString() || res.tx_ref,
-    })
+      transactionId: result.referencce,
+      paymentProvider: "flutterwave",
+    });
+    addNotification({
+      message: `Success, Your wallet has been funded with ₦${amount}.`,
+      error: false,
+    });
+    navigation.navigate("Profile");
+  };
 
-    if (!error) {
-      addNotification({ message: result })
-      // setShowSuccess && setShowSuccess(true)
-      setAmount("0")
-    } else {
-      addNotification({ message: result, error: true })
-    }
-  }
-
-  const handleOnRedirect = async (result: RedirectParams) => {
-    console.log(result, "res")
+  const handleOnRedirect = async (result: { status: string }) => {
+    console.log(result);
     try {
-      if (result.status !== "successful") {
-        console.log("unsuccessfull")
-        setIsLoading(false)
-        return
+      console.log(result);
+      if (result.status !== "successful" && result.status !== "completed") {
+        console.log("result", result.status !== "completed");
+
+        addNotification({
+          message: result.status,
+          error: false,
+        });
+        return;
       }
-      addNotification({ message: "Payment successful" })
-      await onApprove(result)
+      await onApprove(result);
     } catch (err) {
-      console.log(err)
+      console.log("fund ", err);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
       <Appbar.Header mode="small" style={{ backgroundColor: colors.primary }}>
         <Appbar.BackAction
-          iconColor="white"
+          iconColor="black"
           onPress={() => navigation.goBack()}
         />
         <Appbar.Content titleStyle={{ color: "white" }} title="Fund Wallet" />
@@ -102,7 +86,7 @@ const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
           }}
         />
       </Appbar.Header>
-      <View style={styles.context}>
+      <ScrollView contentContainerStyle={styles.context}>
         <View style={{ flex: 1 }}>
           <TextInput
             label="Enter Amount"
@@ -112,73 +96,62 @@ const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
             style={styles.input}
           />
         </View>
-
-        {region() !== "NGN" ? (
-          <Payfast
-            placeOrderHandler={handleFundWallet}
-            totalPrice={parseInt(amount)}
-          />
-        ) : (
-          <PayWithFlutterwave
-            onRedirect={handleOnRedirect}
-            onInitializeError={onError}
-            onAbort={onAbort}
-            options={{
-              tx_ref: generateTransactionRef(10),
-              authorization: "FLWPUBK_TEST-6a1e30713a8c6962ecb7d6cfbda2df69-X",
-              customer: {
-                email: user?.email ?? "",
-                name: `${user?.firstName} ${user?.lastName}`,
-              },
-              amount: parseInt(amount),
-              currency: "NGN",
-              payment_options: "card",
-              customizations: {
-                title: "Repeddle",
-                description: "Payment for order",
-                //   logo: "https://assets.piedpiper.com/logo.png",
-              },
-              meta: {
-                purpose: "Make Payment",
-                userId: user?._id,
-                image:
-                  "https://res.cloudinary.com/emirace/image/upload/v1674796101/fundwallet_rgdi9s.jpg",
-                description: "Payment for items in cart",
-              },
-            }}
-            customButton={(props) => (
+        <PayWithFlutterwave
+          onRedirect={handleOnRedirect}
+          options={{
+            tx_ref: generateTransactionRef(10),
+            authorization: API_KEY,
+            customer: {
+              email: user?.email || "",
+              name: user?.username,
+            },
+            amount: parseFloat(amount),
+            currency: "NGN",
+            // payment_options: "card",
+            customizations: {
+              title: "Repeddle",
+              description: "Funding wallet",
+              logo: "https://res.cloudinary.com/emirace/image/upload/v1674796101/fundwallet_rgdi9s.jpg",
+            },
+            meta: {
+              purpose: "Funding wallet",
+              userId: user?._id,
+              image:
+                "https://res.cloudinary.com/emirace/image/upload/v1674796101/fundwallet_rgdi9s.jpg",
+              description: "Adding money to my wallet",
+            },
+          }}
+          customButton={(props) =>
+            isLoading ? (
+              <ActivityIndicator size={"large"} />
+            ) : (
               <Button
-                onPress={() => {
-                  setIsLoading(true)
-                  props.onPress()
-                }}
-                children="Fund Wallet"
-                loading={isLoading}
                 mode="contained"
-                style={[styles.button, { backgroundColor: colors.primary }]}
-                labelStyle={{
-                  color: "white",
-                  fontFamily: "chronicle-text-bold",
+                onPress={() => {
+                  setIsLoading(true);
+                  props.onPress();
                 }}
-              />
-            )}
-          />
-        )}
-      </View>
+                style={styles.fundButton}
+              >
+                Fund Wallet
+              </Button>
+            )
+          }
+        />
+      </ScrollView>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  context: { padding: 20, flex: 1 },
+  context: { padding: 20, paddingVertical: 25, flex: 1 },
   input: {
     marginBottom: 20,
   },
   fundButton: {},
-  button: {},
-})
+});
 
-export default Fund
+export default Fund;

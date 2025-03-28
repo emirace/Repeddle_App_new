@@ -1,17 +1,17 @@
-import { View, Button } from "react-native"
-import React from "react"
-import { Appbar, Checkbox } from "react-native-paper"
-import { AppearanceNavigationProp } from "../../types/navigation/stack"
-import useTheme from "../../hooks/useTheme"
+import { View, Button } from "react-native";
+import React from "react";
+import { Appbar, Checkbox } from "react-native-paper";
+import { AppearanceNavigationProp } from "../../types/navigation/stack";
+import useTheme from "../../hooks/useTheme";
 
 const Appearance: React.FC<AppearanceNavigationProp> = ({ navigation }) => {
-  const { toggleTheme, selectedThemeMode } = useTheme()
+  const { toggleTheme, selectedThemeMode } = useTheme();
 
-  const options = ["Default", "Light", "Dark"]
+  const options = ["Default", "Light", "Dark"];
   const handleClick = (value: any) => {
-    toggleTheme(value.toLowerCase())
-    navigation.goBack()
-  }
+    toggleTheme(value.toLowerCase());
+    navigation.goBack();
+  };
 
   return (
     <View>
@@ -35,7 +35,7 @@ const Appearance: React.FC<AppearanceNavigationProp> = ({ navigation }) => {
         ))}
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default Appearance
+export default Appearance;
