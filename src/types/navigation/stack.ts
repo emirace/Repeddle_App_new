@@ -45,6 +45,8 @@ export type RootStackParamList = {
   Brand: undefined;
   Profile: undefined;
   Earnings: undefined;
+  Notification: undefined;
+  Support: undefined;
 };
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -221,4 +223,13 @@ export type BrandNavigationProp = NativeStackScreenProps<
 export type ProfileNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Profile"
+>;
+
+export type NotificationNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Notification"
+>;
+export type SupportNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "Support"
 >;

@@ -1,107 +1,101 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  SectionList,
   View,
+  Text,
   TextInput,
+  TouchableOpacity,
   Image,
   StyleSheet,
+  SectionList,
   ViewToken,
   Dimensions,
-  TouchableOpacity,
 } from "react-native";
+import moment from "moment";
+import useMessage from "../../hooks/useMessage";
+import useAuth from "../../hooks/useAuth";
+import useToastNotification from "../../hooks/useToastNotification";
+import { getConversationsService } from "../../services/message";
+import { IUser } from "../../types/user";
+import { baseURL } from "../../services/api";
+import { Ionicons } from "@expo/vector-icons";
 import {
-  Appbar,
   Avatar,
   IconButton,
-  Text,
-  ActivityIndicator,
   useTheme,
+  ActivityIndicator,
 } from "react-native-paper";
-import { ChatNavigationProp } from "../../types/navigation/stack";
+import ChatFooter from "../chat/ChatFooter";
+import ChatSkeleton from "../chat/ChatSkeleton";
 import { IMessage } from "../../types/message";
-import moment from "moment";
 import { lightTheme } from "../../constant/theme";
-import useMessage from "../../hooks/useMessage";
-import { baseURL } from "../../services/api";
-import useAuth from "../../hooks/useAuth";
-import ChatFooter from "../../components/chat/ChatFooter";
-import socket from "../../socket";
-import ChatSkeleton from "../../components/chat/ChatSkeleton";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImage } from "../../utils/common";
-import useToastNotification from "../../hooks/useToastNotification";
-import { Ionicons } from "@expo/vector-icons";
 
-const Chat: React.FC<ChatNavigationProp> = ({ navigation }) => {
+interface ChatProps {
+  user: IUser | null;
+}
+
+const Chat: React.FC<ChatProps> = ({ user }) => {
   const {
     loadingMessage,
     messages,
     isTypingList,
     currentConversation,
     setCurrentConversation,
-    isAnimating,
     sendMessage,
   } = useMessage();
-  const { user } = useAuth();
   const { addNotification } = useToastNotification();
   const { colors } = useTheme();
   const [messageInput, setMessageInput] = useState("");
   const [sending, setSending] = useState({
     value: false,
+    image: "",
     message: "",
     failed: false,
-    image: "",
   });
+  const [loading, setLoading] = useState(true);
   const [image, setImage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [currentDate, setCurrentDate] = useState<string | null>(null);
 
-  // Function to emit startTyping event
-  const startTyping = () => {
-    socket.emit("typing", {
-      conversationId: currentConversation?._id,
-      userId: user?._id,
-    });
-  };
-
-  // Function to emit stopTyping event
-  const stopTyping = () => {
-    socket.emit("stopTyping", {
-      conversationId: currentConversation?._id,
-      userId: user?._id,
-    });
-  };
-
-  const handleMessageSubmit = async () => {
-    // Handle sending message logic
-    if (!currentConversation) return;
-    if (!messageInput) return;
-    try {
-      setSending({ value: true, message: messageInput, failed: false, image });
-      setMessageInput("");
-      setImage("");
-      await sendMessage({
-        content: messageInput,
-        conversationId: currentConversation._id,
-        image,
-      });
-      setSending({ value: false, message: "", failed: false, image: "" });
-    } catch (error) {
-      console.log(error);
-      setSending((prev) => ({ ...prev, value: true, failed: true }));
-    }
-  };
+  useEffect(() => {
+    const getConversations = async () => {
+      try {
+        setLoading(true);
+        const res = await getConversationsService("Support");
+        setCurrentConversation(res[0] || null);
+        setLoading(false);
+      } catch (error: any) {
+        setLoading(false);
+        addNotification(error);
+      }
+    };
+    getConversations();
+  }, []);
 
   const handleRetry = () => {
     setMessageInput(sending.message);
     setImage(sending.image);
-    setSending((prev) => ({
-      ...prev,
-      value: false,
-      failed: false,
-      message: "",
-      image: "",
-    }));
+    setSending({ value: false, failed: false, message: "", image: "" });
+  };
+
+  const handleMessageSubmit = async () => {
+    if (!messageInput && !image) return;
+    try {
+      setSending({ value: true, image, message: messageInput, failed: false });
+      setMessageInput("");
+      setImage("");
+      await sendMessage({
+        image,
+        content: messageInput,
+        type: "Support",
+        conversationId: currentConversation?._id as string,
+      });
+      setSending({ value: false, image: "", message: "", failed: false });
+    } catch (error) {
+      console.log(error);
+      setSending((prev) => ({ ...prev, value: true, failed: true }));
+    }
   };
 
   const getDayLabel = (timestamp: string): string => {
@@ -281,34 +275,9 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Appbar.Header>
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <View style={styles.headerContent}>
-          <Avatar.Image
-            size={40}
-            source={{ uri: baseURL + currentConversation?.otherUser.image }}
-          />
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>
-              {currentConversation?.otherUser.username}
-            </Text>
-            <Text style={styles.headerSubtitle}>
-              {isTypingList.find((type) => type.id === currentConversation?._id)
-                ? "typing..."
-                : "online"}
-            </Text>
-          </View>
-        </View>
-        <Appbar.Action
-          icon="flag"
-          onPress={() => {
-            /* Handle report */
-          }}
-        />
-      </Appbar.Header>
+    <View style={{ flex: 1 }}>
       {renderStickyDate()}
-      {loadingMessage ? (
+      {loadingMessage || loading ? (
         <ChatSkeleton />
       ) : (
         <SectionList
@@ -332,7 +301,6 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation }) => {
           onViewableItemsChanged={updateStickyDate}
         />
       )}
-
       {image && (
         <View
           style={[
@@ -365,11 +333,8 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation }) => {
           value={messageInput}
           onChangeText={(text) => {
             setMessageInput(text);
-            startTyping();
           }}
           placeholder="Type a message"
-          onFocus={startTyping}
-          onBlur={stopTyping}
         />
         <IconButton icon="send" size={30} onPress={handleMessageSubmit} />
       </View>
@@ -377,15 +342,28 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation }) => {
   );
 };
 
+export default Chat;
+
 const WIDTH = Dimensions.get("screen").width;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   chatList: {
     flex: 1,
     padding: 10,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    // padding: 8,
+    paddingBottom: 20,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginRight: 10,
   },
   messageContainer: {
     flexDirection: "row",
@@ -423,39 +401,6 @@ const styles = StyleSheet.create({
     backgroundColor: lightTheme.colors.secondary,
     alignSelf: "flex-start",
   },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 8,
-    paddingBottom: 20,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    borderRadius: 5,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginRight: 10,
-  },
-  sendButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  headerContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  headerTextContainer: {
-    marginLeft: 10,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontFamily: "absential-sans-bold",
-  },
-  headerSubtitle: {
-    fontSize: 14,
-  },
   dayLabelContainer: {
     alignSelf: "center",
     marginVertical: 8,
@@ -469,7 +414,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: WIDTH,
     position: "absolute",
-    top: 120,
+    top: 20,
     zIndex: 50,
   },
   stickyDateTextCont: {
@@ -495,5 +440,3 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
 });
-
-export default Chat;

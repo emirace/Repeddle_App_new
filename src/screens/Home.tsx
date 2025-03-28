@@ -6,8 +6,8 @@ import {
   ActivityIndicator,
   Animated,
   Image,
-} from "react-native"
-import React, { useEffect, useRef, useState } from "react"
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Appbar,
   configureFonts,
@@ -17,103 +17,103 @@ import {
   Portal,
   Provider,
   useTheme,
-} from "react-native-paper"
-import useThemeContext from "../hooks/useTheme"
-import { MainScreenNavigationProp } from "../types/navigation/stack"
-import { TopSellers } from "../types/user"
-import HomeContents from "../section/home/HomeContents"
-import { IProduct, ProductWithPagination } from "../types/product"
-import homeStyles from "../section/home/homeStyles"
-import ProductItem from "../components/ProductItem"
-import useProducts from "../hooks/useProducts"
-import useUser from "../hooks/useUser"
-import SearchBar from "../components/SearchBar"
-import Announcement from "../components/Announcement"
-import CartIcon from "../components/ui/cartIcon"
-import useToastNotification from "../hooks/useToastNotification"
+} from "react-native-paper";
+import useThemeContext from "../hooks/useTheme";
+import { MainScreenNavigationProp } from "../types/navigation/stack";
+import { TopSellers } from "../types/user";
+import HomeContents from "../section/home/HomeContents";
+import { IProduct, ProductWithPagination } from "../types/product";
+import homeStyles from "../section/home/homeStyles";
+import ProductItem from "../components/ProductItem";
+import useProducts from "../hooks/useProducts";
+import useUser from "../hooks/useUser";
+import SearchBar from "../components/SearchBar";
+import Announcement from "../components/Announcement";
+import CartIcon from "../components/ui/cartIcon";
+import useToastNotification from "../hooks/useToastNotification";
 
-const WIDTH = Dimensions.get("screen").width
+const WIDTH = Dimensions.get("screen").width;
 
-const numColumns = 2
+const numColumns = 2;
 
 const Home = ({ navigation }: any) => {
-  const { themeMode } = useThemeContext()
+  const { themeMode } = useThemeContext();
 
-  const { colors } = useTheme()
-  const { addNotification } = useToastNotification()
+  const { colors } = useTheme();
+  const { addNotification } = useToastNotification();
 
-  const { fetchProducts, loading } = useProducts()
-  const { getTopSellers } = useUser()
+  const { fetchProducts, loading } = useProducts();
+  const { getTopSellers } = useUser();
 
   const [products, setProducts] = useState<ProductWithPagination>({
     currentPage: 0,
     products: [],
     totalCount: 0,
     totalPages: 0,
-  })
-  const [sellers, setSellers] = useState<TopSellers[]>([])
-  const [sellerLoading, setSellerLoading] = useState(false)
-  const [sellerError, setSellerError] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
+  });
+  const [sellers, setSellers] = useState<TopSellers[]>([]);
+  const [sellerLoading, setSellerLoading] = useState(false);
+  const [sellerError, setSellerError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetchProducts(`page=${currentPage}`)
+      const res = await fetchProducts(`page=${currentPage}`);
 
       if (typeof res !== "string") {
-        const newData = res
+        const newData = res;
 
-        const allProducts = [...products.products, ...newData.products]
+        const allProducts = [...products.products, ...newData.products];
         newData.products = [
           ...new Map(allProducts.map((item) => [item._id, item])).values(),
-        ]
-        setProducts(newData)
+        ];
+        setProducts(newData);
       } else {
-        addNotification({ message: res, error: true })
+        addNotification({ message: res, error: true });
       }
-    }
+    };
 
-    fetchData()
-  }, [currentPage])
+    fetchData();
+  }, [currentPage]);
 
   useEffect(() => {
     const fetchSellers = async () => {
-      setSellerLoading(true)
-      const res = await getTopSellers()
+      setSellerLoading(true);
+      const res = await getTopSellers();
       if (typeof res === "string") {
-        setSellerError(res)
+        setSellerError(res);
       } else {
-        setSellers(res.sellers)
+        setSellers(res.sellers);
       }
 
-      setSellerLoading(false)
-    }
+      setSellerLoading(false);
+    };
 
-    fetchSellers()
-  }, [])
+    fetchSellers();
+  }, []);
 
   const formatData = (data: IProduct[]) => {
-    const isEven = data.length % numColumns === 0
+    const isEven = data.length % numColumns === 0;
 
     if (!isEven) {
-      const empty = { ...data[0], empty: true }
-      data.push(empty)
+      const empty = { ...data[0], empty: true };
+      data.push(empty);
     }
 
-    return data
-  }
+    return data;
+  };
 
   const handleMore = () => {
     if (currentPage < products.totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handleSearch = (val: string) => {
-    navigation.push("Search", { query: val })
-  }
+    navigation.push("Search", { query: val });
+  };
 
-  const animatedValue = useRef(new Animated.Value(0)).current
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
   const searchAnimation = {
     transform: [
@@ -142,7 +142,7 @@ const Home = ({ navigation }: any) => {
     //   outputRange: [55, 1],
     //   extrapolate: "clamp",
     // }),
-  }
+  };
 
   const logoAnimation = {
     transform: [
@@ -166,7 +166,7 @@ const Home = ({ navigation }: any) => {
       outputRange: [1, 0],
       extrapolate: "clamp",
     }),
-  }
+  };
 
   const logo2Animation = {
     transform: [
@@ -190,7 +190,7 @@ const Home = ({ navigation }: any) => {
       outputRange: [0, 1],
       extrapolate: "clamp",
     }),
-  }
+  };
 
   // const headerAnimation = {
   //   transform: [
@@ -262,7 +262,11 @@ const Home = ({ navigation }: any) => {
               <SearchBar onPress={handleSearch} />
             </View>
             <View style={{ flexDirection: "row", marginRight: 6 }}>
-              <IconButton icon="bell-outline" iconColor={colors.onBackground} />
+              <IconButton
+                onPress={() => navigation.push("Notification")}
+                icon="bell-outline"
+                iconColor={colors.onBackground}
+              />
 
               <CartIcon
                 iconColor={colors.onBackground}
@@ -298,19 +302,19 @@ const Home = ({ navigation }: any) => {
         style={{ marginTop: 10 }}
       />
     </View>
-  )
-}
+  );
+};
 
 const RenderItem = ({
   item,
   navigation,
 }: {
-  item: IProduct & { empty?: boolean }
-  navigation: MainScreenNavigationProp["navigation"]
+  item: IProduct & { empty?: boolean };
+  navigation: MainScreenNavigationProp["navigation"];
 }) => {
-  let { itemStyles, invisible } = homeStyles
+  let { itemStyles, invisible } = homeStyles;
 
-  if (item.empty) return <View style={[itemStyles, invisible]}></View>
+  if (item.empty) return <View style={[itemStyles, invisible]}></View>;
 
   return (
     <View style={itemStyles}>
@@ -319,11 +323,11 @@ const RenderItem = ({
         product={item}
       />
     </View>
-  )
-}
+  );
+};
 
 const Footer = ({ isLoading }: { isLoading?: boolean }) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return (
     <View
@@ -336,10 +340,10 @@ const Footer = ({ isLoading }: { isLoading?: boolean }) => {
         <ActivityIndicator size="large" color={colors.primary} />
       ) : null}
     </View>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
 
 const styles = StyleSheet.create({
   container: {
@@ -356,4 +360,4 @@ const styles = StyleSheet.create({
     // height: 1,
     paddingHorizontal: 10,
   },
-})
+});

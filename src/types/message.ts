@@ -47,6 +47,7 @@ export interface MessageData {
   referencedUser?: string;
   referencedProduct?: string;
   image?: string;
+  type?: string;
 }
 
 export interface ForwardData {
@@ -72,6 +73,7 @@ export interface IMessage {
   referencedProduct?: string;
   read: boolean;
   createdAt: string;
+  image?: string;
 }
 
 export interface ConversationData {

@@ -37,6 +37,8 @@ import SubCategories from "../screens/Category/SubCategories";
 import Brand from "../screens/Brand";
 import Earnings from "../screens/Dashboard/Earnings";
 import Profile from "../screens/profile";
+import MobileNotification from "../screens/Notification";
+import Support from "../screens/profile/Support";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -228,6 +230,16 @@ function MainStackNav() {
       <Stack.Screen
         name="Profile"
         component={Profile}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Notification"
+        component={MobileNotification}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Support"
+        component={Support}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
