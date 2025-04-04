@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native"
+import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native"
 import React, { useState } from "react"
 import { Appbar, RadioButton, Text, useTheme } from "react-native-paper"
 import useAuth from "../hooks/useAuth"
@@ -7,6 +7,7 @@ import { PaymentMethodNavigationProp } from "../types/navigation/stack"
 import { currency, region } from "../utils/common"
 import { PaymentType } from "../contexts/CartContext"
 import useToastNotification from "../hooks/useToastNotification"
+import useWallet from "../hooks/useWallet"
 
 type Props = PaymentMethodNavigationProp
 
@@ -15,6 +16,7 @@ const PaymentMethod = ({ navigation }: Props) => {
   const { total, paymentMethod, changePaymentMethod } = useCart()
   const { user } = useAuth()
   const { addNotification } = useToastNotification()
+  const { wallet } = useWallet()
 
   const handleSubmit = () => {
     navigation.push("Checkout")
@@ -68,7 +70,7 @@ const PaymentMethod = ({ navigation }: Props) => {
             <RadioButton.Item
               position="leading"
               label={`Wallet (${currency(region())}${(
-                user?.balance ?? 0
+                wallet.balance || 0
               ).toFixed(2)})`}
               value="Wallet"
               style={{ paddingLeft: 0 }}
@@ -81,9 +83,11 @@ const PaymentMethod = ({ navigation }: Props) => {
               <Text style={{ color: "red", fontSize: 13 }}>
                 Insufficient balance
               </Text>
-              <Text style={{ color: colors.secondary, marginHorizontal: 20 }}>
-                Fund Wallet Now
-              </Text>
+              <Pressable onPress={() => navigation.navigate("Fund")}>
+                <Text style={{ color: colors.secondary, marginHorizontal: 20 }}>
+                  Fund Wallet Now
+                </Text>
+              </Pressable>
             </View>
           )}
         </View>

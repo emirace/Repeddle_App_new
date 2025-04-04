@@ -40,7 +40,6 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const {
     fetchOrderById,
     error,
-    loading,
     updateOrderItemTracking,
     updateOrderItemStatus,
   } = useOrder()
@@ -53,6 +52,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
 
   const [order, setOrder] = useState<IOrder>()
 
+  const [loading, setLoading] = useState(false)
   const [showDeliveryHistory, setShowDeliveryHistory] = useState(false)
   const [currentDeliveryHistory, setCurrentDeliveryHistory] = useState(0)
   const [showTracking, setShowTracking] = useState(false)
@@ -62,9 +62,11 @@ const OrderDetails = ({ navigation, route }: Props) => {
   const [isSeller, setIsSeller] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [showError, setShowError] = useState(false)
+  const [refresh, setRefresh] = useState(false)
 
   useEffect(() => {
     const fetchOrder = async () => {
+      setLoading(true)
       const res = await fetchOrderById(id)
       if (res) {
         setOrder(res)
@@ -77,10 +79,11 @@ const OrderDetails = ({ navigation, route }: Props) => {
       } else {
         setShowError(true)
       }
+      setLoading(false)
     }
 
     fetchOrder()
-  }, [id])
+  }, [id, refresh])
 
   const comfirmWaybill = async (order: OrderItem) => {
     if (!trackingNumber) return
@@ -206,9 +209,15 @@ const OrderDetails = ({ navigation, route }: Props) => {
     setUpdatingStatus(true)
     const data = await paySeller(order._id, item.product._id, item.seller._id)
 
-    if (typeof data !== "string") {
-      addNotification({ message: data.message })
-    } else addNotification({ message: data, error: true })
+    if (typeof data === "string") {
+      addNotification({ message: data, error: true })
+      setUpdatingStatus(false)
+      return
+    }
+
+    addNotification({ message: data.message })
+
+    setRefresh(true)
 
     setUpdatingStatus(false)
   }

@@ -36,6 +36,7 @@ import { baseURL } from "../../services/api"
 import useToastNotification from "../../hooks/useToastNotification"
 import CartIcon from "../../components/ui/cartIcon"
 import Tooltip from "../../components/Tooltip"
+import AddOtherBrands from "../../components/AddOtherBrands"
 
 type Props = EditProductNavigationProp
 
@@ -84,6 +85,7 @@ const EditProduct = ({ navigation, route }: Props) => {
   const [showCondition, setShowCondition] = useState(false)
   const [price, setPrice] = useState("")
 
+  const [showOtherBrand, setShowOtherBrand] = useState(true)
   const [paxi, setPaxi] = useState(true)
   const [gig, setGig] = useState(false)
   const [pudo, setPudo] = useState(false)
@@ -756,6 +758,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             placeholder="Search brands"
             value={input.brand.length > 0 ? input.brand : queryBrand}
             onChangeText={(text) => {
+              handleOnChange("", "brand")
               setQueryBrand(text)
             }}
             style={[
@@ -772,31 +775,44 @@ const EditProduct = ({ navigation, route }: Props) => {
             </Text>
           )}
           {searchBrand &&
-            searchBrand.map((p, index) => (
-              <View key={p._id}>
-                <TouchableOpacity
-                  style={styles.listItem}
-                  onPress={() => {
-                    handleOnChange("", "brand")
-                    setQueryBrand(p.name)
-                    setSearchBrand([])
-                  }}
-                >
-                  <Ionicons
-                    style={{ marginRight: 5 }}
-                    name="stop-circle"
-                    size={10}
-                    color={colors.secondary}
-                  />
-                  <Text style={[styles.itemText]}>{p.name}</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+            queryBrand.length > 0 &&
+            [...searchBrand, { name: "Other", _id: Math.random() }].map(
+              (p, index) => (
+                <View key={p._id}>
+                  <TouchableOpacity
+                    style={styles.listItem}
+                    onPress={() => {
+                      if (p.name === "Other") {
+                        setShowOtherBrand(true)
+                      } else {
+                        handleOnChange(p.name, "brand")
+                      }
+                      setQueryBrand("")
+                    }}
+                  >
+                    <Ionicons
+                      style={{ marginRight: 5 }}
+                      name="stop-circle"
+                      size={10}
+                      color={colors.secondary}
+                    />
+                    <Text style={[styles.itemText]}>{p.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )
+            )}
           {validationError.brand && (
             <Text style={{ color: "red", fontSize: 12 }}>
               {validationError.brand}
             </Text>
           )}
+          {showOtherBrand ? (
+            <AddOtherBrands
+              handleOnChange={handleOnChange}
+              setShowOtherBrand={setShowOtherBrand}
+            />
+          ) : null}
+
           <View style={styles.infoRow}>
             <Text style={[styles.label, { color: colors.onBackground }]}>
               Color
