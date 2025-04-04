@@ -1,73 +1,83 @@
-import { useState } from "react";
-import { View, StyleSheet, Alert, ScrollView } from "react-native";
+import { useState } from "react"
+import { View, StyleSheet, Alert, ScrollView } from "react-native"
 import {
   Text,
   TextInput,
   Button,
   Appbar,
   ActivityIndicator,
-} from "react-native-paper";
-import { FundNavigationProp } from "../../types/navigation/stack";
-import useWallet from "../../hooks/useWallet";
-import useToastNotification from "../../hooks/useToastNotification";
-import PayWithFlutterwave from "flutterwave-react-native";
-import useAuth from "../../hooks/useAuth";
-import { generateTransactionRef } from "../../utils/common";
-import { API_KEY } from "../../utils/constants";
+  useTheme,
+} from "react-native-paper"
+import { FundNavigationProp } from "../../types/navigation/stack"
+import useWallet from "../../hooks/useWallet"
+import useToastNotification from "../../hooks/useToastNotification"
+import PayWithFlutterwave from "flutterwave-react-native"
+import useAuth from "../../hooks/useAuth"
+import { generateTransactionRef } from "../../utils/common"
+import { API_KEY } from "../../utils/constants"
 
 const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
-  const { fundWalletFlutter } = useWallet();
-  const { addNotification } = useToastNotification();
-  const { user } = useAuth();
-  const [amount, setAmount] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { fundWalletFlutter } = useWallet()
+  const { addNotification } = useToastNotification()
+  const { user } = useAuth()
+  const [amount, setAmount] = useState<string>("")
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { colors } = useTheme()
 
   const onApprove = async (result: any) => {
     if (amount === "" || isNaN(parseFloat(amount))) {
       addNotification({
         message: "Invalid Amount, Please enter a valid amount.",
         error: true,
-      });
-      return;
+      })
+      return
     }
-    await fundWalletFlutter({
+
+    console.log(result)
+    console.log(JSON.stringify(result, null, 2))
+    const res = await fundWalletFlutter({
       amount: parseInt(amount),
-      transactionId: result.referencce,
-      paymentProvider: "flutterwave",
-    });
+      transactionId: result.reference || result.transaction_id || result.tx_ref,
+      paymentProvider: "Flutterwave",
+    })
     addNotification({
-      message: `Success, Your wallet has been funded with ₦${amount}.`,
-      error: false,
-    });
-    navigation.navigate("Profile");
-  };
+      message: res.result,
+      error: res.error,
+    })
+    if (!res.error) navigation.navigate("Profile")
+  }
 
   const handleOnRedirect = async (result: { status: string }) => {
-    console.log(result);
+    console.log(result)
     try {
-      console.log(result);
+      console.log(result)
       if (result.status !== "successful" && result.status !== "completed") {
-        console.log("result", result.status !== "completed");
+        console.log("result", result.status !== "completed")
 
         addNotification({
           message: result.status,
           error: false,
-        });
-        return;
+        })
+        return
       }
-      await onApprove(result);
+      await onApprove(result)
     } catch (err) {
-      console.log("fund ", err);
+      console.log("fund ", err)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
+
+  const handleAbort = () => {
+    setIsLoading(false)
+  }
 
   return (
     <View style={styles.container}>
       <Appbar.Header mode="small" style={{ backgroundColor: colors.primary }}>
         <Appbar.BackAction
-          iconColor="black"
+          iconColor="white"
           onPress={() => navigation.goBack()}
         />
         <Appbar.Content titleStyle={{ color: "white" }} title="Fund Wallet" />
@@ -98,6 +108,7 @@ const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
         </View>
         <PayWithFlutterwave
           onRedirect={handleOnRedirect}
+          onAbort={handleAbort}
           options={{
             tx_ref: generateTransactionRef(10),
             authorization: API_KEY,
@@ -128,8 +139,8 @@ const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
               <Button
                 mode="contained"
                 onPress={() => {
-                  setIsLoading(true);
-                  props.onPress();
+                  setIsLoading(true)
+                  props.onPress()
                 }}
                 style={styles.fundButton}
               >
@@ -140,8 +151,8 @@ const Fund: React.FC<FundNavigationProp> = ({ navigation }) => {
         />
       </ScrollView>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -152,6 +163,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   fundButton: {},
-});
+})
 
-export default Fund;
+export default Fund

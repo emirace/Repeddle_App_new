@@ -69,6 +69,8 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
     try {
       const result = await fundWalletFlutterService(data)
 
+      await fetchWallet()
+
       return { error: false, result }
     } catch (error) {
       return { error: true, result: error as string }
@@ -78,6 +80,8 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
   const withdrawWalletFlutter = async (amount: number) => {
     try {
       const result = await withdrawWalletFlutterService(amount)
+
+      await fetchWallet()
 
       return { error: false, result }
     } catch (error) {
