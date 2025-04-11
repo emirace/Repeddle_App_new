@@ -55,6 +55,8 @@ export const fetchUserTransactionsService = async (params?: string) => {
       )
     }
 
+    console.log(resp)
+
     return resp
   } catch (error) {
     // Handle network errors or other exceptions

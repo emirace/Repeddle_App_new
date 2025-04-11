@@ -207,7 +207,10 @@ const RenderItem = ({ item, navigation, confirmDelete }: RenderItemProps) => {
           source={{ uri: baseURL + item.images[0] }}
         />
         <View style={styles.itemDetailsContainer}>
-          <Text style={styles.itemName} numberOfLines={1}>
+          <Text
+            style={[styles.itemName, { color: colors.onBackground }]}
+            numberOfLines={1}
+          >
             {item.name}
           </Text>
           <Text style={styles.itemDate}>
@@ -262,6 +265,9 @@ const RenderProductItem = ({
 
 const Footer = ({ loading }: { loading: boolean }) => {
   const { colors } = useTheme()
+
+  if (!loading) return null
+
   return (
     <View
       style={{
@@ -423,7 +429,6 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontFamily: "absential-sans-medium",
-    color: "#333",
   },
   itemDate: {
     fontSize: 12,

@@ -292,26 +292,29 @@ const IsSeller = ({
             </Pressable>
           )}
           {user?.role === "Admin" &&
-            daydiff(orderItem.deliveryTracking.currentStatus.timestamp, 3) <=
+            ((daydiff(orderItem.deliveryTracking.currentStatus.timestamp, 3) <=
               0 &&
-            !orderItem.isHold &&
-            deliveryNumber(orderItem.deliveryTracking.currentStatus.status) ===
-              4 && (
-              <Pressable
-                onPress={() => {
-                  paySeller(orderItem)
-                  deliverOrderHandler("Payment To Seller Initiated", orderItem)
+              deliveryNumber(
+                orderItem.deliveryTracking.currentStatus.status
+              ) === 4) ||
+              deliveryNumber(
+                orderItem.deliveryTracking.currentStatus.status
+              ) === 5) &&
+            !orderItem.isHold && (
+              <Button
+                onPress={() => paySeller(orderItem)}
+                mode="contained"
+                style={{
+                  backgroundColor: colors.secondary,
+                  borderRadius: 10,
+                  marginTop: 10,
                 }}
-                style={[
-                  styles.button,
-                  {
-                    backgroundColor: colors.secondary,
-                    marginTop: 5,
-                  },
-                ]}
+                textColor="white"
+                loading={updatingStatus}
+                disabled={updatingStatus}
               >
-                <Text style={styles.link}>Pay Seller</Text>
-              </Pressable>
+                Pay Seller
+              </Button>
             )}
         </View>
       </View>

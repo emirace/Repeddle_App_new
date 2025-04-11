@@ -83,8 +83,10 @@ const Transaction = ({ navigation }: Props) => {
         <>
           <FlatList
             data={transactions}
-            renderItem={({ item }) => <RenderItem item={item} />}
-            keyExtractor={(item) => item.toString()}
+            renderItem={({ item }) => (
+              <RenderItem navigation={navigation} item={item} />
+            )}
+            keyExtractor={(item) => item._id}
             style={styles.listContainer}
             contentContainerStyle={{ paddingBottom: 160 }}
             ListHeaderComponent={topView}
@@ -97,8 +99,13 @@ const Transaction = ({ navigation }: Props) => {
   )
 }
 
-const RenderItem = ({ item }: { item: ITransaction }) => {
-  const { navigation } = useNavigation<TransactionNavigationProp>()
+const RenderItem = ({
+  item,
+  navigation,
+}: {
+  item: ITransaction
+  navigation: TransactionNavigationProp["navigation"]
+}) => {
   const { colors } = useTheme()
 
   return (
@@ -108,7 +115,7 @@ const RenderItem = ({ item }: { item: ITransaction }) => {
         navigation.push("TransactionDetail", { transaction: item })
       }
     >
-      {item.type === "Deposit" ? (
+      {item.type === "debit" ? (
         <MaterialCommunityIcons
           name="arrow-up-bold-circle"
           size={30}
@@ -126,13 +133,23 @@ const RenderItem = ({ item }: { item: ITransaction }) => {
         <Text ellipsizeMode="tail" style={styles.detailHeader}>
           {item.description}
         </Text>
-        <Text>{moment(item.createdAt).format("hh:mm a - ddd MMM YYYY")}</Text>
+        <Text style={{ fontSize: 13 }}>
+          {moment(item.createdAt).format("hh:mm a - ddd MMM YYYY")}
+        </Text>
       </View>
       <View style={{ gap: 4 }}>
-        <Text style={styles.detailHeader}>
+        <Text
+          style={[
+            styles.detailHeader,
+            {
+              textAlign: "right",
+              color: item.type === "debit" ? "red" : "green",
+            },
+          ]}
+        >
           {currency(region())} {item.amount}
         </Text>
-        <Text>Status</Text>
+        <Text>{item.status}</Text>
       </View>
     </TouchableOpacity>
   )
@@ -151,12 +168,17 @@ const topView = () => {
             styles.searchInput,
             {
               color: colors.onBackground,
-              backgroundColor: colors.primaryContainer,
+              backgroundColor: colors.elevation.level2,
             },
           ]}
           placeholderTextColor={colors.onBackground}
         />
-        <Ionicons name="search" size={20} style={styles.searchIcon} />
+        <Ionicons
+          name="search"
+          color={colors.onBackground}
+          size={20}
+          style={styles.searchIcon}
+        />
       </View>
     </View>
   )
@@ -183,7 +205,7 @@ const styles = StyleSheet.create({
   },
   detailHeader: {
     fontSize: 16,
-    fontFamily: "absential-sans-bold",
+    fontFamily: "absential-sans-medium",
   },
   searchIcon: {
     position: "absolute",
