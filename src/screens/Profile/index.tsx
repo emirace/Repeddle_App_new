@@ -116,7 +116,7 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
             descriptionStyle={{ fontSize: 14 }}
             left={() => <List.Icon icon="bell-outline" />}
             right={() => <List.Icon icon="chevron-right" />}
-            // onPress={() => navigation.navigate('Appearance')}
+            onPress={() => navigation.push("Notification")}
           />
         </List.Section>
         <List.Section style={{ marginVertical: 5 }}>

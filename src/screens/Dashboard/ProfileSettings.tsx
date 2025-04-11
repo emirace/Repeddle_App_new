@@ -10,8 +10,8 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { PropsWithChildren, useState } from "react"
+} from "react-native";
+import React, { PropsWithChildren, useState } from "react";
 import {
   ActivityIndicator,
   Appbar,
@@ -41,7 +41,7 @@ import { baseURL } from "../../services/api";
 type Props = ProfileSettingsNavigationProp;
 
 const ProfileSettings = ({ navigation }: Props) => {
-  const { user, loading, updateUser } = useAuth();
+  const { user, loading, updateUser, error: userError } = useAuth();
   const { colors } = useTheme();
   const { addNotification } = useToastNotification();
 
@@ -127,12 +127,12 @@ const ProfileSettings = ({ navigation }: Props) => {
     }
 
     if (valid) {
-      handleAddressChange()
+      handleAddressChange();
     }
-  }
+  };
 
   const handleAddressChange = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     const res = await updateUser({
       address: {
         state: input.state,
@@ -140,22 +140,22 @@ const ProfileSettings = ({ navigation }: Props) => {
         apartment: input.apartment,
         zipcode: input.zipcode,
       },
-    })
+    });
     if (res) {
       addNotification({
         message: "Address Updated Successfully",
         error: false,
-      })
+      });
       // setShowAddress(false)
     } else {
       addNotification({
         message: userError || "Failed to verify address",
         error: true,
-      })
+      });
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const [isLoading, setIsLoading] = useState(false);
   const [newsletterStatus, setNewsletterStatus] = useState(input.newsletter);
@@ -309,31 +309,31 @@ const ProfileSettings = ({ navigation }: Props) => {
     }
 
     if (valid) {
-      handleAccount()
+      handleAccount();
     }
-  }
+  };
 
   const handleAccount = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     const res = await updateUser({
       accountName: input.accountName,
       accountNumber: input.accountNumber,
       bankName: input.bankName,
-    })
+    });
     if (res) {
       addNotification({
         message: "Account Updated Successfully",
         error: false,
-      })
+      });
       // setShowAccount(false)
     } else {
       addNotification({
         message: userError || "Failed to verify account",
         error: true,
-      })
+      });
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const submitHandler = async () => {
     setIsLoading(true);
@@ -367,56 +367,57 @@ const ProfileSettings = ({ navigation }: Props) => {
   };
 
   const handleNewsletter = async (val: boolean) => {
-    setRemovingLetter(true)
-    const resp = await updateUser({ allowNewsletter: val })
+    setRemovingLetter(true);
+    const resp = await updateUser({ allowNewsletter: val });
     if (resp) {
-      setNewsletterStatus(val)
-      setInput({ ...input, newsletter: val })
+      setNewsletterStatus(val);
+      setInput({ ...input, newsletter: val });
       addNotification({
         message: val
           ? "Subscribed to newsletter"
           : "Unsubscribed from newsletter",
-      })
+      });
     } else {
       addNotification({
         message: val
           ? "Failed to subscribe to newsletter"
           : "Failed to unsubscribe from newsletter",
         error: true,
-      })
+      });
     }
-  }
-<!--   const handleNewsletter = async () => {
-    setRemovingLetter(true);
-    if (newsletterStatus) {
-      if (!user?._id) return;
-      const resp = await deleteNewsletter(user._id);
-      if (resp.success) {
-        addNotification({
-          message: resp.message || "Unsubscribed from newsletter",
-        });
-        setNewsletterStatus(false);
-      } else {
-        addNotification({
-          message: newsletterError || "failed to unsubscribe from newsletter",
-          error: true,
-        });
-      }
-    } else {
-      const resp = await createNewsletter(user!.email);
-      if (resp) {
-        addNotification({ message: "Subscribed from newsletter" });
-        setNewsletterStatus(true);
-      } else {
-        addNotification({
-          message: newsletterError || "failed to subscribe to newsletter",
-          error: true,
-        });
-      }
-    }
+  };
 
-    setRemovingLetter(false);
-  }; -->
+  // const handleNewsletter = async () => {
+  //   setRemovingLetter(true);
+  //   if (newsletterStatus) {
+  //     if (!user?._id) return;
+  //     const resp = await deleteNewsletter(user._id);
+  //     if (resp.success) {
+  //       addNotification({
+  //         message: resp.message || "Unsubscribed from newsletter",
+  //       });
+  //       setNewsletterStatus(false);
+  //     } else {
+  //       addNotification({
+  //         message: newsletterError || "failed to unsubscribe from newsletter",
+  //         error: true,
+  //       });
+  //     }
+  //   } else {
+  //     const resp = await createNewsletter(user!.email);
+  //     if (resp) {
+  //       addNotification({ message: "Subscribed from newsletter" });
+  //       setNewsletterStatus(true);
+  //     } else {
+  //       addNotification({
+  //         message: newsletterError || "failed to subscribe to newsletter",
+  //         error: true,
+  //       });
+  //     }
+  //   }
+
+  //   setRemovingLetter(false);
+  // };
 
   return (
     <View style={styles.container}>
