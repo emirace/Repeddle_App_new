@@ -14,8 +14,8 @@ import useAuth from "../../hooks/useAuth"
 import { baseURL } from "../../services/api"
 
 const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { colors } = useTheme();
-  const { logout, user } = useAuth();
+  const { colors } = useTheme()
+  const { logout, user } = useAuth()
 
   return (
     <ScrollView
@@ -177,8 +177,8 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
               right={() => <List.Icon icon="chevron-right" />}
               descriptionStyle={{ fontSize: 14 }}
               onPress={() => {
-                logout();
-                navigation.replace("Auth");
+                logout()
+                navigation.replace("Auth")
               }}
               style={{ paddingVertical: 5 }}
             />
@@ -186,14 +186,14 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
         ) : null}
       </View>
     </ScrollView>
-  );
-};
+  )
+}
 
 const dashboardItems: {
-  name: string;
-  link: keyof RootStackParamList;
-  leftIcon: string;
-  description: string;
+  name: string
+  link: keyof RootStackParamList
+  leftIcon: string
+  description: string
 }[] = [
   {
     name: "My Profile",
@@ -237,7 +237,7 @@ const dashboardItems: {
     leftIcon: "cash",
     description: "View all your transactions",
   },
-];
+]
 
 const styles = StyleSheet.create({
   userInfo: {
@@ -253,6 +253,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "gray",
   },
-});
+})
 
-export default Profile;
+export default Profile

@@ -48,29 +48,43 @@ const TransactionDetail = ({ navigation, route }: Props) => {
           </View>
           <View style={styles.itemContainer}>
             <Text style={{ fontFamily: "chronicle-text-bold" }}>Reference</Text>
-            <Text>{transaction.type}</Text>
+            <Text style={{ textTransform: "capitalize", textAlign: "center" }}>
+              {transaction.type}
+            </Text>
           </View>
           <View style={styles.itemContainer}>
             <Text style={{ fontFamily: "chronicle-text-bold" }}>Amount</Text>
             <Text>
               {currency(region())} {transaction.amount}{" "}
               <Text style={{ color: colors.secondary }}>
-                (fee: {currency(region())}10 )
+                {transaction.type === "debit"
+                  ? ` (fee: ${currency(region())} 10 )`
+                  : null}
               </Text>
             </Text>
           </View>
           <View style={styles.itemContainer}>
             <Text style={{ fontFamily: "chronicle-text-bold" }}>Type</Text>
-            <Text>{transaction.type}</Text>
+            <Text style={{ textTransform: "capitalize", textAlign: "center" }}>
+              {transaction.type}
+            </Text>
           </View>
           <View style={styles.itemContainer}>
             <Text style={{ fontFamily: "chronicle-text-bold" }}>Purpose</Text>
-            <Text>{transaction.description}</Text>
+            <Text style={{ textTransform: "capitalize", textAlign: "center" }}>
+              {transaction.description}
+            </Text>
           </View>
           <View style={styles.itemContainer}>
             <Text style={{ fontFamily: "chronicle-text-bold" }}>Date</Text>
             <Text>
               {moment(transaction.createdAt).format("hh:mm a - ddd MMM YYYY")}
+            </Text>
+          </View>
+          <View style={styles.itemContainer}>
+            <Text style={{ fontFamily: "chronicle-text-bold" }}>Status</Text>
+            <Text style={{ textTransform: "capitalize", textAlign: "center" }}>
+              {transaction.status}
             </Text>
           </View>
         </View>

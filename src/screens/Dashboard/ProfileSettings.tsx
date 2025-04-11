@@ -45,12 +45,6 @@ const ProfileSettings = ({ navigation }: Props) => {
   const { colors } = useTheme();
   const { addNotification } = useToastNotification();
 
-  const {
-    createNewsletter,
-    deleteNewsletter,
-    error: newsletterError,
-  } = useNewsletter();
-
   const [username, setUsername] = useState("");
 
   const [image, setImage] = useState("");
@@ -386,38 +380,6 @@ const ProfileSettings = ({ navigation }: Props) => {
       });
     }
   };
-
-  // const handleNewsletter = async () => {
-  //   setRemovingLetter(true);
-  //   if (newsletterStatus) {
-  //     if (!user?._id) return;
-  //     const resp = await deleteNewsletter(user._id);
-  //     if (resp.success) {
-  //       addNotification({
-  //         message: resp.message || "Unsubscribed from newsletter",
-  //       });
-  //       setNewsletterStatus(false);
-  //     } else {
-  //       addNotification({
-  //         message: newsletterError || "failed to unsubscribe from newsletter",
-  //         error: true,
-  //       });
-  //     }
-  //   } else {
-  //     const resp = await createNewsletter(user!.email);
-  //     if (resp) {
-  //       addNotification({ message: "Subscribed from newsletter" });
-  //       setNewsletterStatus(true);
-  //     } else {
-  //       addNotification({
-  //         message: newsletterError || "failed to subscribe to newsletter",
-  //         error: true,
-  //       });
-  //     }
-  //   }
-
-  //   setRemovingLetter(false);
-  // };
 
   return (
     <View style={styles.container}>

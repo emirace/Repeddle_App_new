@@ -51,8 +51,8 @@ const IsUser = ({
   const { user } = useAuth()
   const { addNotification } = useToastNotification()
 
-  const [afterAction, setAfterAction] = useState(true)
-  const [showDelivery, setShowDelivery] = useState(true)
+  const [afterAction, setAfterAction] = useState(false)
+  const [showDelivery, setShowDelivery] = useState(false)
 
   const placeOrderOnHold = () => {
     addNotification({ message: "Order placed on Hold", error: true })
@@ -130,14 +130,19 @@ const IsUser = ({
                     backgroundColor: colors.background,
                     marginTop: 5,
                     borderWidth: 1,
-                    borderColor: colors.secondary,
+                    borderColor: colors.primary,
                   },
                 ]}
                 onPress={() =>
                   orderItem.isHold ? placeOrderOnHold() : setAfterAction(true)
                 }
               >
-                <Text style={[styles.link, { color: colors.secondary }]}>
+                <Text
+                  style={[
+                    styles.link,
+                    { color: colors.primary, paddingVertical: 10 },
+                  ]}
+                >
                   Confirm you have received your order
                 </Text>
               </Pressable>
@@ -188,7 +193,7 @@ const IsUser = ({
                         loading={updatingStatus}
                         disabled={updatingStatus}
                       >
-                        Confirm you have received order
+                        Confirm order
                       </Button>
                       <Button
                         style={[
@@ -341,17 +346,21 @@ const IsUser = ({
       </View>
 
       {user?.role === "Admin" &&
-        daydiff(orderItem.deliveryTracking.currentStatus.timestamp, 3) <= 0 &&
-        !orderItem.isHold &&
-        deliveryNumber(orderItem.deliveryTracking.currentStatus.status) ===
-          4 && (
+        ((daydiff(orderItem.deliveryTracking.currentStatus.timestamp, 3) <= 0 &&
+          deliveryNumber(orderItem.deliveryTracking.currentStatus.status) ===
+            4) ||
+          deliveryNumber(orderItem.deliveryTracking.currentStatus.status) ===
+            5) &&
+        !orderItem.isHold && (
           <Button
-            onPress={() => {
-              paySeller(orderItem)
-              deliverOrderHandler("Payment To Seller Initiated", orderItem)
-            }}
+            onPress={() => paySeller(orderItem)}
             mode="contained"
-            style={{ backgroundColor: colors.secondary, borderRadius: 10 }}
+            style={{
+              backgroundColor: colors.secondary,
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+            textColor="white"
             loading={updatingStatus}
             disabled={updatingStatus}
           >

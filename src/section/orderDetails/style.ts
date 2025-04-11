@@ -150,7 +150,7 @@ export const orderDetailsStyle = StyleSheet.create({
   button: {
     backgroundColor: "grey",
     borderRadius: 5,
-    height: 30,
+    minHeight: 30,
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
