@@ -1,13 +1,12 @@
-import { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { Text, Button, IconButton, useTheme } from "react-native-paper";
-import useAuth from "../../hooks/useAuth";
-import { ProfileSettingsNavigationProp } from "../../types/navigation/stack";
+import { useState } from "react"
+import { View, StyleSheet } from "react-native"
+import { Text, Button, IconButton, useTheme } from "react-native-paper"
+import useWallet from "../../hooks/useWallet"
 
 const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { colors } = useTheme();
-  const [show, setShow] = useState(true);
-  const { user } = useAuth();
+  const { colors } = useTheme()
+  const [show, setShow] = useState(true)
+  const { wallet } = useWallet()
 
   return (
     <View
@@ -15,7 +14,10 @@ const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
     >
       <View style={styles.balanceContainer}>
         <Text style={styles.balanceAmount}>
-          {show ? "₦ " + (user?.balance || 0) : "*****"}
+          {show
+            ? `${wallet.currency === "NGN" ? "₦" : "Z"} ` +
+              (wallet.balance || 0)
+            : "*****"}
         </Text>
         <View style={styles.balanceTextContainer}>
           <IconButton icon="wallet" iconColor={colors.primary} size={20} />
@@ -54,8 +56,8 @@ const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
         Transaction History
       </Button>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -93,6 +95,6 @@ const styles = StyleSheet.create({
   addButton: {
     flex: 1,
   },
-});
+})
 
-export default Balance;
+export default Balance

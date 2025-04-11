@@ -11,34 +11,39 @@ import {
 import { WithdrawNavigationProp } from "../../types/navigation/stack"
 import useWallet from "../../hooks/useWallet"
 import useToastNotification from "../../hooks/useToastNotification"
+import useAuth from "../../hooks/useAuth"
 
 const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
   const [amount, setAmount] = React.useState("")
+  const [isLoading, setIsLoading] = React.useState(false)
   const { withdrawWalletFlutter, loading, fetchWallet } = useWallet()
   const { addNotification } = useToastNotification()
   const { colors } = useTheme()
 
-  // Example user account information
-  const accountInfo = {
-    accountNumber: "1234567890",
-    bankName: "Sample Bank",
-    accountName: "John Doe",
-  }
+  const { user } = useAuth()
 
   const handleWithdraw = async () => {
     if (amount === "" || isNaN(parseFloat(amount))) {
-      Alert.alert("Invalid Amount", "Please enter a valid amount.")
+      addNotification({ message: "Invalid Amount", error: true })
       return
     }
+
+    if (!user?.accountName || !user.accountNumber || !user.bankName) {
+      addNotification({ message: "Add an to be a to withdraw" })
+    }
+
+    setIsLoading(true)
     const { error, result } = await withdrawWalletFlutter(parseInt(amount))
 
     if (!error) {
       addNotification({ message: result, error: true })
       await fetchWallet()
       setAmount("")
+      navigation.navigate("Profile")
     } else {
       addNotification({ message: result, error: true })
     }
+    setIsLoading(false)
   }
 
   return (
@@ -69,22 +74,24 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
       </Appbar.Header>
       <View style={{ flex: 1, padding: 20 }}>
         <View style={{ flex: 1 }}>
-          <Card style={styles.card} mode="contained">
-            <Card.Title
-              title="Account Information"
-              titleStyle={{ textAlign: "center" }}
-            />
-            <Card.Content style={{ alignItems: "center" }}>
-              <Text style={styles.accountTo}>To {accountInfo.accountName}</Text>
-              <Text style={styles.accountText}>
-                {accountInfo.bankName}
+          {user?.accountName ? (
+            <Card style={styles.card} mode="contained">
+              <Card.Title
+                title="Account Information"
+                titleStyle={{ textAlign: "center" }}
+              />
+              <Card.Content style={{ alignItems: "center" }}>
+                <Text style={styles.accountTo}>To {user?.accountName}</Text>
                 <Text style={styles.accountText}>
-                  {" "}
-                  ({accountInfo.accountNumber})
+                  {user?.bankName}
+                  <Text style={styles.accountText}>
+                    {" "}
+                    ({user?.accountNumber})
+                  </Text>
                 </Text>
-              </Text>
-            </Card.Content>
-          </Card>
+              </Card.Content>
+            </Card>
+          ) : null}
           <TextInput
             label="Enter Amount"
             value={amount}
@@ -98,6 +105,8 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
           mode="contained"
           onPress={handleWithdraw}
           style={styles.withdrawButton}
+          disabled={isLoading}
+          loading={isLoading}
         >
           Withdraw
         </Button>
