@@ -16,9 +16,7 @@ type ContextType = {
   returns: IReturn[]
   loading: boolean
   error: string
-  fetchSoldReturns: (
-    search?: string
-  ) => Promise<
+  fetchSoldReturns: (search?: string) => Promise<
     | string
     | {
         returns: IReturn[]
@@ -27,9 +25,7 @@ type ContextType = {
         totalPages: number
       }
   >
-  fetchPurchaseReturns: (
-    search?: string
-  ) => Promise<
+  fetchPurchaseReturns: (search?: string) => Promise<
     | string
     | {
         returns: IReturn[]
@@ -38,9 +34,7 @@ type ContextType = {
         totalPages: number
       }
   >
-  fetchAdminReturns: (
-    search?: string
-  ) => Promise<
+  fetchAdminReturns: (search?: string) => Promise<
     | string
     | {
         returns: IReturn[]
@@ -55,15 +49,15 @@ type ContextType = {
     total: number
   }
   createReturns: (body: CreateReturn) => Promise<IReturn | null>
-  fetchReturnById: (id: string) => Promise<IReturn | null>
+  fetchReturnById: (id: string) => Promise<IReturn | string>
   updateReturnStatusAdmin: (
     id: string,
     body: { status: string; adminReason: string }
-  ) => Promise<IReturn | null>
+  ) => Promise<IReturn | string>
   updateReturnStatus: (
     id: string,
     body: { status: string; trackingNumber?: string }
-  ) => Promise<IReturn | null>
+  ) => Promise<IReturn | string>
   updateReturnAddress: (
     id: string,
     body: { method: string; fee: number }
@@ -199,7 +193,7 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
       return result
     } catch (error) {
       handleError(error)
-      return null
+      return error as string
     }
   }
 
@@ -213,7 +207,7 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
       return result
     } catch (error) {
       handleError(error)
-      return null
+      return error as string
     }
   }
 
@@ -227,7 +221,7 @@ export const ReturnProvider = ({ children }: PropsWithChildren) => {
       return result
     } catch (error) {
       handleError(error)
-      return null
+      return error as string
     }
   }
 

@@ -42,7 +42,7 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
 
   const [priceRange, setPriceRange] = useState([
     +(filters.minPrice ?? 0),
-    +(filters.maxPrice ?? 500000),
+    +(filters.maxPrice ?? 300000),
   ])
 
   useEffect(() => {
@@ -92,7 +92,7 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
             style={styles.titleCont}
             onPress={() => toggleCollapse("category", !collapse.category)}
           >
-            <Text style={styles.title}>Categories</Text>
+            <Text style={styles.title}>Main Categories</Text>
             <Ionicons
               name={
                 collapse.category
@@ -106,7 +106,9 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
           <View
             style={[styles.list, collapse.category ? {} : styles.inactivate]}
           >
-            <TouchableOpacity onPress={() => handleFilter("category", "all")}>
+            <TouchableOpacity
+              onPress={() => handleFilter("mainCategory", "all")}
+            >
               <View style={styles.listItem}>
                 <Ionicons
                   style={{ marginRight: 5 }}
@@ -117,7 +119,7 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
                 <Text
                   style={[
                     styles.itemText,
-                    !filters.category || "all" === filters.category
+                    !filters.mainCategory || "all" === filters.mainCategory
                       ? styles.selected
                       : {},
                   ]}
@@ -130,7 +132,7 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
               categories.map((c) => (
                 <TouchableOpacity
                   key={c._id}
-                  onPress={() => handleFilter("category", c.name)}
+                  onPress={() => handleFilter("mainCategory", c.name)}
                 >
                   <View style={styles.listItem}>
                     <Ionicons
@@ -142,7 +144,7 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
                     <Text
                       style={[
                         styles.itemText,
-                        c.name === filters.category ? styles.selected : {},
+                        c.name === filters.mainCategory ? styles.selected : {},
                       ]}
                     >
                       {c.name}
@@ -172,7 +174,12 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
             <TextInput
               placeholder="Search brands"
               placeholderTextColor="grey"
-              value={queryBrand ?? filters.brand?.toString()}
+              value={
+                queryBrand ||
+                `${filters.brand?.charAt(0).toUpperCase() || ""}${
+                  filters.brand?.slice(1) || ""
+                }`
+              }
               onChangeText={(text) => {
                 setFilters((prev) => {
                   delete prev.brand
@@ -211,7 +218,8 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
                     <TouchableOpacity
                       onPress={() => {
                         handleFilter("brand", p.name)
-                        setQueryBrand(p.name)
+                        // setQueryBrand(p.name)
+                        setQueryBrand("")
                         Keyboard.dismiss()
                       }}
                       style={styles.listItem}
@@ -276,7 +284,7 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
               <MultiSlider
                 values={priceRange}
                 min={0}
-                max={100000}
+                max={300000}
                 step={100}
                 // sliderLength={200}
                 onValuesChangeFinish={handleAfterPriceChange}
@@ -934,12 +942,15 @@ const styles = StyleSheet.create({
   textInput: {
     borderWidth: 1,
     borderRadius: 5,
-    height: 35,
+    // height: 35,
     padding: 10,
     fontSize: 15,
     borderColor: lightTheme.colors.secondary,
     marginVertical: 5,
   },
   rating: { flexDirection: "row", marginHorizontal: 5, marginVertical: 5 },
-  selected: { fontFamily: "chronicle-text-bold", color: lightTheme.colors.primary },
+  selected: {
+    fontFamily: "chronicle-text-bold",
+    color: lightTheme.colors.primary,
+  },
 })

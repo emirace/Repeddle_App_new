@@ -2,7 +2,6 @@ import {
   Image,
   Pressable,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native"
@@ -14,6 +13,7 @@ import {
   Dialog,
   IconButton,
   Portal,
+  Text,
   useTheme,
 } from "react-native-paper"
 import useCart from "../hooks/useCart"
@@ -74,6 +74,7 @@ const WishlistItem = ({ item, navigation, removeWish }: Props) => {
 
     if (!selectedSize && item.sizes.length > 0) {
       addNotification({ message: "Select Size", error: true })
+      setAddingToCart(false)
       if (!showSize) setShowSize(true)
       return
     }
@@ -101,6 +102,7 @@ const WishlistItem = ({ item, navigation, removeWish }: Props) => {
     })
 
     setAddingToCart(false)
+    setShowSize(false)
   }
 
   const onRemoveFromWish = async () => {

@@ -66,14 +66,14 @@ const VideoPickerComponent = ({ setShowVideoModal }: Props) => {
       // TODO: check
       if (startValue !== sliderValues[0]) {
         setSliderValues([startValue, startValue + maxDistance])
-        multiSliderRef.current.state.positionTwo =
-          multiSliderRef.current.state.positionOne + maxDistance
+        // multiSliderRef.current.state.positionTwo =
+        //   multiSliderRef.current.state.positionOne + maxDistance
       }
 
       if (endValue !== sliderValues[1]) {
         setSliderValues([endValue - maxDistance, endValue])
-        multiSliderRef.current.state.positionOne =
-          multiSliderRef.current.state.positionTwo - maxDistance
+        // multiSliderRef.current.state.positionOne =
+        //   multiSliderRef.current.state.positionTwo - maxDistance
       }
     } else {
       setSliderValues([startValue, endValue])

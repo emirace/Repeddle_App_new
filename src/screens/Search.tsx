@@ -89,7 +89,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
 
     const related = await fetchProducts()
     if (typeof related !== "string") {
-      console.log(products)
+      // console.log(products)
       setProducts(related)
       setHasResult(false)
     } else {
@@ -225,6 +225,7 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
           }}
           backdropComponent={(props) => <CustomBackdrop {...props} />}
           style={styles.bottomStyle}
+          enableDynamicSizing={false}
         >
           <BottomSheetScrollView
             showsVerticalScrollIndicator={false}

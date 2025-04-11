@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { View, StyleSheet } from "react-native"
 import { Text, Button, IconButton, useTheme } from "react-native-paper"
 import useWallet from "../../hooks/useWallet"
@@ -6,7 +6,13 @@ import useWallet from "../../hooks/useWallet"
 const Balance: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { colors } = useTheme()
   const [show, setShow] = useState(true)
-  const { wallet } = useWallet()
+  const { wallet, fetchWallet } = useWallet()
+
+  console.log(wallet)
+
+  useEffect(() => {
+    fetchWallet()
+  }, [])
 
   return (
     <View

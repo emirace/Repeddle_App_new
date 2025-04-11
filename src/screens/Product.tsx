@@ -286,7 +286,7 @@ const Product = ({ navigation, route }: Props) => {
         type: "Chat",
       })
 
-      navigation.push("Message", { id: convo._id })
+      navigation.push("Chat", { conversationId: convo._id })
     } catch (error) {
       addNotification({
         message: messageError || (error as string),
@@ -522,7 +522,7 @@ const Product = ({ navigation, route }: Props) => {
                 <Text style={{ padding: 2 }}>{product.brand}</Text>
                 <Text style={{ padding: 2 }}>{product.mainCategory}</Text>
                 <Text style={{ padding: 2 }}>{product.category}</Text>
-                <Text style={{ padding: 2 }}>{product.color}</Text>
+                <Text style={{ padding: 2 }}>{product.color?.join(", ")}</Text>
                 <Text style={{ padding: 2 }}>{product.countInStock}</Text>
               </View>
             </View>

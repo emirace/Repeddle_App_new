@@ -36,6 +36,7 @@ const Return = ({ navigation }: Props) => {
         />
         <Appbar.Content title="My Returns" titleStyle={{ color: "white" }} />
       </Appbar.Header>
+      {/* @ts-ignore  */}
       <TopNavigation tabs={tabs} />
     </View>
   )

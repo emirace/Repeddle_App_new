@@ -63,6 +63,7 @@ const RenderItem = ({
   navigation: ReturnFormNavigationProp["navigation"]
 }) => {
   console.log(item.productId)
+  const { colors } = useTheme()
 
   return (
     <TouchableOpacity
@@ -78,7 +79,10 @@ const RenderItem = ({
         <View style={{ width: 50, height: 50, marginRight: 20 }} />
       )}
       <View style={styles.itemDetailsContainer}>
-        <Text style={styles.itemName} numberOfLines={1}>
+        <Text
+          style={[styles.itemName, { color: colors.onBackground }]}
+          numberOfLines={1}
+        >
           {item.productId.name}
         </Text>
         <Text style={styles.itemDate}>
@@ -111,7 +115,12 @@ const topView = () => {
           ]}
           placeholderTextColor={colors.onBackground}
         />
-        <Ionicons name="search" size={20} style={styles.searchIcon} />
+        <Ionicons
+          color={colors.onBackground}
+          name="search"
+          size={20}
+          style={styles.searchIcon}
+        />
       </View>
     </View>
   )

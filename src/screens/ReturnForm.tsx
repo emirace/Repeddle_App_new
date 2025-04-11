@@ -50,7 +50,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
         participantId: sellerId,
         type: "Chat",
       })
-      navigation.push("Message", { id: convo._id })
+      navigation.push("Chat", { conversationId: convo._id })
     } catch (error) {
       addNotification({
         message: messageError || (error as string),

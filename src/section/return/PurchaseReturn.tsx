@@ -1,10 +1,8 @@
 import { StyleSheet, View } from "react-native"
 import React, { useEffect, useState } from "react"
-import { returns } from "../../utils/data"
 import ReturnComp from "./ReturnComp"
 import useReturn from "../../hooks/useReturn"
 import { IReturn } from "../../types/order"
-import { ReturnFormNavigationProp } from "../../types/navigation/stack"
 
 type Props = {
   navigation: any
