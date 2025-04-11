@@ -1,17 +1,91 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/navigation/stack";
 import MainBottomNav from "./bottom";
-import Appearance from "../screens/Profile/Appearance";
 import Sell from "../screens/Sell";
+import Search from "../screens/Search";
+import Product from "../screens/Product";
+import Chat from "../screens/chat/Chat";
+import ProfileSettings from "../screens/Dashboard/ProfileSettings";
+import ProductList from "../screens/Dashboard/ProductList";
+import OrderList from "../screens/Dashboard/OrderList";
+import EditProduct from "../screens/Dashboard/EditProduct";
+import OrderDetails from "../screens/Dashboard/OrderDetails";
+import BuyersProtection from "../screens/BuyersProtection";
+import SizeChart from "../screens/SizeChart";
+import Cart from "../screens/Cart";
+import Checkout from "../screens/Checkout";
+import PaymentMethod from "../screens/PaymentMethod";
+import SellerReview from "../screens/SellerReview";
+import Wishlist from "../screens/Dashboard/Wishlist";
+import ReturnDetail from "../screens/Dashboard/ReturnDetail";
+import ReturnForm from "../screens/ReturnForm";
+import Return from "../screens/Dashboard/Return";
+import Transaction from "../screens/Dashboard/Transaction";
+import TransactionDetail from "../screens/Dashboard/TransactionDetail";
+import Wallet from "../screens/wallet/Fund";
+import Fund from "../screens/wallet/Fund";
+import Withdraw from "../screens/wallet/Withdraw";
+import Auth from "../screens/Auth";
+import MyAccount from "../screens/profile/MyAccount";
+import Appearance from "../screens/profile/Appearance";
+import Login from "../screens/Auth/Login";
+import SignUp from "../screens/Auth/Signup";
+import Step from "../screens/Auth/Signup/step";
+import ForgetPassword from "../screens/Auth/ForgetPassword";
+import Category from "../screens/Category";
+import SubCategories from "../screens/Category/SubCategories";
+import Brand from "../screens/Brand";
+import Earnings from "../screens/Dashboard/Earnings";
+import Profile from "../screens/profile";
+import MobileNotification from "../screens/Notification";
+import Support from "../screens/profile/Support";
+import { useMemo } from "react";
+import * as SecureStore from "expo-secure-store";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function MainStackNav() {
+  const token = useMemo(() => SecureStore.getItem("authToken"), []);
   return (
-    <Stack.Navigator initialRouteName={"Main"}>
+    <Stack.Navigator initialRouteName={!token ? "Auth" : "Main"}>
       <Stack.Screen
         name="Main"
         component={MainBottomNav}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Auth"
+        component={Auth}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Step"
+        component={Step}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ForgetPassword"
+        component={ForgetPassword}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Search"
+        component={Search}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Product"
+        component={Product}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -22,6 +96,153 @@ function MainStackNav() {
       <Stack.Screen
         name="Sell"
         component={Sell}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Chat"
+        component={Chat}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Fund"
+        component={Fund}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Withdraw"
+        component={Withdraw}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProfileSettings"
+        component={ProfileSettings}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProductList"
+        component={ProductList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OrderList"
+        component={OrderList}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="EditProduct"
+        component={EditProduct}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="OrderDetails"
+        component={OrderDetails}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="MyAccount"
+        component={MyAccount}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BuyersProtection"
+        component={BuyersProtection}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SizeChart"
+        component={SizeChart}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Cart"
+        component={Cart}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Checkout"
+        component={Checkout}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaymentMethod"
+        component={PaymentMethod}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SellerReview"
+        component={SellerReview}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Wishlist"
+        component={Wishlist}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ReturnDetail"
+        component={ReturnDetail}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ReturnForm"
+        component={ReturnForm}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Return"
+        component={Return}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Transaction"
+        component={Transaction}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="TransactionDetail"
+        component={TransactionDetail}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Category"
+        component={Category}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="SubCategories"
+        component={SubCategories}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Brand"
+        component={Brand}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="Earnings"
+        component={Earnings}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Notification"
+        component={MobileNotification}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Support"
+        component={Support}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

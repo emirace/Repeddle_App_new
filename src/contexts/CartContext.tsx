@@ -5,12 +5,15 @@ import * as SecureStore from "expo-secure-store";
 type Props = {
   children: ReactNode;
 };
+
+export type PaymentType = "Card" | "Wallet";
+
 // Define the types for items in the cart
 export type CartItem = IProduct & {
   quantity: number;
   selectedSize?: string;
   selectedColor?: string;
-  deliverySelect: { [key: string]: string };
+  deliverySelect?: { [key: string]: string | number };
 };
 
 // Define the CartContextData
@@ -18,6 +21,8 @@ type CartContextData = {
   cart: CartItem[];
   subtotal: number;
   total: number;
+  paymentMethod: PaymentType;
+  changePaymentMethod: (method: PaymentType) => void;
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
@@ -31,9 +36,15 @@ export const CartContext = createContext<CartContextData | undefined>(
 // CartProvider component
 export const CartProvider: React.FC<Props> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentType>("Card");
 
   const saveCartToLocalStorage = async (cartData: CartItem[]) => {
     await SecureStore.setItemAsync("cart", JSON.stringify(cartData));
+  };
+
+  const changePaymentMethod = async (method: PaymentType) => {
+    setPaymentMethod(method);
+    await SecureStore.setItemAsync("paymentMethod", JSON.stringify(method));
   };
 
   //   function mergeCarts(localCart: CartItem[], remoteCart: CartItem[]): CartItem[] {
@@ -54,6 +65,11 @@ export const CartProvider: React.FC<Props> = ({ children }) => {
       const savedCart = await SecureStore.getItemAsync("cart");
       if (savedCart) {
         setCart(JSON.parse(savedCart));
+      }
+
+      const savedMethod = await SecureStore.getItemAsync("paymentMethod");
+      if (savedMethod) {
+        setPaymentMethod(JSON.parse(savedMethod));
       }
     };
     getSavedCart();
@@ -95,14 +111,25 @@ export const CartProvider: React.FC<Props> = ({ children }) => {
     });
   };
 
-  const clearCart = () => {
+  const clearCart = async () => {
     setCart([]);
-    localStorage.removeItem("cart");
+    await SecureStore.deleteItemAsync("cart");
+    await SecureStore.deleteItemAsync("paymentMethod");
+    setPaymentMethod("Card");
   };
 
   return (
     <CartContext.Provider
-      value={{ cart, subtotal, total, addToCart, removeFromCart, clearCart }}
+      value={{
+        cart,
+        subtotal,
+        total,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        paymentMethod,
+        changePaymentMethod,
+      }}
     >
       {children}
     </CartContext.Provider>
