@@ -19,6 +19,7 @@ export type FilterOptions = {
   deal?: string
   maxPrice?: string
   minPrice?: string
+  mainCategory?: string
 }
 
 export type SearchOptionsKey = keyof SearchOptions

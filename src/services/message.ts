@@ -5,9 +5,11 @@ import {
   MessageData,
   ReplyData,
   ConversationData,
-} from "../types/message";
-import { getBackendErrorMessage } from "../utils/error";
-import api from "./api";
+  MessageStart,
+  MessageStartResponse,
+} from "../types/message"
+import { getBackendErrorMessage } from "../utils/error"
+import api from "./api"
 
 export const sendMessageService = async (
   messageData: MessageData
@@ -16,13 +18,13 @@ export const sendMessageService = async (
     const res: { message: IMessage } = await api.post(
       `/messages/send`,
       messageData
-    );
-    return res.message;
+    )
+    return res.message
   } catch (error) {
-    console.log("Error sending message:", getBackendErrorMessage(error));
-    throw getBackendErrorMessage(error);
+    console.log("Error sending message:", getBackendErrorMessage(error))
+    throw getBackendErrorMessage(error)
   }
-};
+}
 
 export const getMessagesService = async (
   conversationId: string
@@ -30,13 +32,28 @@ export const getMessagesService = async (
   try {
     const response: { messages: IMessage[] } = await api.get(
       `/messages/${conversationId}`
-    );
-    return response.messages;
+    )
+    return response.messages
   } catch (error) {
-    console.log("Error getting message:", getBackendErrorMessage(error));
-    throw getBackendErrorMessage(error);
+    console.log("Error getting message:", getBackendErrorMessage(error))
+    throw getBackendErrorMessage(error)
   }
-};
+}
+
+export const createMessageService = async (
+  messageData: MessageStart
+): Promise<MessageStartResponse> => {
+  try {
+    const res: { conversation: MessageStartResponse } = await api.post(
+      `/messages/conversations/start`,
+      messageData
+    )
+    return res.conversation
+  } catch (error) {
+    console.log("Error sending message:", getBackendErrorMessage(error))
+    throw getBackendErrorMessage(error)
+  }
+}
 
 export const forwardMessageService = async (
   message: ForwardData
@@ -45,13 +62,13 @@ export const forwardMessageService = async (
     const res: { message: IMessage } = await api.post(
       `/messages/forward`,
       message
-    );
-    return res.message;
+    )
+    return res.message
   } catch (error) {
-    console.log("Error forwarding message:", getBackendErrorMessage(error));
-    throw getBackendErrorMessage(error);
+    console.log("Error forwarding message:", getBackendErrorMessage(error))
+    throw getBackendErrorMessage(error)
   }
-};
+}
 
 export const replyToMessageService = async (
   message: ReplyData
@@ -60,13 +77,13 @@ export const replyToMessageService = async (
     const res: { message: IMessage } = await api.post(
       `/messages/reply`,
       message
-    );
-    return res.message;
+    )
+    return res.message
   } catch (error) {
-    console.log("Error replying message:", getBackendErrorMessage(error));
-    throw getBackendErrorMessage(error);
+    console.log("Error replying message:", getBackendErrorMessage(error))
+    throw getBackendErrorMessage(error)
   }
-};
+}
 
 export const getConversationsService = async (
   type: string
@@ -74,13 +91,13 @@ export const getConversationsService = async (
   try {
     const response: { conversations: IConversation[] } = await api.get(
       `/messages/conversations/${type}`
-    );
-    return response.conversations;
+    )
+    return response.conversations
   } catch (error) {
-    console.log("Error fetching conversation:", getBackendErrorMessage(error));
-    throw getBackendErrorMessage(error);
+    console.log("Error fetching conversation:", getBackendErrorMessage(error))
+    throw getBackendErrorMessage(error)
   }
-};
+}
 
 export const startConversationService = async (
   conversationData: ConversationData
@@ -89,10 +106,10 @@ export const startConversationService = async (
     const res: { conversation: IConversation } = await api.post(
       `/messages/conversation`,
       conversationData
-    );
-    return res.conversation;
+    )
+    return res.conversation
   } catch (error) {
-    console.log("Error starting conversation:", getBackendErrorMessage(error));
-    throw getBackendErrorMessage(error);
+    console.log("Error starting conversation:", getBackendErrorMessage(error))
+    throw getBackendErrorMessage(error)
   }
-};
+}

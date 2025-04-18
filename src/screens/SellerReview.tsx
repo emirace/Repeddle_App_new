@@ -141,7 +141,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
           />
         </View>
         <Text style={styles.reviewText}>{currentReview.comment}</Text>
-        {currentReview?.sellerReply && (
+        {currentReview?.user && (
           <View
             style={[
               styles.sellerReplyContainer,
@@ -152,24 +152,24 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
               style={styles.sellerContainer}
               onPress={() =>
                 navigation.push("MyAccount", {
-                  username: currentReview.sellerId._id,
+                  username: currentReview.user._id,
                 })
               }
             >
               <Image
-                source={{ uri: currentReview?.sellerId?.image }}
+                source={{ uri: currentReview?.user?.image }}
                 style={styles.sellerImage}
               />
               <Text style={[styles.sellerNanme, { color: colors.secondary }]}>
-                {currentReview.sellerId.username}
+                {currentReview.user.username}
               </Text>
             </Pressable>
             <Text style={[styles.sellerReplyText]}>
-              {currentReview.sellerReply}
+              {currentReview.comment}
             </Text>
           </View>
         )}
-        {!replyVisible && !currentReview.sellerReply && (
+        {!replyVisible && !currentReview.comment && (
           <TouchableOpacity
             style={[styles.replyButton, { backgroundColor: colors.primary }]}
             onPress={handleReply}
