@@ -13,7 +13,11 @@ const Condition = ({ setShowCondition }: Props) => {
     <View style={{ flex: 1 }}>
       <View style={[styles.header, { backgroundColor: colors.primary }]}>
         <TouchableOpacity onPress={() => setShowCondition(false)}>
-          <IconButton icon="chevron-back" />
+          <IconButton
+            icon="keyboard-backspace"
+            onPress={() => setShowCondition(false)}
+            iconColor="white"
+          />
         </TouchableOpacity>
         <Text style={styles.title}>Condition</Text>
         <View style={{ height: 40, width: 40 }} />
@@ -98,7 +102,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
-    fontFamily: "absential-sans-bold",
+    fontFamily: "absential-sans-medium",
     fontSize: 24,
     color: "white",
     textTransform: "capitalize",

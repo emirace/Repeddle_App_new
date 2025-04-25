@@ -34,7 +34,8 @@ export type Notification = {
   message: string;
   read: boolean;
   link: string;
-  user: IUser;
+  image?: string
+  user: string;
   _id: string;
   createdAt: string;
   updatedAt: string;

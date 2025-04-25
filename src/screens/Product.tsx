@@ -45,7 +45,7 @@ import ProductReview from "../components/ProductReview"
 import CommentSection from "../components/CommentSection"
 import SizeSelection from "../components/SizeSelection"
 import useStore from "../hooks/useStore"
-import { baseURL } from "../services/api"
+import { baseURL, frontendURL } from "../services/api"
 import { Asset } from "expo-asset"
 import * as Sharing from "expo-sharing"
 import Loader from "../components/ui/Loader"
@@ -234,7 +234,13 @@ const Product = ({ navigation, route }: Props) => {
     if (!product) return
 
     try {
-      Share.share({ message: product.description })
+      Share.share({
+        message:
+          `See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items!\n\n` +
+          `Repeddle: ${frontendURL}product/${product.slug}`,
+        title: "Repeddle",
+        url: `${frontendURL}product/${product.slug}`,
+      })
     } catch (error) {}
   }
 
@@ -958,13 +964,13 @@ const Product = ({ navigation, route }: Props) => {
               }
               icon={
                 product.sold || !(product.countInStock > 0)
-                  ? "cart"
-                  : "alert-circle-outline"
+                  ? "cart-off"
+                  : "cart-outline"
               }
               disabled={product.sold || !(product.countInStock > 0) || adding}
               mode="contained"
               style={{ paddingVertical: 8, borderRadius: 5 }}
-              labelStyle={{ fontSize: 16 }}
+              labelStyle={{ fontSize: 16, color: "white" }}
               loading={adding}
             />
           </View>

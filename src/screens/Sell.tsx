@@ -560,14 +560,14 @@ const Sell = ({ navigation }: any) => {
                     subCategories.map(
                       ({ name, items }) =>
                         name === input.category &&
-                        items.map((item, index) => (
+                        items.map(({ name }, index) => (
                           <Picker.Item
                             style={{
                               backgroundColor: colors.elevation.level2,
                               color: colors.onBackground,
                             }}
-                            // label={item}
-                            value={item}
+                            label={name}
+                            value={name}
                             key={index}
                           />
                         ))
