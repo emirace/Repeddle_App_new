@@ -5,7 +5,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import React, { useState } from "react"
+import * as Location from "expo-location"
+import { Picker } from "@react-native-picker/picker"
+import React, { useEffect, useState } from "react"
 import MyButton from "./MyButton"
 import { Text, useTheme } from "react-native-paper"
 import { FontAwesome5, Ionicons } from "@expo/vector-icons"
@@ -17,8 +19,10 @@ import {
   postnetOption,
   pudoOption,
 } from "../utils/constants"
-import { DeliveryMeta, IDeliveryOption } from "../types/product"
+import { DeliveryMeta, IDeliveryOption, Stations } from "../types/product"
 import Tooltip from "./Tooltip"
+import { fetchStations } from "../services/others"
+import Input from "./Input"
 
 type Props = {
   modalVisible: boolean
@@ -62,6 +66,8 @@ const AddDeliveryOption = ({
   modalVisible,
   pudo,
   setPudo,
+  gig,
+  setGig,
 }: Props) => {
   const { colors } = useTheme()
 
@@ -110,16 +116,17 @@ const AddDeliveryOption = ({
     const { name, value } = e
     const exist = deliveryOption.filter((x) => x.name === name)
     if (e.gig) {
+      if (!location) return
       // TODO: location
-      //   if (location.error) {
-      //     return
-      //   } else {
-      //     setMeta({
-      //       ...meta,
-      //       lat: location.coordinates.lat,
-      //       lng: location.coordinates.lng,
-      //     })
-      //   }
+      if (errorMsg) {
+        return
+      } else {
+        setMeta({
+          ...meta,
+          lat: location.latitude,
+          lng: location.longitude,
+        })
+      }
     }
     const intValue = typeof value === "string" ? parseInt(value) : value
 
@@ -131,10 +138,45 @@ const AddDeliveryOption = ({
     }
   }
 
+  const [location, setLocation] = useState<Location.LocationObjectCoords>()
+  const [errorMsg, setErrorMsg] = useState<string>()
+
+  const [stations, setStations] = useState<Stations[]>([])
+  const [loadingStations, setLoadingStations] = useState(false)
+
+  useEffect(() => {
+    ;(async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied")
+        return
+      }
+
+      const loc = await Location.getCurrentPositionAsync({})
+      setLocation(loc.coords)
+    })()
+  }, [])
+
+  useEffect(() => {
+    const getStations = async () => {
+      setLoadingStations(true)
+      try {
+        const data = await fetchStations()
+        if (data) setStations(data.stations)
+      } catch (error) {
+        console.log(error)
+      }
+
+      setLoadingStations(false)
+    }
+
+    getStations()
+  }, [])
+
   return (
     <View style={styles.centeredView}>
       <View
-        style={[styles.modalView, { backgroundColor: colors.elevation.level2 }]}
+        style={[styles.modalView, { backgroundColor: colors.elevation.level1 }]}
       >
         <View
           style={{
@@ -160,6 +202,135 @@ const AddDeliveryOption = ({
             Select as many as you like. Shops with multiple options sell faster.
             The Buyer will cover the delivery fee when purchasing.
           </Text>
+          <View style={styles.optionCont}>
+            <View style={styles.option}>
+              <View style={styles.label}>
+                <FontAwesome5
+                  name="truck"
+                  size={18}
+                  color={colors.onBackground}
+                  style={{ marginRight: 10 }}
+                />
+                <Text style={styles.name}>GIG Logistics</Text>
+                <Tooltip
+                  content={`Sending & receiving package almost anywhere in Nigeria is made easy with GIGL integrated on Repeddle. Simply fill in a contactable correct address and phone number. A GIGL driver may come to you for pick up, or ask you to drop off your package to the nearest GIGL experience centre closer to you. The buyer pays for delivery and package will be delivered to the address buyer will provide when making a purchase. Please do not make any delivery payment to anyone.`}
+                >
+                  <Ionicons
+                    name="help-circle-outline"
+                    size={18}
+                    color={colors.onBackground}
+                    style={{ marginLeft: 10 }}
+                  />
+                </Tooltip>
+              </View>
+              <Switch
+                value={gig}
+                trackColor={{ false: "grey", true: "grey" }}
+                thumbColor={gig ? colors.primary : "white"}
+                onValueChange={(value) => {
+                  setGig(value)
+                  handleChange({
+                    name: "GIG Logistics",
+                    value: 0,
+                    gig: value,
+                  })
+                  if (!value) {
+                    setDeliveryOption(
+                      deliveryOption.filter((x) => x.name !== "GIG Logistics")
+                    )
+                  }
+                }}
+              />
+            </View>
+            <View style={styles.divider} />
+            {gig && (
+              <View>
+                {errorMsg && (
+                  <Text style={{ color: "red", marginVertical: 5 }}>
+                    {errorMsg}
+                  </Text>
+                )}
+
+                <Text style={[styles.label]}>Name</Text>
+                <Input
+                  value={meta.name}
+                  onChangeText={(text) => {
+                    setMeta({ ...meta, name: text })
+                  }}
+                />
+                <Text style={[styles.label]}>Address</Text>
+                <Input
+                  value={meta.address}
+                  onChangeText={(text) => {
+                    setMeta({ ...meta, address: text })
+                  }}
+                />
+                <Text style={[styles.label]}>Phone</Text>
+                <Input
+                  value={meta.phone}
+                  onChangeText={(text) => {
+                    setMeta({ ...meta, phone: text })
+                  }}
+                />
+                <Text style={[styles.label]}>Select Station</Text>
+                <View style={styles.picker}>
+                  <Picker
+                    selectedValue={meta.stationId}
+                    style={{
+                      backgroundColor: colors.elevation.level2,
+                      padding: 5,
+                      color: colors.onBackground,
+                    }}
+                    onValueChange={(itemValue) => {
+                      setMeta({ ...meta, stationId: itemValue })
+                    }}
+                    mode="dropdown"
+                  >
+                    <Picker.Item
+                      style={{
+                        backgroundColor: colors.elevation.level2,
+                        color: colors.onBackground,
+                      }}
+                      label={"--select--"}
+                      value={""}
+                    />
+                    {loadingStations ? (
+                      <Picker.Item
+                        style={{
+                          backgroundColor: colors.elevation.level2,
+                          color: colors.onBackground,
+                        }}
+                        label={"loading"}
+                        value={"loading"}
+                      />
+                    ) : (
+                      stations.map((station) => (
+                        <Picker.Item
+                          style={{
+                            backgroundColor: colors.elevation.level2,
+                            color: colors.onBackground,
+                          }}
+                          key={station.stationId}
+                          label={station.StateName}
+                          value={station.stationId}
+                        />
+                      ))
+                    )}
+                  </Picker>
+                </View>
+
+                <Text
+                  style={[styles.link, { color: colors.secondary }]}
+                  onPress={() => {
+                    goto("https://giglogistics.com/faqs")
+                  }}
+                >
+                  How GIG works
+                </Text>
+              </View>
+            )}
+          </View>
+
           <View style={styles.optionCont}>
             <View style={styles.option}>
               <View style={styles.label}>
@@ -525,11 +696,12 @@ const styles = StyleSheet.create({
   label: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 2,
   },
   name: {
     fontSize: 16,
     fontFamily: "absential-sans-bold",
-    color: "grey",
+    // color: "grey",
     marginLeft: 5,
   },
   divider: {
@@ -584,4 +756,5 @@ const styles = StyleSheet.create({
     zIndex: 100,
     width: "100%",
   },
+  picker: { height: 40, overflow: "hidden", justifyContent: "center" },
 })

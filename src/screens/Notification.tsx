@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from "react"
 import {
   View,
   Text,
@@ -6,41 +6,56 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-} from "react-native";
-import moment from "moment";
-import useNotification from "../hooks/useNotification";
-import { baseURL } from "../services/api";
-import { Notification } from "../types/conversation";
-import { NotificationNavigationProp } from "../types/navigation/stack";
-import { Appbar, useTheme } from "react-native-paper";
+} from "react-native"
+import moment from "moment"
+import useNotification from "../hooks/useNotification"
+import { baseURL } from "../services/api"
+import { Notification } from "../types/conversation"
+import { NotificationNavigationProp } from "../types/navigation/stack"
+import { Appbar, useTheme } from "react-native-paper"
 
 const MobileNotification: React.FC<NotificationNavigationProp> = ({
   navigation,
 }) => {
-  const { colors } = useTheme();
-  const { fetchNotifications, notifications } = useNotification();
+  const { colors } = useTheme()
+  const { fetchNotifications, notifications } = useNotification()
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    fetchNotifications()
+  }, [])
 
   const handleOnClick = (not: any) => {
-    navigation.navigate(not.link);
-  };
+    navigation.navigate(not.link)
+  }
 
-  const renderItem = ({ item: not }: { item: Notification }) => (
-    <TouchableOpacity
-      style={styles.notificationItem}
-      onPress={() => handleOnClick(not)}
-    >
-      <Image source={{ uri: baseURL + not.user.image }} style={styles.image} />
-      <View style={styles.textContainer}>
-        <Text style={styles.message}>{not.message}</Text>
-        <Text style={styles.time}>{moment(not.createdAt).fromNow()}</Text>
-      </View>
-      {!not.read && <View style={styles.unreadIndicator} />}
-    </TouchableOpacity>
-  );
+  const RenderItem = ({ item: not }: { item: Notification }) => {
+    console.log(not)
+
+    const { colors } = useTheme()
+    return (
+      <TouchableOpacity
+        style={[
+          styles.notificationItem,
+          { backgroundColor: colors.elevation.level2 },
+        ]}
+        onPress={() => handleOnClick(not)}
+      >
+        <Image source={{ uri: baseURL + not.image }} style={styles.image} />
+        <View style={styles.textContainer}>
+          <Text
+            style={[
+              styles.message,
+              { color: colors.onBackground, marginBottom: 4 },
+            ]}
+          >
+            {not.message}
+          </Text>
+          <Text style={styles.time}>{moment(not.createdAt).fromNow()}</Text>
+        </View>
+        {!not.read && <View style={styles.unreadIndicator} />}
+      </TouchableOpacity>
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -63,13 +78,14 @@ const MobileNotification: React.FC<NotificationNavigationProp> = ({
         <FlatList
           data={notifications}
           keyExtractor={(item) => item._id}
-          renderItem={renderItem}
+          renderItem={({ item }) => <RenderItem item={item} />}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 15 }}
         />
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -85,7 +101,6 @@ const styles = StyleSheet.create({
     padding: 5,
     marginBottom: 5,
     borderRadius: 5,
-    backgroundColor: "#f5f5f5",
   },
   image: {
     width: 50,
@@ -98,7 +113,6 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 14,
-    color: "#000",
   },
   time: {
     fontSize: 12,
@@ -110,6 +124,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f57c00",
     borderRadius: 5,
   },
-});
+})
 
-export default MobileNotification;
+export default MobileNotification
