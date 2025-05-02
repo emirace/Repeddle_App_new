@@ -129,16 +129,20 @@ const AddAddress = ({
     setIsSubmitting(false)
   }
 
+  const close = () => {
+    setIsClosed(true)
+    if (!user?.address) {
+      if (!user?.accountNumber) setIsClosedOther(true)
+      navigation.push("Main")
+    }
+  }
+
   return (
     <Modal
       animationType="slide"
       transparent={true}
       visible={!addressVerified}
-      onRequestClose={() => {
-        setIsClosed(true)
-        setIsClosedOther(true)
-        navigation.push("Main")
-      }}
+      onRequestClose={close}
     >
       <View style={[styles.centeredView]}>
         <KeyboardAvoidingView
@@ -150,10 +154,7 @@ const AddAddress = ({
               <IconButton
                 icon={"close"}
                 style={{ position: "absolute", right: 0, top: -15 }}
-                onPress={() => {
-                  setIsClosed(true)
-                  navigation.push("Main")
-                }}
+                onPress={close}
               />
               <View style={styles.heading}>
                 <Text style={[styles.modalTitle]}>Add Address</Text>
