@@ -120,16 +120,20 @@ const AddAccount = ({
     }
   }
 
+  const close = () => {
+    setIsClosed(true)
+    if (!user?.accountNumber) {
+      if (!user?.address) setIsClosedAccount(true)
+      navigation.push("Main")
+    }
+  }
+
   return (
     <Modal
       animationType="slide"
       transparent={true}
       visible={!accountVerified}
-      onRequestClose={() => {
-        setIsClosed(true)
-        setIsClosedAccount(true)
-        navigation.push("Main")
-      }}
+      onRequestClose={close}
     >
       <View style={[styles.centeredView]}>
         <KeyboardAvoidingView
@@ -141,7 +145,7 @@ const AddAccount = ({
               <IconButton
                 icon={"close"}
                 style={{ position: "absolute", right: 0, top: -15 }}
-                onPress={() => navigation.push("Main")}
+                onPress={close}
               />
               <View style={styles.heading}>
                 <TouchableOpacity></TouchableOpacity>
@@ -206,8 +210,8 @@ const AddAccount = ({
                             color: colors.onBackground,
                           }}
                           key={index}
-                          //   label={name}
-                          value={name}
+                          label={name.name}
+                          value={name.name}
                         />
                       ))
                     : banks.SouthAfrica.map((name, index) => (
@@ -217,8 +221,8 @@ const AddAccount = ({
                             color: colors.onBackground,
                           }}
                           key={index}
-                          //   label={name}
-                          value={name}
+                          label={name.name}
+                          value={name.name}
                         />
                       ))}
                 </Picker>
