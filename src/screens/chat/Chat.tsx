@@ -33,7 +33,7 @@ import useToastNotification from "../../hooks/useToastNotification";
 import { Ionicons } from "@expo/vector-icons";
 
 const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
-  const { conversationId } = route.params;
+  const conversationId = route.params?.conversationId;
   const {
     loadingMessage,
     messages,

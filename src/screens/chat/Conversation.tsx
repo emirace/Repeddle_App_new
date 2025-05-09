@@ -132,9 +132,9 @@ const Conversation: React.FC<any> = ({ navigation }) => {
         ListFooterComponent={
           loading ? (
             renderSkeleton()
-          ) : (
+          ) : filteredConversations.length <= 0 ? (
             <Text style={{ margin: 20 }}>No Conversation available</Text>
-          )
+          ) : null
         }
       />
     </View>

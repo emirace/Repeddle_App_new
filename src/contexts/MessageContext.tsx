@@ -111,9 +111,10 @@ export const MessageProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const handleMessage = (message: IMessage) => {
-      if (message.conversationId === currentConversation?._id) {
+      if (!message) return;
+      if (message?.conversationId === currentConversation?._id) {
         setIsTypingList((prev) =>
-          prev.filter((type) => type.id !== message.conversationId)
+          prev.filter((type) => type.id !== message?.conversationId)
         );
         if (!messages.find((msg) => msg._id === message._id)) {
           setIsAnimating(true);
