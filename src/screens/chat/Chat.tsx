@@ -32,10 +32,12 @@ import { uploadImage } from "../../utils/common";
 import useToastNotification from "../../hooks/useToastNotification";
 import { Ionicons } from "@expo/vector-icons";
 
-const Chat: React.FC<ChatNavigationProp> = ({ navigation }) => {
+const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
+  const { conversationId } = route.params;
   const {
     loadingMessage,
     messages,
+    conversations,
     isTypingList,
     currentConversation,
     setCurrentConversation,
@@ -55,6 +57,18 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation }) => {
   const [image, setImage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [currentDate, setCurrentDate] = useState<string | null>(null);
+  console.log(currentConversation, conversationId, conversations);
+
+  useEffect(() => {
+    if (conversationId) {
+      const currentConversation = conversations.find(
+        (conversation) => conversation._id.toString() === conversationId
+      );
+      if (currentConversation) {
+        setCurrentConversation(currentConversation);
+      }
+    }
+  }, [conversationId, conversations.length]);
 
   // Function to emit startTyping event
   const startTyping = () => {

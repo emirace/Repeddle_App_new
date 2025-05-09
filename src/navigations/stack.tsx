@@ -26,8 +26,6 @@ import Wallet from "../screens/wallet/Fund";
 import Fund from "../screens/wallet/Fund";
 import Withdraw from "../screens/wallet/Withdraw";
 import Auth from "../screens/Auth";
-import MyAccount from "../screens/profile/MyAccount";
-import Appearance from "../screens/profile/Appearance";
 import Login from "../screens/Auth/Login";
 import SignUp from "../screens/Auth/Signup";
 import Step from "../screens/Auth/Signup/step";
@@ -36,11 +34,13 @@ import Category from "../screens/Category";
 import SubCategories from "../screens/Category/SubCategories";
 import Brand from "../screens/Brand";
 import Earnings from "../screens/Dashboard/Earnings";
-import Profile from "../screens/profile";
 import MobileNotification from "../screens/Notification";
-import Support from "../screens/profile/Support";
 import { useMemo } from "react";
 import * as SecureStore from "expo-secure-store";
+import Appearance from "../screens/Profile/Appearance";
+import MyAccount from "../screens/Profile/MyAccount";
+import Support from "../screens/Profile/Support";
+import Profile from "../screens/Profile";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

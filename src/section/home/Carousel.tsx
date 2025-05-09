@@ -3,61 +3,60 @@ import {
   TouchableOpacity,
   View,
   useWindowDimensions,
-} from "react-native"
-import React from "react"
-import CarouselItem from "react-native-reanimated-carousel"
-import { LinearGradient } from "expo-linear-gradient"
-import homeStyles from "./homeStyles"
+} from "react-native";
+import React from "react";
+import CarouselItem from "react-native-reanimated-carousel";
+import { LinearGradient } from "expo-linear-gradient";
+import homeStyles from "./homeStyles";
 import {
   MainScreenNavigationProp,
   RootStackParamList,
-} from "../../types/navigation/stack"
-import { Text, useTheme } from "react-native-paper"
-import { useSharedValue } from "react-native-reanimated"
+} from "../../types/navigation/stack";
+import { Text, useTheme } from "react-native-paper";
+import { useSharedValue } from "react-native-reanimated";
+import { baseURL } from "../../services/api";
 
 const entries: {
-  title: string
-  subtitle: string
-  illustration: string
-  button: string
-  screen: keyof RootStackParamList
+  title: string;
+  subtitle: string;
+  illustration: string;
+  button: string;
+  screen: keyof RootStackParamList;
 }[] = [
   {
     title:
       " AFRICA’S MILLENNIALS & GEN-Z ONLINE COMMUNITY FOR SECONHAND FASHION.",
     subtitle: "Lorem ipsum dolor sit amet et nuncat mergitur",
-    illustration: "https://repeddle.com/images/ezgif.com-gif-maker.webp",
+    illustration: `https://repeddle-frontend.vercel.app/images/homeCarousel/ezgif.com-gif-maker.webp`,
     button: "join us",
     screen: "Auth",
   },
   {
     title: "BUY-SELL-CHAT-CASH OUT-REPEAT",
     subtitle: "Lorem ipsum dolor sit amet",
-    illustration:
-      "https://repeddle.com/images/greg-raines-rqFBIR6vQXg-unsplash.webp",
+    illustration: `https://repeddle-frontend.vercel.app/images/homeCarousel/greg-raines-rqFBIR6vQXg-unsplash.webp`,
     button: "shop now",
     screen: "Search",
   },
   {
     title: "JOIN THE THRIFT TREASURE HUNT",
     subtitle: "Lorem ipsum dolor sit amet et nuncat ",
-    illustration:
-      "https://repeddle.com/images/chimi-davila-58FCfyUti_w-unsplash.webp",
+    illustration: `https://repeddle-frontend.vercel.app/images/homeCarousel/chimi-davila-58FCfyUti_w-unsplash.webp`,
     button: "discover",
     screen: "Sell",
   },
-]
+];
 
-type Entry = typeof entries
+type Entry = typeof entries;
 
 const RenderItemSlider = ({
   item,
   navigation,
 }: {
-  item: Entry[number]
-  navigation: MainScreenNavigationProp["navigation"]
+  item: Entry[number];
+  navigation: MainScreenNavigationProp["navigation"];
 }) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return (
     <View style={homeStyles.item}>
@@ -87,14 +86,14 @@ const RenderItemSlider = ({
         </View>
       </LinearGradient>
     </View>
-  )
-}
+  );
+};
 
-type Props = { navigation: MainScreenNavigationProp["navigation"] }
+type Props = { navigation: MainScreenNavigationProp["navigation"] };
 
 const Carousel = ({ navigation }: Props) => {
-  const { width } = useWindowDimensions()
-  const progress = useSharedValue<number>(0)
+  const { width } = useWindowDimensions();
+  const progress = useSharedValue<number>(0);
 
   return (
     <View>
@@ -116,7 +115,7 @@ const Carousel = ({ navigation }: Props) => {
         // onProgressChange={progress}
       />
     </View>
-  )
-}
+  );
+};
 
-export default Carousel
+export default Carousel;
