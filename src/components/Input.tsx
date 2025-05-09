@@ -17,7 +17,7 @@ const Input = ({ error, onFocus, password, icon, ...props }: Props) => {
   const [hidePassword, setHidePassword] = useState(password)
 
   return (
-    <View style={{ marginBottom: normaliseH(20) }}>
+    <View style={[{ marginBottom: normaliseH(20) }]}>
       <View
         style={[
           styles.inputCont,
@@ -41,7 +41,7 @@ const Input = ({ error, onFocus, password, icon, ...props }: Props) => {
         />
         <TextInput
           secureTextEntry={hidePassword}
-          style={styles.TextInput}
+          style={[styles.TextInput, { width: "100%" }]}
           autoCorrect={false}
           placeholderTextColor={colors.onBackground}
           onFocus={() => {
@@ -75,8 +75,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     height: 40,
+    width: "100%",
   },
   inputIcon: { padding: 10 },
-  TextInput: { flex: 1, height: "100%" },
+  TextInput: { flex: 1, height: "100%", width: "100%" },
   error: { marginTop: 5, fontSize: 12 },
 })

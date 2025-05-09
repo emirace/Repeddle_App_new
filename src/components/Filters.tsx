@@ -534,9 +534,11 @@ const Filters = ({ categories, filters, handleFilter, setFilters }: Props) => {
                         justifyContent: "center",
                         alignItems: "center",
                         borderWidth: 1,
-                        width: 30,
-                        height: 20,
+                        minWidth: 30,
+                        marginHorizontal: 1,
+                        minHeight: 20,
                         borderRadius: 5,
+                        paddingHorizontal: 4,
                         borderColor:
                           c.name === filters.size
                             ? lightTheme.colors.primary
@@ -918,14 +920,15 @@ const styles = StyleSheet.create({
   inactivate: { height: 0 },
 
   listItem: {
-    padding: 5,
+    paddingHorizontal: 5,
+    paddingVertical: 4,
     flexDirection: "row",
     alignItems: "center",
     textTransform: "capitalize",
     borderRadius: 5,
   },
   itemText: {
-    fontSize: 15,
+    fontSize: 14,
     textTransform: "capitalize",
   },
 

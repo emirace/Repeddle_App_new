@@ -278,7 +278,10 @@ const Comment = ({ comment, product, setProduct }: Props) => {
           ))}
           <View style={styles.formContainer}>
             <TextInput
-              style={[styles.textInput, { color: colors.onBackground }]}
+              style={[
+                styles.textInput,
+                { color: colors.onBackground, width: "100%" },
+              ]}
               placeholder="Leave a reply here"
               value={reply}
               onChangeText={setReply}

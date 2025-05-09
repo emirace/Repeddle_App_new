@@ -57,7 +57,11 @@ const AddOtherBrands = ({ setShowOtherBrand, handleOnChange }: Props) => {
           <TextInput
             style={[
               styles.textInput,
-              { color: colors.onBackground, borderColor: colors.onBackground },
+              {
+                color: colors.onBackground,
+                borderColor: colors.onBackground,
+                width: "100%",
+              },
             ]}
             onChangeText={(text) => setBrand(text)}
             onFocus={() => setErr("")}

@@ -460,7 +460,7 @@ const EditProduct = ({ navigation, route }: Props) => {
             placeholder="Product Name"
             value={input.name}
             placeholderTextColor={"grey"}
-            style={{ color: colors.onBackground }}
+            style={{ color: colors.onBackground, width: "100%" }}
           />
           {validationError.name && (
             <Text style={{ color: "red", fontSize: 12 }}>
@@ -763,7 +763,11 @@ const EditProduct = ({ navigation, route }: Props) => {
             }}
             style={[
               styles.textInput,
-              { color: colors.onBackground, borderColor: colors.outline },
+              {
+                color: colors.onBackground,
+                borderColor: colors.outline,
+                width: "100%",
+              },
             ]}
             placeholderTextColor={"grey"}
             cursorColor={colors.onBackground}
@@ -1117,33 +1121,29 @@ const EditProduct = ({ navigation, route }: Props) => {
                 Provide the exact size as indicated on your product's label.
               </Text>
               {sizesInputCounts.map((c, index) => (
-                <>
-                  <View key={index} style={{ flexDirection: "row" }}>
-                    <View key={index} style={[{ flex: 1 }]}>
-                      <Input
-                        placeholder="Enter Size"
-                        maxLength={3}
-                        onChangeText={(text) => {
-                          setTempSize(text)
-                        }}
-                        placeholderTextColor={"grey"}
-                        style={{ color: colors.onBackground }}
-                        onBlur={() => sizeHandler(tempSize)}
-                      />
-                    </View>
-                    <View style={{ flex: 1, marginLeft: 10 }}>
-                      <Input
-                        placeholder="Quantity"
-                        keyboardType="numeric"
-                        placeholderTextColor={"grey"}
-                        onChangeText={(text) =>
-                          addSizeQuantity(tempSize, +text)
-                        }
-                        style={{ color: colors.onBackground }}
-                      />
-                    </View>
+                <View key={index} style={{ flexDirection: "row" }}>
+                  <View key={index} style={[{ flex: 1 }]}>
+                    <Input
+                      placeholder="Enter Size"
+                      maxLength={3}
+                      onChangeText={(text) => {
+                        setTempSize(text)
+                      }}
+                      placeholderTextColor={"grey"}
+                      style={{ color: colors.onBackground, width: "100%" }}
+                      onBlur={() => sizeHandler(tempSize)}
+                    />
                   </View>
-                </>
+                  <View style={{ flex: 1, marginLeft: 10 }}>
+                    <Input
+                      placeholder="Quantity"
+                      keyboardType="numeric"
+                      placeholderTextColor={"grey"}
+                      onChangeText={(text) => addSizeQuantity(tempSize, +text)}
+                      style={{ color: colors.onBackground, width: "100%" }}
+                    />
+                  </View>
+                </View>
               ))}
 
               <TouchableOpacity onPress={addSizesCont}>
@@ -1163,6 +1163,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                   {
                     color: colors.onBackground,
                     backgroundColor: colors.elevation.level2,
+                    width: "100%",
                   },
                 ]}
                 placeholder={`${countInStock}`}
@@ -1374,7 +1375,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                 placeholder="Actual price"
                 onFocus={() => {}}
                 keyboardType="numeric"
-                style={{ color: colors.onBackground }}
+                style={{ color: colors.onBackground, width: "100%" }}
                 value={input.costPrice}
               />
               {validationError.costPrice && (
@@ -1387,7 +1388,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               <Text style={[styles.label]}>Selling Price</Text>
               <Input
                 keyboardType="numeric"
-                style={{ color: colors.onBackground }}
+                style={{ color: colors.onBackground, width: "100%" }}
                 onChangeText={(text) => handleOnChange(text, "sellingPrice")}
                 placeholder="Selling Price"
                 onFocus={() => {}}
@@ -1421,6 +1422,7 @@ const EditProduct = ({ navigation, route }: Props) => {
               {
                 backgroundColor: colors.elevation.level2,
                 color: colors.onBackground,
+                width: "100%",
               },
             ]}
             multiline={true}
@@ -1444,6 +1446,7 @@ const EditProduct = ({ navigation, route }: Props) => {
                 backgroundColor: colors.elevation.level2,
                 color: colors.onBackground,
                 minHeight: 80,
+                width: "100%",
               },
             ]}
             multiline={true}
@@ -1469,7 +1472,10 @@ const EditProduct = ({ navigation, route }: Props) => {
                 ]}
               >
                 <TextInput
-                  style={[styles.tagInput, { color: colors.onBackground }]}
+                  style={[
+                    styles.tagInput,
+                    { color: colors.onBackground, width: "100%" },
+                  ]}
                   value={input.tag}
                   onChangeText={(value) => handleOnChange(value, "tag")}
                 />

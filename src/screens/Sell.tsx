@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Image,
   Keyboard,
   Modal,
@@ -11,6 +10,7 @@ import {
 } from "react-native"
 import React, { useEffect, useMemo, useState } from "react"
 import {
+  ActivityIndicator,
   Appbar,
   Button,
   Checkbox,
@@ -43,6 +43,7 @@ import useToastNotification from "../hooks/useToastNotification"
 import CartIcon from "../components/ui/cartIcon"
 import Tooltip from "../components/Tooltip"
 import useUser from "../hooks/useUser"
+import { baseURL } from "../services/api"
 
 const Sell = ({ navigation }: any) => {
   const { user } = useAuth()
@@ -105,6 +106,7 @@ const Sell = ({ navigation }: any) => {
   const [tags, setTags] = useState<string[]>([])
   const [colorsVal, setColorsVal] = useState<string[]>([])
   const [sizesInputCounts, setSizesInputCounts] = useState<number[]>([])
+  const [handledImage, setHandledImage] = useState<string>()
 
   const [paxi, setPaxi] = useState(true)
   const [gig, setGig] = useState(false)
@@ -319,6 +321,7 @@ const Sell = ({ navigation }: any) => {
   }, [queryBrand])
 
   const pickImage = async (key: keyof typeof input) => {
+    setHandledImage(key)
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -334,9 +337,11 @@ const Sell = ({ navigation }: any) => {
       let match = /\.(\w+)$/.exec(filename)
       let type = match ? `image/${match[1]}` : `image`
 
-      uploadImageHandler({ uri: localUri, name: filename, type }, key)
+      await uploadImageHandler({ uri: localUri, name: filename, type }, key)
       console.log({ uri: localUri, name: filename, type })
     }
+
+    setHandledImage(undefined)
   }
 
   const uploadImageHandler = async (photo: any, key: keyof typeof input) => {
@@ -350,6 +355,8 @@ const Sell = ({ navigation }: any) => {
     } catch (error) {
       addNotification({ message: error as string, error: true })
     }
+
+    setLoadingUpload(false)
   }
 
   const sizeHandler = (sizenow: string) => {
@@ -438,7 +445,7 @@ const Sell = ({ navigation }: any) => {
             onChangeText={(text) => handleOnChange(text, "name")}
             placeholder="Product Name"
             value={input.name}
-            style={{ color: colors.onBackground }}
+            style={{ color: colors.onBackground, width: "100%" }}
           />
           {validationError.name && (
             <Text style={{ color: "red", fontSize: 12 }}>
@@ -560,14 +567,14 @@ const Sell = ({ navigation }: any) => {
                     subCategories.map(
                       ({ name, items }) =>
                         name === input.category &&
-                        items.map((item, index) => (
+                        items.map(({ name }, index) => (
                           <Picker.Item
                             style={{
                               backgroundColor: colors.elevation.level2,
                               color: colors.onBackground,
                             }}
-                            // label={item}
-                            value={item}
+                            label={name}
+                            value={name}
                             key={index}
                           />
                         ))
@@ -746,7 +753,11 @@ const Sell = ({ navigation }: any) => {
             value={input.brand.length > 0 ? input.brand : queryBrand}
             style={[
               styles.textInput,
-              { borderColor: colors.outline, color: colors.onBackground },
+              {
+                borderColor: colors.outline,
+                color: colors.onBackground,
+                width: "100%",
+              },
             ]}
             cursorColor={colors.onBackground}
             onBlur={() => input.brand.length > 0 && setQueryBrand("")}
@@ -894,8 +905,13 @@ const Sell = ({ navigation }: any) => {
                 { backgroundColor: colors.elevation.level2 },
               ]}
             >
-              {input.image1 ? (
-                <Image source={{ uri: input.image1 }} style={styles.image} />
+              {handledImage === "image1" && loadingUpload ? (
+                <ActivityIndicator />
+              ) : input.image1 ? (
+                <Image
+                  source={{ uri: baseURL + input.image1 }}
+                  style={styles.image}
+                />
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -905,15 +921,23 @@ const Sell = ({ navigation }: any) => {
               )}
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => pickImage("image2")}
+              onPress={() => {
+                console.log("clicked")
+                pickImage("image2")
+              }}
               disabled={loadingUpload}
               style={[
                 styles.camera,
                 { backgroundColor: colors.elevation.level2 },
               ]}
             >
-              {input.image2 ? (
-                <Image source={{ uri: input.image2 }} style={styles.image} />
+              {handledImage === "image2" && loadingUpload ? (
+                <ActivityIndicator />
+              ) : input.image2 ? (
+                <Image
+                  source={{ uri: baseURL + input.image2 }}
+                  style={styles.image}
+                />
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -930,8 +954,13 @@ const Sell = ({ navigation }: any) => {
                 { backgroundColor: colors.elevation.level2 },
               ]}
             >
-              {input.image3 ? (
-                <Image source={{ uri: input.image3 }} style={styles.image} />
+              {handledImage === "image3" && loadingUpload ? (
+                <ActivityIndicator />
+              ) : input.image3 ? (
+                <Image
+                  source={{ uri: baseURL + input.image3 }}
+                  style={styles.image}
+                />
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -948,8 +977,13 @@ const Sell = ({ navigation }: any) => {
                 { backgroundColor: colors.elevation.level2 },
               ]}
             >
-              {input.image4 ? (
-                <Image source={{ uri: input.image4 }} style={styles.image} />
+              {handledImage === "image4" && loadingUpload ? (
+                <ActivityIndicator />
+              ) : input.image4 ? (
+                <Image
+                  source={{ uri: baseURL + input.image4 }}
+                  style={styles.image}
+                />
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -1026,7 +1060,7 @@ const Sell = ({ navigation }: any) => {
                 >
                   {input.luxuryImage ? (
                     <Image
-                      source={{ uri: input.luxuryImage }}
+                      source={{ uri: baseURL + input.luxuryImage }}
                       style={{ width: "100%", height: 120 }}
                     />
                   ) : (
@@ -1082,31 +1116,27 @@ const Sell = ({ navigation }: any) => {
                 Provide the exact size as indicated on your product's label.
               </Text>
               {sizesInputCounts.map((c, index) => (
-                <>
-                  <View key={index} style={{ flexDirection: "row" }}>
-                    <View key={index} style={[{ flex: 1 }]}>
-                      <Input
-                        placeholder="Enter Size"
-                        maxLength={3}
-                        onChangeText={(text) => {
-                          setTempSize(text)
-                        }}
-                        style={{ color: colors.onBackground }}
-                        onBlur={() => sizeHandler(tempSize)}
-                      />
-                    </View>
-                    <View style={{ flex: 1, marginLeft: 10 }}>
-                      <Input
-                        keyboardType="numeric"
-                        placeholder="Quantity"
-                        onChangeText={(text) =>
-                          addSizeQuantity(tempSize, +text)
-                        }
-                        style={{ color: colors.onBackground }}
-                      />
-                    </View>
+                <View key={index} style={{ flexDirection: "row" }}>
+                  <View key={index} style={[{ flex: 1 }]}>
+                    <Input
+                      placeholder="Enter Size"
+                      maxLength={3}
+                      onChangeText={(text) => {
+                        setTempSize(text)
+                      }}
+                      style={{ color: colors.onBackground, width: "100%" }}
+                      onBlur={() => sizeHandler(tempSize)}
+                    />
                   </View>
-                </>
+                  <View style={{ flex: 1, marginLeft: 10 }}>
+                    <Input
+                      keyboardType="numeric"
+                      placeholder="Quantity"
+                      onChangeText={(text) => addSizeQuantity(tempSize, +text)}
+                      style={{ color: colors.onBackground, width: "100%" }}
+                    />
+                  </View>
+                </View>
               ))}
 
               <TouchableOpacity onPress={addSizesCont}>
@@ -1125,6 +1155,7 @@ const Sell = ({ navigation }: any) => {
                   {
                     color: colors.onBackground,
                     backgroundColor: colors.elevation.level2,
+                    width: "100%",
                   },
                 ]}
                 value={countInStock.toString()}
@@ -1335,7 +1366,7 @@ const Sell = ({ navigation }: any) => {
                 placeholder="Actual price"
                 onFocus={() => {}}
                 keyboardType="numeric"
-                style={{ color: colors.onBackground }}
+                style={{ color: colors.onBackground, width: "100%" }}
                 value={input.costPrice}
               />
               {validationError.costPrice && (
@@ -1348,7 +1379,7 @@ const Sell = ({ navigation }: any) => {
               <Text style={[styles.label]}>Selling Price</Text>
               <Input
                 keyboardType="numeric"
-                style={{ color: colors.onBackground }}
+                style={{ color: colors.onBackground, width: "100%" }}
                 onChangeText={(text) => handleOnChange(text, "sellingPrice")}
                 placeholder="Selling Price"
                 onFocus={() => {}}
@@ -1398,6 +1429,7 @@ const Sell = ({ navigation }: any) => {
               {
                 backgroundColor: colors.elevation.level2,
                 color: colors.onBackground,
+                width: "100%",
               },
             ]}
             multiline={true}
@@ -1421,6 +1453,7 @@ const Sell = ({ navigation }: any) => {
                 backgroundColor: colors.elevation.level2,
                 color: colors.onBackground,
                 minHeight: 80,
+                width: "100%",
               },
             ]}
             multiline={true}
@@ -1446,7 +1479,10 @@ const Sell = ({ navigation }: any) => {
                 ]}
               >
                 <TextInput
-                  style={[styles.tagInput, { color: colors.onBackground }]}
+                  style={[
+                    styles.tagInput,
+                    { color: colors.onBackground, width: "100%" },
+                  ]}
                   value={input.tag}
                   onChangeText={(value) => handleOnChange(value, "tag")}
                 />

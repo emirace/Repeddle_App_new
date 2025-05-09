@@ -144,6 +144,7 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
                 {
                   backgroundColor: colors.elevation.level2,
                   color: colors.onBackground,
+                  width: "100%",
                 },
               ]}
               multiline={true}
