@@ -41,7 +41,7 @@ const Input = ({ error, onFocus, password, icon, ...props }: Props) => {
         />
         <TextInput
           secureTextEntry={hidePassword}
-          style={[styles.TextInput]}
+          style={[styles.TextInput, { width: "100%" }]}
           autoCorrect={false}
           placeholderTextColor={colors.onBackground}
           onFocus={() => {

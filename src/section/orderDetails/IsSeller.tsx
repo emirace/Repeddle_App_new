@@ -171,6 +171,7 @@ const IsSeller = ({
                   placeholder="Enter Tracking number"
                   value={trackingNumber}
                   onChangeText={(e) => setTrackingNumber(e)}
+                  style={{ width: "100%" }}
                 />
 
                 <IconButton

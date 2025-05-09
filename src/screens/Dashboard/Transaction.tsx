@@ -223,5 +223,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 20,
     paddingLeft: 38,
+    width: "100%",
   },
 })

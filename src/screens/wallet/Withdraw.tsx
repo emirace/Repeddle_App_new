@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
   accountTo: { fontWeight: "600", fontSize: 20 },
   input: {
     marginVertical: 50,
+    width: "100%",
   },
   withdrawButton: {},
 })

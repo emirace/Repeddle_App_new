@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
   context: { padding: 20, paddingVertical: 25, flex: 1 },
   input: {
     marginBottom: 20,
+    width: "100%",
   },
   fundButton: {},
 })
