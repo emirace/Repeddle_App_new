@@ -7,8 +7,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { useEffect, useMemo, useState } from "react"
+} from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Appbar,
@@ -17,56 +17,57 @@ import {
   Switch,
   Text,
   useTheme,
-} from "react-native-paper"
-import useCategory from "../hooks/useCategory"
-import { IBrand, ISize } from "../types/product"
-import Input from "../components/Input"
-import { Picker } from "@react-native-picker/picker"
-import { Ionicons } from "@expo/vector-icons"
-import Condition from "../components/Condition"
-import { color1, features, materials } from "../utils/constants"
-import useBrands from "../hooks/useBrand"
-import * as ImagePicker from "expo-image-picker"
-import { currency, region, uploadImage } from "../utils/common"
-import MyButton from "../components/MyButton"
-import useProducts from "../hooks/useProducts"
-import AddDeliveryOption from "../components/AddDeliveryOption"
-import useAuth from "../hooks/useAuth"
-import { normaliseH } from "../utils/normalize"
-import FeeStructure from "../components/FeeStructure"
-import VideoPickerComponent from "../components/VideoPickerComponent"
-import AddOtherBrands from "../components/AddOtherBrands"
-import AddAccount from "../components/AddAccount"
-import AddAddress from "../components/AddAddress"
-import { useIsFocused } from "@react-navigation/native"
-import useToastNotification from "../hooks/useToastNotification"
-import CartIcon from "../components/ui/cartIcon"
-import Tooltip from "../components/Tooltip"
-import useUser from "../hooks/useUser"
-import { baseURL } from "../services/api"
+} from "react-native-paper";
+import useCategory from "../hooks/useCategory";
+import { IBrand, ISize } from "../types/product";
+import Input from "../components/Input";
+import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
+import Condition from "../components/Condition";
+import { color1, features, materials } from "../utils/constants";
+import useBrands from "../hooks/useBrand";
+import * as ImagePicker from "expo-image-picker";
+import { currency, region } from "../utils/common";
+import MyButton from "../components/MyButton";
+import useProducts from "../hooks/useProducts";
+import AddDeliveryOption from "../components/AddDeliveryOption";
+import useAuth from "../hooks/useAuth";
+import { normaliseH } from "../utils/normalize";
+import FeeStructure from "../components/FeeStructure";
+import VideoPickerComponent from "../components/VideoPickerComponent";
+import AddOtherBrands from "../components/AddOtherBrands";
+import AddAccount from "../components/AddAccount";
+import AddAddress from "../components/AddAddress";
+import { useIsFocused } from "@react-navigation/native";
+import useToastNotification from "../hooks/useToastNotification";
+import CartIcon from "../components/ui/cartIcon";
+import Tooltip from "../components/Tooltip";
+import useUser from "../hooks/useUser";
+import { baseURL } from "../services/api";
+import { uploadOptimizeImage } from "../utils/image";
 
 const Sell = ({ navigation }: any) => {
-  const { user } = useAuth()
+  const { user } = useAuth();
   const accountVerified = useMemo(
     () => !!user?.bankName && !!user?.accountName && user?.role !== "Seller",
     [user?.bankName, user?.accountName, user?.role]
-  )
+  );
   const addressVerified = useMemo(
     () =>
       !!user?.address?.street &&
       !!user?.address?.state &&
       user?.role !== "Seller",
     [user?.address, user?.role]
-  )
-  const [isClosed, setIsClosed] = useState(false)
-  const [isClosedAccount, setIsClosedAccount] = useState(false)
+  );
+  const [isClosed, setIsClosed] = useState(false);
+  const [isClosedAccount, setIsClosedAccount] = useState(false);
 
-  const { colors } = useTheme()
-  const { fetchBrands, brands } = useBrands()
-  const { categories, fetchCategories } = useCategory()
-  const { createProduct, error } = useProducts()
-  const { addNotification } = useToastNotification()
-  const isFocused = useIsFocused()
+  const { colors } = useTheme();
+  const { fetchBrands, brands } = useBrands();
+  const { categories, fetchCategories } = useCategory();
+  const { createProduct, error } = useProducts();
+  const { addNotification } = useToastNotification();
+  const isFocused = useIsFocused();
 
   const [input, setInput] = useState({
     name: "",
@@ -93,143 +94,143 @@ const Sell = ({ navigation }: any) => {
     luxuryImage: "",
     luxury: false,
     vintage: false,
-  })
+  });
 
-  const [tempSize, setTempSize] = useState("S")
-  const [modalVisible, setModalVisible] = useState(false)
-  const [countInStock, setCountInStock] = useState(1)
-  const [sizes, setSizes] = useState<ISize[]>([])
-  const [sizesError, setSizesError] = useState("")
-  const [addSize, setAddSize] = useState(sizes.length < 1)
-  const [showCondition, setShowCondition] = useState(false)
-  const [showVideoModal, setShowVideoModal] = useState(false)
-  const [tags, setTags] = useState<string[]>([])
-  const [colorsVal, setColorsVal] = useState<string[]>([])
-  const [sizesInputCounts, setSizesInputCounts] = useState<number[]>([])
-  const [handledImage, setHandledImage] = useState<string>()
+  const [tempSize, setTempSize] = useState("S");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [countInStock, setCountInStock] = useState(1);
+  const [sizes, setSizes] = useState<ISize[]>([]);
+  const [sizesError, setSizesError] = useState("");
+  const [addSize, setAddSize] = useState(sizes.length < 1);
+  const [showCondition, setShowCondition] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [tags, setTags] = useState<string[]>([]);
+  const [colorsVal, setColorsVal] = useState<string[]>([]);
+  const [sizesInputCounts, setSizesInputCounts] = useState<number[]>([]);
+  const [handledImage, setHandledImage] = useState<string>();
 
-  const [paxi, setPaxi] = useState(true)
-  const [gig, setGig] = useState(false)
-  const [pudo, setPudo] = useState(false)
-  const [postnet, setPostnet] = useState(false)
-  const [aramex, setAramex] = useState(false)
-  const [pickup, setPickup] = useState(true)
-  const [bundle, setBundle] = useState(false)
-  const [meta, setMeta] = useState({})
+  const [paxi, setPaxi] = useState(true);
+  const [gig, setGig] = useState(false);
+  const [pudo, setPudo] = useState(false);
+  const [postnet, setPostnet] = useState(false);
+  const [aramex, setAramex] = useState(false);
+  const [pickup, setPickup] = useState(true);
+  const [bundle, setBundle] = useState(false);
+  const [meta, setMeta] = useState({});
   const [validationError, setValidationError] = useState<{
-    [key in keyof typeof input]?: String
-  }>({})
+    [key in keyof typeof input]?: String;
+  }>({});
   const [deliveryOption, setDeliveryOption] = useState([
     { name: "Pick up from Seller", value: 0 },
-  ])
-  const [queryBrand, setQueryBrand] = useState("")
-  const [updating, setUpdating] = useState(false)
-  const [searchBrand, setSearchBrand] = useState<IBrand[]>([])
-  const [showOtherBrand, setShowOtherBrand] = useState(false)
-  const [showFeeStructure, setShowFeeStructure] = useState(false)
-  const [loadingUpload, setLoadingUpload] = useState(false)
+  ]);
+  const [queryBrand, setQueryBrand] = useState("");
+  const [updating, setUpdating] = useState(false);
+  const [searchBrand, setSearchBrand] = useState<IBrand[]>([]);
+  const [showOtherBrand, setShowOtherBrand] = useState(false);
+  const [showFeeStructure, setShowFeeStructure] = useState(false);
+  const [loadingUpload, setLoadingUpload] = useState(false);
 
   const handleOnChange = (text: string | boolean, key: keyof typeof input) => {
-    setInput((prevState) => ({ ...prevState, [key]: text }))
-  }
+    setInput((prevState) => ({ ...prevState, [key]: text }));
+  };
 
   const handleError = (text: string | boolean, key: keyof typeof input) => {
-    setValidationError((prevState) => ({ ...prevState, [key]: text }))
-  }
+    setValidationError((prevState) => ({ ...prevState, [key]: text }));
+  };
 
   const addSizesCont = () => {
-    setSizesInputCounts([...sizesInputCounts, 1])
-  }
+    setSizesInputCounts([...sizesInputCounts, 1]);
+  };
 
   const validation = () => {
-    var valid = true
+    var valid = true;
     if (!input.name) {
-      handleError("Enter product name", "name")
-      valid = false
+      handleError("Enter product name", "name");
+      valid = false;
     }
 
     if (!input.image1) {
-      handleError("Add at least one image", "image")
-      valid = false
+      handleError("Add at least one image", "image");
+      valid = false;
     }
     if (!input.mainCategory) {
-      handleError("Select main category", "mainCategory")
-      valid = false
+      handleError("Select main category", "mainCategory");
+      valid = false;
     }
     if (!input.subCategory) {
-      handleError("Select sub category", "subCategory")
-      valid = false
+      handleError("Select sub category", "subCategory");
+      valid = false;
     }
     if (!input.category) {
-      handleError("Select category", "category")
-      valid = false
+      handleError("Select category", "category");
+      valid = false;
     }
     if (!input.brand) {
-      handleError("Select brand", "brand")
-      valid = false
+      handleError("Select brand", "brand");
+      valid = false;
     }
     if (!input.costPrice) {
-      handleError("Enter a valid price", "costPrice")
-      valid = false
+      handleError("Enter a valid price", "costPrice");
+      valid = false;
     }
 
     if (input.sellingPrice && input.sellingPrice > input.costPrice) {
-      handleError("Selling price must be less than cost price", "sellingPrice")
+      handleError("Selling price must be less than cost price", "sellingPrice");
     }
     // if (!input.shippingLocation) {
     //   handleError("Select shipping location", "shippingLocation");
     //   valid = false;
     // }
     if (!input.condition) {
-      handleError("Select condition", "condition")
-      valid = false
+      handleError("Select condition", "condition");
+      valid = false;
     }
 
     if (!input.keyFeatures) {
-      handleError("Select features", "keyFeatures")
-      valid = false
+      handleError("Select features", "keyFeatures");
+      valid = false;
     }
     if (!colorsVal.length) {
-      handleError("Select color", "color")
-      valid = false
+      handleError("Select color", "color");
+      valid = false;
     }
 
     if (addSize) {
       if (countInStock < 1) {
-        setSizesError("Enter count in stock")
-        valid = false
+        setSizesError("Enter count in stock");
+        valid = false;
       }
     } else {
       if (!sizes.length) {
-        setSizesError("Enter a valid size and quantity available")
-        valid = false
+        setSizesError("Enter a valid size and quantity available");
+        valid = false;
       }
     }
     if (!input.description) {
-      handleError("Description is required", "description")
-      valid = false
+      handleError("Description is required", "description");
+      valid = false;
     }
     if (valid) {
-      submitHandler()
+      submitHandler();
     } else
       addNotification({
         message: "Error creating product, fill mising fields ",
         error: true,
-      })
-  }
+      });
+  };
 
   const submitHandler = async () => {
     if (addSize === false && sizes.length === 0) {
-      addNotification({ message: "Please add size", error: true })
-      return
+      addNotification({ message: "Please add size", error: true });
+      return;
     }
-    const images: string[] = []
-    if (input.image1) images.push(input.image1)
-    if (input.image2) images.push(input.image2)
-    if (input.image3) images.push(input.image3)
-    if (input.image4) images.push(input.image4)
+    const images: string[] = [];
+    if (input.image1) images.push(input.image1);
+    if (input.image2) images.push(input.image2);
+    if (input.image3) images.push(input.image3);
+    if (input.image4) images.push(input.image4);
 
-    setUpdating(true)
+    setUpdating(true);
 
     const res = await createProduct({
       name: input.name,
@@ -256,132 +257,114 @@ const Sell = ({ navigation }: any) => {
       luxuryImage: input.luxuryImage,
       // addSize,
       countInStock,
-    })
+    });
 
     if (res) {
-      navigation.push("MyAccount", { username: user!.username })
+      navigation.push("MyAccount", { username: user!.username });
     } else {
-      addNotification({ message: error, error: true })
+      addNotification({ message: error, error: true });
     }
 
-    setUpdating(false)
-  }
+    setUpdating(false);
+  };
 
   const handleTags = (tag: string) => {
     if (tag.includes(" ")) {
       addNotification({
         message: "Please remove unnecessary space",
         error: true,
-      })
-      return
+      });
+      return;
     }
 
     if (tags.length > 5) {
-      addNotification({ message: "You can't add more five tags ", error: true })
+      addNotification({
+        message: "You can't add more five tags ",
+        error: true,
+      });
 
-      return
+      return;
     }
     if (tag.length > 0) {
-      setTags([...tags, tag])
-      handleOnChange("", "tag")
+      setTags([...tags, tag]);
+      handleOnChange("", "tag");
     }
-  }
+  };
 
   const removeTags = (tag: string) => {
-    const newtags = tags.filter((data) => data != tag)
-    setTags(newtags)
-  }
+    const newtags = tags.filter((data) => data != tag);
+    setTags(newtags);
+  };
 
   const discount = useMemo(() => {
     if (parseInt(input.costPrice) < parseInt(input?.sellingPrice ?? "0"))
-      return 0
+      return 0;
     return (
       ((parseInt(input.costPrice) - parseInt(input?.sellingPrice ?? "0")) /
         parseInt(input.costPrice)) *
       100
-    )
-  }, [input.costPrice, input?.sellingPrice])
+    );
+  }, [input.costPrice, input?.sellingPrice]);
 
   useEffect(() => {
-    fetchCategories()
-  }, [])
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const getFilterBrand = async () => {
-      const params: string[][] = [["search", queryBrand]]
+      const params: string[][] = [["search", queryBrand]];
 
-      const string = new URLSearchParams(params).toString()
+      const string = new URLSearchParams(params).toString();
 
-      const res = await fetchBrands(string)
+      const res = await fetchBrands(string);
 
-      if (res) setSearchBrand(brands)
-    }
+      if (res) setSearchBrand(brands);
+    };
 
-    if (queryBrand) getFilterBrand()
-  }, [queryBrand])
+    if (queryBrand) getFilterBrand();
+  }, [queryBrand]);
 
   const pickImage = async (key: keyof typeof input) => {
-    setHandledImage(key)
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    })
-
-    if (!result.canceled) {
-      let localUri = result.assets[0].uri
-      let filename = localUri.split("/").pop()
-      if (!filename) return
-      let match = /\.(\w+)$/.exec(filename)
-      let type = match ? `image/${match[1]}` : `image`
-
-      await uploadImageHandler({ uri: localUri, name: filename, type }, key)
-      console.log({ uri: localUri, name: filename, type })
-    }
-
-    setHandledImage(undefined)
-  }
-
-  const uploadImageHandler = async (photo: any, key: keyof typeof input) => {
-    const file = photo as File
-    const bodyFormData = new FormData()
-    bodyFormData.append("file", file)
-    setLoadingUpload(true)
     try {
-      const res = await uploadImage(file)
-      handleOnChange(res, key)
-    } catch (error) {
-      addNotification({ message: error as string, error: true })
-    }
+      setHandledImage(key);
+      setLoadingUpload(true);
 
-    setLoadingUpload(false)
-  }
+      const res = await uploadOptimizeImage();
+      handleOnChange(res as string, key);
+    } catch (error: any) {
+      addNotification({
+        message: error || "Unable to upload image try again later",
+        error: true,
+      });
+    } finally {
+      setHandledImage(undefined);
+      setLoadingUpload(false);
+    }
+  };
 
   const sizeHandler = (sizenow: string) => {
     if (!sizenow) {
-      addNotification({ message: "Please enter size", error: true })
-      return
+      addNotification({ message: "Please enter size", error: true });
+      return;
     }
 
-    const exist = sizes.some((s) => s.size === sizenow)
+    const exist = sizes.some((s) => s.size === sizenow);
 
     if (exist) {
-      const newSizes = sizes.filter((s) => s.size !== sizenow)
-      setSizes(newSizes)
+      const newSizes = sizes.filter((s) => s.size !== sizenow);
+      setSizes(newSizes);
     } else {
-      setSizes((prevSizes) => [...prevSizes, { size: sizenow, quantity: 1 }])
+      setSizes((prevSizes) => [...prevSizes, { size: sizenow, quantity: 1 }]);
     }
 
-    setInput((prev) => ({ ...prev, selectedSize: "" }))
-  }
+    setInput((prev) => ({ ...prev, selectedSize: "" }));
+  };
 
   const addSizeQuantity = (label: string, value: number) => {
-    const sizeIndex = sizes.findIndex((x) => x.size === label)
-    if (sizeIndex === -1) return
-    sizes[sizeIndex].quantity = value
-  }
+    const sizeIndex = sizes.findIndex((x) => x.size === label);
+    if (sizeIndex === -1) return;
+    sizes[sizeIndex].quantity = value;
+  };
 
   return (
     <View style={styles.container}>
@@ -607,7 +590,7 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={showCondition}
             onRequestClose={() => {
-              setShowCondition(!showCondition)
+              setShowCondition(!showCondition);
             }}
           >
             <Condition setShowCondition={setShowCondition} />
@@ -747,8 +730,8 @@ const Sell = ({ navigation }: any) => {
             returnKeyType="search"
             onSubmitEditing={() => Keyboard.dismiss()}
             onChangeText={(text) => {
-              handleOnChange("", "brand")
-              setQueryBrand(text)
+              handleOnChange("", "brand");
+              setQueryBrand(text);
             }}
             value={input.brand.length > 0 ? input.brand : queryBrand}
             style={[
@@ -777,13 +760,13 @@ const Sell = ({ navigation }: any) => {
                 <TouchableOpacity
                   style={styles.listItem}
                   onPress={() => {
-                    Keyboard.dismiss()
+                    Keyboard.dismiss();
                     if (p.name === "Other") {
-                      setShowOtherBrand(true)
+                      setShowOtherBrand(true);
                     } else {
-                      handleOnChange(p.name, "brand")
+                      handleOnChange(p.name, "brand");
                     }
-                    setQueryBrand("")
+                    setQueryBrand("");
                   }}
                 >
                   <Ionicons
@@ -801,7 +784,7 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={showOtherBrand}
             onRequestClose={() => {
-              setShowOtherBrand(!showOtherBrand)
+              setShowOtherBrand(!showOtherBrand);
             }}
           >
             <AddOtherBrands
@@ -845,8 +828,8 @@ const Sell = ({ navigation }: any) => {
                 color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) => {
-                handleOnChange(itemValue, "color")
-                setColorsVal([...colorsVal, itemValue])
+                handleOnChange(itemValue, "color");
+                setColorsVal([...colorsVal, itemValue]);
               }}
               mode="dropdown"
             >
@@ -922,8 +905,8 @@ const Sell = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                console.log("clicked")
-                pickImage("image2")
+                console.log("clicked");
+                pickImage("image2");
               }}
               disabled={loadingUpload}
               style={[
@@ -1008,7 +991,7 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={showVideoModal}
             onRequestClose={() => {
-              setShowVideoModal(!showVideoModal)
+              setShowVideoModal(!showVideoModal);
             }}
           >
             <VideoPickerComponent setShowVideoModal={setShowVideoModal} />
@@ -1122,7 +1105,7 @@ const Sell = ({ navigation }: any) => {
                       placeholder="Enter Size"
                       maxLength={3}
                       onChangeText={(text) => {
-                        setTempSize(text)
+                        setTempSize(text);
                       }}
                       style={{ color: colors.onBackground, width: "100%" }}
                       onBlur={() => sizeHandler(tempSize)}
@@ -1279,7 +1262,7 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-              setModalVisible(!modalVisible)
+              setModalVisible(!modalVisible);
             }}
           >
             <AddDeliveryOption
@@ -1413,7 +1396,7 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={showFeeStructure}
             onRequestClose={() => {
-              setShowFeeStructure(!showFeeStructure)
+              setShowFeeStructure(!showFeeStructure);
             }}
           >
             <FeeStructure setShowFeeStructure={setShowFeeStructure} />
@@ -1534,10 +1517,10 @@ const Sell = ({ navigation }: any) => {
         </ScrollView>
       )}
     </View>
-  )
-}
+  );
+};
 
-export default Sell
+export default Sell;
 
 const styles = StyleSheet.create({
   container: {
@@ -1751,4 +1734,4 @@ const styles = StyleSheet.create({
   cameraButtonText: {
     fontSize: 20,
   },
-})
+});

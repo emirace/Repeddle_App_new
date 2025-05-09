@@ -1,5 +1,5 @@
-import { StyleSheet, ScrollView, View } from "react-native"
-import React from "react"
+import { StyleSheet, ScrollView, View } from "react-native";
+import React from "react";
 import {
   Appbar,
   Avatar,
@@ -7,15 +7,18 @@ import {
   List,
   Text,
   useTheme,
-} from "react-native-paper"
-import Balance from "../../section/profile/Balances"
-import { RootStackParamList } from "../../types/navigation/stack"
-import useAuth from "../../hooks/useAuth"
-import { baseURL } from "../../services/api"
+} from "react-native-paper";
+import Balance from "../../section/profile/Balances";
+import {
+  ProfileNavigationProp,
+  RootStackParamList,
+} from "../../types/navigation/stack";
+import useAuth from "../../hooks/useAuth";
+import { baseURL } from "../../services/api";
 
-const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { colors } = useTheme()
-  const { logout, user } = useAuth()
+const Profile: React.FC<ProfileNavigationProp> = ({ navigation }) => {
+  const { colors } = useTheme();
+  const { logout, user } = useAuth();
 
   return (
     <ScrollView
@@ -164,7 +167,7 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
                 left={() => <List.Icon icon={item.leftIcon} />}
                 right={() => <List.Icon icon="chevron-right" />}
                 descriptionStyle={{ fontSize: 14 }}
-                onPress={() => navigation.navigate(`${item.link}`)}
+                onPress={() => navigation.navigate(`${item.link}` as any)}
               />
             ))}
             <List.Item
@@ -177,8 +180,8 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
               right={() => <List.Icon icon="chevron-right" />}
               descriptionStyle={{ fontSize: 14 }}
               onPress={() => {
-                logout()
-                navigation.replace("Auth")
+                logout();
+                navigation.replace("Auth");
               }}
               style={{ paddingVertical: 5 }}
             />
@@ -186,14 +189,14 @@ const Profile: React.FC<{ navigation: any }> = ({ navigation }) => {
         ) : null}
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
 const dashboardItems: {
-  name: string
-  link: keyof RootStackParamList
-  leftIcon: string
-  description: string
+  name: string;
+  link: keyof RootStackParamList;
+  leftIcon: string;
+  description: string;
 }[] = [
   {
     name: "My Profile",
@@ -237,7 +240,7 @@ const dashboardItems: {
     leftIcon: "cash",
     description: "View all your transactions",
   },
-]
+];
 
 const styles = StyleSheet.create({
   userInfo: {
@@ -253,6 +256,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "gray",
   },
-})
+});
 
-export default Profile
+export default Profile;

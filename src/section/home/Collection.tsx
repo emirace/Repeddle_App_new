@@ -47,7 +47,7 @@ const Collection = ({ navigation }: Props) => {
       <View style={homeStyles.classic}>
         <Image
           source={{
-            uri: "https://repeddle.com/images/vonecia-carswell-D3HSYAUjVrM-unsplash.webp",
+            uri: "https://repeddle-frontend.vercel.app/images/wears/vonecia-carswell-D3HSYAUjVrM-unsplash.webp",
           }}
           style={homeStyles.classicImage}
         />
@@ -74,7 +74,7 @@ const Collection = ({ navigation }: Props) => {
       <View style={homeStyles.classic}>
         <Image
           source={{
-            uri: "https://repeddle.com/images/For-kids.webp",
+            uri: "https://repeddle-frontend.vercel.app/images/wears/For-kids.webp",
           }}
           style={homeStyles.classicImage}
         />
@@ -99,7 +99,7 @@ const Collection = ({ navigation }: Props) => {
       <View style={homeStyles.classic}>
         <Image
           source={{
-            uri: "https://repeddle.com/images/tamara-bellis-uN1m9Ca0aqo-unsplash.webp",
+            uri: "https://repeddle-frontend.vercel.app/images/wears/tamara-bellis-uN1m9Ca0aqo-unsplash.webp",
           }}
           style={homeStyles.classicImage}
         />
@@ -135,32 +135,32 @@ const images: {
   search?: string;
 }[] = [
   {
-    key: "https://repeddle.com/images/engin-akyurt-xbFtknoQG_Y-unsplash.webp",
+    key: "https://repeddle-frontend.vercel.app/images/categories/engin-akyurt-xbFtknoQG_Y-unsplash.webp",
     text: "style up",
     filter: { type: "recurated" },
   },
   {
-    key: "https://repeddle.com/images/ruan-richard-rodrigues--MCGquf_4mU-unsplash.webp",
+    key: "https://repeddle-frontend.vercel.app/images/categories/ruan-richard-rodrigues--MCGquf_4mU-unsplash.webp",
     text: "accessorize",
     search: "accessorize",
   },
   {
-    key: "https://repeddle.com/images/julian-hochgesang-sA5wcAu4CBA-unsplash.webp",
+    key: "https://repeddle-frontend.vercel.app/images/categories/julian-hochgesang-sA5wcAu4CBA-unsplash.webp",
     text: "sneaker-head",
     search: "shoe",
   },
   {
-    key: "https://repeddle.com/images/stephen-audu-BkB5T-ZdK88-unsplash.webp",
+    key: "https://repeddle-frontend.vercel.app/images/categories/stephen-audu-BkB5T-ZdK88-unsplash.webp",
     text: "bag affair",
     search: "bag",
   },
   {
-    key: "https://repeddle.com/images/carmen-fu-4xb2LK36Mps-unsplash.webp",
+    key: "https://repeddle-frontend.vercel.app/images/categories/carmen-fu-4xb2LK36Mps-unsplash.webp",
     text: "gen-Z kids",
     search: "kid",
   },
   {
-    key: "https://repeddle.com/images/ahmed-carter-GP3-QpmTgPk-unsplash.webp",
+    key: "https://repeddle-frontend.vercel.app/images/categories/ahmed-carter-GP3-QpmTgPk-unsplash.webp",
     text: "let's go party",
   },
 ];
