@@ -1,4 +1,10 @@
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
+import {
+  Dimensions,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native"
 import React, { useState } from "react"
 import { Button, Text, useTheme } from "react-native-paper"
 import { Ionicons } from "@expo/vector-icons"
@@ -48,7 +54,7 @@ const AddOtherBrands = ({ setShowOtherBrand, handleOnChange }: Props) => {
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <TouchableOpacity
           onPress={() => setShowOtherBrand(false)}
-          style={{ position: "absolute", right: 20, top: 0 }}
+          style={{ position: "absolute", right: 15, top: 10 }}
         >
           <Ionicons name="close" color={colors.onBackground} size={20} />
         </TouchableOpacity>
@@ -90,7 +96,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#00000090",
   },
   container: {
+    minWidth: Dimensions.get("screen").width * 0.8,
+    minHeight: 180,
     padding: 30,
+    borderRadius: 10,
   },
   item: {
     flexDirection: "column",
@@ -111,11 +120,11 @@ const styles = StyleSheet.create({
     color: "red",
   },
   uploadButton: {
-    marginTop: 5,
+    marginTop: 10,
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
+    // padding: 10,
   },
   buttonText: {
     color: "white",

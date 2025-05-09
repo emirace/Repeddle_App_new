@@ -24,6 +24,33 @@ export const color1 = [
   { name: "yellow", id: 23 },
 ]
 
+export const color2 = [
+  "red",
+  "anthracite",
+  "beige",
+  "black",
+  "blue",
+  "brown",
+  "burgubdy",
+  "camel",
+  "ecru",
+  "gold",
+  "green",
+  "grey",
+  "khaki",
+  "metallic",
+  "multiculour",
+  "navy",
+  "orange",
+  "pink",
+  "purple",
+  "silver",
+  "turquoise",
+  "white",
+  "yellow",
+  "other",
+]
+
 export const sizelist = [
   { id: 1, name: "XS" },
   { id: 0, name: "S" },

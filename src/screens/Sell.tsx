@@ -2,13 +2,14 @@ import {
   Image,
   Keyboard,
   Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+} from "react-native"
+import React, { useEffect, useMemo, useState } from "react"
 import {
   ActivityIndicator,
   Appbar,
@@ -17,57 +18,57 @@ import {
   Switch,
   Text,
   useTheme,
-} from "react-native-paper";
-import useCategory from "../hooks/useCategory";
-import { IBrand, ISize } from "../types/product";
-import Input from "../components/Input";
-import { Picker } from "@react-native-picker/picker";
-import { Ionicons } from "@expo/vector-icons";
-import Condition from "../components/Condition";
-import { color1, features, materials } from "../utils/constants";
-import useBrands from "../hooks/useBrand";
-import * as ImagePicker from "expo-image-picker";
-import { currency, region } from "../utils/common";
-import MyButton from "../components/MyButton";
-import useProducts from "../hooks/useProducts";
-import AddDeliveryOption from "../components/AddDeliveryOption";
-import useAuth from "../hooks/useAuth";
-import { normaliseH } from "../utils/normalize";
-import FeeStructure from "../components/FeeStructure";
-import VideoPickerComponent from "../components/VideoPickerComponent";
-import AddOtherBrands from "../components/AddOtherBrands";
-import AddAccount from "../components/AddAccount";
-import AddAddress from "../components/AddAddress";
-import { useIsFocused } from "@react-navigation/native";
-import useToastNotification from "../hooks/useToastNotification";
-import CartIcon from "../components/ui/cartIcon";
-import Tooltip from "../components/Tooltip";
-import useUser from "../hooks/useUser";
-import { baseURL } from "../services/api";
-import { uploadOptimizeImage } from "../utils/image";
+} from "react-native-paper"
+import useCategory from "../hooks/useCategory"
+import { IBrand, ISize } from "../types/product"
+import Input from "../components/Input"
+import { Picker } from "@react-native-picker/picker"
+import { Ionicons } from "@expo/vector-icons"
+import Condition from "../components/Condition"
+import { color2, features, materials } from "../utils/constants"
+import useBrands from "../hooks/useBrand"
+import * as ImagePicker from "expo-image-picker"
+import { currency, deleteImage, region } from "../utils/common"
+import MyButton from "../components/MyButton"
+import useProducts from "../hooks/useProducts"
+import AddDeliveryOption from "../components/AddDeliveryOption"
+import useAuth from "../hooks/useAuth"
+import { normaliseH } from "../utils/normalize"
+import FeeStructure from "../components/FeeStructure"
+import VideoPickerComponent from "../components/VideoPickerComponent"
+import AddOtherBrands from "../components/AddOtherBrands"
+import AddAccount from "../components/AddAccount"
+import AddAddress from "../components/AddAddress"
+import { useIsFocused } from "@react-navigation/native"
+import useToastNotification from "../hooks/useToastNotification"
+import CartIcon from "../components/ui/cartIcon"
+import Tooltip from "../components/Tooltip"
+import useUser from "../hooks/useUser"
+import { baseURL } from "../services/api"
+import { uploadOptimizeImage } from "../utils/image"
 
 const Sell = ({ navigation }: any) => {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const accountVerified = useMemo(
     () => !!user?.bankName && !!user?.accountName && user?.role !== "Seller",
     [user?.bankName, user?.accountName, user?.role]
-  );
+  )
   const addressVerified = useMemo(
     () =>
       !!user?.address?.street &&
       !!user?.address?.state &&
       user?.role !== "Seller",
     [user?.address, user?.role]
-  );
-  const [isClosed, setIsClosed] = useState(false);
-  const [isClosedAccount, setIsClosedAccount] = useState(false);
+  )
+  const [isClosed, setIsClosed] = useState(false)
+  const [isClosedAccount, setIsClosedAccount] = useState(false)
 
-  const { colors } = useTheme();
-  const { fetchBrands, brands } = useBrands();
-  const { categories, fetchCategories } = useCategory();
-  const { createProduct, error } = useProducts();
-  const { addNotification } = useToastNotification();
-  const isFocused = useIsFocused();
+  const { colors } = useTheme()
+  const { fetchBrands, brands } = useBrands()
+  const { categories, fetchCategories } = useCategory()
+  const { createProduct, error } = useProducts()
+  const { addNotification } = useToastNotification()
+  const isFocused = useIsFocused()
 
   const [input, setInput] = useState({
     name: "",
@@ -94,143 +95,151 @@ const Sell = ({ navigation }: any) => {
     luxuryImage: "",
     luxury: false,
     vintage: false,
-  });
+  })
 
-  const [tempSize, setTempSize] = useState("S");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [countInStock, setCountInStock] = useState(1);
-  const [sizes, setSizes] = useState<ISize[]>([]);
-  const [sizesError, setSizesError] = useState("");
-  const [addSize, setAddSize] = useState(sizes.length < 1);
-  const [showCondition, setShowCondition] = useState(false);
-  const [showVideoModal, setShowVideoModal] = useState(false);
-  const [tags, setTags] = useState<string[]>([]);
-  const [colorsVal, setColorsVal] = useState<string[]>([]);
-  const [sizesInputCounts, setSizesInputCounts] = useState<number[]>([]);
-  const [handledImage, setHandledImage] = useState<string>();
+  const [tempSize, setTempSize] = useState("S")
+  const [modalVisible, setModalVisible] = useState(false)
+  const [countInStock, setCountInStock] = useState(1)
+  const [sizes, setSizes] = useState<ISize[]>([])
+  const [sizesError, setSizesError] = useState("")
+  const [addSize, setAddSize] = useState(sizes.length < 1)
+  const [showCondition, setShowCondition] = useState(false)
+  const [showVideoModal, setShowVideoModal] = useState(false)
+  const [tags, setTags] = useState<string[]>([])
+  const [colorsVal, setColorsVal] = useState<string[]>([])
+  const [sizesInputCounts, setSizesInputCounts] = useState<number[]>([])
+  const [handledImage, setHandledImage] = useState<string>()
 
-  const [paxi, setPaxi] = useState(true);
-  const [gig, setGig] = useState(false);
-  const [pudo, setPudo] = useState(false);
-  const [postnet, setPostnet] = useState(false);
-  const [aramex, setAramex] = useState(false);
-  const [pickup, setPickup] = useState(true);
-  const [bundle, setBundle] = useState(false);
-  const [meta, setMeta] = useState({});
+  const [paxi, setPaxi] = useState(true)
+  const [gig, setGig] = useState(false)
+  const [pudo, setPudo] = useState(false)
+  const [postnet, setPostnet] = useState(false)
+  const [aramex, setAramex] = useState(false)
+  const [pickup, setPickup] = useState(true)
+  const [bundle, setBundle] = useState(false)
+  const [meta, setMeta] = useState({})
   const [validationError, setValidationError] = useState<{
-    [key in keyof typeof input]?: String;
-  }>({});
+    [key in keyof typeof input]?: String
+  }>({})
   const [deliveryOption, setDeliveryOption] = useState([
     { name: "Pick up from Seller", value: 0 },
-  ]);
-  const [queryBrand, setQueryBrand] = useState("");
-  const [updating, setUpdating] = useState(false);
-  const [searchBrand, setSearchBrand] = useState<IBrand[]>([]);
-  const [showOtherBrand, setShowOtherBrand] = useState(false);
-  const [showFeeStructure, setShowFeeStructure] = useState(false);
-  const [loadingUpload, setLoadingUpload] = useState(false);
+  ])
+  const [queryBrand, setQueryBrand] = useState("")
+  const [updating, setUpdating] = useState(false)
+  const [searchBrand, setSearchBrand] = useState<IBrand[]>([])
+  const [showOtherBrand, setShowOtherBrand] = useState(false)
+  const [showFeeStructure, setShowFeeStructure] = useState(false)
+  const [loadingUpload, setLoadingUpload] = useState(false)
 
   const handleOnChange = (text: string | boolean, key: keyof typeof input) => {
-    setInput((prevState) => ({ ...prevState, [key]: text }));
-  };
+    setInput((prevState) => ({ ...prevState, [key]: text }))
+  }
 
   const handleError = (text: string | boolean, key: keyof typeof input) => {
-    setValidationError((prevState) => ({ ...prevState, [key]: text }));
-  };
+    setValidationError((prevState) => ({ ...prevState, [key]: text }))
+  }
+
+  const removeError = (key: keyof typeof input) => {
+    setValidationError((prevState) => ({ ...prevState, [key]: undefined }))
+  }
 
   const addSizesCont = () => {
-    setSizesInputCounts([...sizesInputCounts, 1]);
-  };
+    setSizesInputCounts([...sizesInputCounts, 1])
+  }
 
   const validation = () => {
-    var valid = true;
+    let valid = true
     if (!input.name) {
-      handleError("Enter product name", "name");
-      valid = false;
+      handleError("Enter product name", "name")
+      valid = false
     }
 
     if (!input.image1) {
-      handleError("Add at least one image", "image");
-      valid = false;
+      handleError("Add at least one image", "image")
+      valid = false
     }
     if (!input.mainCategory) {
-      handleError("Select main category", "mainCategory");
-      valid = false;
+      handleError("Select main category", "mainCategory")
+      valid = false
     }
     if (!input.subCategory) {
-      handleError("Select sub category", "subCategory");
-      valid = false;
+      handleError("Select sub category", "subCategory")
+      valid = false
     }
     if (!input.category) {
-      handleError("Select category", "category");
-      valid = false;
+      handleError("Select category", "category")
+      valid = false
     }
     if (!input.brand) {
-      handleError("Select brand", "brand");
-      valid = false;
+      handleError("Select brand", "brand")
+      valid = false
     }
     if (!input.costPrice) {
-      handleError("Enter a valid price", "costPrice");
-      valid = false;
+      handleError("Enter a valid price", "costPrice")
+      valid = false
     }
 
     if (input.sellingPrice && input.sellingPrice > input.costPrice) {
-      handleError("Selling price must be less than cost price", "sellingPrice");
+      handleError("Selling price must be less than cost price", "sellingPrice")
     }
     // if (!input.shippingLocation) {
     //   handleError("Select shipping location", "shippingLocation");
     //   valid = false;
     // }
     if (!input.condition) {
-      handleError("Select condition", "condition");
-      valid = false;
+      handleError("Select condition", "condition")
+      valid = false
     }
 
     if (!input.keyFeatures) {
-      handleError("Select features", "keyFeatures");
-      valid = false;
+      handleError("Select features", "keyFeatures")
+      valid = false
     }
     if (!colorsVal.length) {
-      handleError("Select color", "color");
-      valid = false;
+      handleError("Select color", "color")
+      valid = false
     }
 
     if (addSize) {
       if (countInStock < 1) {
-        setSizesError("Enter count in stock");
-        valid = false;
+        setSizesError("Enter count in stock")
+        valid = false
       }
     } else {
       if (!sizes.length) {
-        setSizesError("Enter a valid size and quantity available");
-        valid = false;
+        setSizesError("Enter a valid size and quantity")
+        valid = false
+      } else if (!sizes.every((val) => val.quantity && val.size)) {
+        setSizesError("Enter a valid size and quantity")
+        valid = false
       }
     }
     if (!input.description) {
-      handleError("Description is required", "description");
-      valid = false;
+      handleError("Description is required", "description")
+      valid = false
     }
+
     if (valid) {
-      submitHandler();
+      submitHandler()
     } else
       addNotification({
-        message: "Error creating product, fill mising fields ",
+        message: "Error creating product, fill missing fields ",
         error: true,
-      });
-  };
+      })
+  }
 
   const submitHandler = async () => {
     if (addSize === false && sizes.length === 0) {
-      addNotification({ message: "Please add size", error: true });
-      return;
+      addNotification({ message: "Please add size", error: true })
+      return
     }
-    const images: string[] = [];
-    if (input.image1) images.push(input.image1);
-    if (input.image2) images.push(input.image2);
-    if (input.image3) images.push(input.image3);
-    if (input.image4) images.push(input.image4);
+    const images: string[] = []
+    if (input.image1) images.push(input.image1)
+    if (input.image2) images.push(input.image2)
+    if (input.image3) images.push(input.image3)
+    if (input.image4) images.push(input.image4)
 
-    setUpdating(true);
+    setUpdating(true)
 
     const res = await createProduct({
       name: input.name,
@@ -257,114 +266,133 @@ const Sell = ({ navigation }: any) => {
       luxuryImage: input.luxuryImage,
       // addSize,
       countInStock,
-    });
+    })
 
     if (res) {
-      navigation.push("MyAccount", { username: user!.username });
+      navigation.push("MyAccount", { username: user!.username })
     } else {
-      addNotification({ message: error, error: true });
+      addNotification({ message: error || "", error: true })
     }
 
-    setUpdating(false);
-  };
+    setUpdating(false)
+  }
 
-  const handleTags = (tag: string) => {
+  const handleTags = (tagVal: string) => {
+    const tag = tagVal.trim()
     if (tag.includes(" ")) {
       addNotification({
-        message: "Please remove unnecessary space",
+        message: "Please remove space",
         error: true,
-      });
-      return;
+      })
+      return
     }
 
-    if (tags.length > 5) {
+    if (tags.length >= 5) {
       addNotification({
         message: "You can't add more five tags ",
         error: true,
-      });
+      })
 
-      return;
+      return
     }
     if (tag.length > 0) {
-      setTags([...tags, tag]);
-      handleOnChange("", "tag");
+      setTags([...tags, tag])
+      handleOnChange("", "tag")
     }
-  };
+  }
 
   const removeTags = (tag: string) => {
-    const newtags = tags.filter((data) => data != tag);
-    setTags(newtags);
-  };
+    const newtags = tags.filter((data) => data != tag)
+    setTags(newtags)
+  }
 
   const discount = useMemo(() => {
     if (parseInt(input.costPrice) < parseInt(input?.sellingPrice ?? "0"))
-      return 0;
+      return 0
     return (
       ((parseInt(input.costPrice) - parseInt(input?.sellingPrice ?? "0")) /
         parseInt(input.costPrice)) *
       100
-    );
-  }, [input.costPrice, input?.sellingPrice]);
+    )
+  }, [input.costPrice, input?.sellingPrice])
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    fetchCategories()
+  }, [])
 
   useEffect(() => {
     const getFilterBrand = async () => {
-      const params: string[][] = [["search", queryBrand]];
+      const params: string[][] = [["search", queryBrand]]
 
-      const string = new URLSearchParams(params).toString();
+      const string = new URLSearchParams(params).toString()
 
-      const res = await fetchBrands(string);
+      const res = await fetchBrands(string)
 
-      if (res) setSearchBrand(brands);
-    };
+      if (res) setSearchBrand(brands)
+    }
 
-    if (queryBrand) getFilterBrand();
-  }, [queryBrand]);
+    if (queryBrand) getFilterBrand()
+  }, [queryBrand])
 
   const pickImage = async (key: keyof typeof input) => {
     try {
-      setHandledImage(key);
-      setLoadingUpload(true);
+      setHandledImage(key)
+      setLoadingUpload(true)
 
-      const res = await uploadOptimizeImage();
-      handleOnChange(res as string, key);
+      const res = await uploadOptimizeImage()
+      handleOnChange(res as string, key)
     } catch (error: any) {
       addNotification({
         message: error || "Unable to upload image try again later",
         error: true,
-      });
+      })
     } finally {
-      setHandledImage(undefined);
-      setLoadingUpload(false);
+      setHandledImage(undefined)
+      setLoadingUpload(false)
     }
-  };
+  }
 
   const sizeHandler = (sizenow: string) => {
     if (!sizenow) {
-      addNotification({ message: "Please enter size", error: true });
-      return;
+      addNotification({ message: "Please enter size", error: true })
+      return
     }
 
-    const exist = sizes.some((s) => s.size === sizenow);
+    const exist = sizes.some((s) => s.size === sizenow)
 
     if (exist) {
-      const newSizes = sizes.filter((s) => s.size !== sizenow);
-      setSizes(newSizes);
+      const newSizes = sizes.filter((s) => s.size !== sizenow)
+      setSizes(newSizes)
     } else {
-      setSizes((prevSizes) => [...prevSizes, { size: sizenow, quantity: 1 }]);
+      setSizes((prevSizes) => [...prevSizes, { size: sizenow, quantity: 1 }])
     }
 
-    setInput((prev) => ({ ...prev, selectedSize: "" }));
-  };
+    setInput((prev) => ({ ...prev, selectedSize: "" }))
+  }
 
   const addSizeQuantity = (label: string, value: number) => {
-    const sizeIndex = sizes.findIndex((x) => x.size === label);
-    if (sizeIndex === -1) return;
-    sizes[sizeIndex].quantity = value;
-  };
+    const sizeIndex = sizes.findIndex((x) => x.size === label)
+    if (sizeIndex === -1) return
+    sizes[sizeIndex].quantity = value
+  }
+
+  const onDeleteImage = async (key: keyof typeof input) => {
+    if (!input[key]) return
+    setHandledImage(key)
+    try {
+      setLoadingUpload(true)
+      const imageName = (input[key] as string).split("/").pop()
+      if (imageName) {
+        const res = await deleteImage(imageName)
+        addNotification({ message: res })
+        handleOnChange("", key)
+      }
+    } catch (error) {
+      addNotification({ message: "Failed to delete image", error: true })
+    }
+    setHandledImage(undefined)
+    setLoadingUpload(false)
+  }
 
   return (
     <View style={styles.container}>
@@ -429,6 +457,7 @@ const Sell = ({ navigation }: any) => {
             placeholder="Product Name"
             value={input.name}
             style={{ color: colors.onBackground, width: "100%" }}
+            onChange={() => removeError("name")}
           />
           {validationError.name && (
             <Text style={{ color: "red", fontSize: 12 }}>
@@ -444,9 +473,10 @@ const Sell = ({ navigation }: any) => {
                 padding: 5,
                 color: colors.onBackground,
               }}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "mainCategory")
-              }
+                removeError("mainCategory")
+              }}
               mode="dropdown"
             >
               <Picker.Item
@@ -485,9 +515,10 @@ const Sell = ({ navigation }: any) => {
                 padding: 5,
                 color: colors.onBackground,
               }}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "category")
-              }
+                removeError("category")
+              }}
               mode="dropdown"
             >
               <Picker.Item
@@ -530,9 +561,10 @@ const Sell = ({ navigation }: any) => {
                 padding: 5,
                 color: colors.onBackground,
               }}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "subCategory")
-              }
+                removeError("subCategory")
+              }}
               mode="dropdown"
             >
               <Picker.Item
@@ -590,7 +622,8 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={showCondition}
             onRequestClose={() => {
-              setShowCondition(!showCondition);
+              setShowCondition(!showCondition)
+              removeError("condition")
             }}
           >
             <Condition setShowCondition={setShowCondition} />
@@ -688,9 +721,10 @@ const Sell = ({ navigation }: any) => {
                 padding: 5,
                 color: colors.onBackground,
               }}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "material")
-              }
+                removeError("material")
+              }}
               mode="dropdown"
             >
               <Picker.Item
@@ -730,9 +764,10 @@ const Sell = ({ navigation }: any) => {
             returnKeyType="search"
             onSubmitEditing={() => Keyboard.dismiss()}
             onChangeText={(text) => {
-              handleOnChange("", "brand");
-              setQueryBrand(text);
+              handleOnChange("", "brand")
+              setQueryBrand(text)
             }}
+            onChange={() => removeError("brand")}
             value={input.brand.length > 0 ? input.brand : queryBrand}
             style={[
               styles.textInput,
@@ -760,13 +795,13 @@ const Sell = ({ navigation }: any) => {
                 <TouchableOpacity
                   style={styles.listItem}
                   onPress={() => {
-                    Keyboard.dismiss();
+                    Keyboard.dismiss()
                     if (p.name === "Other") {
-                      setShowOtherBrand(true);
+                      setShowOtherBrand(true)
                     } else {
-                      handleOnChange(p.name, "brand");
+                      handleOnChange(p.name, "brand")
                     }
-                    setQueryBrand("");
+                    setQueryBrand("")
                   }}
                 >
                   <Ionicons
@@ -784,7 +819,7 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={showOtherBrand}
             onRequestClose={() => {
-              setShowOtherBrand(!showOtherBrand);
+              setShowOtherBrand(!showOtherBrand)
             }}
           >
             <AddOtherBrands
@@ -828,8 +863,9 @@ const Sell = ({ navigation }: any) => {
                 color: colors.onBackground,
               }}
               onValueChange={(itemValue, itemIndex) => {
-                handleOnChange(itemValue, "color");
-                setColorsVal([...colorsVal, itemValue]);
+                handleOnChange(itemValue, "color")
+                setColorsVal([...colorsVal, itemValue])
+                removeError("color")
               }}
               mode="dropdown"
             >
@@ -841,15 +877,15 @@ const Sell = ({ navigation }: any) => {
                 label={"--select--"}
                 value={""}
               />
-              {color1.map((c, index) => (
+              {color2.map((c, index) => (
                 <Picker.Item
                   style={{
                     backgroundColor: colors.elevation.level2,
                     color: colors.onBackground,
                   }}
                   key={index}
-                  label={c.name}
-                  value={c.id}
+                  label={c}
+                  value={c}
                 />
               ))}
             </Picker>
@@ -891,10 +927,18 @@ const Sell = ({ navigation }: any) => {
               {handledImage === "image1" && loadingUpload ? (
                 <ActivityIndicator />
               ) : input.image1 ? (
-                <Image
-                  source={{ uri: baseURL + input.image1 }}
-                  style={styles.image}
-                />
+                <>
+                  <Image
+                    source={{ uri: baseURL + input.image1 }}
+                    style={styles.image}
+                  />
+                  <Pressable
+                    style={styles.trash}
+                    onPress={() => onDeleteImage("image1")}
+                  >
+                    <Ionicons name="trash-outline" size={16} color="black" />
+                  </Pressable>
+                </>
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -905,8 +949,8 @@ const Sell = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                console.log("clicked");
-                pickImage("image2");
+                console.log("clicked")
+                pickImage("image2")
               }}
               disabled={loadingUpload}
               style={[
@@ -917,10 +961,18 @@ const Sell = ({ navigation }: any) => {
               {handledImage === "image2" && loadingUpload ? (
                 <ActivityIndicator />
               ) : input.image2 ? (
-                <Image
-                  source={{ uri: baseURL + input.image2 }}
-                  style={styles.image}
-                />
+                <>
+                  <Image
+                    source={{ uri: baseURL + input.image2 }}
+                    style={styles.image}
+                  />
+                  <Pressable
+                    style={styles.trash}
+                    onPress={() => onDeleteImage("image2")}
+                  >
+                    <Ionicons name="trash-outline" size={16} color="black" />
+                  </Pressable>
+                </>
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -940,10 +992,18 @@ const Sell = ({ navigation }: any) => {
               {handledImage === "image3" && loadingUpload ? (
                 <ActivityIndicator />
               ) : input.image3 ? (
-                <Image
-                  source={{ uri: baseURL + input.image3 }}
-                  style={styles.image}
-                />
+                <>
+                  <Image
+                    source={{ uri: baseURL + input.image3 }}
+                    style={styles.image}
+                  />
+                  <Pressable
+                    style={styles.trash}
+                    onPress={() => onDeleteImage("image3")}
+                  >
+                    <Ionicons name="trash-outline" size={16} color="black" />
+                  </Pressable>
+                </>
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -963,10 +1023,18 @@ const Sell = ({ navigation }: any) => {
               {handledImage === "image4" && loadingUpload ? (
                 <ActivityIndicator />
               ) : input.image4 ? (
-                <Image
-                  source={{ uri: baseURL + input.image4 }}
-                  style={styles.image}
-                />
+                <>
+                  <Image
+                    source={{ uri: baseURL + input.image4 }}
+                    style={styles.image}
+                  />
+                  <Pressable
+                    style={styles.trash}
+                    onPress={() => onDeleteImage("image4")}
+                  >
+                    <Ionicons name="trash-outline" size={16} color="black" />
+                  </Pressable>
+                </>
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -991,7 +1059,7 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={showVideoModal}
             onRequestClose={() => {
-              setShowVideoModal(!showVideoModal);
+              setShowVideoModal(!showVideoModal)
             }}
           >
             <VideoPickerComponent setShowVideoModal={setShowVideoModal} />
@@ -1033,19 +1101,34 @@ const Sell = ({ navigation }: any) => {
                 }}
               >
                 <TouchableOpacity
-                  onPress={() => pickImage("luxury")}
+                  onPress={() => pickImage("luxuryImage")}
                   style={{
                     backgroundColor: colors.elevation.level2,
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: 5,
                   }}
+                  disabled={loadingUpload}
                 >
-                  {input.luxuryImage ? (
-                    <Image
-                      source={{ uri: baseURL + input.luxuryImage }}
-                      style={{ width: "100%", height: 120 }}
-                    />
+                  {handledImage === "luxuryImage" && loadingUpload ? (
+                    <ActivityIndicator />
+                  ) : input.luxuryImage ? (
+                    <>
+                      <Image
+                        source={{ uri: baseURL + input.luxuryImage }}
+                        style={{ width: "100%", height: 120 }}
+                      />
+                      <Pressable
+                        style={styles.trash}
+                        onPress={() => onDeleteImage("luxuryImage")}
+                      >
+                        <Ionicons
+                          name="trash-outline"
+                          size={18}
+                          color="black"
+                        />
+                      </Pressable>
+                    </>
                   ) : (
                     <>
                       <Ionicons
@@ -1059,6 +1142,11 @@ const Sell = ({ navigation }: any) => {
                     </>
                   )}
                 </TouchableOpacity>
+                {validationError.luxuryImage && (
+                  <Text style={{ color: "red", fontSize: 12 }}>
+                    {validationError.luxuryImage}
+                  </Text>
+                )}
                 <Text style={styles.info}>
                   This information is mandatory for luxury brands. This
                   information will not be publicly displayed. Only use this
@@ -1105,7 +1193,7 @@ const Sell = ({ navigation }: any) => {
                       placeholder="Enter Size"
                       maxLength={3}
                       onChangeText={(text) => {
-                        setTempSize(text);
+                        setTempSize(text)
                       }}
                       style={{ color: colors.onBackground, width: "100%" }}
                       onBlur={() => sizeHandler(tempSize)}
@@ -1124,7 +1212,7 @@ const Sell = ({ navigation }: any) => {
 
               <TouchableOpacity onPress={addSizesCont}>
                 <Text style={[styles.addSize, { color: colors.primary }]}>
-                  Add More Size
+                  {sizes.length <= 1 ? "Add Size" : "Add More Size"}
                 </Text>
               </TouchableOpacity>
             </>
@@ -1219,9 +1307,10 @@ const Sell = ({ navigation }: any) => {
                 padding: 5,
                 color: colors.onBackground,
               }}
-              onValueChange={(itemValue, itemIndex) =>
+              onValueChange={(itemValue, itemIndex) => {
                 handleOnChange(itemValue, "keyFeatures")
-              }
+                removeError("keyFeatures")
+              }}
               mode="dropdown"
             >
               <Picker.Item
@@ -1262,7 +1351,7 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-              setModalVisible(!modalVisible);
+              setModalVisible(!modalVisible)
             }}
           >
             <AddDeliveryOption
@@ -1351,6 +1440,7 @@ const Sell = ({ navigation }: any) => {
                 keyboardType="numeric"
                 style={{ color: colors.onBackground, width: "100%" }}
                 value={input.costPrice}
+                onChange={() => removeError("costPrice")}
               />
               {validationError.costPrice && (
                 <Text style={{ color: "red", fontSize: 12 }}>
@@ -1367,6 +1457,7 @@ const Sell = ({ navigation }: any) => {
                 placeholder="Selling Price"
                 onFocus={() => {}}
                 value={input.sellingPrice}
+                onChange={() => removeError("sellingPrice")}
               />
               {validationError.sellingPrice && (
                 <Text style={{ color: "red", fontSize: 12 }}>
@@ -1396,7 +1487,7 @@ const Sell = ({ navigation }: any) => {
             transparent={true}
             visible={showFeeStructure}
             onRequestClose={() => {
-              setShowFeeStructure(!showFeeStructure);
+              setShowFeeStructure(!showFeeStructure)
             }}
           >
             <FeeStructure setShowFeeStructure={setShowFeeStructure} />
@@ -1422,6 +1513,7 @@ const Sell = ({ navigation }: any) => {
             numberOfLines={5}
             onChangeText={(text) => handleOnChange(text, "specification")}
             value={input.specification}
+            onChange={() => removeError("specification")}
           />
           {validationError.specification && (
             <Text style={{ color: "red", fontSize: 12 }}>
@@ -1446,6 +1538,7 @@ const Sell = ({ navigation }: any) => {
             onChangeText={(text) => handleOnChange(text, "description")}
             value={input.description}
             textAlignVertical="top"
+            onChange={() => removeError("description")}
           />
           {validationError.description && (
             <Text style={{ color: "red", fontSize: 12 }}>
@@ -1517,10 +1610,10 @@ const Sell = ({ navigation }: any) => {
         </ScrollView>
       )}
     </View>
-  );
-};
+  )
+}
 
-export default Sell;
+export default Sell
 
 const styles = StyleSheet.create({
   container: {
@@ -1542,10 +1635,14 @@ const styles = StyleSheet.create({
   },
   picker: { height: 40, overflow: "hidden", justifyContent: "center" },
   inputCont: { marginVertical: 5 },
-  imageCont: { flexDirection: "row", justifyContent: "space-around" },
+  imageCont: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 5,
+  },
   camera: {
-    width: 70,
-    height: 70,
+    width: 80,
+    height: 80,
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 5,
@@ -1563,7 +1660,9 @@ const styles = StyleSheet.create({
   },
   textarea: {
     borderRadius: 5,
-    // marginVertical: normaliseH(10),
+    paddingVertical: normaliseH(10),
+    paddingHorizontal: normaliseH(8),
+    marginVertical: normaliseH(10),
   },
   price: {
     fontSize: 16,
@@ -1614,6 +1713,14 @@ const styles = StyleSheet.create({
   },
   item: {
     marginBottom: 10,
+  },
+  trash: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    padding: 2,
+    borderRadius: "50%",
+    backgroundColor: "white",
   },
   // label: {
   //   fontSize: 16,
@@ -1734,4 +1841,4 @@ const styles = StyleSheet.create({
   cameraButtonText: {
     fontSize: 20,
   },
-});
+})

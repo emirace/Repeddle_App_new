@@ -20,3 +20,19 @@ export const saveImageService = async (formData: FormData) => {
     throw getBackendErrorMessage(error)
   }
 }
+
+export const deleteImageService = async (url: string) => {
+  try {
+    const response: { message: string } = await api.delete(`/images/${url}`)
+
+    console.log(response)
+    return response.message
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Error uploading image:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}

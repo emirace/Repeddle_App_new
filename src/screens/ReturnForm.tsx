@@ -11,13 +11,14 @@ import { Appbar, Button, Text, useTheme } from "react-native-paper"
 import { ReturnFormNavigationProp } from "../types/navigation/stack"
 import SelectDropdown from "react-native-select-dropdown"
 import { Entypo, Ionicons } from "@expo/vector-icons"
-import { currency, deliveryNumber, uploadImage } from "../utils/common"
+import { currency, deliveryNumber } from "../utils/common"
 import { OrderItem } from "../types/order"
 import * as ImagePicker from "expo-image-picker"
 import useToastNotification from "../hooks/useToastNotification"
 import useReturn from "../hooks/useReturn"
 import { baseURL } from "../services/api"
 import useMessage from "../hooks/useMessage"
+import { uploadOptimizeImage } from "../utils/image"
 
 type Props = ReturnFormNavigationProp
 
@@ -151,37 +152,19 @@ const ReturnForm = ({ navigation, route }: Props) => {
   }
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      quality: 1,
-    })
-
-    if (!result.canceled) {
-      let localUri = result.assets[0].uri
-      let filename = localUri.split("/").pop()
-      if (!filename) return
-      let match = /\.(\w+)$/.exec(filename)
-      let type = match ? `image/${match[1]}` : `image`
-
-      uploadImageHandler({ uri: localUri, name: filename, type })
-      console.log({ uri: localUri, name: filename, type })
-    }
-  }
-
-  const uploadImageHandler = async (photo: any) => {
-    const file = photo as File
-    const bodyFormData = new FormData()
-    bodyFormData.append("file", file)
-    setLoadingUpload(true)
     try {
-      const res = await uploadImage(file)
-      setImage(res)
-    } catch (error) {
-      addNotification({ message: error as string, error: true })
+      setLoadingUpload(true)
+
+      const res = await uploadOptimizeImage()
+      setImage(res as string)
+    } catch (error: any) {
+      addNotification({
+        message: error || "Unable to upload image try again later",
+        error: true,
+      })
+    } finally {
+      setLoadingUpload(false)
     }
-    setLoadingUpload(false)
   }
 
   const displayTab = () => {
