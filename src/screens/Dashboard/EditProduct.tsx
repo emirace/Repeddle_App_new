@@ -1,6 +1,7 @@
 import {
   Image,
   Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -9,6 +10,7 @@ import {
 } from "react-native"
 import React, { useEffect, useMemo, useState } from "react"
 import {
+  ActivityIndicator,
   Appbar,
   Button,
   Checkbox,
@@ -23,20 +25,20 @@ import useCategory from "../../hooks/useCategory"
 import Input from "../../components/Input"
 import { Picker } from "@react-native-picker/picker"
 import { Ionicons } from "@expo/vector-icons"
-import { color1, features, materials } from "../../utils/constants"
-import { currency, region, uploadImage } from "../../utils/common"
+import { color2, features, materials } from "../../utils/constants"
+import { currency, deleteImage, region } from "../../utils/common"
 import MyButton from "../../components/MyButton"
 import { normaliseH } from "../../utils/normalize"
 import AddDeliveryOption from "../../components/AddDeliveryOption"
 import Condition from "../../components/Condition"
 import useBrands from "../../hooks/useBrand"
-import * as ImagePicker from "expo-image-picker"
 import Loader from "../../components/ui/Loader"
 import { baseURL } from "../../services/api"
 import useToastNotification from "../../hooks/useToastNotification"
 import CartIcon from "../../components/ui/cartIcon"
 import Tooltip from "../../components/Tooltip"
 import AddOtherBrands from "../../components/AddOtherBrands"
+import { uploadOptimizeImage } from "../../utils/image"
 
 type Props = EditProductNavigationProp
 
@@ -100,6 +102,7 @@ const EditProduct = ({ navigation, route }: Props) => {
   const [deliveryOption, setDeliveryOption] = useState([
     { name: "Pick up from Seller", value: 0 },
   ])
+  const [handledImage, setHandledImage] = useState<string>()
   const [tags, setTags] = useState<string[]>([])
   const [colorsVal, setColorsVal] = useState<string[]>([])
   const [sizesInputCounts, setSizesInputCounts] = useState([1])
@@ -116,16 +119,17 @@ const EditProduct = ({ navigation, route }: Props) => {
     setValidationError((prevState) => ({ ...prevState, [key]: text }))
   }
 
-  const handleTags = (tag: string) => {
+  const handleTags = (tagVal: string) => {
+    const tag = tagVal.trim()
     if (tag.includes(" ")) {
       addNotification({
-        message: "Please remove unnecessary space",
+        message: "Please remove space",
         error: true,
       })
       return
     }
 
-    if (tags.length > 5) {
+    if (tags.length >= 5) {
       addNotification({ message: "You can't add more five tags ", error: true })
 
       return
@@ -156,21 +160,6 @@ const EditProduct = ({ navigation, route }: Props) => {
     )
   }, [input.costPrice, input?.sellingPrice])
 
-  const uploadImageHandler = async (photo: any, key: keyof typeof input) => {
-    const file = photo as File
-    const bodyFormData = new FormData()
-    bodyFormData.append("file", file)
-    setLoadingUpload(true)
-    try {
-      const res = await uploadImage(file)
-      handleOnChange(res, key)
-    } catch (error) {
-      addNotification({ message: error as string, error: true })
-    }
-
-    setLoadingUpload(false)
-  }
-
   const sizeHandler = (sizenow: string) => {
     if (!sizenow) {
       addNotification({ message: "Please enter size", error: true })
@@ -200,23 +189,20 @@ const EditProduct = ({ navigation, route }: Props) => {
   }
 
   const pickImage = async (key: keyof typeof input) => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    })
+    try {
+      setHandledImage(key)
+      setLoadingUpload(true)
 
-    if (!result.canceled) {
-      let localUri = result.assets[0].uri
-      let filename = localUri.split("/").pop()
-      if (!filename) return
-      let match = /\.(\w+)$/.exec(filename)
-      let type = match ? `image/${match[1]}` : `image`
-
-      uploadImageHandler({ uri: localUri, name: filename, type }, key)
-      console.log({ uri: localUri, name: filename, type })
+      const res = await uploadOptimizeImage()
+      handleOnChange(res as string, key)
+    } catch (error: any) {
+      addNotification({
+        message: error || "Unable to upload image try again later",
+        error: true,
+      })
+    } finally {
+      setHandledImage(undefined)
+      setLoadingUpload(false)
     }
   }
 
@@ -365,6 +351,24 @@ const EditProduct = ({ navigation, route }: Props) => {
         message: "Error creating product, fill mising fields ",
         error: true,
       })
+  }
+
+  const onDeleteImage = async (key: keyof typeof input) => {
+    if (!input[key]) return
+    setHandledImage(key)
+    try {
+      setLoadingUpload(true)
+      const imageName = (input[key] as string).split("/").pop()
+      if (imageName) {
+        const res = await deleteImage(imageName)
+        addNotification({ message: res })
+        handleOnChange("", key)
+      }
+    } catch (error) {
+      addNotification({ message: "Failed to delete image", error: true })
+    }
+    setHandledImage(undefined)
+    setLoadingUpload(false)
   }
 
   const submitHandler = async () => {
@@ -863,15 +867,15 @@ const EditProduct = ({ navigation, route }: Props) => {
                 label={"--select--"}
                 value={""}
               />
-              {color1.map((c, index) => (
+              {color2.map((c, index) => (
                 <Picker.Item
                   style={{
                     backgroundColor: colors.elevation.level2,
                     color: colors.onBackground,
                   }}
                   key={index}
-                  label={c.name}
-                  value={c.name}
+                  label={c}
+                  value={c}
                 />
               ))}
             </Picker>
@@ -929,11 +933,21 @@ const EditProduct = ({ navigation, route }: Props) => {
                 { backgroundColor: colors.elevation.level2 },
               ]}
             >
-              {input.image1 ? (
-                <Image
-                  source={{ uri: baseURL + input.image1 }}
-                  style={styles.image}
-                />
+              {handledImage === "image1" && loadingUpload ? (
+                <ActivityIndicator />
+              ) : input.image1 ? (
+                <>
+                  <Image
+                    source={{ uri: baseURL + input.image1 }}
+                    style={styles.image}
+                  />
+                  <Pressable
+                    style={styles.trash}
+                    onPress={() => onDeleteImage("image1")}
+                  >
+                    <Ionicons name="trash-outline" size={16} color="black" />
+                  </Pressable>
+                </>
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -950,11 +964,21 @@ const EditProduct = ({ navigation, route }: Props) => {
                 { backgroundColor: colors.elevation.level2 },
               ]}
             >
-              {input.image2 ? (
-                <Image
-                  source={{ uri: baseURL + input.image2 }}
-                  style={styles.image}
-                />
+              {handledImage === "image2" && loadingUpload ? (
+                <ActivityIndicator />
+              ) : input.image2 ? (
+                <>
+                  <Image
+                    source={{ uri: baseURL + input.image2 }}
+                    style={styles.image}
+                  />
+                  <Pressable
+                    style={styles.trash}
+                    onPress={() => onDeleteImage("image2")}
+                  >
+                    <Ionicons name="trash-outline" size={16} color="black" />
+                  </Pressable>
+                </>
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -971,11 +995,21 @@ const EditProduct = ({ navigation, route }: Props) => {
                 { backgroundColor: colors.elevation.level2 },
               ]}
             >
-              {input.image3 ? (
-                <Image
-                  source={{ uri: baseURL + input.image3 }}
-                  style={styles.image}
-                />
+              {handledImage === "image3" && loadingUpload ? (
+                <ActivityIndicator />
+              ) : input.image3 ? (
+                <>
+                  <Image
+                    source={{ uri: baseURL + input.image3 }}
+                    style={styles.image}
+                  />
+                  <Pressable
+                    style={styles.trash}
+                    onPress={() => onDeleteImage("image3")}
+                  >
+                    <Ionicons name="trash-outline" size={16} color="black" />
+                  </Pressable>
+                </>
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -992,11 +1026,21 @@ const EditProduct = ({ navigation, route }: Props) => {
                 { backgroundColor: colors.elevation.level2 },
               ]}
             >
-              {input.image4 ? (
-                <Image
-                  source={{ uri: baseURL + input.image4 }}
-                  style={styles.image}
-                />
+              {handledImage === "image4" && loadingUpload ? (
+                <ActivityIndicator />
+              ) : input.image4 ? (
+                <>
+                  <Image
+                    source={{ uri: baseURL + input.image4 }}
+                    style={styles.image}
+                  />
+                  <Pressable
+                    style={styles.trash}
+                    onPress={() => onDeleteImage("image4")}
+                  >
+                    <Ionicons name="trash-outline" size={16} color="black" />
+                  </Pressable>
+                </>
               ) : (
                 <Ionicons
                   name="camera-outline"
@@ -1061,11 +1105,25 @@ const EditProduct = ({ navigation, route }: Props) => {
                     borderRadius: 5,
                   }}
                 >
-                  {input.luxuryImage ? (
-                    <Image
-                      source={{ uri: input.luxuryImage }}
-                      style={{ width: "100%", height: 120 }}
-                    />
+                  {handledImage === "luxuryImage" && loadingUpload ? (
+                    <ActivityIndicator />
+                  ) : input.luxuryImage ? (
+                    <>
+                      <Image
+                        source={{ uri: baseURL + input.luxuryImage }}
+                        style={{ width: "100%", height: 120 }}
+                      />
+                      <Pressable
+                        style={styles.trash}
+                        onPress={() => onDeleteImage("luxuryImage")}
+                      >
+                        <Ionicons
+                          name="trash-outline"
+                          size={18}
+                          color="black"
+                        />
+                      </Pressable>
+                    </>
                   ) : (
                     <>
                       <Ionicons
@@ -1148,7 +1206,7 @@ const EditProduct = ({ navigation, route }: Props) => {
 
               <TouchableOpacity onPress={addSizesCont}>
                 <Text style={[styles.addSize, { color: colors.primary }]}>
-                  Add More Size
+                  {sizes.length <= 1 ? "Add Size" : "Add More Size"}
                 </Text>
               </TouchableOpacity>
             </>
@@ -1620,6 +1678,14 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+  },
+  trash: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    padding: 2,
+    borderRadius: "50%",
+    backgroundColor: "white",
   },
   item: {
     marginBottom: 10,

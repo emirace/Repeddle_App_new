@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"
 import {
   SectionList,
   View,
@@ -8,7 +8,7 @@ import {
   ViewToken,
   Dimensions,
   TouchableOpacity,
-} from "react-native";
+} from "react-native"
 import {
   Appbar,
   Avatar,
@@ -16,24 +16,23 @@ import {
   Text,
   ActivityIndicator,
   useTheme,
-} from "react-native-paper";
-import { ChatNavigationProp } from "../../types/navigation/stack";
-import { IMessage } from "../../types/message";
-import moment from "moment";
-import { lightTheme } from "../../constant/theme";
-import useMessage from "../../hooks/useMessage";
-import { baseURL } from "../../services/api";
-import useAuth from "../../hooks/useAuth";
-import ChatFooter from "../../components/chat/ChatFooter";
-import socket from "../../socket";
-import ChatSkeleton from "../../components/chat/ChatSkeleton";
-import * as ImagePicker from "expo-image-picker";
-import { uploadImage } from "../../utils/common";
-import useToastNotification from "../../hooks/useToastNotification";
-import { Ionicons } from "@expo/vector-icons";
+} from "react-native-paper"
+import { ChatNavigationProp } from "../../types/navigation/stack"
+import { IMessage } from "../../types/message"
+import moment from "moment"
+import { lightTheme } from "../../constant/theme"
+import useMessage from "../../hooks/useMessage"
+import { baseURL } from "../../services/api"
+import useAuth from "../../hooks/useAuth"
+import ChatFooter from "../../components/chat/ChatFooter"
+import socket from "../../socket"
+import ChatSkeleton from "../../components/chat/ChatSkeleton"
+import useToastNotification from "../../hooks/useToastNotification"
+import { Ionicons } from "@expo/vector-icons"
+import { uploadOptimizeImage } from "../../utils/image"
 
 const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
-  const conversationId = route.params?.conversationId;
+  const conversationId = route.params?.conversationId
   const {
     loadingMessage,
     messages,
@@ -43,106 +42,106 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
     setCurrentConversation,
     isAnimating,
     sendMessage,
-  } = useMessage();
-  const { user } = useAuth();
-  const { addNotification } = useToastNotification();
-  const { colors } = useTheme();
-  const [messageInput, setMessageInput] = useState("");
+  } = useMessage()
+  const { user } = useAuth()
+  const { addNotification } = useToastNotification()
+  const { colors } = useTheme()
+  const [messageInput, setMessageInput] = useState("")
   const [sending, setSending] = useState({
     value: false,
     message: "",
     failed: false,
     image: "",
-  });
-  const [image, setImage] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [currentDate, setCurrentDate] = useState<string | null>(null);
-  console.log(currentConversation, conversationId, conversations);
+  })
+  const [image, setImage] = useState("")
+  const [uploading, setUploading] = useState(false)
+  const [currentDate, setCurrentDate] = useState<string | null>(null)
+  console.log(currentConversation, conversationId, conversations)
 
   useEffect(() => {
     if (conversationId) {
       const currentConversation = conversations.find(
         (conversation) => conversation._id.toString() === conversationId
-      );
+      )
       if (currentConversation) {
-        setCurrentConversation(currentConversation);
+        setCurrentConversation(currentConversation)
       }
     }
-  }, [conversationId, conversations.length]);
+  }, [conversationId, conversations.length])
 
   // Function to emit startTyping event
   const startTyping = () => {
     socket.emit("typing", {
       conversationId: currentConversation?._id,
       userId: user?._id,
-    });
-  };
+    })
+  }
 
   // Function to emit stopTyping event
   const stopTyping = () => {
     socket.emit("stopTyping", {
       conversationId: currentConversation?._id,
       userId: user?._id,
-    });
-  };
+    })
+  }
 
   const handleMessageSubmit = async () => {
     // Handle sending message logic
-    if (!currentConversation) return;
-    if (!messageInput) return;
+    if (!currentConversation) return
+    if (!messageInput) return
     try {
-      setSending({ value: true, message: messageInput, failed: false, image });
-      setMessageInput("");
-      setImage("");
+      setSending({ value: true, message: messageInput, failed: false, image })
+      setMessageInput("")
+      setImage("")
       await sendMessage({
         content: messageInput,
         conversationId: currentConversation._id,
         image,
-      });
-      setSending({ value: false, message: "", failed: false, image: "" });
+      })
+      setSending({ value: false, message: "", failed: false, image: "" })
     } catch (error) {
-      console.log(error);
-      setSending((prev) => ({ ...prev, value: true, failed: true }));
+      console.log(error)
+      setSending((prev) => ({ ...prev, value: true, failed: true }))
     }
-  };
+  }
 
   const handleRetry = () => {
-    setMessageInput(sending.message);
-    setImage(sending.image);
+    setMessageInput(sending.message)
+    setImage(sending.image)
     setSending((prev) => ({
       ...prev,
       value: false,
       failed: false,
       message: "",
       image: "",
-    }));
-  };
+    }))
+  }
 
   const getDayLabel = (timestamp: string): string => {
-    var dayLabel: string;
-    const today = moment();
-    const yesterday = moment().subtract(1, "days");
+    var dayLabel: string
+    const today = moment()
+    const yesterday = moment().subtract(1, "days")
 
-    const messageDate = moment(timestamp);
+    const messageDate = moment(timestamp)
     const withinLastSevenDays = messageDate.isSameOrAfter(
       today.clone().subtract(6, "days"),
       "day"
-    );
+    )
     if (messageDate.isSame(today, "day")) {
-      dayLabel = "Today";
+      dayLabel = "Today"
     } else if (messageDate.isSame(yesterday, "day")) {
-      dayLabel = "Yesterday";
+      dayLabel = "Yesterday"
     } else if (withinLastSevenDays) {
-      dayLabel = messageDate.format("dddd"); // Return the name of the day
+      dayLabel = messageDate.format("dddd") // Return the name of the day
     } else {
-      dayLabel = messageDate.format("DD/MM/YYYY"); // Return date in DD/MM/YYYY format
+      dayLabel = messageDate.format("DD/MM/YYYY") // Return date in DD/MM/YYYY format
     }
 
-    return dayLabel;
-  };
+    return dayLabel
+  }
 
   const renderMessageContent = (message: IMessage) => {
-    let content = message.content;
+    let content = message.content
 
     // if (message.forwardedFrom) {
     //   content = `Forwarded from ${message.forwardedFrom}: ${message.content}`;
@@ -155,25 +154,25 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
     //   content = `${message.content}\nReferenced Product: ${message.referencedProduct}`;
     // }
 
-    return content;
-  };
+    return content
+  }
 
   const groupedMessages = messages
     .slice()
     .reverse()
     .reduce((acc, message) => {
-      const dayLabel = getDayLabel(message.createdAt);
+      const dayLabel = getDayLabel(message.createdAt)
       if (!acc[dayLabel]) {
-        acc[dayLabel] = [];
+        acc[dayLabel] = []
       }
-      acc[dayLabel].push(message);
-      return acc;
-    }, {} as Record<string, IMessage[]>);
+      acc[dayLabel].push(message)
+      return acc
+    }, {} as Record<string, IMessage[]>)
 
   const sections = Object.keys(groupedMessages).map((dayLabel) => ({
     title: dayLabel,
     data: groupedMessages[dayLabel],
-  }));
+  }))
 
   const renderMessage = ({ item }: { item: IMessage }) => (
     <View
@@ -207,19 +206,19 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
         </Text>
       </View>
     </View>
-  );
+  )
 
   const renderSectionHeader = ({
     section: { title },
   }: {
-    section: { title: string };
+    section: { title: string }
   }) => (
     <View
       style={[styles.dayLabelContainer, { backgroundColor: colors.surface }]}
     >
       <Text style={styles.dayLabel}>{title}</Text>
     </View>
-  );
+  )
 
   const renderStickyDate = () => {
     return currentDate ? (
@@ -233,66 +232,52 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
           <Text style={styles.stickyDateText}>{currentDate}</Text>
         </View>
       </View>
-    ) : null;
-  };
+    ) : null
+  }
 
   const updateStickyDate = ({
     viewableItems,
     changed,
   }: {
-    viewableItems: Array<ViewToken>;
-    changed: Array<ViewToken>;
+    viewableItems: Array<ViewToken>
+    changed: Array<ViewToken>
   }) => {
     if (viewableItems && viewableItems.length) {
-      const sectionHeaders = viewableItems.filter((i) => i.index === null);
+      const sectionHeaders = viewableItems.filter((i) => i.index === null)
       if (sectionHeaders.length > 0) {
-        const firstSectionTitle = sectionHeaders[0].item.title;
+        const firstSectionTitle = sectionHeaders[0].item.title
         const sectionIndex = sections.findIndex(
           (section) => section.title === firstSectionTitle
-        );
+        )
         if (sectionIndex > 0 && sections[sectionIndex + 1]) {
-          setCurrentDate(sections[sectionIndex + 1].title);
+          setCurrentDate(sections[sectionIndex + 1].title)
         } else {
-          setCurrentDate(null);
+          setCurrentDate(null)
         }
       } else {
-        const lastItem = viewableItems[0];
+        const lastItem = viewableItems[0]
         if (lastItem && lastItem.section) {
-          setCurrentDate(lastItem.section.title);
+          setCurrentDate(lastItem.section.title)
         }
       }
     }
-  };
+  }
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    try {
+      setUploading(true)
 
-    if (!result.canceled) {
-      let localUri = result.assets[0].uri;
-      let filename = localUri.split("/").pop();
-      if (!filename) return;
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[1]}` : `image`;
-
-      const file = { uri: localUri, name: filename, type } as unknown as File;
-      const bodyFormData = new FormData();
-      bodyFormData.append("file", file);
-      setUploading(true);
-      try {
-        const res = await uploadImage(file);
-        setImage(res);
-      } catch (error) {
-        addNotification({ message: error as string, error: true });
-      } finally {
-        setUploading(false);
-      }
+      const res = await uploadOptimizeImage()
+      setImage(res as string)
+    } catch (error: any) {
+      addNotification({
+        message: error || "Unable to upload image try again later",
+        error: true,
+      })
+    } finally {
+      setUploading(false)
     }
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -378,8 +363,8 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
           ]}
           value={messageInput}
           onChangeText={(text) => {
-            setMessageInput(text);
-            startTyping();
+            setMessageInput(text)
+            startTyping()
           }}
           placeholder="Type a message"
           onFocus={startTyping}
@@ -388,10 +373,10 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
         <IconButton icon="send" size={30} onPress={handleMessageSubmit} />
       </View>
     </View>
-  );
-};
+  )
+}
 
-const WIDTH = Dimensions.get("screen").width;
+const WIDTH = Dimensions.get("screen").width
 
 const styles = StyleSheet.create({
   container: {
@@ -508,6 +493,6 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: "cover",
   },
-});
+})
 
-export default Chat;
+export default Chat
