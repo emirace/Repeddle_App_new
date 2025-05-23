@@ -17,11 +17,10 @@ import FullScreenImage from "./FullScreenImage"
 import useAuth from "../hooks/useAuth"
 import { useNavigation } from "@react-navigation/native"
 import { ProductNavigationProp } from "../types/navigation/stack"
-import * as ImagePicker from "expo-image-picker"
-import { uploadImage } from "../utils/common"
 import Comment from "./Comment"
 import useProducts from "../hooks/useProducts"
 import useToastNotification from "../hooks/useToastNotification"
+import { uploadOptimizeImage } from "../utils/image"
 
 type Props = {
   comments?: IComment[]
@@ -44,38 +43,19 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
   const [loadingCreateReview, setLoadingCreateReview] = useState(false)
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    })
-
-    if (!result.canceled) {
-      let localUri = result.assets[0].uri
-      let filename = localUri.split("/").pop()
-      if (!filename) return
-      let match = /\.(\w+)$/.exec(filename)
-      let type = match ? `image/${match[1]}` : `image`
-
-      uploadImageHandler({ uri: localUri, name: filename, type })
-      console.log({ uri: localUri, name: filename, type })
-    }
-  }
-
-  const uploadImageHandler = async (photo: any) => {
-    const file = photo as File
-    const bodyFormData = new FormData()
-    bodyFormData.append("file", file)
-    setLoadingUpload(true)
     try {
-      const res = await uploadImage(file)
-      setImage(res)
-    } catch (error) {
-      addNotification({ message: error as string, error: true })
+      setLoadingUpload(true)
+
+      const res = await uploadOptimizeImage()
+      setImage(res as string)
+    } catch (error: any) {
+      addNotification({
+        message: error || "Unable to upload image try again later",
+        error: true,
+      })
+    } finally {
+      setLoadingUpload(false)
     }
-    setLoadingUpload(false)
   }
 
   const submitCommentHandler = async () => {
@@ -144,6 +124,7 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
                 {
                   backgroundColor: colors.elevation.level2,
                   color: colors.onBackground,
+                  width: "100%",
                 },
               ]}
               multiline={true}

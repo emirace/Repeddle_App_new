@@ -1,5 +1,5 @@
 import { CartItem } from "../contexts/CartContext"
-import { saveImageService } from "../services/image"
+import { deleteImageService, saveImageService } from "../services/image"
 import { Coupon, IProduct } from "../types/product"
 import * as WebBrowser from "expo-web-browser"
 
@@ -44,6 +44,16 @@ export const uploadImage = async (file: File, image?: string) => {
     return url
   } catch (error) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    throw new Error(error as any)
+  }
+}
+
+export const deleteImage = async (url: string) => {
+  try {
+    const res = await deleteImageService(url)
+    console.log(res);
+    return res
+  } catch (error) {
     throw new Error(error as any)
   }
 }

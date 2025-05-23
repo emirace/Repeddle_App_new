@@ -111,6 +111,7 @@ const topView = () => {
               // backgroundColor: colors.primaryContainer,
               borderWidth: 1,
               borderColor: "grey",
+              width: "100%",
             },
           ]}
           placeholderTextColor={colors.onBackground}

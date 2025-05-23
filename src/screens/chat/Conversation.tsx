@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   View,
   StyleSheet,
   Image,
   TouchableOpacity,
-} from "react-native"
-import { Appbar, Badge, Searchbar, Text, useTheme } from "react-native-paper"
-import useMessage from "../../hooks/useMessage"
-import moment from "moment"
-import { IConversation } from "../../types/message"
-import { baseURL } from "../../services/api"
-import { markMessagesAsRead } from "../../utils/socket"
-import useAuth from "../../hooks/useAuth"
+} from "react-native";
+import { Appbar, Badge, Searchbar, Text, useTheme } from "react-native-paper";
+import useMessage from "../../hooks/useMessage";
+import moment from "moment";
+import { IConversation } from "../../types/message";
+import { baseURL } from "../../services/api";
+import { markMessagesAsRead } from "../../utils/socket";
+import useAuth from "../../hooks/useAuth";
 
 const Conversation: React.FC<any> = ({ navigation }) => {
-  const { user } = useAuth()
+  const { user } = useAuth();
   const {
     conversations,
     getConversations,
@@ -23,29 +23,29 @@ const Conversation: React.FC<any> = ({ navigation }) => {
     setCurrentConversation,
     loading,
     isTypingList,
-  } = useMessage()
-  const { colors } = useTheme()
-  const [searchQuery, setSearchQuery] = useState("")
+  } = useMessage();
+  const { colors } = useTheme();
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    getConversations(currentTab)
-  }, [currentTab])
+    getConversations(currentTab);
+  }, [currentTab]);
 
   const filteredConversations = conversations.filter((conversation) =>
     conversation.otherUser.username
       .toLowerCase()
       .includes(searchQuery.toLowerCase())
-  )
+  );
 
   const onChangeSearch = (query: string) => {
-    setSearchQuery(query)
-  }
+    setSearchQuery(query);
+  };
 
   const openChat = (conversation: IConversation) => {
-    setCurrentConversation(conversation)
-    markMessagesAsRead(conversation._id, user!._id)
-    navigation.push("Chat")
-  }
+    setCurrentConversation(conversation);
+    markMessagesAsRead(conversation._id, user!._id);
+    navigation.push("Chat");
+  };
 
   const renderSkeleton = () => (
     <View style={styles.skeletonItem}>
@@ -70,7 +70,7 @@ const Conversation: React.FC<any> = ({ navigation }) => {
         />
       </View>
     </View>
-  )
+  );
 
   return (
     <View style={styles.container}>
@@ -78,13 +78,12 @@ const Conversation: React.FC<any> = ({ navigation }) => {
         <Appbar.Content title="Conversations" />
       </Appbar.Header>
       <FlatList
-        data={loading ? Array(1).fill({}) : filteredConversations}
+        data={filteredConversations}
         keyExtractor={(item, index) => item._id || index.toString()}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item, index }) =>
-          loading ? (
-            renderSkeleton()
-          ) : (
+        renderItem={({ item }) => {
+          console.log("item", item);
+          return item.lastMessage ? (
             <TouchableOpacity
               style={styles.listItem}
               activeOpacity={0.7}
@@ -102,10 +101,10 @@ const Conversation: React.FC<any> = ({ navigation }) => {
                   <Text style={styles.lastMessage}>
                     {isTypingList.find((type) => type.id === item._id) ? (
                       <Text style={{ color: colors.primary }}>typing...</Text>
-                    ) : item.lastMessage.content.length > 18 ? (
+                    ) : item?.lastMessage?.content?.length > 18 ? (
                       item.lastMessage.content.slice(0, 18) + "..."
                     ) : (
-                      item.lastMessage.content
+                      item?.lastMessage?.content
                     )}
                   </Text>
                 </View>
@@ -119,8 +118,8 @@ const Conversation: React.FC<any> = ({ navigation }) => {
                 </View>
               </View>
             </TouchableOpacity>
-          )
-        }
+          ) : null;
+        }}
         ListHeaderComponent={
           <Searchbar
             placeholder="Search"
@@ -130,10 +129,17 @@ const Conversation: React.FC<any> = ({ navigation }) => {
           />
         }
         style={styles.list}
+        ListFooterComponent={
+          loading ? (
+            renderSkeleton()
+          ) : filteredConversations.length <= 0 ? (
+            <Text style={{ margin: 20 }}>No Conversation available</Text>
+          ) : null
+        }
       />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -205,6 +211,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     borderRadius: 4,
   },
-})
+});
 
-export default Conversation
+export default Conversation;

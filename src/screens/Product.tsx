@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
   Share,
-} from "react-native"
-import React, { useEffect, useMemo, useRef, useState } from "react"
+} from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Badge,
   Button,
@@ -19,100 +19,100 @@ import {
   IconButton,
   Text,
   useTheme,
-} from "react-native-paper"
-import { normaliseH, normaliseW } from "../utils/normalize"
-import { IProduct, RecentlyViewed } from "../types/product"
-import ProductItem from "../components/ProductItem"
-import { ProductNavigationProp } from "../types/navigation/stack"
-import useProducts from "../hooks/useProducts"
-import useAuth from "../hooks/useAuth"
-import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons"
-import RebundlePoster from "../components/RebundlePoster"
-import moment from "moment"
+} from "react-native-paper";
+import { normaliseH, normaliseW } from "../utils/normalize";
+import { IProduct, RecentlyViewed } from "../types/product";
+import ProductItem from "../components/ProductItem";
+import { ProductNavigationProp } from "../types/navigation/stack";
+import useProducts from "../hooks/useProducts";
+import useAuth from "../hooks/useAuth";
+import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import RebundlePoster from "../components/RebundlePoster";
+import moment from "moment";
 import {
   conditionDetails,
   currency,
   currentAddress,
   goto,
   region,
-} from "../utils/common"
-import Rating from "../components/Rating"
-import ImageCarousel from "../components/ImageCarousel"
-import RebundleLabel from "../components/RebundleLabel"
-import CollapsibleSection from "../components/CollapsibleSection"
-import useCart from "../hooks/useCart"
-import ProductReview from "../components/ProductReview"
-import CommentSection from "../components/CommentSection"
-import SizeSelection from "../components/SizeSelection"
-import useStore from "../hooks/useStore"
-import { baseURL, frontendURL } from "../services/api"
-import { Asset } from "expo-asset"
-import * as Sharing from "expo-sharing"
-import Loader from "../components/ui/Loader"
-import CartIcon from "../components/ui/cartIcon"
-import useToastNotification from "../hooks/useToastNotification"
-import useMessage from "../hooks/useMessage"
+} from "../utils/common";
+import Rating from "../components/Rating";
+import ImageCarousel from "../components/ImageCarousel";
+import RebundleLabel from "../components/RebundleLabel";
+import CollapsibleSection from "../components/CollapsibleSection";
+import useCart from "../hooks/useCart";
+import ProductReview from "../components/ProductReview";
+import CommentSection from "../components/CommentSection";
+import SizeSelection from "../components/SizeSelection";
+import useStore from "../hooks/useStore";
+import { baseURL, frontendURL } from "../services/api";
+import { Asset } from "expo-asset";
+import * as Sharing from "expo-sharing";
+import Loader from "../components/ui/Loader";
+import CartIcon from "../components/ui/cartIcon";
+import useToastNotification from "../hooks/useToastNotification";
+import useMessage from "../hooks/useMessage";
 
-type Props = ProductNavigationProp
+type Props = ProductNavigationProp;
 
 const Product = ({ navigation, route }: Props) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
   const { fetchProductBySlug, error, likeProduct, unlikeProduct } =
-    useProducts()
-  const { createMessage, error: messageError } = useMessage()
-  const { cart, addToCart } = useCart()
-  const { getRecently, storeRecently } = useStore()
+    useProducts();
+  const { createMessage, error: messageError } = useMessage();
+  const { cart, addToCart } = useCart();
+  const { getRecently, storeRecently } = useStore();
   const {
     user,
     addToWishlist,
     error: wishListError,
     removeFromWishlist,
-  } = useAuth()
-  const { addNotification } = useToastNotification()
+  } = useAuth();
+  const { addNotification } = useToastNotification();
 
-  const { params } = route
+  const { params } = route;
 
-  const [product, setProduct] = useState<IProduct>()
-  const [recentlyViewed, setRecentlyViewed] = useState<RecentlyViewed[]>([])
-  const [productError, setProductError] = useState("")
-  const [size, setSize] = useState("")
-  const [loading, setLoading] = useState(true)
-  const [selectedSize, setSelectSize] = useState("")
-  const [quantity1, setQuantity] = useState(1)
-  const [modalProductReview, setModalProductReview] = useState(false)
-  const [liking, setLiking] = useState(false)
-  const [addToWish, setAddToWish] = useState(false)
-  const [adding, setAdding] = useState(false)
-  const [messageLoading, setMessageLoading] = useState(false)
+  const [product, setProduct] = useState<IProduct>();
+  const [recentlyViewed, setRecentlyViewed] = useState<RecentlyViewed[]>([]);
+  const [productError, setProductError] = useState("");
+  const [size, setSize] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [selectedSize, setSelectSize] = useState("");
+  const [quantity1, setQuantity] = useState(1);
+  const [modalProductReview, setModalProductReview] = useState(false);
+  const [liking, setLiking] = useState(false);
+  const [addToWish, setAddToWish] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [messageLoading, setMessageLoading] = useState(false);
 
   useEffect(() => {
     const fetchProd = async () => {
-      setProductError("")
-      const res = await fetchProductBySlug(params.slug)
+      setProductError("");
+      const res = await fetchProductBySlug(params.slug);
       if (res) {
-        setProduct(res)
-        storeRecently(res)
+        setProduct(res);
+        storeRecently(res);
       } else {
-        setProductError(error)
+        setProductError(error);
       }
-    }
+    };
 
-    fetchProd()
-  }, [])
+    fetchProd();
+  }, []);
 
   useEffect(() => {
     const getRecent = async () => {
-      const data = await getRecently()
+      const data = await getRecently();
 
-      setRecentlyViewed(data)
-    }
+      setRecentlyViewed(data);
+    };
 
-    getRecent()
-  }, [])
+    getRecent();
+  }, []);
 
   const changeProduct = (val: IProduct) => {
-    setProduct(val)
-  }
+    setProduct(val);
+  };
 
   const isOnlineCon = (c: string) => {
     // if (onlineUser.length > 0) {
@@ -123,10 +123,10 @@ const Product = ({ navigation, route }: Props) => {
     //   } else return false;
     // }
 
-    return true
-  }
+    return true;
+  };
 
-  const animatedValue = useRef(new Animated.Value(0)).current
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
   const headerAnimation = {
     transform: [
@@ -148,7 +148,7 @@ const Product = ({ navigation, route }: Props) => {
     //   outputRange: [0, 55],
     //   extrapolate: "clamp",
     // }),
-  }
+  };
 
   const nameAnimation = {
     transform: [
@@ -165,73 +165,73 @@ const Product = ({ navigation, route }: Props) => {
       outputRange: [0, 1],
       extrapolate: "clamp",
     }),
-  }
+  };
 
   const discount = useMemo(() => {
     if (!product?.costPrice || product.sellingPrice) {
-      return null
+      return null;
     }
     if (product.costPrice < product.sellingPrice) {
-      return null
+      return null;
     }
 
     return (
       ((product.costPrice - product.sellingPrice) / product.costPrice) * 100
-    )
-  }, [product?.costPrice, product?.sellingPrice])
+    );
+  }, [product?.costPrice, product?.sellingPrice]);
 
   const sizeHandler = (item: string) => {
-    const current = product?.sizes.filter((s) => s.size === item) ?? []
+    const current = product?.sizes.filter((s) => s.size === item) ?? [];
     if (current.length > 0) {
-      setSize(`${item} ( ${current[0].quantity} left)`)
-      setSelectSize(item)
+      setSize(`${item} ( ${current[0].quantity} left)`);
+      setSelectSize(item);
     } else {
-      setSize("Out of stock")
-      setSelectSize("")
+      setSize("Out of stock");
+      setSelectSize("");
     }
-  }
+  };
 
   const addToCartHandler = async () => {
-    if (!product) return
+    if (!product) return;
 
-    setAdding(true)
+    setAdding(true);
 
-    const existItem = cart.find((x) => x._id === product._id)
-    const quantity = existItem ? existItem.quantity + 1 : 1
+    const existItem = cart.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
 
     if (!selectedSize && product.sizes.length > 0) {
-      addNotification({ message: "Select Size", error: true })
-      return setAdding(false)
+      addNotification({ message: "Select Size", error: true });
+      return setAdding(false);
     }
 
     if (user && product.seller._id === user._id) {
-      addNotification({ message: "You can't buy your product", error: true })
-      return setAdding(false)
+      addNotification({ message: "You can't buy your product", error: true });
+      return setAdding(false);
     }
 
-    const data = await fetchProductBySlug(product.slug)
+    const data = await fetchProductBySlug(product.slug);
     if (!data?.countInStock || data?.countInStock < quantity) {
       addNotification({
         message: "Sorry. Product is out of stock",
         error: true,
-      })
-      return setAdding(false)
+      });
+      return setAdding(false);
     }
 
-    addNotification({ message: "item added to cart" })
+    addNotification({ message: "item added to cart" });
 
     addToCart({
       ...product,
       quantity,
       selectedSize,
       // selectedColor?: string;
-    })
+    });
 
-    setAdding(false)
-  }
+    setAdding(false);
+  };
 
   const onShare = async () => {
-    if (!product) return
+    if (!product) return;
 
     try {
       Share.share({
@@ -240,117 +240,122 @@ const Product = ({ navigation, route }: Props) => {
           `Repeddle: ${frontendURL}product/${product.slug}`,
         title: "Repeddle",
         url: `${frontendURL}product/${product.slug}`,
-      })
+      });
     } catch (error) {}
-  }
+  };
 
   const toggleLikes = async () => {
     if (!user) {
-      addNotification({ message: "Sign in /  Sign Up to like", error: true })
-      return
+      addNotification({ message: "Sign in /  Sign Up to like", error: true });
+      return;
     }
 
-    if (!product) return
+    if (!product) return;
 
     if (product.seller._id === user._id) {
-      addNotification({ message: "You can't like your product", error: true })
-      return
+      addNotification({ message: "You can't like your product", error: true });
+      return;
     }
 
-    setLiking(true)
+    setLiking(true);
 
     if (liked) {
-      const res = await unlikeProduct(product._id)
+      const res = await unlikeProduct(product._id);
       if (res) {
-        const newProd = product
-        newProd.likes = res.likes
-        setProduct(newProd)
-        addNotification({ message: res.message })
-      } else addNotification({ message: error, error: true })
+        const newProd = product;
+        newProd.likes = res.likes;
+        setProduct(newProd);
+        addNotification({ message: res.message });
+      } else addNotification({ message: error, error: true });
     } else {
-      const res = await likeProduct(product._id)
+      const res = await likeProduct(product._id);
       if (res) {
-        const newProd = product
-        newProd.likes = res.likes
-        setProduct(newProd)
-        addNotification({ message: res.message })
-      } else addNotification({ message: error, error: true })
+        const newProd = product;
+        newProd.likes = res.likes;
+        setProduct(newProd);
+        addNotification({ message: res.message });
+      } else addNotification({ message: error, error: true });
     }
 
-    setLiking(false)
-  }
+    setLiking(false);
+  };
 
   // TODO:
   const addConversation = async () => {
-    if (!product?.seller._id || !user?._id) return
+    if (!user) {
+      addNotification({ message: "Login to chat user", error: true });
+      return;
+    }
+    if (!product?.seller._id) return;
 
-    setMessageLoading(true)
+    setMessageLoading(true);
 
     try {
       const convo = await createMessage({
         participantId: product.seller._id,
         type: "Chat",
-      })
+      });
+      console.log(convo);
 
-      navigation.push("Chat", { conversationId: convo._id })
+      navigation.push("Chat", { conversationId: convo._id });
     } catch (error) {
       addNotification({
         message: messageError || (error as string),
         error: true,
-      })
+      });
     }
 
-    setMessageLoading(false)
-  }
+    setMessageLoading(false);
+  };
 
   const saveItem = async () => {
-    if (!product) return
+    if (!product) return;
 
     if (!user) {
       addNotification({
         message: "Sign In/ Sign Up to add an item to wishlist",
         error: true,
-      })
-      return
+      });
+      return;
     }
 
     if (product.seller._id === user._id) {
       addNotification({
         message: "You can't add your product to wishlist",
         error: true,
-      })
-      return
+      });
+      return;
     }
 
-    setAddToWish(true)
+    setAddToWish(true);
     if (saved) {
-      const res = await removeFromWishlist(product._id)
-      if (res) addNotification({ message: res })
+      const res = await removeFromWishlist(product._id);
+      if (res) addNotification({ message: res });
       else
         addNotification({
           message: wishListError || "Failed to remove from wishlist",
           error: true,
-        })
+        });
     } else {
-      const res = await addToWishlist(product._id)
-      if (res) addNotification({ message: res })
+      const res = await addToWishlist(product._id);
+      if (res) addNotification({ message: res });
       else
         addNotification({
           message: wishListError || "Failed to add to wishlist",
           error: true,
-        })
+        });
     }
 
-    setAddToWish(false)
-  }
+    setAddToWish(false);
+  };
 
   const liked = useMemo(() => {
-    return !!product?.likes.find((like) => like === user?._id)
-  }, [product?.likes, user?._id])
+    return !!product?.likes.find((like) => like === user?._id);
+  }, [product?.likes, user?._id]);
 
   const saved = useMemo(() => {
-    return !!(user?.wishlist && user.wishlist.find((x) => x === product?._id))
-  }, [product, user])
+    return !!(user?.wishlist && user.wishlist.find((x) => x === product?._id));
+  }, [product, user]);
 
   return !product && loading ? (
     <Loader />
@@ -386,8 +391,8 @@ const Product = ({ navigation, route }: Props) => {
         alwaysBounceVertical={true}
         showsVerticalScrollIndicator={false}
         onScroll={(e) => {
-          const offsetY = e.nativeEvent.contentOffset.y
-          animatedValue.setValue(offsetY)
+          const offsetY = e.nativeEvent.contentOffset.y;
+          animatedValue.setValue(offsetY);
         }}
       >
         <View style={styles.love}>
@@ -476,7 +481,7 @@ const Product = ({ navigation, route }: Props) => {
             transparent={true}
             visible={modalProductReview}
             onRequestClose={() => {
-              setModalProductReview(!modalProductReview)
+              setModalProductReview(!modalProductReview);
             }}
           >
             <ProductReview
@@ -977,17 +982,17 @@ const Product = ({ navigation, route }: Props) => {
         </View>
       </View>
     </View>
-  ) : null
-}
+  ) : null;
+};
 
 const RenderItem = ({
   item,
   navigation,
 }: {
-  item: RecentlyViewed
-  navigation: ProductNavigationProp["navigation"]
+  item: RecentlyViewed;
+  navigation: ProductNavigationProp["navigation"];
 }) => {
-  let { itemStyles } = styles
+  let { itemStyles } = styles;
 
   return (
     <View style={itemStyles}>
@@ -996,12 +1001,12 @@ const RenderItem = ({
         product={item.product}
       />
     </View>
-  )
-}
+  );
+};
 
-export default Product
+export default Product;
 
-const { width } = Dimensions.get("screen")
+const { width } = Dimensions.get("screen");
 
 const styles = StyleSheet.create({
   container: {
@@ -1226,4 +1231,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 11,
   },
-})
+});

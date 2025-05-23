@@ -90,20 +90,26 @@ const brands = [
     key: "https://res.cloudinary.com/emirace/image/upload/v1692426674/usljgmtg7fb5wi0m5o4r.jpg",
     text: "Puma",
   },
-  { key: "https://repeddle.com/images/Picture1.webp", text: "Patagonia" },
   {
-    key: "https://repeddle.com/images/lucas-hoang-O0e6Ka5vYSs-unsplash.webp",
+    key: "https://repeddle-frontend.vercel.app/images/brands/Picture1.webp",
+    text: "Patagonia",
+  },
+  {
+    key: "https://repeddle-frontend.vercel.app/images/brands/lucas-hoang-O0e6Ka5vYSs-unsplash.webp",
     text: "gucci",
   },
   {
-    key: "https://repeddle.com/images/tony-tran-VKVDdLGoilc-unsplash.webp",
+    key: "https://repeddle-frontend.vercel.app/images/brands/tony-tran-VKVDdLGoilc-unsplash.webp",
     text: "Balanciaga",
   },
   {
-    key: "https://repeddle.com/images/jakayla-toney-v0gHLhdQPCY-unsplash.webp",
+    key: "https://repeddle-frontend.vercel.app/images/brands/jakayla-toney-v0gHLhdQPCY-unsplash.webp",
     text: "addidas",
   },
-  { key: "https://repeddle.com/images/A.mcqueen.webp", text: "A. Mcqueen" },
+  {
+    key: "https://repeddle-frontend.vercel.app/images/brands/A.mcqueen.webp",
+    text: "A. Mcqueen",
+  },
 ];
 
 export default HomeBrands;

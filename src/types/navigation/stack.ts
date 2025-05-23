@@ -14,7 +14,7 @@ export type RootStackParamList = {
   Appearance: undefined;
   Search: { filter?: FilterOptions; query?: string };
   Product: { slug: string };
-  Chat: { conversationId: string };
+  Chat: { conversationId?: string };
   Sell: undefined;
   ProfileSettings: undefined;
   ProductList: undefined;

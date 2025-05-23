@@ -1100,6 +1100,7 @@ const Input = (props: TextInputProps) => {
         paddingHorizontal: 15,
         borderColor: colors.onBackground,
         color: colors.onBackground,
+        width: "100%",
       }}
     />
   )
@@ -1150,7 +1151,11 @@ const styles = StyleSheet.create({
   //     padding: 10,
   //     backgroundColor: colors.primary,
   //   },
-  title: {fontFamily: "absential-sans-bold", fontSize: 20, textTransform: "capitalize" },
+  title: {
+    fontFamily: "absential-sans-bold",
+    fontSize: 20,
+    textTransform: "capitalize",
+  },
   option: {
     flexDirection: "row",
     alignItems: "center",

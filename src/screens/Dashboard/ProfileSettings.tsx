@@ -26,7 +26,7 @@ import { Picker } from "@react-native-picker/picker"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import * as ImagePicker from "expo-image-picker"
 import { banks, states } from "../../utils/constants"
-import { region, timeDifference, uploadImage } from "../../utils/common"
+import { region, timeDifference } from "../../utils/common"
 import moment from "moment"
 import { normaliseH } from "../../utils/normalize"
 import MyButton from "../../components/MyButton"
@@ -37,6 +37,7 @@ import Rebundle from "../../components/Rebundle"
 import { ProfileSettingsNavigationProp } from "../../types/navigation/stack"
 import useToastNotification from "../../hooks/useToastNotification"
 import { baseURL } from "../../services/api"
+import { uploadOptimizeImage } from "../../utils/image"
 
 type Props = ProfileSettingsNavigationProp
 
@@ -169,42 +170,19 @@ const ProfileSettings = ({ navigation }: Props) => {
   }
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    })
-
-    if (!result.canceled) {
-      let localUri = result.assets[0].uri
-      let filename = localUri.split("/").pop()
-      if (!filename) return
-      let match = /\.(\w+)$/.exec(filename)
-      let type = match ? `image/${match[1]}` : `image`
-
-      uploadImageHandler({ uri: localUri, name: filename, type })
-      console.log({ uri: localUri, name: filename, type })
-    }
-  }
-
-  const uploadImageHandler = async (photo: any) => {
-    const file = photo as File
-    const bodyFormData = new FormData()
-    bodyFormData.append("file", file)
-    setLoadingUpload(true)
     try {
-      const res = await uploadImage(file)
-      setImage(res)
-    } catch (error) {
+      setLoadingUpload(true)
+
+      const res = await uploadOptimizeImage()
+      setImage(res as string)
+    } catch (error: any) {
       addNotification({
-        message: (error as string) || "Failed to upload image",
+        message: error || "Unable to upload image try again later",
         error: true,
       })
+    } finally {
+      setLoadingUpload(false)
     }
-
-    setLoadingUpload(false)
   }
 
   const daydiff = input.usernameLastUpdate
@@ -461,7 +439,7 @@ const ProfileSettings = ({ navigation }: Props) => {
               handleOnChange(text, "username")
               setUsername(text)
             }}
-            style={{ color: colors.onBackground }}
+            style={{ color: colors.onBackground, width: "100%" }}
             placeholder="Username"
             error={error.username}
             editable={daydiff < 0}
@@ -476,7 +454,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             onChangeText={(text) => handleOnChange(text, "firstName")}
             placeholder="First Name"
             error={error.firstName}
-            style={{ color: colors.onBackground }}
+            style={{ color: colors.onBackground, width: "100%" }}
             onFocus={() => {
               handleError("", "firstName")
             }}
@@ -488,7 +466,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             onChangeText={(text) => handleOnChange(text, "lastName")}
             placeholder="Last Name"
             error={error.lastName}
-            style={{ color: colors.onBackground }}
+            style={{ color: colors.onBackground, width: "100%" }}
             onFocus={() => {
               handleError("", "lastName")
             }}
@@ -499,7 +477,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             icon="mail-outline"
             onChangeText={(text) => handleOnChange(text, "email")}
             placeholder="Email"
-            style={{ color: colors.onBackground }}
+            style={{ color: colors.onBackground, width: "100%" }}
             error={error.email}
             onFocus={() => {
               handleError("", "email")
@@ -512,7 +490,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             onChangeText={(text) => handleOnChange(text, "phone")}
             placeholder="Phone"
             error={error.phone}
-            style={{ color: colors.onBackground }}
+            style={{ color: colors.onBackground, width: "100%" }}
             keyboardType="numeric"
             onFocus={() => {
               handleError("", "phone")
@@ -560,7 +538,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             placeholder="Password"
             password
             error={error.password}
-            style={{ color: colors.onBackground }}
+            style={{ color: colors.onBackground, width: "100%" }}
             onFocus={() => {
               handleError("", "password")
             }}
@@ -571,7 +549,7 @@ const ProfileSettings = ({ navigation }: Props) => {
             onChangeText={(text) => handleOnChange(text, "confirmPassword")}
             placeholder="Confirm Password"
             password
-            style={{ color: colors.onBackground }}
+            style={{ color: colors.onBackground, width: "100%" }}
             error={error.confirmPassword}
             onFocus={() => {
               handleError("", "confirmPassword")
@@ -585,6 +563,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                 backgroundColor: colors.elevation.level2,
                 color: colors.onBackground,
                 padding: 10,
+                width: "100%",
               },
             ]}
             multiline={true}
@@ -686,7 +665,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   >
                     <Ionicons
                       name="close"
-                      size={18}
+                      size={28}
                       color={colors.onBackground}
                     />
                   </TouchableOpacity>
@@ -700,7 +679,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Input
                     value={input.street}
                     icon="pencil-outline"
-                    style={{ color: colors.onBackground }}
+                    style={{ color: colors.onBackground, width: "100%" }}
                     onChangeText={(text) => handleOnChange(text, "street")}
                     placeholder={input.street}
                     error={error.street}
@@ -711,7 +690,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Text1 style={styles.label}>Apartment/Complex</Text1>
                   <Input
                     value={input.apartment}
-                    style={{ color: colors.onBackground }}
+                    style={{ color: colors.onBackground, width: "100%" }}
                     icon="pencil-outline"
                     onChangeText={(text) => handleOnChange(text, "apartment")}
                     placeholder={input.apartment}
@@ -769,7 +748,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Input
                     value={input.zipcode?.toString()}
                     icon="pencil-outline"
-                    style={{ color: colors.onBackground }}
+                    style={{ color: colors.onBackground, width: "100%" }}
                     onChangeText={(text) => handleOnChange(text, "zipcode")}
                     placeholder={`${input.zipcode || ""}`}
                     error={error.zipcode}
@@ -828,7 +807,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Text1 style={styles.label}>Account Name</Text1>
                   <Input
                     value={input.accountName}
-                    style={{ color: colors.onBackground }}
+                    style={{ color: colors.onBackground, width: "100%" }}
                     icon="pencil-outline"
                     onChangeText={(text) => handleOnChange(text, "accountName")}
                     placeholder={input.accountName}
@@ -841,7 +820,7 @@ const ProfileSettings = ({ navigation }: Props) => {
                   <Input
                     value={input.accountNumber?.toString()}
                     icon="pencil-outline"
-                    style={{ color: colors.onBackground }}
+                    style={{ color: colors.onBackground, width: "100%" }}
                     onChangeText={(text) =>
                       handleOnChange(text, "accountNumber")
                     }
@@ -994,6 +973,7 @@ const styles = StyleSheet.create({
   centeredView: {
     justifyContent: "center",
     alignItems: "center",
+    padding: 20,
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
   },

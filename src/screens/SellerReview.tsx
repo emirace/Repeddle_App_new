@@ -302,6 +302,7 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 10,
     maxHeight: 100,
+    width: "100%",
   },
   submitButton: {
     paddingVertical: 8,

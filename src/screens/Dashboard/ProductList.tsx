@@ -393,6 +393,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderColor: "white",
     color: "white",
+    width: "100%",
   },
   resultsContainer: { flex: 1, padding: 10 },
   productItem: {

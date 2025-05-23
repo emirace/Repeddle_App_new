@@ -20,6 +20,7 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
   const [rebundleStatus, setRebundleStatus] = useState(bundle)
   const [rebundleCount, setRebundleCount] = useState("")
   const [rebundleError, setRebundleError] = useState("")
+  const [rebundleMessage, setRebundleMessage] = useState("")
   const [loadingRebundle, setLoadingRebundle] = useState(false)
 
   const toggleSwitch = (mode: boolean) => {
@@ -28,6 +29,7 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
     } else {
       setRebundleStatus(mode)
       handleRebundle({ status: false, count: 0 })
+      setBundle(false)
     }
   }
 
@@ -41,10 +43,13 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
       setRebundleError("Enter the quantity of item(s) for Rebundle")
       return
     }
+    setRebundleMessage("")
     try {
       setLoadingRebundle(true)
       // TODO: handle bundle
       await updateUser({ rebundle: value })
+      setRebundleMessage("Redundle activated")
+      setBundle(true)
       setLoadingRebundle(false)
     } catch (err) {
       setLoadingRebundle(false)
@@ -53,7 +58,7 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
   }
 
   return (
-    <View>
+    <View style={{ marginBottom: 25, marginTop: -15 }}>
       <View style={[styles.row, { justifyContent: "space-between" }]}>
         <View style={styles.row}>
           <FontAwesome5 name="truck" size={18} color={colors.onBackground} />
@@ -131,6 +136,9 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
             </View>
             {rebundleError ? (
               <Text style={{ color: "red" }}>{rebundleError}</Text>
+            ) : null}
+            {rebundleMessage ? (
+              <Text style={{ color: "green" }}>{rebundleMessage}</Text>
             ) : null}
           </View>
         ))}
