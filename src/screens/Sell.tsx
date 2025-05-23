@@ -394,6 +394,11 @@ const Sell = ({ navigation }: any) => {
     setLoadingUpload(false)
   }
 
+  const removeSize = (i: number) => {
+    console.log(i)
+    setSizesInputCounts(sizesInputCounts.filter((_, ind) => i !== ind))
+  }
+
   return (
     <View style={styles.container}>
       <Appbar.Header
@@ -1207,12 +1212,18 @@ const Sell = ({ navigation }: any) => {
                       style={{ color: colors.onBackground, width: "100%" }}
                     />
                   </View>
+                  <Pressable
+                    style={{ padding: 10 }}
+                    onPress={() => removeSize(index)}
+                  >
+                    <Ionicons name="trash-outline" size={20} color="black" />
+                  </Pressable>
                 </View>
               ))}
 
               <TouchableOpacity onPress={addSizesCont}>
                 <Text style={[styles.addSize, { color: colors.primary }]}>
-                  {sizes.length <= 1 ? "Add Size" : "Add More Size"}
+                  {sizes.length < 1 ? "Add Size" : "Add More Size"}
                 </Text>
               </TouchableOpacity>
             </>

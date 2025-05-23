@@ -25,6 +25,7 @@ import { fetchStations, getGigPrice } from "../services/others"
 import { IDeliveryMeta } from "../types/order"
 import useCart from "../hooks/useCart"
 import useToastNotification from "../hooks/useToastNotification"
+import { EventRegister } from "react-native-event-listeners"
 
 type Props = {
   setShowModel: (val: boolean) => void
@@ -214,6 +215,35 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
     }
   }
 
+  useEffect(() => {
+    console.log("message1")
+
+    if (EventRegister.addEventListener) {
+      console.log("message2")
+
+      EventRegister.addEventListener("onmessage", receiveMessage)
+    }
+    //  else {
+    //   /* support for older browsers (IE 8) */
+    //   EventRegister.attachEvent("onmessage", receiveMessage);
+    // }
+  }, [])
+
+  function receiveMessage(message: any) {
+    console.log(message)
+    if (
+      message.origin == "https://map.paxi.co.za" &&
+      message.data &&
+      message.data.trg === "paxi"
+    ) {
+      var point = message.data.point
+      /* Modify the code below for your application */
+      setMeta({ ...meta, ...point })
+      setShowMap(false)
+      /* Add additional logic below (eg: closing modal) */
+    }
+  }
+
   const submitHandler = async () => {
     let deliverySelect = {}
 
@@ -333,7 +363,7 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
       </View> */}
       <View style={{ padding: 20, justifyContent: "center", flex: 1 }}>
         {isRebundle?.status && <RebundlePoster />}
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {item.deliveryOption.map((x) => (
             <View key={x.name}>
               <View style={styles.optioncont}>
@@ -411,8 +441,28 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                         {showMap && (
                           <WebView
                             source={{
-                              html: ' <iframe  width="100%" height="100%" src="https://map.paxi.co.za?size=l,m,s&status=1,3,4&maxordervalue=1000&output=nc,sn&select=true" frameBorder="0" allow="geolocation" ></iframe',
+                              html: ` 
+                              <!DOCTYPE html>
+      <html>
+        <body style="margin:0;padding:0;overflow:hidden;">
+                              <iframe style="height:100vh" width="100%" height="100%" src="https://map.paxi.co.za?size=l,m,s&status=1,3,4&maxordervalue=1000&output=nc,sn&select=true" frameBorder="0" allow="geolocation" ></iframe
+                              <script>
+            // Example: post a message from iframe (only works if iframe content does it)
+            window.addEventListener('message', function(event) {
+              if (event.data) {
+                window.ReactNativeWebView.postMessage("Iframe said: " + event.data);
+              }
+            });
+
+            // Or you can simulate a message after delay for test
+            setTimeout(() => {
+              window.ReactNativeWebView.postMessage("Loaded iframe or some custom event");
+            }, 2000);
+          </script>
+        </body>
+      </html>`,
                             }}
+                            onMessage={(e) => JSON.stringify(e, null, 2)}
                             style={{ height: 200 }}
                           />
                         )}
@@ -473,29 +523,17 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             label={"--select province--"}
                             value={""}
                           />
-                          {region() === "NGN"
-                            ? states.Nigeria.map((name, index) => (
-                                <Picker.Item
-                                  style={{
-                                    backgroundColor: colors.elevation.level2,
-                                    color: colors.onBackground,
-                                  }}
-                                  key={index}
-                                  label={name}
-                                  value={name}
-                                />
-                              ))
-                            : states.SouthAfrican.map((name, index) => (
-                                <Picker.Item
-                                  style={{
-                                    backgroundColor: colors.elevation.level2,
-                                    color: colors.onBackground,
-                                  }}
-                                  key={index}
-                                  label={name}
-                                  value={name}
-                                />
-                              ))}
+                          {states.SouthAfrican.map((name, index) => (
+                            <Picker.Item
+                              style={{
+                                backgroundColor: colors.elevation.level2,
+                                color: colors.onBackground,
+                              }}
+                              key={index}
+                              label={name}
+                              value={name}
+                            />
+                          ))}
                         </Picker>
                         {validationError.province && (
                           <Text1 style={{ color: "red" }}>
@@ -621,29 +659,17 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             label={"--select province--"}
                             value={""}
                           />
-                          {region() === "NGN"
-                            ? states.Nigeria.map((name, index) => (
-                                <Picker.Item
-                                  style={{
-                                    backgroundColor: colors.elevation.level2,
-                                    color: colors.onBackground,
-                                  }}
-                                  key={index}
-                                  label={name}
-                                  value={name}
-                                />
-                              ))
-                            : states.SouthAfrican.map((name, index) => (
-                                <Picker.Item
-                                  style={{
-                                    backgroundColor: colors.elevation.level2,
-                                    color: colors.onBackground,
-                                  }}
-                                  key={index}
-                                  label={name}
-                                  value={name}
-                                />
-                              ))}
+                          {states.SouthAfrican.map((name, index) => (
+                            <Picker.Item
+                              style={{
+                                backgroundColor: colors.elevation.level2,
+                                color: colors.onBackground,
+                              }}
+                              key={index}
+                              label={name}
+                              value={name}
+                            />
+                          ))}
                         </Picker>
                         {validationError.province && (
                           <Text1 style={{ color: "red" }}>
@@ -907,29 +933,17 @@ const DeliveryOptions = ({ item, setShowModel }: Props) => {
                             label={"--select province--"}
                             value={""}
                           />
-                          {region() === "NGN"
-                            ? states.Nigeria.map((name, index) => (
-                                <Picker.Item
-                                  style={{
-                                    backgroundColor: colors.elevation.level2,
-                                    color: colors.onBackground,
-                                  }}
-                                  key={index}
-                                  label={name}
-                                  value={name}
-                                />
-                              ))
-                            : states.SouthAfrican.map((name, index) => (
-                                <Picker.Item
-                                  style={{
-                                    backgroundColor: colors.elevation.level2,
-                                    color: colors.onBackground,
-                                  }}
-                                  key={index}
-                                  label={name}
-                                  value={name}
-                                />
-                              ))}
+                          {states.SouthAfrican.map((name, index) => (
+                            <Picker.Item
+                              style={{
+                                backgroundColor: colors.elevation.level2,
+                                color: colors.onBackground,
+                              }}
+                              key={index}
+                              label={name}
+                              value={name}
+                            />
+                          ))}
                         </Picker>
                         {validationError.province && (
                           <Text1 style={{ color: "red" }}>
@@ -1176,7 +1190,7 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
   plan: {
-    alignItems: "stretch",
+    // alignItems: "stretch",
     marginVertical: 10,
     justifyContent: "center",
   },

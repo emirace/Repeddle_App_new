@@ -72,6 +72,7 @@ const AddDeliveryOption = ({
   const { colors } = useTheme()
 
   const [error1, setError1] = useState("")
+  const [rebundleStatus, setRebundleStatus] = useState(bundle)
 
   const handleClose = () => {
     if (paxi) {
@@ -108,6 +109,10 @@ const AddDeliveryOption = ({
         setError1("Select a delivery price option for Aramex Store-to-Door ")
         return
       }
+    }
+    if (rebundleStatus && !bundle) {
+      setError1("Add number of items for a rebundle")
+      return
     }
     setModalVisible(!modalVisible)
   }
@@ -589,7 +594,12 @@ const AddDeliveryOption = ({
             </View>
             <View style={styles.divider} />
           </View>
-          <Rebundle bundle={bundle} setBundle={setBundle} />
+          <Rebundle
+            bundle={bundle}
+            setBundle={setBundle}
+            rebundleStatus={rebundleStatus}
+            setRebundleStatus={setRebundleStatus}
+          />
         </ScrollView>
         {error1 ? (
           <Text style={{ color: "red", marginVertical: 5 }}>{error1}</Text>

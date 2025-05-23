@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native"
-import React, { useState } from "react"
+import React, { useEffect } from "react"
 import { Appbar, RadioButton, Text, useTheme } from "react-native-paper"
-import useAuth from "../hooks/useAuth"
 import useCart from "../hooks/useCart"
 import { PaymentMethodNavigationProp } from "../types/navigation/stack"
 import { currency, region } from "../utils/common"
@@ -14,17 +13,21 @@ type Props = PaymentMethodNavigationProp
 const PaymentMethod = ({ navigation }: Props) => {
   const { colors } = useTheme()
   const { total, paymentMethod, changePaymentMethod } = useCart()
-  const { user } = useAuth()
+
   const { addNotification } = useToastNotification()
-  const { wallet } = useWallet()
+  const { wallet, fetchWallet } = useWallet()
 
   const handleSubmit = () => {
     navigation.push("Checkout")
   }
 
+  useEffect(() => {
+    fetchWallet()
+  }, [])
+
   const handleClick = (val: string) => {
     const newVal = val as PaymentType
-    if (newVal === "Wallet" && (!user?.balance || user.balance < total)) {
+    if (newVal === "Wallet" && (!wallet?.balance || wallet.balance < total)) {
       addNotification({ message: "Insufficient balance", error: true })
       return
     }
@@ -78,7 +81,7 @@ const PaymentMethod = ({ navigation }: Props) => {
           </View>
         </RadioButton.Group>
         <View style={{ flex: 1, marginLeft: 10 }}>
-          {(user?.balance ?? 0) <= total && (
+          {(wallet?.balance ?? 0) <= total && (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={{ color: "red", fontSize: 13 }}>
                 Insufficient balance
