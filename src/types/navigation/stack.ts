@@ -19,7 +19,7 @@ export type RootStackParamList = {
   ProfileSettings: undefined;
   ProductList: undefined;
   OrderList: undefined;
-  EditProduct: { id: string };
+  EditProduct: { id: string, slug?: string };
   OrderDetails: { id: string };
   MyAccount: { username: string };
   BuyersProtection: undefined;
