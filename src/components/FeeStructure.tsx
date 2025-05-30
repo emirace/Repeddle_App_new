@@ -14,7 +14,7 @@ const FeeStructure = ({ setShowFeeStructure }: Props) => {
     <View style={{ flex: 1 }}>
       <View style={[styles.header, { backgroundColor: colors.primary }]}>
         <TouchableOpacity onPress={() => setShowFeeStructure(false)}>
-          <IconButton icon="chevron-back" />
+          <IconButton icon="keyboard-backspace" />
         </TouchableOpacity>
         <View style={{ height: 40, width: 40 }} />
         <View style={{ height: 40, width: 40 }} />

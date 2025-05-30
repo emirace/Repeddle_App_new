@@ -19,7 +19,7 @@ import {
   useTheme,
 } from "react-native-paper"
 import useProducts from "../../hooks/useProducts"
-import { IBrand, ISize } from "../../types/product"
+import { IBrand, IProduct, ISize } from "../../types/product"
 import { EditProductNavigationProp } from "../../types/navigation/stack"
 import useCategory from "../../hooks/useCategory"
 import Input from "../../components/Input"
@@ -47,7 +47,8 @@ const EditProduct = ({ navigation, route }: Props) => {
 
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
-  const { fetchProductById, error, updateProduct } = useProducts()
+  const { fetchProductById, fetchProductBySlug, error, updateProduct } =
+    useProducts()
   const { fetchBrands, brands } = useBrands()
   const { fetchCategories, categories } = useCategory()
   const { addNotification } = useToastNotification()
@@ -209,8 +210,10 @@ const EditProduct = ({ navigation, route }: Props) => {
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true)
-      const res = await fetchProductById(route.params.id)
-      if (typeof res !== "string") {
+      let res: string | IProduct | null
+      if (route.params.slug) res = await fetchProductBySlug(route.params.slug)
+      else res = await fetchProductById(route.params.id)
+      if (res && typeof res !== "string") {
         setInput({
           name: res.name,
           mainCategory: res.mainCategory,
@@ -242,7 +245,10 @@ const EditProduct = ({ navigation, route }: Props) => {
         setColorsVal(res.color ?? colorsVal)
         setTags(res.tags)
       } else {
-        addNotification({ message: res, error: true })
+        addNotification({
+          message: res || error || "Failed to get product details",
+          error: true,
+        })
       }
       setLoading(false)
     }

@@ -1,5 +1,6 @@
 import {
   Modal,
+  Platform,
   ScrollView,
   StyleProp,
   TextProps,
@@ -98,45 +99,65 @@ const OrderDetails = ({ navigation, route }: Props) => {
     return end - startNum
   }
 
+  // TODO:  FIXME: fix this
+
   const generatePDF = async () => {
     if (!viewShotRef.current?.capture) return
     console.log(viewShotRef.current.capture)
 
     // Take a snapshot of the screen
-    const snapshot = await viewShotRef.current.capture()
+    let snapshot = await viewShotRef.current.capture()
+
+    if (Platform.OS === "android") {
+      const base64 = await FileSystem.readAsStringAsync(snapshot, {
+        encoding: FileSystem.EncodingType.Base64,
+      })
+
+      snapshot = `data:;base64,${base64.trim()}`
+    }
+
     console.log("eeeeeeee1", snapshot)
     // Create the PDF file
 
     const ul =
       "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg"
-    const pdfDocument = await Print.printToFileAsync({
-      html: `<html>
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-      </head>
-      <body style="text-align: center;">
-        <h1 style="font-size: 50px; font-family: Helvetica Neue; font-weight: normal;">
-          Hello Expo!
-        </h1>
-        <img
-          src="${snapshot}"
-          style="width: 90vw;" />
-      </body>
-    </html>`,
-    })
+    // const pdfDocument = await Print.printToFileAsync({
+    //   html:`<!DOCTYPE html>
+    //   <html>
+    //   <head>
+    //     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    //   </head>
+    //   <body style="text-align: center;">
+    //     <img
+    //       src="${snapshot}"
+    //       style="width: 90vw;display: block; margin: 0 auto;height:auto;" />
+    //   </body>
+    // </html>` ,
+    // })
     // const pdfDocument = await Print.printToFileAsync({
     //   html: `<html><body><img src="${ul}" /></body></html>`,
     // })
 
-    console.log("eeeeeeee3", pdfDocument)
-    const pdfUri = pdfDocument.uri
-    await FileSystem.moveAsync({
-      from: pdfUri,
-      to: FileSystem.documentDirectory + "your-screen.pdf",
-    })
+    // console.log("eeeeeeee3", pdfDocument)
+    // const pdfUri = pdfDocument.uri
+    // await FileSystem.moveAsync({
+    //   from: pdfUri,
+    //   to: FileSystem.documentDirectory + "your-screene.pdf",
+    // })
     await Print.printAsync({
-      uri: FileSystem.documentDirectory + "your-screen.pdf",
+      html: `<!DOCTYPE html>
+      <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+      </head>
+      <body style="text-align: center;">
+        <img
+          src="${snapshot}"
+          style="width: 90vw;display: block; margin: 0 auto;height:auto;" />
+      </body>
+    </html>`,
     })
+
     console.log("PDF saved successfully!")
   }
 
@@ -280,8 +301,8 @@ const OrderDetails = ({ navigation, route }: Props) => {
       ) : showError && error ? (
         <Text1 style={{ color: "red" }}>{error}</Text1>
       ) : order ? (
-        <ViewShot ref={viewShotRef} style={{ flex: 1 }}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <ViewShot ref={viewShotRef} style={{ flex: 1 }}>
             <View
               style={[
                 styles.sumaryCont,
@@ -514,8 +535,8 @@ const OrderDetails = ({ navigation, route }: Props) => {
                 </View>
               </View>
             </View>
-          </ScrollView>
-        </ViewShot>
+          </ViewShot>
+        </ScrollView>
       ) : null}
     </View>
   )

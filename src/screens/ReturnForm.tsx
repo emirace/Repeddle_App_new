@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   Image,
+  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -19,6 +20,7 @@ import useReturn from "../hooks/useReturn"
 import { baseURL } from "../services/api"
 import useMessage from "../hooks/useMessage"
 import { uploadOptimizeImage } from "../utils/image"
+import { Picker } from "@react-native-picker/picker"
 
 type Props = ReturnFormNavigationProp
 
@@ -245,6 +247,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
                   current &&
                   navigation.push("EditProduct", {
                     id: current.product._id,
+                    slug: current.product.slug,
                   })
                 }
               >
@@ -344,99 +347,119 @@ const ReturnForm = ({ navigation, route }: Props) => {
               {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
               <View style={styles.inputCont}>
                 <Text style={styles.label}>Reasons for Return</Text>
-                <SelectDropdown
-                  data={[
+                <Picker
+                  selectedValue={reason}
+                  style={{
+                    backgroundColor: colors.elevation.level3,
+                    paddingHorizontal: 0,
+                    fontSize: 8,
+                    color: colors.onBackground,
+                  }}
+                  onValueChange={(itemValue) => {
+                    setReason(itemValue)
+                  }}
+                  mode="dropdown"
+                >
+                  <Picker.Item
+                    style={{
+                      backgroundColor: colors.elevation.level2,
+                      color: colors.onBackground,
+                    }}
+                    label={"--select--"}
+                    value={""}
+                  />
+                  {[
                     "Missing or wrong product, not what i ordered",
                     "Product condition is significantly not as described",
                     "The product is totally defective or completely damage",
-                  ]}
-                  onSelect={(selectedItem, index) => {
-                    setReason(selectedItem)
-                  }}
-                  defaultButtonText="Reasons for Return"
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return selectedItem
-                  }}
-                  rowTextForSelection={(item, index) => {
-                    return item
-                  }}
-                  buttonTextStyle={{
-                    fontSize: 13,
-                    color: colors.onBackground,
-                    // textAlign: "right",
-                  }}
-                  buttonStyle={{
-                    height: 30,
-                    width: "100%",
-                    borderWidth: 1,
-                    borderColor: colors.elevation.level3,
-                    borderRadius: 5,
-                    backgroundColor: colors.background,
-                  }}
-                />
+                  ].map((val, index) => (
+                    <Picker.Item
+                      style={{
+                        backgroundColor: colors.elevation.level2,
+                        color: colors.onBackground,
+                      }}
+                      key={index}
+                      label={val}
+                      value={val}
+                    />
+                  ))}
+                </Picker>
               </View>
               <View style={styles.inputCont}>
                 <Text style={styles.label}>Preferred Sending Method</Text>
 
-                <SelectDropdown
-                  data={[current?.deliveryOption.method]}
-                  onSelect={(selectedItem, index) => {
-                    setSending(selectedItem)
-                  }}
-                  defaultButtonText="Preferred Sending Method"
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return selectedItem
-                  }}
-                  rowTextForSelection={(item, index) => {
-                    return item
-                  }}
-                  buttonTextStyle={{
-                    fontSize: 13,
+                <Picker
+                  selectedValue={sending}
+                  style={{
+                    backgroundColor: colors.elevation.level3,
+                    paddingHorizontal: 0,
+                    fontSize: 8,
                     color: colors.onBackground,
-                    // textAlign: "right",
                   }}
-                  buttonStyle={{
-                    height: 30,
-                    width: "100%",
-                    borderWidth: 1,
-                    borderColor: colors.elevation.level3,
-                    borderRadius: 5,
-                    backgroundColor: colors.background,
+                  onValueChange={(itemValue) => {
+                    setSending(itemValue)
                   }}
-                />
+                  mode="dropdown"
+                >
+                  <Picker.Item
+                    style={{
+                      backgroundColor: colors.elevation.level2,
+                      color: colors.onBackground,
+                    }}
+                    label={"--select--"}
+                    value={""}
+                  />
+                  {[current?.deliveryOption.method].map((val, index) => (
+                    <Picker.Item
+                      style={{
+                        backgroundColor: colors.elevation.level2,
+                        color: colors.onBackground,
+                      }}
+                      key={index}
+                      label={val}
+                      value={val}
+                    />
+                  ))}
+                </Picker>
               </View>
               <View style={styles.inputCont}>
                 <Text style={styles.label}>Preferred Refund Method</Text>
-
-                <SelectDropdown
-                  data={[
+                <Picker
+                  selectedValue={refund}
+                  style={{
+                    backgroundColor: colors.elevation.level3,
+                    paddingHorizontal: 0,
+                    fontSize: 8,
+                    color: colors.onBackground,
+                  }}
+                  onValueChange={(itemValue) => {
+                    setRefund(itemValue)
+                  }}
+                  mode="dropdown"
+                >
+                  <Picker.Item
+                    style={{
+                      backgroundColor: colors.elevation.level2,
+                      color: colors.onBackground,
+                    }}
+                    label={"--select--"}
+                    value={""}
+                  />
+                  {[
                     "Refund to my original payment method",
                     "Credit my Repeddle wallet",
-                  ]}
-                  onSelect={(selectedItem, index) => {
-                    setRefund(selectedItem)
-                  }}
-                  defaultButtonText="Preferred Refund Method"
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return selectedItem
-                  }}
-                  rowTextForSelection={(item, index) => {
-                    return item
-                  }}
-                  buttonTextStyle={{
-                    fontSize: 13,
-                    color: colors.onBackground,
-                    // textAlign: "right",
-                  }}
-                  buttonStyle={{
-                    height: 30,
-                    width: "100%",
-                    borderWidth: 1,
-                    borderColor: colors.elevation.level3,
-                    borderRadius: 5,
-                    backgroundColor: colors.background,
-                  }}
-                />
+                  ].map((val, index) => (
+                    <Picker.Item
+                      style={{
+                        backgroundColor: colors.elevation.level2,
+                        color: colors.onBackground,
+                      }}
+                      key={index}
+                      label={val}
+                      value={val}
+                    />
+                  ))}
+                </Picker>
               </View>
               <View style={[styles.inputCont, { width: "90%" }]}>
                 <Text style={styles.label}>More Information</Text>
@@ -446,6 +469,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
                     {
                       backgroundColor: colors.elevation.level2,
                       textAlignVertical: "top",
+                      color: colors.onBackground,
                     },
                   ]}
                   multiline={true}
@@ -489,24 +513,24 @@ const ReturnForm = ({ navigation, route }: Props) => {
                   </Text>
                 ) : null}
               </View>
-              <View
+              {/* <View
                 style={{
                   padding: 10,
                   width: "100%",
                 }}
+              > */}
+              <Button
+                mode="contained"
+                style={[styles.button, { backgroundColor: colors.primary }]}
+                onPress={handleReturn}
+                loading={updatingStatus}
+                disabled={updatingStatus}
               >
-                <Button
-                  mode="contained"
-                  style={[styles.button, { backgroundColor: colors.primary }]}
-                  onPress={handleReturn}
-                  loading={updatingStatus}
-                  disabled={updatingStatus}
-                >
-                  <Text style={{ color: "white", fontWeight: "600" }}>
-                    Submit
-                  </Text>
-                </Button>
-              </View>
+                <Text style={{ color: "white", fontWeight: "600" }}>
+                  Submit
+                </Text>
+              </Button>
+              {/* </View> */}
             </View>
           </View>
         )
@@ -531,7 +555,9 @@ const ReturnForm = ({ navigation, route }: Props) => {
         <Appbar.Content titleStyle={{ color: "white" }} title="Return Form" />
       </Appbar.Header>
 
-      <View>{displayTab()}</View>
+      <ScrollView>
+        <View>{displayTab()}</View>
+      </ScrollView>
     </View>
   )
 }
@@ -577,7 +603,7 @@ const styles = StyleSheet.create({
   inputCont: {
     marginVertical: 10,
     marginHorizontal: 20,
-    // width: "100%",
+    width: "90%",
   },
   label: {
     fontSize: 14,
