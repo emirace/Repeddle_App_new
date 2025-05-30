@@ -6,166 +6,173 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { PropsWithChildren, useEffect, useRef, useState } from "react"
-import { Appbar, Text, useTheme } from "react-native-paper"
-import useOrder from "../../hooks/useOrder"
-import ViewShot from "react-native-view-shot"
-import * as FileSystem from "expo-file-system"
-import * as Print from "expo-print"
-import { OrderDetailsNavigationProp } from "../../types/navigation/stack"
-import { IOrder, OrderItem } from "../../types/order"
-import moment from "moment"
-import useAuth from "../../hooks/useAuth"
+} from "react-native";
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { Appbar, Text, useTheme } from "react-native-paper";
+import useOrder from "../../hooks/useOrder";
+import ViewShot from "react-native-view-shot";
+import * as FileSystem from "expo-file-system";
+import * as Print from "expo-print";
+import { OrderDetailsNavigationProp } from "../../types/navigation/stack";
+import { IOrder, OrderItem } from "../../types/order";
+import moment from "moment";
+import useAuth from "../../hooks/useAuth";
 import {
   currency,
   deliveryNumber,
   deliveryStatusMap,
   region,
   timeDifference,
-} from "../../utils/common"
-import DeliveryHistory from "../../components/DeliveryHistory"
-import Loader from "../../components/ui/Loader"
-import useToastNotification from "../../hooks/useToastNotification"
-import CartIcon from "../../components/ui/cartIcon"
-import IsSeller from "../../section/orderDetails/IsSeller"
-import IsUser from "../../section/orderDetails/IsUser"
-import { orderDetailsStyle as styles } from "../../section/orderDetails/style"
-import usePayments from "../../hooks/usePayment"
+} from "../../utils/common";
+import DeliveryHistory from "../../components/DeliveryHistory";
+import Loader from "../../components/ui/Loader";
+import useToastNotification from "../../hooks/useToastNotification";
+import CartIcon from "../../components/ui/cartIcon";
+import IsSeller from "../../section/orderDetails/IsSeller";
+import IsUser from "../../section/orderDetails/IsUser";
+import { orderDetailsStyle as styles } from "../../section/orderDetails/style";
+import usePayments from "../../hooks/usePayment";
 
-type Props = OrderDetailsNavigationProp
+type Props = OrderDetailsNavigationProp;
 
 const OrderDetails = ({ navigation, route }: Props) => {
-  const { colors, dark } = useTheme()
+  const { colors, dark } = useTheme();
   const {
     fetchOrderById,
     error,
     updateOrderItemTracking,
     updateOrderItemStatus,
-  } = useOrder()
-  const { user } = useAuth()
-  const { addNotification } = useToastNotification()
-  const { paySeller, refundBuyer } = usePayments()
-  const { id } = route.params
+  } = useOrder();
+  const { user } = useAuth();
+  const { addNotification } = useToastNotification();
+  const { paySeller, refundBuyer } = usePayments();
+  const { id } = route.params;
 
-  const viewShotRef = useRef<ViewShot>(null)
+  const viewShotRef = useRef<ViewShot>(null);
 
-  const [order, setOrder] = useState<IOrder>()
+  const [order, setOrder] = useState<IOrder>();
 
-  const [loading, setLoading] = useState(false)
-  const [showDeliveryHistory, setShowDeliveryHistory] = useState(false)
-  const [currentDeliveryHistory, setCurrentDeliveryHistory] = useState(0)
-  const [showTracking, setShowTracking] = useState(false)
-  const [trackingNumber, setTrackingNumber] = useState("")
-  const [afterAction, setAfterAction] = useState(false)
-  const [showDelivery, setShowDelivery] = useState("")
-  const [isSeller, setIsSeller] = useState(false)
-  const [updatingStatus, setUpdatingStatus] = useState(false)
-  const [showError, setShowError] = useState(false)
-  const [refresh, setRefresh] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [showDeliveryHistory, setShowDeliveryHistory] = useState(false);
+  const [currentDeliveryHistory, setCurrentDeliveryHistory] = useState(0);
+  const [showTracking, setShowTracking] = useState(false);
+  const [trackingNumber, setTrackingNumber] = useState("");
+  const [afterAction, setAfterAction] = useState(false);
+  const [showDelivery, setShowDelivery] = useState("");
+  const [isSeller, setIsSeller] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     const fetchOrder = async () => {
-      setLoading(true)
-      const res = await fetchOrderById(id)
+      setLoading(true);
+      const res = await fetchOrderById(id);
       if (res) {
-        setOrder(res)
+        setOrder(res);
         if (user) {
-          const existSell = res.items.filter((x) => x.seller._id === user._id)
+          const existSell = res.items.filter((x) => x.seller._id === user._id);
           if (existSell.length) {
-            setIsSeller(true)
+            setIsSeller(true);
           }
         }
       } else {
-        setShowError(true)
+        setShowError(true);
       }
-      setLoading(false)
-    }
+      setLoading(false);
+    };
 
-    fetchOrder()
-  }, [id, refresh])
+    fetchOrder();
+  }, [id, refresh]);
 
   const comfirmWaybill = async (order: OrderItem) => {
-    if (!trackingNumber) return
+    if (!trackingNumber) return;
 
-    await deliverOrderHandler("Dispatched", order, order._id)
-    setShowTracking(false)
-  }
+    await deliverOrderHandler("Dispatched", order, order._id);
+    setShowTracking(false);
+  };
 
   const daydiff = (start: Date | string | number, end: number) => {
-    if (!start) return 0
-    const startNum = timeDifference(new window.Date(start), new window.Date())
-    return end - startNum
-  }
+    if (!start) return 0;
+    const startNum = timeDifference(new window.Date(start), new window.Date());
+    return end - startNum;
+  };
 
   const generatePDF = async () => {
-    if (!viewShotRef.current?.capture) return
-    console.log(viewShotRef.current.capture)
+    if (!viewShotRef.current?.capture) return;
+    console.log(viewShotRef.current.capture);
 
     // Take a snapshot of the screen
-    const snapshot = await viewShotRef.current.capture()
-    console.log("eeeeeeee1", snapshot)
+    const snapshot = await viewShotRef.current.capture();
+    console.log("eeeeeeee1", snapshot);
     // Create the PDF file
 
     const ul =
-      "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg"
+      "https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg";
     const pdfDocument = await Print.printToFileAsync({
       html: `<html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
       </head>
       <body style="text-align: center;">
-        <h1 style="font-size: 50px; font-family: Helvetica Neue; font-weight: normal;">
-          Hello Expo!
-        </h1>
         <img
           src="${snapshot}"
-          style="width: 90vw;" />
+          style="width: 90vw; height:100vh" />
       </body>
     </html>`,
-    })
+    });
+
     // const pdfDocument = await Print.printToFileAsync({
     //   html: `<html><body><img src="${ul}" /></body></html>`,
     // })
 
-    console.log("eeeeeeee3", pdfDocument)
-    const pdfUri = pdfDocument.uri
+    console.log("eeeeeeee3", pdfDocument);
+    const pdfUri = pdfDocument.uri;
     await FileSystem.moveAsync({
       from: pdfUri,
       to: FileSystem.documentDirectory + "your-screen.pdf",
-    })
+    });
     await Print.printAsync({
-      uri: FileSystem.documentDirectory + "your-screen.pdf",
-    })
-    console.log("PDF saved successfully!")
-  }
+      html: `<html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+      </head>
+      <body style="text-align: center;">
+        <img
+          src="${snapshot}"
+          style="width: 90vw; height:100vh" />
+      </body>
+    </html>`,
+    });
+    console.log("PDF saved successfully!");
+  };
 
   const showNextStatus = (status: string) => {
-    const entries = Object.entries(deliveryStatusMap)
-    const currentNumber = deliveryNumber(status)
+    const entries = Object.entries(deliveryStatusMap);
+    const currentNumber = deliveryNumber(status);
 
-    return entries[currentNumber]
-  }
+    return entries[currentNumber];
+  };
 
   const deliverOrderHandler = async (
     currentStatus: string,
     orderItem: OrderItem,
     trackingNumber?: string
   ) => {
-    if (!order) return
-    const nextStatus = showNextStatus(currentStatus)
+    if (!order) return;
+    const nextStatus = showNextStatus(currentStatus);
 
     if (nextStatus[1] === 2) {
       if (!trackingNumber) {
         addNotification({
           message: "Tracking number is required to dispatch item",
           error: true,
-        })
-        return
+        });
+        return;
       }
     }
 
-    setUpdatingStatus(true)
+    setUpdatingStatus(true);
 
     const res = await updateOrderItemTracking(
       order._id,
@@ -174,79 +181,83 @@ const OrderDetails = ({ navigation, route }: Props) => {
         status: nextStatus[0],
         trackingNumber,
       }
-    )
+    );
     if (res) {
-      addNotification({ message: "Item status has been updated" })
-      setOrder(res)
+      addNotification({ message: "Item status has been updated" });
+      setOrder(res);
     } else {
       addNotification({
         message: error || "Failed to update status",
         error: true,
-      })
+      });
     }
 
-    setUpdatingStatus(false)
-  }
+    setUpdatingStatus(false);
+  };
 
   const handleCancelOrder = (item: OrderItem) => {
-    console.log(item)
-  }
+    console.log(item);
+  };
 
   const onRefund = async (item: OrderItem) => {
-    if (!order) return
-    setUpdatingStatus(true)
-    const data = await refundBuyer(order._id, item.product._id, order.buyer._id)
+    if (!order) return;
+    setUpdatingStatus(true);
+    const data = await refundBuyer(
+      order._id,
+      item.product._id,
+      order.buyer._id
+    );
 
     if (typeof data !== "string") {
-      addNotification({ message: data.message })
-    } else addNotification({ message: data, error: true })
+      addNotification({ message: data.message });
+    } else addNotification({ message: data, error: true });
 
-    setUpdatingStatus(false)
-  }
+    setUpdatingStatus(false);
+  };
 
   const onPaySeller = async (item: OrderItem) => {
-    if (!order) return
-    setUpdatingStatus(true)
-    const data = await paySeller(order._id, item.product._id, item.seller._id)
+    if (!order) return;
+    setUpdatingStatus(true);
+    const data = await paySeller(order._id, item.product._id, item.seller._id);
 
     if (typeof data === "string") {
-      addNotification({ message: data, error: true })
-      setUpdatingStatus(false)
-      return
+      addNotification({ message: data, error: true });
+      setUpdatingStatus(false);
+      return;
     }
 
-    addNotification({ message: data.message })
+    addNotification({ message: data.message });
 
-    setRefresh(true)
+    setRefresh(true);
 
-    setUpdatingStatus(false)
-  }
+    setUpdatingStatus(false);
+  };
 
   const toggleOrderHoldStatus = async (item: OrderItem) => {
-    if (!id) return
+    if (!id) return;
 
     const res = await updateOrderItemStatus(
       id,
       item._id,
       item.isHold ? "unhold" : "hold"
-    )
+    );
     if (res) {
-      setOrder(res)
-      addNotification({ message: "Item status has been updated" })
+      setOrder(res);
+      addNotification({ message: "Item status has been updated" });
     } else {
-      addNotification({ message: "Failed to update status", error: true })
+      addNotification({ message: "Failed to update status", error: true });
     }
-  }
+  };
 
   const paymentRequest = async (
     seller: string,
     cost: number,
     itemCurrency: string,
     sellerImage: string
-  ) => {}
+  ) => {};
 
-  let shippingPrice = 0
-  let itemsPrice = 0
+  let shippingPrice = 0;
+  let itemsPrice = 0;
 
   return (
     <View style={[styles.container]}>
@@ -280,8 +291,8 @@ const OrderDetails = ({ navigation, route }: Props) => {
       ) : showError && error ? (
         <Text1 style={{ color: "red" }}>{error}</Text1>
       ) : order ? (
-        <ViewShot ref={viewShotRef} style={{ flex: 1 }}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <ViewShot ref={viewShotRef} style={{ flex: 1 }}>
             <View
               style={[
                 styles.sumaryCont,
@@ -361,7 +372,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
               animationType="slide"
               visible={showDeliveryHistory}
               onRequestClose={() => {
-                setShowDeliveryHistory(!showDeliveryHistory)
+                setShowDeliveryHistory(!showDeliveryHistory);
               }}
             >
               <DeliveryHistory
@@ -514,24 +525,24 @@ const OrderDetails = ({ navigation, route }: Props) => {
                 </View>
               </View>
             </View>
-          </ScrollView>
-        </ViewShot>
+          </ViewShot>
+        </ScrollView>
       ) : null}
     </View>
-  )
-}
+  );
+};
 
-export default OrderDetails
+export default OrderDetails;
 
 type TextaProps = PropsWithChildren<{
-  style?: StyleProp<TextStyle>
+  style?: StyleProp<TextStyle>;
 }> &
-  TextProps
+  TextProps;
 
 const Text1 = ({ style, children, ...props }: TextaProps) => {
   return (
     <Text style={[style]} {...props}>
       {children}
     </Text>
-  )
-}
+  );
+};

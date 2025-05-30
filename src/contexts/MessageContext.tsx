@@ -183,6 +183,7 @@ export const MessageProvider: React.FC<Props> = ({ children }) => {
   const createMessage = async (message: MessageStart) => {
     try {
       const res = await createMessageService(message);
+      reloadConversation();
       return res;
     } catch (error) {
       handleError(error);
