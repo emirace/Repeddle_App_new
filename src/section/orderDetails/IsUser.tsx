@@ -175,6 +175,18 @@ const IsUser = ({
                       elevation: 5,
                     }}
                   >
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        maxWidth: 400,
+                        textAlign: "justify",
+                      }}
+                    >
+                      Please inspect your order before confirming receipt.
+                      Kindly know that you can't LOG A RETURN after order
+                      receipt confirmation. However, you can re-list your
+                      product for sale at this point
+                    </Text>
                     <View style={styles.afterAction}>
                       <Button
                         style={[
@@ -217,18 +229,6 @@ const IsUser = ({
                         Log a return
                       </Button>
                     </View>
-                    <Text
-                      style={{
-                        fontSize: 13,
-                        maxWidth: 400,
-                        textAlign: "justify",
-                      }}
-                    >
-                      Please inspect your order before confirming receipt.
-                      Kindly know that you can't LOG A RETURN after order
-                      receipt confirmation. However, you can re-list your
-                      product for sale at this point
-                    </Text>
                   </View>
                 </View>
               </Modal>
@@ -378,7 +378,11 @@ const IsUser = ({
 
       <TouchableOpacity
         onPress={() => setShowDelivery(!showDelivery)}
-        style={{ marginVertical: 10, flexDirection: "row" }}
+        style={{
+          marginVertical: 10,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
       >
         <Text
           style={{
@@ -390,9 +394,9 @@ const IsUser = ({
           {showDelivery ? "Less" : "More"} details
         </Text>
         <Ionicons
-          name={orderItem._id ? "chevron-up" : "chevron-down"}
+          name={showDelivery ? "chevron-up" : "chevron-down"}
           size={15}
-          color={colors.onBackground}
+          color={colors.secondary}
         />
       </TouchableOpacity>
       {showDelivery ? (

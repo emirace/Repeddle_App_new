@@ -23,7 +23,7 @@ const DeliveryHistory = ({ setShowDeliveryHistory, status }: Props) => {
       {setShowDeliveryHistory && (
         <View style={[styles.header, { backgroundColor: colors.primary }]}>
           <TouchableOpacity onPress={() => setShowDeliveryHistory(false)}>
-            <IconButton icon="chevron-back" />
+            <IconButton icon="keyboard-backspace" />
           </TouchableOpacity>
           <Text style={styles.title}>Delivery Status </Text>
           <View style={{ width: 40 }} />
