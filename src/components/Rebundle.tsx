@@ -11,13 +11,19 @@ import useAuth from "../hooks/useAuth"
 type Props = {
   bundle: boolean
   setBundle: (val: boolean) => void
+  setRebundleStatus: (val: boolean) => void
+  rebundleStatus: boolean
 }
 
-const Rebundle = ({ bundle, setBundle }: Props) => {
+const Rebundle = ({
+  bundle,
+  setBundle,
+  rebundleStatus,
+  setRebundleStatus,
+}: Props) => {
   const { colors } = useTheme()
   const { updateUser } = useAuth()
 
-  const [rebundleStatus, setRebundleStatus] = useState(bundle)
   const [rebundleCount, setRebundleCount] = useState("")
   const [rebundleError, setRebundleError] = useState("")
   const [rebundleMessage, setRebundleMessage] = useState("")
@@ -118,6 +124,7 @@ const Rebundle = ({ bundle, setBundle }: Props) => {
                   borderBottomLeftRadius: 5,
                   color: colors.onBackground,
                 }}
+                placeholder="Add number of items"
                 keyboardType="numeric"
                 onChangeText={(text) => setRebundleCount(text)}
                 onFocus={() => {

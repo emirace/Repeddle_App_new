@@ -364,6 +364,7 @@ const Checkout = ({ navigation }: Props) => {
             <PayWithFlutterwave
               onRedirect={handleOnRedirect}
               onInitializeError={onError}
+              style={{ width: "100%" }}
               onAbort={onError}
               options={{
                 tx_ref: generateTransactionRef(10),
@@ -398,7 +399,13 @@ const Checkout = ({ navigation }: Props) => {
                   children="Proceed"
                   loading={isLoading}
                   mode="contained"
-                  style={[styles.button, { backgroundColor: colors.primary }]}
+                  style={[
+                    styles.button,
+                    {
+                      // backgroundColor: colors.primary,
+                      width: "100%",
+                    },
+                  ]}
                   labelStyle={{
                     color: "white",
                     fontFamily: "chronicle-text-bold",
@@ -465,8 +472,6 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 40,
-    justifyContent: "center",
-    alignItems: "center",
     borderRadius: 5,
   },
 })
