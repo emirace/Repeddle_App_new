@@ -5,7 +5,7 @@ import {
   fetchNotificationsService,
   markNotificationService,
 } from "../services/notification";
-import socket from "../socket";
+import { getSocket } from "../socket";
 
 type ContextType = {
   notifications: Notification[];
@@ -22,6 +22,8 @@ export const NotificationContext = createContext<ContextType | undefined>(
 
 export const NotificationProvider = ({ children }: PropsWithChildren) => {
   const { setAuthErrorModalOpen } = useAuth();
+
+  const socket = getSocket();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);

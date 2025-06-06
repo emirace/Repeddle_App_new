@@ -25,11 +25,13 @@ import useMessage from "../../hooks/useMessage";
 import { baseURL } from "../../services/api";
 import useAuth from "../../hooks/useAuth";
 import ChatFooter from "../../components/chat/ChatFooter";
-import socket from "../../socket";
+import { getSocket } from "../../socket";
 import ChatSkeleton from "../../components/chat/ChatSkeleton";
 import useToastNotification from "../../hooks/useToastNotification";
 import { Ionicons } from "@expo/vector-icons";
 import { uploadOptimizeImage } from "../../utils/image";
+
+const socket = getSocket();
 
 const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
   const conversationId = route.params?.conversationId;

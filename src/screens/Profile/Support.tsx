@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { IGuestUser, IUser } from "../../types/user";
 import useAuth from "../../hooks/useAuth";
 import useToastNotification from "../../hooks/useToastNotification";
 import { loginGuestService } from "../../services/user";
-import socket from "../../socket";
-import useArticle from "../../hooks/useArticle";
+import { getSocket } from "../../socket";
 import FAQ from "../../components/support/FAQ";
 import Form from "../../components/support/Form";
 import Chat from "../../components/support/Chat";
 import Header from "../../components/support/Header";
 import { SupportNavigationProp } from "../../types/navigation/stack";
+import Admin from "../../components/support/Admin";
+
+const socket = getSocket();
 
 const Support: React.FC<SupportNavigationProp> = ({ navigation }) => {
   const { user: defaultUser } = useAuth();
@@ -49,6 +51,8 @@ const Support: React.FC<SupportNavigationProp> = ({ navigation }) => {
         return <FAQ setScreen={setScreen} user={user} />;
       case "form":
         return <Form setScreen={setScreen} loginGuest={loginGuest} />;
+      case "admin":
+        return <Admin />;
       case "chat":
         return <Chat user={user} />;
       default:

@@ -19,7 +19,7 @@ import {
   getWishlistService,
 } from "../services/auth";
 import { IUser, UpdateUser, Wishlist } from "../types/user";
-import socket from "../socket";
+import { getSocket } from "../socket";
 import * as SecureStore from "expo-secure-store";
 
 interface Props {
@@ -71,6 +71,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [authErrorModalOpen, setAuthErrorModalOpen] = useState(false);
+
+  const socket = getSocket();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleError = (error: any) => {
