@@ -13,9 +13,11 @@ import { IConversation } from "../../types/message";
 import { baseURL } from "../../services/api";
 import { markMessagesAsRead } from "../../utils/socket";
 import useAuth from "../../hooks/useAuth";
+import useNotification from "../../hooks/useNotification";
 
 const Conversation: React.FC<any> = ({ navigation }) => {
   const { user } = useAuth();
+  const { markDotAsRead } = useNotification();
   const {
     conversations,
     getConversations,
@@ -30,6 +32,10 @@ const Conversation: React.FC<any> = ({ navigation }) => {
   useEffect(() => {
     getConversations(currentTab);
   }, [currentTab]);
+
+  useEffect(() => {
+    markDotAsRead("message");
+  }, []);
 
   const filteredConversations = conversations.filter((conversation) =>
     conversation.otherUser.username

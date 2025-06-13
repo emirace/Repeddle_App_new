@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,45 +7,49 @@ import {
   FlatList,
   Image,
   StyleSheet,
-} from "react-native"
-import { IUser } from "../../types/user"
-import { Ionicons } from "@expo/vector-icons"
-import { currentAddress, goto, region } from "../../utils/common"
-import { useTheme } from "react-native-paper"
-import useArticle from "../../hooks/useArticle"
-import { Article } from "../../types/article"
+} from "react-native";
+import { IUser } from "../../types/user";
+import { Ionicons } from "@expo/vector-icons";
+import { currentAddress, goto, region } from "../../utils/common";
+import { useTheme } from "react-native-paper";
+import useArticle from "../../hooks/useArticle";
+import { Article } from "../../types/article";
 
 interface FAQProps {
-  setScreen: (screen: string) => void
-  user: IUser | null
+  setScreen: (screen: string) => void;
+  user: IUser | null;
 }
 
 const FAQ: React.FC<FAQProps> = ({ setScreen, user }) => {
-  const { colors } = useTheme()
-  const { fetchArticles } = useArticle()
-  const [searchQuery, setSearchQuery] = useState<string>("")
-  const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
+  const { colors } = useTheme();
+  const { fetchArticles } = useArticle();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
 
   useEffect(() => {
     const searchArticles = async () => {
       try {
-        const filteredArticles = await fetchArticles(searchQuery)
-        setFilteredArticles(filteredArticles)
+        const filteredArticles = await fetchArticles(searchQuery);
+        setFilteredArticles(filteredArticles);
       } catch (error) {
-        console.log("Error searching articles")
+        console.log("Error searching articles");
       }
-    }
+    };
 
-    searchArticles()
-  }, [searchQuery])
+    searchArticles();
+  }, [searchQuery]);
 
   const handleContinue = () => {
     if (user) {
-      setScreen("chat")
+      if (user.role === "Admin") {
+        setScreen("admin");
+      } else {
+        setScreen("chat");
+      }
     } else {
-      setScreen("form")
+      setScreen("form");
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -94,8 +98,8 @@ const FAQ: React.FC<FAQProps> = ({ setScreen, user }) => {
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
@@ -130,7 +134,12 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ddd",
   },
   articleText: { fontSize: 16 },
-  chatPreview: { flexDirection: "row", alignItems: "center", gap: 12 },
+  chatPreview: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: 20,
+  },
   avatar: { width: 50, height: 50, borderRadius: 25, backgroundColor: "black" },
   messageButton: {
     flexDirection: "row",
@@ -143,6 +152,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   buttonText: { marginLeft: 8 },
-})
+});
 
-export default FAQ
+export default FAQ;

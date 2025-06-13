@@ -5,35 +5,36 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { useEffect, useMemo, useState } from "react"
-import { Appbar, IconButton, Text, useTheme } from "react-native-paper"
-import { Feather, Ionicons } from "@expo/vector-icons"
-import useAuth from "../../hooks/useAuth"
-import { MyAccountNavigationProp } from "../../types/navigation/stack"
-import useUser from "../../hooks/useUser"
-import { IUser, UserByUsername } from "../../types/user"
-import All from "../../section/myAccount/All"
-import Selling from "../../section/myAccount/Selling"
-import Liked from "../../section/myAccount/Liked"
-import Saved from "../../section/myAccount/Saved"
-import Sold from "../../section/myAccount/Sold"
+} from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { Appbar, IconButton, Text, useTheme } from "react-native-paper";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import useAuth from "../../hooks/useAuth";
+import { MyAccountNavigationProp } from "../../types/navigation/stack";
+import useUser from "../../hooks/useUser";
+import { IUser, UserByUsername } from "../../types/user";
+import All from "../../section/myAccount/All";
+import Selling from "../../section/myAccount/Selling";
+import Liked from "../../section/myAccount/Liked";
+import Saved from "../../section/myAccount/Saved";
+import Sold from "../../section/myAccount/Sold";
 import {
   Tabs,
   MaterialTabBar,
   TabBarProps,
-} from "react-native-collapsible-tab-view"
-import RebundlePoster from "../../components/RebundlePoster"
-import Rating from "../../components/Rating"
-import { baseURL } from "../../services/api"
-import { lightTheme } from "../../constant/theme"
-import Loader from "../../components/ui/Loader"
-import useToastNotification from "../../hooks/useToastNotification"
+} from "react-native-collapsible-tab-view";
+import RebundlePoster from "../../components/RebundlePoster";
+import Rating from "../../components/Rating";
+import { baseURL } from "../../services/api";
+import { lightTheme } from "../../constant/theme";
+import Loader from "../../components/ui/Loader";
+import useToastNotification from "../../hooks/useToastNotification";
+import useMessage from "../../hooks/useMessage";
 
-type Props = MyAccountNavigationProp
+type Props = MyAccountNavigationProp;
 
 const TabBar = (props: TabBarProps<string>) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
   return (
     <MaterialTabBar
       {...props}
@@ -46,34 +47,34 @@ const TabBar = (props: TabBarProps<string>) => {
       activeColor={colors.onBackground}
       inactiveColor={colors.onBackground}
     />
-  )
-}
+  );
+};
 
 const MyAccount = ({ navigation, route }: Props) => {
-  const { colors } = useTheme()
-  const { user: userInfo } = useAuth()
-  const { getUserByUsername, error, loading: loadingUser } = useUser()
-  const { username } = route.params
-  const { addNotification } = useToastNotification()
+  const { colors } = useTheme();
+  const { user: userInfo } = useAuth();
+  const { getUserByUsername, error, loading: loadingUser } = useUser();
+  const { username } = route.params;
+  const { addNotification } = useToastNotification();
 
-  const [userData, setUserData] = useState<UserByUsername>()
-  const [fetchingUser, setFetchingUser] = useState(true)
+  const [userData, setUserData] = useState<UserByUsername>();
+  const [fetchingUser, setFetchingUser] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
-      setFetchingUser(true)
-      const res = await getUserByUsername(username)
+      setFetchingUser(true);
+      const res = await getUserByUsername(username);
       if (typeof res !== "string") {
-        setUserData(res)
+        setUserData(res);
       } else {
-        addNotification({ message: res, error: true })
+        addNotification({ message: res, error: true });
       }
 
-      setFetchingUser(false)
-    }
+      setFetchingUser(false);
+    };
 
-    fetchUser()
-  }, [username])
+    fetchUser();
+  }, [username]);
 
   const isOnlineCon = (c: string) => {
     // if (onlineUser.length > 0) {
@@ -83,13 +84,13 @@ const MyAccount = ({ navigation, route }: Props) => {
     //     return true;
     //   } else return false;
     // }
-    return true
-  }
+    return true;
+  };
 
   const isFollowing = useMemo(
     () => !!userData?.user.followers.find((x) => x === userInfo?._id),
     [userData, userInfo]
-  )
+  );
 
   return fetchingUser ? (
     <Loader />
@@ -161,16 +162,16 @@ const MyAccount = ({ navigation, route }: Props) => {
         ) : null}
       </Tabs.Container>
     </View>
-  ) : null
-}
+  ) : null;
+};
 
 type RenderProps = {
-  isOnlineCon: (id: string) => boolean
-  user: UserByUsername["user"]
-  userInfo: IUser | null
-  navigation: MyAccountNavigationProp["navigation"]
-  isFollowing: boolean
-}
+  isOnlineCon: (id: string) => boolean;
+  user: UserByUsername["user"];
+  userInfo: IUser | null;
+  navigation: MyAccountNavigationProp["navigation"];
+  isFollowing: boolean;
+};
 
 const RenderHeader = ({
   isOnlineCon,
@@ -179,49 +180,75 @@ const RenderHeader = ({
   navigation,
   isFollowing,
 }: RenderProps) => {
-  const { colors } = useTheme()
-  const { followUser, unFollowUser, error } = useAuth()
-  const { addNotification } = useToastNotification()
+  const { colors } = useTheme();
+  const { followUser, unFollowUser, error } = useAuth();
+  const { addNotification } = useToastNotification();
+  const { createMessage, error: messageError } = useMessage();
 
   const followHandle = async () => {
-    if (!user?._id) return
+    if (!user?._id) return;
 
     if (user?._id === userInfo?._id) {
-      addNotification({ message: "You can't follow yourself", error: true })
+      addNotification({ message: "You can't follow yourself", error: true });
     }
 
     if (isFollowing) {
-      const res = await unFollowUser(user._id)
+      const res = await unFollowUser(user._id);
       if (res) {
-        addNotification({ message: res })
+        addNotification({ message: res });
       } else {
         addNotification({
           message: error || "failed to unfollow user",
           error: true,
-        })
+        });
       }
     } else {
-      const res = await followUser(user._id)
+      const res = await followUser(user._id);
       if (res) {
-        addNotification({ message: res })
+        addNotification({ message: res });
       } else {
         addNotification({
           message: error || "failed to follow user",
           error: true,
-        })
+        });
       }
     }
-  }
+  };
 
-  const addConversation = async (id: string, type: string) => {}
+  const [messageLoading, setMessageLoading] = useState(false);
+  const addConversation = async () => {
+    if (!userInfo) {
+      addNotification({ message: "Login to chat user", error: true });
+      return;
+    }
+    if (!user._id) return;
 
-  const handlereport = async (id: string) => {}
+    setMessageLoading(true);
+
+    try {
+      const convo = await createMessage({
+        participantId: user._id,
+        type: "Chat",
+      });
+
+      navigation.push("Chat", { conversationId: convo._id });
+    } catch (error) {
+      addNotification({
+        message: messageError || (error as string),
+        error: true,
+      });
+    }
+
+    setMessageLoading(false);
+  };
+
+  const handlereport = async (id: string) => {};
 
   const onShare = async () => {
     try {
-      Share.share({ message: user.username })
+      Share.share({ message: user.username });
     } catch (error) {}
-  }
+  };
 
   return (
     <View pointerEvents="box-none">
@@ -290,7 +317,7 @@ const RenderHeader = ({
       <View pointerEvents="box-none" style={{ margin: 10 }}>
         <TouchableOpacity
           style={[styles.button, { backgroundColor: colors.primary }]}
-          onPress={() => addConversation(user._id, "user")}
+          onPress={() => addConversation()}
         >
           <Text style={styles.buttonText}>Message Me</Text>
         </TouchableOpacity>
@@ -381,10 +408,10 @@ const RenderHeader = ({
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default MyAccount
+export default MyAccount;
 
 const styles = StyleSheet.create({
   container: {
@@ -459,4 +486,4 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignSelf: "center",
   },
-})
+});

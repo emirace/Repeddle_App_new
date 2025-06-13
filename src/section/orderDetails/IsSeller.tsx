@@ -1,47 +1,47 @@
-import { Image, Pressable, TouchableOpacity, View } from "react-native"
-import React, { useState } from "react"
+import { Image, Pressable, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
 import {
   Button,
   IconButton,
   Text,
   TextInput,
   useTheme,
-} from "react-native-paper"
-import { displayDeliveryStatus } from "../../utils/render"
-import { Ionicons } from "@expo/vector-icons"
+} from "react-native-paper";
+import { displayDeliveryStatus } from "../../utils/render";
+import { Ionicons } from "@expo/vector-icons";
 import {
   currency,
   daydiff,
   deliveryNumber,
   deliveryStatusMap,
   region,
-} from "../../utils/common"
-import { baseURL } from "../../services/api"
-import { IOrder, OrderItem } from "../../types/order"
-import useAuth from "../../hooks/useAuth"
-import { orderDetailsStyle as styles } from "./style"
-import moment from "moment"
-import { OrderDetailsNavigationProp } from "../../types/navigation/stack"
-import { IUser } from "../../types/user"
+} from "../../utils/common";
+import { baseURL } from "../../services/api";
+import { IOrder, OrderItem } from "../../types/order";
+import useAuth from "../../hooks/useAuth";
+import { orderDetailsStyle as styles } from "./style";
+import moment from "moment";
+import { OrderDetailsNavigationProp } from "../../types/navigation/stack";
+import { IUser } from "../../types/user";
 
 type Props = {
-  orderItem: OrderItem
-  order: IOrder
-  setShowDeliveryHistory: (val: boolean) => void
-  setCurrentDeliveryHistory: (val: number) => void
+  orderItem: OrderItem;
+  order: IOrder;
+  setShowDeliveryHistory: (val: boolean) => void;
+  setCurrentDeliveryHistory: (val: number) => void;
   deliverOrderHandler: (
     deliveryStatus: string,
     orderItem: OrderItem,
     trackingNumber?: string
-  ) => Promise<void>
-  updatingStatus: boolean
-  toggleOrderHoldStatus: (item: OrderItem) => Promise<void>
-  navigation: OrderDetailsNavigationProp["navigation"]
-  refund: (val: OrderItem) => void
-  paySeller: (val: OrderItem) => void
-  userOrdered: IUser
-  handleCancelOrder: (val: OrderItem) => void
-}
+  ) => Promise<void>;
+  updatingStatus: boolean;
+  toggleOrderHoldStatus: (item: OrderItem) => Promise<void>;
+  navigation: OrderDetailsNavigationProp["navigation"];
+  refund: (val: OrderItem) => void;
+  paySeller: (val: OrderItem) => void;
+  userOrdered: IUser;
+  handleCancelOrder: (val: OrderItem) => void;
+};
 
 const IsSeller = ({
   orderItem,
@@ -56,44 +56,44 @@ const IsSeller = ({
   paySeller,
   handleCancelOrder,
 }: Props) => {
-  const { colors } = useTheme()
-  const { user } = useAuth()
+  const { colors } = useTheme();
+  const { user } = useAuth();
 
-  const [trackingNumber, setTrackingNumber] = useState("")
-  const [showTracking, setShowTracking] = useState(false)
-  const [showDelivery, setShowDelivery] = useState(false)
+  const [trackingNumber, setTrackingNumber] = useState("");
+  const [showTracking, setShowTracking] = useState(false);
+  const [showDelivery, setShowDelivery] = useState(false);
 
   const comfirmWaybill = async () => {
-    if (!trackingNumber) return
+    if (!trackingNumber) return;
 
-    await updateTracking()
-    setShowTracking(false)
-  }
+    await updateTracking();
+    setShowTracking(false);
+  };
 
   const showNextStatus = (status: string) => {
-    const entries = Object.entries(deliveryStatusMap)
-    const currentNumber = deliveryNumber(status)
+    const entries = Object.entries(deliveryStatusMap);
+    const currentNumber = deliveryNumber(status);
 
-    return entries[currentNumber]
-  }
+    return entries[currentNumber];
+  };
 
   const updateTracking = async () => {
-    if (updatingStatus) return
+    if (updatingStatus) return;
 
     const nextStatus = showNextStatus(
       orderItem.deliveryTracking.currentStatus.status
-    )
+    );
 
     if (nextStatus[1] === 2 && !trackingNumber) {
-      setShowTracking(true)
+      setShowTracking(true);
     } else {
       await deliverOrderHandler(
         orderItem.deliveryTracking.currentStatus.status,
         orderItem,
         trackingNumber
-      )
+      );
     }
-  }
+  };
 
   return (
     <View
@@ -123,12 +123,12 @@ const IsSeller = ({
             )}
             <TouchableOpacity
               onPress={() => {
-                setShowDeliveryHistory(true)
+                setShowDeliveryHistory(true);
                 setCurrentDeliveryHistory(
                   deliveryNumber(
                     orderItem.deliveryTracking.currentStatus.status
                   )
-                )
+                );
               }}
             >
               <Text
@@ -171,7 +171,7 @@ const IsSeller = ({
                   placeholder="Enter Tracking number"
                   value={trackingNumber}
                   onChangeText={(e) => setTrackingNumber(e)}
-                  style={{ width: "100%" }}
+                  style={{ flex: 1, height: 40, marginVertical: 10 }}
                 />
 
                 <IconButton
@@ -179,7 +179,7 @@ const IsSeller = ({
                   onPress={() => comfirmWaybill()}
                   disabled={updatingStatus}
                   loading={updatingStatus}
-                  icon={"checkmark-sharp"}
+                  icon={"check"}
                   iconColor="white"
                   containerColor={colors.primary}
                 />
@@ -217,8 +217,10 @@ const IsSeller = ({
 
       {user?.role === "Admin" && (
         <Button
-          style={{ backgroundColor: colors.error }}
+          style={{ backgroundColor: "red", marginVertical: 10 }}
           onPress={() => handleCancelOrder(orderItem)}
+          textColor="white"
+          labelStyle={{ color: "white" }}
         >
           Cancel Order
         </Button>
@@ -251,7 +253,7 @@ const IsSeller = ({
             onPress={() => {
               navigation.push("Product", {
                 slug: orderItem.product.slug,
-              })
+              });
             }}
             style={[styles.button, { backgroundColor: colors.primary }]}
           >
@@ -322,7 +324,12 @@ const IsSeller = ({
 
       <TouchableOpacity
         onPress={() => setShowDelivery(!showDelivery)}
-        style={{ marginTop: 10, flexDirection: "row" }}
+        style={{
+          marginTop: 10,
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
+        }}
       >
         <Text
           style={{
@@ -416,7 +423,7 @@ const IsSeller = ({
         </>
       ) : null}
     </View>
-  )
-}
+  );
+};
 
-export default IsSeller
+export default IsSeller;

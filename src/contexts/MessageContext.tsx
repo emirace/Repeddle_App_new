@@ -17,7 +17,7 @@ import {
   sendMessageService,
 } from "../services/message";
 import useAuth from "../hooks/useAuth";
-import socket from "../socket";
+import { getSocket } from "../socket";
 import { markMessagesAsRead } from "../utils/socket";
 
 interface Props {
@@ -63,6 +63,8 @@ export const MessageProvider: React.FC<Props> = ({ children }) => {
     { value: boolean; id: string }[]
   >([]);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  const socket = getSocket();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -183,6 +185,7 @@ export const MessageProvider: React.FC<Props> = ({ children }) => {
   const createMessage = async (message: MessageStart) => {
     try {
       const res = await createMessageService(message);
+      reloadConversation();
       return res;
     } catch (error) {
       handleError(error);
