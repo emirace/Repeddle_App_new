@@ -220,6 +220,7 @@ const IsSeller = ({
           style={{ backgroundColor: "red", marginVertical: 10 }}
           onPress={() => handleCancelOrder(orderItem)}
           textColor="white"
+          labelStyle={{ color: "white" }}
         >
           Cancel Order
         </Button>

@@ -34,9 +34,10 @@ export type Notification = {
   message: string;
   read: boolean;
   link: string;
-  image?: string
+  image?: string;
   user: string;
   _id: string;
   createdAt: string;
   updatedAt: string;
+  mobileLink?: { name: string; params: object };
 };
