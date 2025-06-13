@@ -1,5 +1,5 @@
-import { StyleSheet, ScrollView, View } from "react-native";
-import React from "react";
+import { StyleSheet, ScrollView, View } from "react-native"
+import React from "react"
 import {
   Appbar,
   Avatar,
@@ -7,18 +7,18 @@ import {
   List,
   Text,
   useTheme,
-} from "react-native-paper";
-import Balance from "../../section/profile/Balances";
+} from "react-native-paper"
+import Balance from "../../section/profile/Balances"
 import {
   ProfileNavigationProp,
   RootStackParamList,
-} from "../../types/navigation/stack";
-import useAuth from "../../hooks/useAuth";
-import { baseURL } from "../../services/api";
+} from "../../types/navigation/stack"
+import useAuth from "../../hooks/useAuth"
+import { baseURL } from "../../services/api"
 
 const Profile: React.FC<ProfileNavigationProp> = ({ navigation }) => {
-  const { colors } = useTheme();
-  const { logout, user } = useAuth();
+  const { colors } = useTheme()
+  const { logout, user } = useAuth()
 
   return (
     <ScrollView
@@ -55,7 +55,7 @@ const Profile: React.FC<ProfileNavigationProp> = ({ navigation }) => {
             </View>
           </View>
           <Appbar.Action
-            icon="face-agent"
+            icon="headset"
             style={{ height: 30, width: 30 }}
             onPress={() => navigation.push("Support")}
           />
@@ -180,8 +180,8 @@ const Profile: React.FC<ProfileNavigationProp> = ({ navigation }) => {
               right={() => <List.Icon icon="chevron-right" />}
               descriptionStyle={{ fontSize: 14 }}
               onPress={() => {
-                logout();
-                navigation.replace("Auth");
+                logout()
+                navigation.replace("Auth")
               }}
               style={{ paddingVertical: 5 }}
             />
@@ -189,14 +189,14 @@ const Profile: React.FC<ProfileNavigationProp> = ({ navigation }) => {
         ) : null}
       </View>
     </ScrollView>
-  );
-};
+  )
+}
 
 const dashboardItems: {
-  name: string;
-  link: keyof RootStackParamList;
-  leftIcon: string;
-  description: string;
+  name: string
+  link: keyof RootStackParamList
+  leftIcon: string
+  description: string
 }[] = [
   {
     name: "My Profile",
@@ -240,7 +240,7 @@ const dashboardItems: {
     leftIcon: "cash",
     description: "View all your transactions",
   },
-];
+]
 
 const styles = StyleSheet.create({
   userInfo: {
@@ -256,6 +256,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "gray",
   },
-});
+})
 
-export default Profile;
+export default Profile
