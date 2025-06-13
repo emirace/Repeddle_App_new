@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from "react"
 import {
   View,
   Text,
@@ -6,38 +6,38 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-} from "react-native";
-import moment from "moment";
-import useNotification from "../hooks/useNotification";
-import { baseURL } from "../services/api";
-import { Notification } from "../types/conversation";
-import { NotificationNavigationProp } from "../types/navigation/stack";
-import { Appbar, useTheme } from "react-native-paper";
+  ActivityIndicator,
+} from "react-native"
+import moment from "moment"
+import useNotification from "../hooks/useNotification"
+import { baseURL } from "../services/api"
+import { Notification } from "../types/conversation"
+import { NotificationNavigationProp } from "../types/navigation/stack"
+import { Appbar, useTheme } from "react-native-paper"
 
 const MobileNotification: React.FC<NotificationNavigationProp> = ({
   navigation,
 }) => {
-  const { colors } = useTheme();
-  const { fetchNotifications, notifications, markNotification } =
-    useNotification();
+  const { colors } = useTheme()
+  const { fetchNotifications, notifications, markNotification, loading } =
+    useNotification()
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    fetchNotifications()
+  }, [])
 
   const handleOnClick = (not: any) => {
-    markNotification(not._id);
+    console.log(not)
+    markNotification(not._id)
     if (not.mobileLink) {
       navigation.navigate(not.mobileLink.name, {
         ...not.mobileLink.params,
-      });
+      })
     }
-  };
+  }
 
   const RenderItem = ({ item: not }: { item: Notification }) => {
-    console.log(not);
-
-    const { colors } = useTheme();
+    const { colors } = useTheme()
     return (
       <TouchableOpacity
         style={[
@@ -60,8 +60,8 @@ const MobileNotification: React.FC<NotificationNavigationProp> = ({
         </View>
         {!not.read && <View style={styles.unreadIndicator} />}
       </TouchableOpacity>
-    );
-  };
+    )
+  }
 
   return (
     <View style={styles.container}>
@@ -78,7 +78,9 @@ const MobileNotification: React.FC<NotificationNavigationProp> = ({
         />
         <Appbar.Content titleStyle={{ color: "white" }} title="Notifications" />
       </Appbar.Header>
-      {notifications.length === 0 ? (
+      {loading ? (
+        <ActivityIndicator size="large" color={colors.primary} />
+      ) : notifications.length === 0 ? (
         <Text style={styles.noNotification}>No Notification</Text>
       ) : (
         <FlatList
@@ -90,8 +92,8 @@ const MobileNotification: React.FC<NotificationNavigationProp> = ({
         />
       )}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -130,6 +132,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f57c00",
     borderRadius: 5,
   },
-});
+})
 
-export default MobileNotification;
+export default MobileNotification

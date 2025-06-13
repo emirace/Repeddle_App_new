@@ -295,7 +295,10 @@ const ReturnDetail = ({ navigation, route }: Props) => {
             <>
               <View style={styles.container}>
                 <TextInput
-                  style={[styles.textarea, { textAlignVertical: "top" }]}
+                  style={[
+                    styles.textarea,
+                    { textAlignVertical: "top", color: "white" },
+                  ]}
                   multiline
                   numberOfLines={4}
                   placeholderTextColor={"grey"}
@@ -356,25 +359,28 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                       </View>
                     ) : returned.orderId.buyer._id === user?._id ? (
                       showTracking ? (
-                        <View>
+                        <View
+                          style={{ flexDirection: "row", alignItems: "center" }}
+                        >
                           <TextInput
                             style={[
                               styles.textarea,
-                              { textAlignVertical: "top" },
+                              { textAlignVertical: "top", color: "white" },
                             ]}
                             placeholderTextColor={"grey"}
                             value={trackingNumber}
                             onChangeText={(text) => setTrackingNumber(text)}
                             placeholder="Enter Tracking number..."
                           />
-                          <IconButton
-                            containerColor={colors.primary}
-                            icon={"check"}
+                          <Button
+                            mode="contained"
                             onPress={confirmTracking}
-                            iconColor="white"
                             loading={loadingReturn}
                             disabled={loadingReturn}
-                          />
+                            style={{ borderRadius: 5 }}
+                          >
+                            Confirm Tracking
+                          </Button>
                         </View>
                       ) : (
                         <>
