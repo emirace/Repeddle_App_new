@@ -74,13 +74,12 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
   const markNotification = async (id: string) => {
     try {
       setError("");
-      setLoading(true);
       await markNotificationService(id);
-      setLoading(false);
+      const result = await fetchNotificationsService();
+      setNotifications(result);
       return true;
     } catch (error) {
       handleError(error as string);
-      setLoading(false);
       return false;
     }
   };

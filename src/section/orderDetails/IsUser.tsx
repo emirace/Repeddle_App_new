@@ -275,6 +275,7 @@ const IsUser = ({
             mode="contained"
             onPress={() => handleCancelOrder(orderItem)}
             style={{ backgroundColor: colors.secondary, borderRadius: 10 }}
+            textColor="white"
           >
             Cancel Order
           </Button>

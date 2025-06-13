@@ -31,6 +31,7 @@ import SearchBar from "../components/SearchBar";
 import Announcement from "../components/Announcement";
 import CartIcon from "../components/ui/cartIcon";
 import useToastNotification from "../hooks/useToastNotification";
+import NotificationIcon from "../components/ui/notificationIcon";
 
 const WIDTH = Dimensions.get("screen").width;
 
@@ -262,12 +263,10 @@ const Home = ({ navigation }: any) => {
               <SearchBar onPress={handleSearch} />
             </View>
             <View style={{ flexDirection: "row", marginRight: 6 }}>
-              <IconButton
-                onPress={() => navigation.push("Notification")}
-                icon="bell-outline"
+              <NotificationIcon
                 iconColor={colors.onBackground}
+                onPress={() => navigation.push("Notification")}
               />
-
               <CartIcon
                 iconColor={colors.onBackground}
                 onPress={() => navigation.push("Cart")}
