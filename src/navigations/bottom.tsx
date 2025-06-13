@@ -11,6 +11,7 @@ import CustomTabBarButton from "../components/CustomTabBarButton";
 import Conversation from "../screens/chat/Conversation";
 import useAuth from "../hooks/useAuth";
 import Profile from "../screens/Profile";
+import useNotification from "../hooks/useNotification";
 
 type TabConfiguration = {
   name: string;
@@ -78,6 +79,11 @@ const CustomBottomTabBar2 = (props: any) => {
 
 const MainBottomNav: React.FC<MainScreenNavigationProp> = ({ navigation }) => {
   const { user } = useAuth();
+  const { dotNotifications } = useNotification();
+
+  const messageDot = dotNotifications.filter(
+    (notification) => notification.type === "message"
+  );
 
   const tabConfigurations: TabConfiguration[] = [
     {
@@ -105,6 +111,7 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({ navigation }) => {
       component: Conversation,
       iconSource: { selected: "chat", unselected: "chat-outline" },
       requiresAuth: true,
+      badge: messageDot.length > 0 ? messageDot.length : undefined,
     },
     {
       name: "Profile",

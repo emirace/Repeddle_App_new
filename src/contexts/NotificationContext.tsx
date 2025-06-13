@@ -7,12 +7,20 @@ import {
 } from "../services/notification";
 import { getSocket } from "../socket";
 
+interface IDotNotification {
+  user: string;
+  type: string;
+  createdAt: string;
+}
+
 type ContextType = {
   notifications: Notification[];
+  dotNotifications: IDotNotification[];
   loading: boolean;
   error: string;
   fetchNotifications: (filter?: "all" | "read" | "unread") => Promise<boolean>;
   markNotification: (id: string) => Promise<boolean>;
+  markDotAsRead: (id: string) => void;
 };
 
 // Create notification context
@@ -21,11 +29,14 @@ export const NotificationContext = createContext<ContextType | undefined>(
 );
 
 export const NotificationProvider = ({ children }: PropsWithChildren) => {
-  const { setAuthErrorModalOpen } = useAuth();
+  const { setAuthErrorModalOpen, user } = useAuth();
 
   const socket = getSocket();
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [dotNotifications, setDotNotifications] = useState<IDotNotification[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -74,6 +85,23 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
+  const markDotAsRead = (type: string) => {
+    if (socket) {
+      socket.emit(
+        "readDot",
+        { type, userId: user?._id },
+        (response: { success: boolean; error?: string }) => {
+          if (!response.success) {
+            console.error(
+              "Failed to mark notification as read:",
+              response.error
+            );
+          }
+        }
+      );
+    }
+  };
+
   useEffect(() => {
     socket.on("newNotification", (notification) => {
       setNotifications((prevNotifications) => [
@@ -81,6 +109,13 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
         ...prevNotifications,
       ]);
     });
+
+    socket.on(
+      "notificationsUpdated",
+      (updatedNotifications: IDotNotification[]) => {
+        setDotNotifications(updatedNotifications);
+      }
+    );
   }, []);
 
   return (
@@ -90,7 +125,9 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
         error,
         fetchNotifications,
         notifications,
+        dotNotifications,
         markNotification,
+        markDotAsRead,
       }}
     >
       {children}

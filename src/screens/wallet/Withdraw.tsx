@@ -40,7 +40,13 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
     }
 
     if (!user?.accountName || !user.accountNumber || !user.bankName) {
-      addNotification({ message: "Add an to be a to withdraw" });
+      addNotification({ message: "Add an account to be a to withdraw" });
+      return;
+    }
+
+    if (amount === "" || Number(amount) > wallet.balance) {
+      addNotification({ message: "Enter a valid amount" });
+      return;
     }
 
     setIsLoading(true);
@@ -129,26 +135,42 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
             </Card>
           ) : null}
           <Text style={{ color: "grey", textAlign: "right" }}>
-            Balance:{currency(region)}
+            Balance: {currency(region)}
             {wallet.balance}
           </Text>
-          <TextInput
-            label="Enter Amount"
-            value={amount}
-            onChangeText={(amount) => handleChange(amount)}
-            keyboardType="numeric"
-            style={styles.input}
-            //   mode="outlined"
-          />
-          <Text onPress={() => setAmount(wallet.balance.toString())}>All</Text>
+          <View>
+            <TextInput
+              label="Enter Amount"
+              value={amount}
+              onChangeText={(amount) => handleChange(amount)}
+              keyboardType="numeric"
+              style={styles.input}
+              //   mode="outlined"
+            />
+            <Text
+              onPress={() => setAmount(wallet.balance.toString())}
+              style={{
+                position: "absolute",
+                right: 10,
+                top: 18,
+                fontSize: 20,
+                color: colors.primary,
+                fontWeight: "700",
+                padding: 15,
+              }}
+            >
+              All
+            </Text>
+          </View>
 
           {errormsg ? (
             <Text
               style={{
                 color: "red",
-                fontSize: 11,
+                fontSize: 14,
                 textAlign: "center",
                 lineHeight: 15,
+                marginBottom: 10,
               }}
             >
               {errormsg}
@@ -156,17 +178,26 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
           ) : null}
 
           {amount ? (
-            <Text
+            <View
               style={{
-                fontSize: 11,
-                textAlign: "center",
-                lineHeight: 15,
+                flexDirection: "row",
+                backgroundColor: colors.elevation.level1,
+                padding: 15,
+                borderRadius: 10,
+                marginTop: 15,
+                gap: 10,
               }}
             >
-              <Ionicons name="help-circle" size={13} color="black" /> You will
-              be charged {wallet.currency}
-              {fee} for payment gateway withdrawal processing fee
-            </Text>
+              <Ionicons name="help-circle" size={20} color="black" />
+              <Text
+                style={{
+                  fontSize: 15,
+                }}
+              >
+                You will be charged {wallet.currency}
+                {fee} for payment gateway withdrawal processing fee
+              </Text>
+            </View>
           ) : null}
         </View>
         <Button
