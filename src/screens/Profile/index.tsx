@@ -15,10 +15,19 @@ import {
 } from "../../types/navigation/stack"
 import useAuth from "../../hooks/useAuth"
 import { baseURL } from "../../services/api"
+import useNotification from "../../hooks/useNotification"
+import { useEffect } from "react"
+import NotificationIcon from "../../components/ui/notificationIcon"
 
 const Profile: React.FC<ProfileNavigationProp> = ({ navigation }) => {
   const { colors } = useTheme()
   const { logout, user } = useAuth()
+
+  const { fetchNotifications } = useNotification()
+
+  useEffect(() => {
+    fetchNotifications()
+  }, [])
 
   return (
     <ScrollView
@@ -59,10 +68,14 @@ const Profile: React.FC<ProfileNavigationProp> = ({ navigation }) => {
             style={{ height: 30, width: 30 }}
             onPress={() => navigation.push("Support")}
           />
-          <Appbar.Action
+          {/* <Appbar.Action
             icon="bell-outline"
             style={{ height: 30, width: 30 }}
             onPress={() => navigation.push("Notification")}
+          /> */}
+          <NotificationIcon
+            onPress={() => navigation.push("Notification")}
+            iconColor={colors.onBackground}
           />
         </Appbar.Header>
       ) : (

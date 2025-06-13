@@ -137,7 +137,10 @@ const PaymentMethod = ({ navigation }: Props) => {
       <Modal
         visible={visible}
         onDismiss={hideModal}
-        contentContainerStyle={styles.containerStyle}
+        contentContainerStyle={[
+          styles.containerStyle,
+          { backgroundColor: colors.elevation.level1 },
+        ]}
       >
         <IconButton
           icon="close"
@@ -212,7 +215,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   containerStyle: {
-    backgroundColor: "white",
+    // backgroundColor: "white",
     paddingHorizontal: 10,
     paddingVertical: 20,
     paddingTop: 30,

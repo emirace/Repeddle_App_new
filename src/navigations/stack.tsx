@@ -1,51 +1,51 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types/navigation/stack";
-import MainBottomNav from "./bottom";
-import Sell from "../screens/Sell";
-import Search from "../screens/Search";
-import Product from "../screens/Product";
-import Chat from "../screens/chat/Chat";
-import ProfileSettings from "../screens/Dashboard/ProfileSettings";
-import ProductList from "../screens/Dashboard/ProductList";
-import OrderList from "../screens/Dashboard/OrderList";
-import EditProduct from "../screens/Dashboard/EditProduct";
-import OrderDetails from "../screens/Dashboard/OrderDetails";
-import BuyersProtection from "../screens/BuyersProtection";
-import SizeChart from "../screens/SizeChart";
-import Cart from "../screens/Cart";
-import Checkout from "../screens/Checkout";
-import PaymentMethod from "../screens/PaymentMethod";
-import SellerReview from "../screens/SellerReview";
-import Wishlist from "../screens/Dashboard/Wishlist";
-import ReturnDetail from "../screens/Dashboard/ReturnDetail";
-import ReturnForm from "../screens/ReturnForm";
-import Return from "../screens/Dashboard/Return";
-import Transaction from "../screens/Dashboard/Transaction";
-import TransactionDetail from "../screens/Dashboard/TransactionDetail";
-import Wallet from "../screens/wallet/Fund";
-import Fund from "../screens/wallet/Fund";
-import Withdraw from "../screens/wallet/Withdraw";
-import Auth from "../screens/Auth";
-import Login from "../screens/Auth/Login";
-import SignUp from "../screens/Auth/Signup";
-import Step from "../screens/Auth/Signup/step";
-import ForgetPassword from "../screens/Auth/ForgetPassword";
-import Category from "../screens/Category";
-import SubCategories from "../screens/Category/SubCategories";
-import Brand from "../screens/Brand";
-import Earnings from "../screens/Dashboard/Earnings";
-import MobileNotification from "../screens/Notification";
-import { useMemo } from "react";
-import * as SecureStore from "expo-secure-store";
-import Appearance from "../screens/Profile/Appearance";
-import MyAccount from "../screens/Profile/MyAccount";
-import Support from "../screens/Profile/Support";
-import Profile from "../screens/Profile";
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { RootStackParamList } from "../types/navigation/stack"
+import MainBottomNav from "./bottom"
+import Sell from "../screens/Sell"
+import Search from "../screens/Search"
+import Product from "../screens/Product"
+import Chat from "../screens/chat/Chat"
+import ProfileSettings from "../screens/Dashboard/ProfileSettings"
+import ProductList from "../screens/Dashboard/ProductList"
+import OrderList from "../screens/Dashboard/OrderList"
+import EditProduct from "../screens/Dashboard/EditProduct"
+import OrderDetails from "../screens/Dashboard/OrderDetails"
+import BuyersProtection from "../screens/BuyersProtection"
+import SizeChart from "../screens/SizeChart"
+import Cart from "../screens/Cart"
+import Checkout from "../screens/Checkout"
+import PaymentMethod from "../screens/PaymentMethod"
+import SellerReview from "../screens/SellerReview"
+import Wishlist from "../screens/Dashboard/Wishlist"
+import ReturnDetail from "../screens/Dashboard/ReturnDetail"
+import ReturnForm from "../screens/ReturnForm"
+import Return from "../screens/Dashboard/Return"
+import Transaction from "../screens/Dashboard/Transaction"
+import TransactionDetail from "../screens/Dashboard/TransactionDetail"
+import Wallet from "../screens/wallet/Fund"
+import Fund from "../screens/wallet/Fund"
+import Withdraw from "../screens/wallet/Withdraw"
+import Auth from "../screens/Auth"
+import Login from "../screens/Auth/Login"
+import SignUp from "../screens/Auth/Signup"
+import Step from "../screens/Auth/Signup/step"
+import ForgetPassword from "../screens/Auth/ForgetPassword"
+import Category from "../screens/Category"
+import SubCategories from "../screens/Category/SubCategories"
+import Brand from "../screens/Brand"
+import Earnings from "../screens/Dashboard/Earnings"
+import MobileNotification from "../screens/Notification"
+import { useMemo } from "react"
+import * as SecureStore from "expo-secure-store"
+import Appearance from "../screens/profile/Appearance"
+import MyAccount from "../screens/profile/MyAccount"
+import Support from "../screens/profile/Support"
+import Profile from "../screens/profile"
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function MainStackNav() {
-  const token = useMemo(() => SecureStore.getItem("authToken"), []);
+  const token = useMemo(() => SecureStore.getItem("authToken"), [])
   return (
     <Stack.Navigator initialRouteName={!token ? "Auth" : "Main"}>
       <Stack.Screen
@@ -246,7 +246,7 @@ function MainStackNav() {
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
-  );
+  )
 }
 
-export default MainStackNav;
+export default MainStackNav

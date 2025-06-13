@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Badge, IconButton, useTheme } from "react-native-paper";
-import useCart from "../../hooks/useCart";
 import useNotification from "../../hooks/useNotification";
 
 type Props = {
@@ -10,12 +9,16 @@ type Props = {
 };
 
 const NotificationIcon = ({ onPress, iconColor }: Props) => {
-  const { notifications } = useNotification();
+  const { notifications, fetchNotifications } = useNotification();
   const { colors } = useTheme();
 
   const unreadNotifications = notifications.filter(
     (notification) => !notification.read
   );
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
   return (
     <Pressable onPress={onPress} style={styles.item}>
