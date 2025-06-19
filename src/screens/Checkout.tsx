@@ -5,12 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native"
 import React, { useMemo, useState } from "react"
 import { Appbar, Button, Text, useTheme } from "react-native-paper"
 import useCart from "../hooks/useCart"
 import { CheckoutNavigationProp } from "../types/navigation/stack"
-import { API_KEY } from "../utils/constants"
 import {
   couponDiscount,
   currency,
@@ -53,7 +53,28 @@ const Checkout = ({ navigation }: Props) => {
     [coupon]
   )
 
-  const handleSubmit = () => {}
+  const handleSubmit = () => {
+    Alert.alert(
+      "Confirm Payment",
+      `${currencyVal}${(total - discount).toFixed(
+        2
+      )} will be deducted from your wallet.`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Proceed",
+          onPress: async () => {
+            await placeOrderHandler({ paymentMethod })
+          },
+        },
+      ]
+    )
+  }
+
+  const confirmWalletPayment = () => {}
 
   const onApprove = async (response: RedirectParams) => {
     const order1 = await placeOrderHandler({
@@ -94,7 +115,7 @@ const Checkout = ({ navigation }: Props) => {
     transId,
   }: {
     paymentMethod: string
-    transId: string
+    transId?: string
   }) => {
     const res = await createOrder({
       items: cart,
@@ -349,7 +370,12 @@ const Checkout = ({ navigation }: Props) => {
           <TouchableOpacity
             style={[
               styles.button,
-              { marginTop: 20, backgroundColor: colors.primary },
+              {
+                marginTop: 20,
+                backgroundColor: colors.primary,
+                justifyContent: "center",
+                alignItems: "center",
+              },
             ]}
             onPress={handleSubmit}
           >

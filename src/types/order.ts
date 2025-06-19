@@ -61,7 +61,7 @@ export type ICreateOrder = {
   }[]
   totalAmount: number
   paymentMethod: string
-  transactionId: string
+  transactionId?: string
 }
 
 export type IOrderSummary = {
