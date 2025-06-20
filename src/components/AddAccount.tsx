@@ -9,24 +9,24 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { PropsWithChildren, useEffect, useState } from "react"
-import { Button, IconButton, Text, useTheme } from "react-native-paper"
-import { region } from "../utils/common"
-import Input from "./Input"
-import useAuth from "../hooks/useAuth"
-import { SellNavigationProp } from "../types/navigation/stack"
-import { Picker } from "@react-native-picker/picker"
-import { banks } from "../utils/constants"
-import useToastNotification from "../hooks/useToastNotification"
+} from "react-native";
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import { Button, IconButton, Text, useTheme } from "react-native-paper";
+import { region } from "../utils/common";
+import Input from "./Input";
+import useAuth from "../hooks/useAuth";
+import { SellNavigationProp } from "../types/navigation/stack";
+import { Picker } from "@react-native-picker/picker";
+import { banks } from "../utils/constants";
+import useToastNotification from "../hooks/useToastNotification";
 
 type Props = {
-  isFocused: boolean
-  navigation: SellNavigationProp["navigation"]
-  accountVerified: boolean
-  setIsClosed: (val: boolean) => void
-  setIsClosedAccount: (val: boolean) => void
-}
+  isFocused: boolean;
+  navigation: SellNavigationProp["navigation"];
+  accountVerified: boolean;
+  setIsClosed: (val: boolean) => void;
+  setIsClosedAccount: (val: boolean) => void;
+};
 
 const AddAccount = ({
   isFocused,
@@ -35,25 +35,25 @@ const AddAccount = ({
   setIsClosed,
   setIsClosedAccount,
 }: Props) => {
-  const { colors } = useTheme()
-  const { updateUser, error: userError, user } = useAuth()
+  const { colors } = useTheme();
+  const { updateUser, error: userError, user } = useAuth();
 
   const [input, setInput] = useState({
     accountName: "",
     accountNumber: "",
     bankName: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [notification, setNotification] = useState<{
-    message: string
-    error: boolean
-  }>()
+    message: string;
+    error: boolean;
+  }>();
 
   const [error, setError] = useState({
     accountName: "",
     accountNumber: "",
     bankName: "",
-  })
+  });
 
   // useEffect(() => {
   //   const checkSeller = () => {
@@ -70,63 +70,63 @@ const AddAccount = ({
   // }, [user, isFocused])
 
   const handleOnChange = (text: string, inputVal: keyof typeof input) => {
-    setInput((prevState) => ({ ...prevState, [inputVal]: text }))
-  }
+    setInput((prevState) => ({ ...prevState, [inputVal]: text }));
+  };
 
   const handleError = (errorMessage: string, inputVal: keyof typeof error) => {
-    setError((prevState) => ({ ...prevState, [inputVal]: errorMessage }))
-  }
+    setError((prevState) => ({ ...prevState, [inputVal]: errorMessage }));
+  };
 
   const submitHandler = async () => {
-    setNotification(undefined)
-    setIsSubmitting(true)
+    setNotification(undefined);
+    setIsSubmitting(true);
     const res = await updateUser({
       accountName: input.accountName,
       accountNumber: +input.accountNumber,
       bankName: input.bankName,
-    })
+    });
     if (res) {
       setNotification({
         message: "Account Verified Successfully",
         error: false,
-      })
+      });
       // setShowAccount(false)
     } else {
       setNotification({
         message: userError || "Failed to verify account",
         error: true,
-      })
+      });
     }
-    setIsSubmitting(false)
-  }
+    setIsSubmitting(false);
+  };
 
   const validate = () => {
-    let valid = true
+    let valid = true;
     if (!input.accountNumber) {
-      handleError("Enter a valid account number", "accountNumber")
-      valid = false
+      handleError("Enter a valid account number", "accountNumber");
+      valid = false;
     }
     if (!input.accountName) {
-      handleError("Enter a valid account name", "accountName")
-      valid = false
+      handleError("Enter a valid account name", "accountName");
+      valid = false;
     }
     if (!input.bankName) {
-      handleError("Select a valid bank", "bankName")
-      valid = false
+      handleError("Select a valid bank", "bankName");
+      valid = false;
     }
 
     if (valid) {
-      submitHandler()
+      submitHandler();
     }
-  }
+  };
 
   const close = () => {
-    setIsClosed(true)
+    setIsClosed(true);
     if (!user?.accountNumber) {
-      if (!user?.address) setIsClosedAccount(true)
-      navigation.push("Main")
+      if (!user?.address) setIsClosedAccount(true);
+      navigation.push("Main");
     }
-  }
+  };
 
   return (
     <Modal
@@ -164,7 +164,7 @@ const AddAccount = ({
                   placeholder={input.accountName}
                   error={error.accountName}
                   onFocus={() => {
-                    handleError("", "accountName")
+                    handleError("", "accountName");
                   }}
                 />
                 <Text1 style={styles.label}>Account Number</Text1>
@@ -177,7 +177,7 @@ const AddAccount = ({
                   }
                   error={error.accountNumber}
                   onFocus={() => {
-                    handleError("", "accountNumber")
+                    handleError("", "accountNumber");
                   }}
                 />
                 <Text1 style={styles.label}>Bank Name</Text1>
@@ -190,8 +190,8 @@ const AddAccount = ({
                     color: "grey",
                   }}
                   onValueChange={(itemValue, itemIndex) => {
-                    handleOnChange(itemValue, "bankName")
-                    handleError("", "bankName")
+                    handleOnChange(itemValue, "bankName");
+                    handleError("", "bankName");
                   }}
                 >
                   <Picker.Item
@@ -202,7 +202,7 @@ const AddAccount = ({
                     label={"--select bank--"}
                     value={""}
                   />
-                  {region() === "NGN"
+                  {region() === "NG"
                     ? banks.Nigeria.map((name, index) => (
                         <Picker.Item
                           style={{
@@ -257,16 +257,16 @@ const AddAccount = ({
         </KeyboardAvoidingView>
       </View>
     </Modal>
-  )
-}
+  );
+};
 
-type TextProps = PropsWithChildren<{ style: StyleProp<TextStyle> }>
+type TextProps = PropsWithChildren<{ style: StyleProp<TextStyle> }>;
 
 const Text1 = ({ children, style }: TextProps) => {
-  return <Text style={[styles.label, style]}>{children}</Text>
-}
+  return <Text style={[styles.label, style]}>{children}</Text>;
+};
 
-export default AddAccount
+export default AddAccount;
 
 const styles = StyleSheet.create({
   container: {
@@ -313,4 +313,4 @@ const styles = StyleSheet.create({
     width: "60%",
     alignItems: "center",
   },
-})
+});

@@ -368,7 +368,7 @@ const RenderHeader = ({
             <Text>From</Text>
           </View>
           <Text style={{ fontFamily: "chronicle-text-bold" }}>
-            {user.region === "NGN" ? "Nigeria" : "South Africa"}
+            {user.region === "NG" ? "Nigeria" : "South Africa"}
           </Text>
         </View>
 

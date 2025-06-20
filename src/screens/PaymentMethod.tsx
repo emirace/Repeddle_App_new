@@ -4,8 +4,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { useEffect, useState } from "react"
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import {
   Appbar,
   IconButton,
@@ -13,53 +13,53 @@ import {
   RadioButton,
   Text,
   useTheme,
-} from "react-native-paper"
-import useCart from "../hooks/useCart"
-import { PaymentMethodNavigationProp } from "../types/navigation/stack"
-import { currency, region } from "../utils/common"
-import { PaymentType } from "../contexts/CartContext"
-import useToastNotification from "../hooks/useToastNotification"
-import useWallet from "../hooks/useWallet"
-import FundComp from "./wallet/FundComp"
+} from "react-native-paper";
+import useCart from "../hooks/useCart";
+import { PaymentMethodNavigationProp } from "../types/navigation/stack";
+import { currency, region } from "../utils/common";
+import { PaymentType } from "../contexts/CartContext";
+import useToastNotification from "../hooks/useToastNotification";
+import useWallet from "../hooks/useWallet";
+import FundComp from "./wallet/FundComp";
 
-type Props = PaymentMethodNavigationProp
+type Props = PaymentMethodNavigationProp;
 
 const PaymentMethod = ({ navigation }: Props) => {
-  const { colors } = useTheme()
-  const { total, paymentMethod, changePaymentMethod } = useCart()
+  const { colors } = useTheme();
+  const { total, paymentMethod, changePaymentMethod } = useCart();
 
-  const { addNotification } = useToastNotification()
-  const { wallet, fetchWallet } = useWallet()
+  const { addNotification } = useToastNotification();
+  const { wallet, fetchWallet } = useWallet();
 
-  const [visible, setVisible] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [visible, setVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const showModal = () => setVisible(true)
-  const hideModal = () => setVisible(false)
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
 
   const handleSubmit = () => {
-    navigation.push("Checkout")
-  }
+    navigation.push("Checkout");
+  };
 
   const handleFundSuccess = async () => {
-    setIsLoading(true)
-    await fetchWallet()
-    setIsLoading(false)
-    hideModal()
-  }
+    setIsLoading(true);
+    await fetchWallet();
+    setIsLoading(false);
+    hideModal();
+  };
 
   useEffect(() => {
-    fetchWallet()
-  }, [])
+    fetchWallet();
+  }, []);
 
   const handleClick = (val: string) => {
-    const newVal = val as PaymentType
+    const newVal = val as PaymentType;
     if (newVal === "Wallet" && (!wallet?.balance || wallet.balance < total)) {
-      addNotification({ message: "Insufficient balance", error: true })
-      return
+      addNotification({ message: "Insufficient balance", error: true });
+      return;
     }
-    changePaymentMethod(newVal)
-  }
+    changePaymentMethod(newVal);
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -125,7 +125,7 @@ const PaymentMethod = ({ navigation }: Props) => {
         <TouchableOpacity
           style={[
             styles.button,
-            { marginVertical: 20, backgroundColor: colors.primary },
+            { marginVertical: 10, backgroundColor: colors.primary },
           ]}
           onPress={handleSubmit}
         >
@@ -160,24 +160,24 @@ const PaymentMethod = ({ navigation }: Props) => {
         <FundComp onSuccess={handleFundSuccess} isLoading={isLoading} />
       </Modal>
     </View>
-  )
-}
+  );
+};
 
-export default PaymentMethod
+export default PaymentMethod;
 
 type RadioProps = {
-  label: string
-  paymentMethodName: string
-  onPress: () => void
-}
+  label: string;
+  paymentMethodName: string;
+  onPress: () => void;
+};
 
 const Radio = ({ label, paymentMethodName, onPress }: RadioProps) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return (
     <TouchableOpacity
       onPress={() => {
-        onPress()
+        onPress();
       }}
       style={{
         flexDirection: "row",
@@ -199,8 +199,8 @@ const Radio = ({ label, paymentMethodName, onPress }: RadioProps) => {
       />
       <Text style={{ marginLeft: 20 }}>{label}</Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   title: {
@@ -224,4 +224,4 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
   },
-})
+});

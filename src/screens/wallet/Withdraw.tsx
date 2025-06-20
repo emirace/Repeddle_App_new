@@ -1,5 +1,5 @@
-import * as React from "react"
-import { View, StyleSheet, Alert } from "react-native"
+import * as React from "react";
+import { View, StyleSheet, Alert } from "react-native";
 import {
   Text,
   TextInput,
@@ -7,86 +7,86 @@ import {
   Card,
   Appbar,
   useTheme,
-} from "react-native-paper"
-import { WithdrawNavigationProp } from "../../types/navigation/stack"
-import useWallet from "../../hooks/useWallet"
-import useToastNotification from "../../hooks/useToastNotification"
-import useAuth from "../../hooks/useAuth"
-import { currency } from "../../utils/common"
-import { useEffect, useState } from "react"
-import { Ionicons } from "@expo/vector-icons"
+} from "react-native-paper";
+import { WithdrawNavigationProp } from "../../types/navigation/stack";
+import useWallet from "../../hooks/useWallet";
+import useToastNotification from "../../hooks/useToastNotification";
+import useAuth from "../../hooks/useAuth";
+import { currency } from "../../utils/common";
+import { useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 
 const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
-  const { wallet, withdrawWalletFlutter, loading, fetchWallet } = useWallet()
-  const { user } = useAuth()
+  const { wallet, withdrawWalletFlutter, loading, fetchWallet } = useWallet();
+  const { user } = useAuth();
 
-  const [amount, setAmount] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [fee, setFee] = useState(0)
-  const [errormsg, setErrormsg] = useState("")
-  const { addNotification } = useToastNotification()
-  const { colors } = useTheme()
+  const [amount, setAmount] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [fee, setFee] = useState(0);
+  const [errormsg, setErrormsg] = useState("");
+  const { addNotification } = useToastNotification();
+  const { colors } = useTheme();
 
-  var region: "NGN" | "ZAR" = "NGN"
+  var region: "NG" | "ZA" = "NG";
 
   useEffect(() => {
-    fetchWallet()
-  }, [])
+    fetchWallet();
+  }, []);
 
   const handleWithdraw = async () => {
     if (amount === "" || isNaN(parseFloat(amount))) {
-      addNotification({ message: "Invalid Amount", error: true })
-      return
+      addNotification({ message: "Invalid Amount", error: true });
+      return;
     }
 
     if (!user?.accountName || !user.accountNumber || !user.bankName) {
-      addNotification({ message: "Add an account to be a to withdraw" })
-      return
+      addNotification({ message: "Add an account to be a to withdraw" });
+      return;
     }
 
     if (amount === "" || Number(amount) > wallet.balance) {
-      addNotification({ message: "Enter a valid amount" })
-      return
+      addNotification({ message: "Enter a valid amount" });
+      return;
     }
 
-    setIsLoading(true)
-    const { error, result } = await withdrawWalletFlutter(parseInt(amount))
+    setIsLoading(true);
+    const { error, result } = await withdrawWalletFlutter(parseInt(amount));
 
     if (!error) {
-      addNotification({ message: result, error: true })
-      await fetchWallet()
-      setAmount("")
-      navigation.navigate("Profile")
+      addNotification({ message: result, error: true });
+      await fetchWallet();
+      setAmount("");
+      navigation.navigate("Profile");
     } else {
-      addNotification({ message: result, error: true })
+      addNotification({ message: result, error: true });
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const handleChange = (e: any) => {
-    setAmount(e)
+    setAmount(e);
     const fees =
-      region === "ZAR"
+      region === "ZA"
         ? 10
         : e <= 5000
         ? 10.75
         : e > 5000 && e <= 50000
         ? 26.88
-        : 53.75
-    setFee(fees)
-    const totalMoney = Number(e) + Number(fees)
+        : 53.75;
+    setFee(fees);
+    const totalMoney = Number(e) + Number(fees);
     if (totalMoney > wallet.balance) {
       setErrormsg(
         "Insufficient funds, Please enter a lower amount to complete your withdrawal"
-      )
-      return
+      );
+      return;
     }
     if (!e) {
-      setErrormsg("Please enter the amount you want to withdraw")
-      return
+      setErrormsg("Please enter the amount you want to withdraw");
+      return;
     }
-    setErrormsg("")
-  }
+    setErrormsg("");
+  };
 
   return (
     <View style={styles.container}>
@@ -103,14 +103,14 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
           iconColor="white"
           icon="plus"
           onPress={() => {
-            navigation.navigate("Fund")
+            navigation.navigate("Fund");
           }}
         />
         <Appbar.Action
           iconColor="white"
           icon="history"
           onPress={() => {
-            navigation.navigate("Transaction")
+            navigation.navigate("Transaction");
           }}
         />
       </Appbar.Header>
@@ -213,8 +213,8 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
         </Button>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -236,6 +236,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   withdrawButton: {},
-})
+});
 
-export default Withdraw
+export default Withdraw;

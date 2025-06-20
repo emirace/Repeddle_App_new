@@ -8,24 +8,24 @@ import {
   StyleSheet,
   TextStyle,
   View,
-} from "react-native"
-import React, { PropsWithChildren, useState } from "react"
-import { Button, IconButton, Text, useTheme } from "react-native-paper"
-import { currentAddress, goto, region } from "../utils/common"
-import Input from "./Input"
-import { states } from "../utils/constants"
-import { Picker } from "@react-native-picker/picker"
-import useAuth from "../hooks/useAuth"
-import { ProductNavigationProp } from "../types/navigation/stack"
-import useToastNotification from "../hooks/useToastNotification"
+} from "react-native";
+import React, { PropsWithChildren, useState } from "react";
+import { Button, IconButton, Text, useTheme } from "react-native-paper";
+import { currentAddress, goto, region } from "../utils/common";
+import Input from "./Input";
+import { states } from "../utils/constants";
+import { Picker } from "@react-native-picker/picker";
+import useAuth from "../hooks/useAuth";
+import { ProductNavigationProp } from "../types/navigation/stack";
+import useToastNotification from "../hooks/useToastNotification";
 
 type Props = {
-  isFocused: boolean
-  navigation: ProductNavigationProp["navigation"]
-  addressVerified: boolean
-  setIsClosed: (val: boolean) => void
-  setIsClosedOther: (val: boolean) => void
-}
+  isFocused: boolean;
+  navigation: ProductNavigationProp["navigation"];
+  addressVerified: boolean;
+  setIsClosed: (val: boolean) => void;
+  setIsClosedOther: (val: boolean) => void;
+};
 
 const AddAddress = ({
   isFocused,
@@ -34,28 +34,28 @@ const AddAddress = ({
   setIsClosed,
   setIsClosedOther,
 }: Props) => {
-  const { colors } = useTheme()
-  const { updateUser, error: userError, user } = useAuth()
+  const { colors } = useTheme();
+  const { updateUser, error: userError, user } = useAuth();
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [input, setInput] = useState({
     street: user?.address?.street ?? "",
     apartment: user?.address?.apartment ?? "",
     state: user?.address?.state ?? "",
     zipcode: user?.address?.zipcode?.toString() ?? "",
-  })
+  });
 
   const [notification, setNotification] = useState<{
-    message: string
-    error: boolean
-  }>()
+    message: string;
+    error: boolean;
+  }>();
 
   const [error, setError] = useState({
     street: "",
     apartment: "",
     zipcode: "",
     state: "",
-  })
+  });
 
   // useEffect(() => {
   //   const checkSeller = () => {
@@ -72,39 +72,39 @@ const AddAddress = ({
   // }, [user, isFocused])
 
   const handleOnChange = (text: string, inputVal: keyof typeof input) => {
-    setInput((prevState) => ({ ...prevState, [inputVal]: text }))
-  }
+    setInput((prevState) => ({ ...prevState, [inputVal]: text }));
+  };
 
   const handleError = (errorMessage: string, inputVal: keyof typeof error) => {
-    setError((prevState) => ({ ...prevState, [inputVal]: errorMessage }))
-  }
+    setError((prevState) => ({ ...prevState, [inputVal]: errorMessage }));
+  };
 
   const validate = () => {
-    let valid = true
+    let valid = true;
     if (!input.street) {
-      handleError("Enter your street", "street")
-      valid = false
+      handleError("Enter your street", "street");
+      valid = false;
     }
     if (!input.apartment) {
-      handleError("Enter your apartment", "apartment")
-      valid = false
+      handleError("Enter your apartment", "apartment");
+      valid = false;
     }
     if (!input.state) {
-      handleError("Select your state/province", "state")
-      valid = false
+      handleError("Select your state/province", "state");
+      valid = false;
     }
     if (!input.zipcode) {
-      handleError("Enter your zip code", "zipcode")
-      valid = false
+      handleError("Enter your zip code", "zipcode");
+      valid = false;
     }
 
     if (valid) {
-      submitHandler()
+      submitHandler();
     }
-  }
+  };
   const submitHandler = async () => {
-    setNotification(undefined)
-    setIsSubmitting(true)
+    setNotification(undefined);
+    setIsSubmitting(true);
     const res = await updateUser({
       address: {
         state: input.state,
@@ -112,30 +112,30 @@ const AddAddress = ({
         apartment: input.apartment,
         zipcode: +input.zipcode,
       },
-    })
+    });
     if (res) {
       setNotification({
         message: "Address Verified Successfully",
         error: false,
-      })
+      });
       // setShowAddress(false)
     } else {
       setNotification({
         message: userError || "Failed to verify address",
         error: true,
-      })
+      });
     }
 
-    setIsSubmitting(false)
-  }
+    setIsSubmitting(false);
+  };
 
   const close = () => {
-    setIsClosed(true)
+    setIsClosed(true);
     if (!user?.address) {
-      if (!user?.accountNumber) setIsClosedOther(true)
-      navigation.push("Main")
+      if (!user?.accountNumber) setIsClosedOther(true);
+      navigation.push("Main");
     }
-  }
+  };
 
   return (
     <Modal
@@ -172,7 +172,7 @@ const AddAddress = ({
                   placeholder={input.street}
                   error={error.street}
                   onFocus={() => {
-                    handleError("", "street")
+                    handleError("", "street");
                   }}
                 />
                 <Text1 style={styles.label}>Apartment/Complex</Text1>
@@ -183,7 +183,7 @@ const AddAddress = ({
                   placeholder={input.apartment}
                   error={error.apartment}
                   onFocus={() => {
-                    handleError("", "apartment")
+                    handleError("", "apartment");
                   }}
                 />
                 <Text1 style={styles.label}>Province</Text1>
@@ -196,8 +196,8 @@ const AddAddress = ({
                     color: colors.onBackground,
                   }}
                   onValueChange={(itemValue, itemIndex) => {
-                    handleOnChange(itemValue, "state")
-                    handleError("", "state")
+                    handleOnChange(itemValue, "state");
+                    handleError("", "state");
                   }}
                 >
                   <Picker.Item
@@ -208,7 +208,7 @@ const AddAddress = ({
                     label={"--select province--"}
                     value={""}
                   />
-                  {region() === "NGN"
+                  {region() === "NG"
                     ? states.Nigeria.map((name, index) => (
                         <Picker.Item
                           style={{
@@ -241,7 +241,7 @@ const AddAddress = ({
                   placeholder={input.zipcode ? `${input.zipcode}` : ""}
                   error={error.zipcode}
                   onFocus={() => {
-                    handleError("", "zipcode")
+                    handleError("", "zipcode");
                   }}
                 />
 
@@ -298,16 +298,16 @@ const AddAddress = ({
         </KeyboardAvoidingView>
       </View>
     </Modal>
-  )
-}
+  );
+};
 
-type TextProps = PropsWithChildren<{ style: StyleProp<TextStyle> }>
+type TextProps = PropsWithChildren<{ style: StyleProp<TextStyle> }>;
 
 const Text1 = ({ children, style }: TextProps) => {
-  return <Text style={[styles.label, style]}>{children}</Text>
-}
+  return <Text style={[styles.label, style]}>{children}</Text>;
+};
 
-export default AddAddress
+export default AddAddress;
 
 const styles = StyleSheet.create({
   container: {
@@ -353,4 +353,4 @@ const styles = StyleSheet.create({
     width: "60%",
     alignItems: "center",
   },
-})
+});
