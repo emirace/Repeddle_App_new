@@ -182,16 +182,18 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
               style={{
                 flexDirection: "row",
                 backgroundColor: colors.elevation.level1,
-                padding: 15,
+                padding: 10,
                 borderRadius: 10,
                 marginTop: 15,
                 gap: 10,
+                alignItems: "center",
               }}
             >
-              <Ionicons name="help-circle" size={20} color="black" />
+              <Ionicons name="alert-circle" size={26} color={colors.primary} />
               <Text
                 style={{
                   fontSize: 15,
+                  lineHeight: 20,
                 }}
               >
                 You will be charged {wallet.currency}

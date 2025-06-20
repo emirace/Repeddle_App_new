@@ -20,8 +20,7 @@ const CartIcon = ({ onPress, iconColor }: Props) => {
       />
       <Badge
         visible={cart.length > 0}
-        style={styles.badge}
-        theme={{ colors: { background: "red" } }}
+        style={[styles.badge, { backgroundColor: colors.primary }]}
       >
         {cart.length}
       </Badge>
