@@ -1,39 +1,43 @@
-import { Pressable, StyleSheet } from "react-native"
-import React, { useEffect } from "react"
-import { Badge, IconButton, useTheme } from "react-native-paper"
-import useCart from "../../hooks/useCart"
-import useNotification from "../../hooks/useNotification"
+import { Pressable, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { Badge, IconButton, useTheme } from "react-native-paper";
+import useNotification from "../../hooks/useNotification";
 
 type Props = {
-  onPress?: () => void
-  iconColor?: string
-}
+  onPress?: () => void;
+  iconColor?: string;
+};
 
-const CartIcon = ({ onPress, iconColor }: Props) => {
-  const { cart } = useCart()
-  const { colors } = useTheme()
-  const { fetchNotifications, notifications } = useNotification()
+const NotificationIcon = ({ onPress, iconColor }: Props) => {
+  const { notifications, fetchNotifications } = useNotification();
+  const { colors } = useTheme();
+
+  const unreadNotifications = notifications.filter(
+    (notification) => !notification.read
+  );
 
   useEffect(() => {
-    fetchNotifications()
-  }, [])
-
-  const unreadNotifications = notifications.filter((not) => !not.read)
+    fetchNotifications();
+  }, []);
 
   return (
     <Pressable onPress={onPress} style={styles.item}>
-      <IconButton icon="bell-outline" iconColor={colors.onBackground} />
+      <IconButton
+        icon="bell-outline"
+        iconColor={iconColor ?? colors.onBackground}
+      />
       <Badge
         visible={unreadNotifications.length > 0}
-        style={[styles.badge, { backgroundColor: colors.primary }]}
+        style={styles.badge}
+        theme={{ colors: { background: colors.primary } }}
       >
         {unreadNotifications.length}
       </Badge>
     </Pressable>
-  )
-}
+  );
+};
 
-export default CartIcon
+export default NotificationIcon;
 
 const styles = StyleSheet.create({
   badge: {
@@ -45,4 +49,4 @@ const styles = StyleSheet.create({
     position: "relative",
     // marginLeft: "auto",
   },
-})
+});

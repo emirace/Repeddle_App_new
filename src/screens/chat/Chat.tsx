@@ -90,7 +90,7 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
   const handleMessageSubmit = async () => {
     // Handle sending message logic
     if (!currentConversation) return;
-    if (!messageInput) return;
+    // if (!messageInput) return;
     try {
       setSending({ value: true, message: messageInput, failed: false, image });
       setMessageInput("");

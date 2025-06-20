@@ -551,9 +551,9 @@ const Product = ({ navigation, route }: Props) => {
             ]}
           >
             <Text>Tags:</Text>
-            {product.tags.map((t) => (
+            {product.tags.map((t, index) => (
               <Chip
-                key={t}
+                key={index}
                 icon="tag"
                 mode="outlined"
                 textStyle={{ color: colors.primary }}
@@ -623,7 +623,7 @@ const Product = ({ navigation, route }: Props) => {
                     </TouchableOpacity>
                     <Text>
                       {product.seller?.address?.state},
-                      {product.region === "NGN" ? "Nigeria" : "South Africa"}
+                      {product.region === "NG" ? "Nigeria" : "South Africa"}
                     </Text>
                   </View>
                   <TouchableOpacity onPress={addConversation}>
@@ -701,10 +701,10 @@ const Product = ({ navigation, route }: Props) => {
                 }}
               >
                 {product.sizes.map(
-                  (size) =>
+                  (size, index) =>
                     size.quantity > 0 && (
                       <SizeSelection
-                        key={size.size}
+                        key={index}
                         selectedSize={selectedSize}
                         symbol={size.size}
                         sizeHandler={sizeHandler}

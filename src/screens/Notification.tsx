@@ -30,6 +30,7 @@ const MobileNotification: React.FC<NotificationNavigationProp> = ({
     console.log(not)
     markNotification(not._id)
     if (not.mobileLink) {
+      console.log("Mobile Link", not.mobileLink);
       navigation.navigate(not.mobileLink.name, {
         ...not.mobileLink.params,
       })
