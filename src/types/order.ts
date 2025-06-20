@@ -118,6 +118,7 @@ export type IReturn = {
   reason: string
   refund: string
   image: string
+  images?: string[]
   others: string
   region: string
   adminReason: string
@@ -156,6 +157,7 @@ export type CreateReturn = {
   reason: string
   refund: string
   image: string
+  images?: string[]
   others: string
   deliveryOption: {
     method: string

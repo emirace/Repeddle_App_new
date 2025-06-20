@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   Image,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -12,7 +13,7 @@ import { Appbar, Button, Text, useTheme } from "react-native-paper"
 import { ReturnFormNavigationProp } from "../types/navigation/stack"
 import SelectDropdown from "react-native-select-dropdown"
 import { Entypo, Ionicons } from "@expo/vector-icons"
-import { currency, deliveryNumber } from "../utils/common"
+import { currency, deleteImage, deliveryNumber } from "../utils/common"
 import { OrderItem } from "../types/order"
 import * as ImagePicker from "expo-image-picker"
 import useToastNotification from "../hooks/useToastNotification"
@@ -25,7 +26,7 @@ import { Picker } from "@react-native-picker/picker"
 type Props = ReturnFormNavigationProp
 
 const ReturnForm = ({ navigation, route }: Props) => {
-  const { orderItems, orderId, waybillNumber } = route.params
+  const { orderItems, orderId = "233", waybillNumber } = route.params
   const { colors } = useTheme()
   const { addNotification } = useToastNotification()
   const { createReturns } = useReturn()
@@ -39,10 +40,11 @@ const ReturnForm = ({ navigation, route }: Props) => {
   const [refund, setRefund] = useState("")
   const [description, setDescription] = useState("")
   const [invalidImage, setInvalidImage] = useState("")
-  const [image, setImage] = useState("")
+  const [images, setImages] = useState<string[]>([])
   const [loadingUpload, setLoadingUpload] = useState(false)
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [messageLoading, setMessageLoading] = useState(false)
+  const [handledImage, setHandledImage] = useState<number>()
 
   const addConversation = async (sellerId?: string, userId?: string) => {
     if (!sellerId || !userId) return
@@ -102,7 +104,8 @@ const ReturnForm = ({ navigation, route }: Props) => {
 
     const res = await createReturns({
       deliveryOption: orderitem.deliveryOption,
-      image,
+      images,
+      image: images[0],
       orderId,
       others: description,
       productId: orderitem.product._id,
@@ -111,7 +114,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
     })
     if (res) {
       addNotification({ message: "Return logged successfully" })
-      setImage("")
+      setImages([])
       setReason("")
       setDescription("")
       setSending("")
@@ -150,7 +153,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
 
     await deliverOrderHandler("Return Logged", current)
 
-    setImage("")
+    setImages([])
   }
 
   const pickImage = async () => {
@@ -158,7 +161,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
       setLoadingUpload(true)
 
       const res = await uploadOptimizeImage()
-      setImage(res as string)
+      setImages([...images, res as string])
     } catch (error: any) {
       addNotification({
         message: error || "Unable to upload image try again later",
@@ -167,6 +170,24 @@ const ReturnForm = ({ navigation, route }: Props) => {
     } finally {
       setLoadingUpload(false)
     }
+  }
+
+  const onDeleteImage = async (key: number) => {
+    if (!images[key]) return
+    setHandledImage(key)
+    try {
+      setLoadingUpload(true)
+      const imageName = (images[key] as string).split("/").pop()
+      if (imageName) {
+        const res = await deleteImage(imageName)
+        addNotification({ message: res })
+        setImages(images.filter((_, index) => index !== key))
+      }
+    } catch (error) {
+      addNotification({ message: "Failed to delete image", error: true })
+    }
+    setHandledImage(undefined)
+    setLoadingUpload(false)
   }
 
   const displayTab = () => {
@@ -245,9 +266,11 @@ const ReturnForm = ({ navigation, route }: Props) => {
                 style={[styles.option]}
                 onPress={() =>
                   current &&
-                  navigation.push("EditProduct", {
+                  navigation.push("Sell", {
                     id: current.product._id,
                     slug: current.product.slug,
+                    relist: true,
+                    orderId: orderId,
                   })
                 }
               >
@@ -480,38 +503,64 @@ const ReturnForm = ({ navigation, route }: Props) => {
                   value={description}
                 />
               </View>
-              <View
-                style={[
-                  styles.inputCont,
-                  { flexDirection: "row", alignItems: "center" },
-                ]}
-              >
-                <TouchableOpacity onPress={pickImage} style={styles.label1}>
-                  <Ionicons
-                    name="camera-outline"
-                    size={24}
-                    color={colors.onBackground}
-                    style={{ marginRight: 10 }}
-                  />
-                  <Text>Upload Image</Text>
-                </TouchableOpacity>
-                {invalidImage ? (
-                  <Text style={{ color: "red" }}>{invalidImage}</Text>
-                ) : null}
-                {loadingUpload ? (
-                  <ActivityIndicator size={"large"} color={colors.primary} />
-                ) : null}
-                {image.length !== 0 ? (
-                  <Text
-                    style={{
-                      marginLeft: 10,
-                      fontSize: 14,
-                      color: colors.secondary,
-                    }}
-                  >
-                    Image Uploaded
-                  </Text>
-                ) : null}
+              <View style={[styles.inputCont, { alignItems: "center" }]}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    marginBottom: 20,
+                    gap: 15,
+                    width: "100%",
+                  }}
+                >
+                  {images.map((image, index) => (
+                    <>
+                      {handledImage === index ? (
+                        <ActivityIndicator
+                          size={"large"}
+                          color={colors.primary}
+                        />
+                      ) : (
+                        <View>
+                          <Image
+                            source={{ uri: baseURL + image }}
+                            style={styles.image}
+                            key={index}
+                          />
+                          <Pressable
+                            style={styles.trash}
+                            onPress={() => onDeleteImage(index)}
+                          >
+                            <Ionicons
+                              name="trash-outline"
+                              size={16}
+                              color="black"
+                            />
+                          </Pressable>
+                        </View>
+                      )}
+                    </>
+                  ))}
+                </View>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  {images.length < 3 && (
+                    <TouchableOpacity onPress={pickImage} style={styles.label1}>
+                      <Ionicons
+                        name="camera-outline"
+                        size={24}
+                        color={colors.onBackground}
+                        style={{ marginRight: 10 }}
+                      />
+                      <Text>Upload Image</Text>
+                    </TouchableOpacity>
+                  )}
+                  {invalidImage ? (
+                    <Text style={{ color: "red" }}>{invalidImage}</Text>
+                  ) : null}
+                  {loadingUpload ? (
+                    <ActivityIndicator size={"large"} color={colors.primary} />
+                  ) : null}
+                </View>
               </View>
               {/* <View
                 style={{
@@ -521,12 +570,27 @@ const ReturnForm = ({ navigation, route }: Props) => {
               > */}
               <Button
                 mode="contained"
-                style={[styles.button, { backgroundColor: colors.primary }]}
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: colors.primary,
+                    maxWidth: "90%",
+                    marginHorizontal: "auto",
+                    marginTop: 10,
+                  },
+                ]}
                 onPress={handleReturn}
                 loading={updatingStatus}
                 disabled={updatingStatus}
               >
-                <Text style={{ color: "white", fontWeight: "600" }}>
+                <Text
+                  style={{
+                    color: "white",
+                    textAlign: "center",
+                    fontWeight: "600",
+                    width: "90%",
+                  }}
+                >
                   Submit
                 </Text>
               </Button>
@@ -653,4 +717,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   text3: { fontSize: 12, opacity: 0.5 },
+  trash: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    padding: 2,
+    borderRadius: "50%",
+    backgroundColor: "white",
+  },
 })

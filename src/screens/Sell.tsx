@@ -20,7 +20,7 @@ import {
   useTheme,
 } from "react-native-paper"
 import useCategory from "../hooks/useCategory"
-import { IBrand, ISize } from "../types/product"
+import { IBrand, IProduct, ISize } from "../types/product"
 import Input from "../components/Input"
 import { Picker } from "@react-native-picker/picker"
 import { Ionicons } from "@expo/vector-icons"
@@ -47,7 +47,7 @@ import useUser from "../hooks/useUser"
 import { baseURL } from "../services/api"
 import { uploadOptimizeImage } from "../utils/image"
 
-const Sell = ({ navigation }: any) => {
+const Sell = ({ navigation, route }: any) => {
   const { user } = useAuth()
   const accountVerified = useMemo(
     () => !!user?.bankName && !!user?.accountName && user?.role !== "Seller",
@@ -66,7 +66,8 @@ const Sell = ({ navigation }: any) => {
   const { colors } = useTheme()
   const { fetchBrands, brands } = useBrands()
   const { categories, fetchCategories } = useCategory()
-  const { createProduct, error } = useProducts()
+  const { createProduct, error, fetchProductById, fetchProductBySlug } =
+    useProducts()
   const { addNotification } = useToastNotification()
   const isFocused = useIsFocused()
 
@@ -130,6 +131,55 @@ const Sell = ({ navigation }: any) => {
   const [showOtherBrand, setShowOtherBrand] = useState(false)
   const [showFeeStructure, setShowFeeStructure] = useState(false)
   const [loadingUpload, setLoadingUpload] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setLoading(true)
+      let res: string | IProduct | null
+      if (route.params?.slug) res = await fetchProductBySlug(route.params.slug)
+      else res = await fetchProductById(route.params?.id ?? "")
+      if (res && typeof res !== "string") {
+        setInput({
+          name: res.name,
+          mainCategory: res.mainCategory,
+          subCategory: res.subCategory ?? input.subCategory,
+          category: res.category ?? input.category,
+          description: res.description,
+          brand: res.brand ?? input.brand,
+          sellingPrice: res.sellingPrice?.toString(),
+          costPrice: res.costPrice?.toString() || "",
+          specification: res.specification ?? input.specification,
+          condition: res.condition,
+          keyFeatures: res.keyFeatures ?? input.keyFeatures,
+          video: res.video ?? input.video,
+          material: res.material ?? input.material,
+          luxuryImage: res.luxuryImage ?? input.luxuryImage,
+          luxury: res.luxury ?? input.luxury,
+          vintage: res.vintage ?? input.vintage,
+          image1: res.images[0],
+          image2: res.images[1],
+          image3: res.images[2],
+          image4: res.images[3],
+          tag: "",
+          color: "",
+          image: "",
+        })
+
+        setTags(res.tags)
+        setColorsVal(res.color ?? colorsVal)
+        setTags(res.tags)
+      } else {
+        addNotification({
+          message: res || error || "Failed to get product details",
+          error: true,
+        })
+      }
+      setLoading(false)
+    }
+
+    fetchProduct()
+  }, [route.params?.id, route.params?.slug])
 
   const handleOnChange = (text: string | boolean, key: keyof typeof input) => {
     setInput((prevState) => ({ ...prevState, [key]: text }))
@@ -266,6 +316,12 @@ const Sell = ({ navigation }: any) => {
       luxuryImage: input.luxuryImage,
       // addSize,
       countInStock,
+      ...(route.params?.relist && {
+        relist: {
+          orderId: route.params.orderId,
+          productId: route.params.id,
+        },
+      }),
     })
 
     if (res) {
