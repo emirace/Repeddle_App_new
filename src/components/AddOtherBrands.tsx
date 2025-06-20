@@ -51,7 +51,12 @@ const AddOtherBrands = ({ setShowOtherBrand, handleOnChange }: Props) => {
 
   return (
     <View style={styles.modal}>
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: colors.background, width: "100%" },
+        ]}
+      >
         <TouchableOpacity
           onPress={() => setShowOtherBrand(false)}
           style={{ position: "absolute", right: 15, top: 10 }}
@@ -76,11 +81,22 @@ const AddOtherBrands = ({ setShowOtherBrand, handleOnChange }: Props) => {
         {err && <Text style={styles.error}>{err}</Text>}
         <Button
           loading={loading}
-          style={[styles.uploadButton, { backgroundColor: colors.primary }]}
+          style={[
+            styles.uploadButton,
+            {
+              backgroundColor: colors.primary,
+              width: "100%",
+            },
+          ]}
           mode="contained"
-          children="Add"
           onPress={addOtherBrand}
-        />
+        >
+          <Text
+            style={[styles.buttonText, { width: "90%", textAlign: "center" }]}
+          >
+            {loading ? "Adding..." : "Add"}
+          </Text>
+        </Button>
       </View>
     </View>
   )
@@ -96,7 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#00000090",
   },
   container: {
-    minWidth: Dimensions.get("screen").width * 0.8,
+    maxWidth: Dimensions.get("screen").width * 0.8,
     minHeight: 180,
     padding: 30,
     borderRadius: 10,

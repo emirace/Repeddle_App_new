@@ -1,23 +1,25 @@
-import React from "react";
-import BrandImages from "./BrandImages";
-import Collection from "./Collection";
-import HomeBrands from "./HomeBrands";
-import TopSellersHome from "./TopSellersHome";
-import Carousel from "./Carousel";
-import { MainScreenNavigationProp } from "../../types/navigation/stack";
-import { TopSellers } from "../../types/user";
-import { TouchableOpacity, View } from "react-native";
-import homeStyles from "./homeStyles";
-import { Text } from "react-native-paper";
-import { IProduct } from "../../types/product";
+import React from "react"
+import BrandImages from "./BrandImages"
+import Collection from "./Collection"
+import HomeBrands from "./HomeBrands"
+import TopSellersHome from "./TopSellersHome"
+import HowItWorks from "./HowItWorks"
+import CategoryButtons from "./CategoryButtons"
+import Carousel from "./Carousel"
+import { MainScreenNavigationProp } from "../../types/navigation/stack"
+import { TopSellers } from "../../types/user"
+import { TouchableOpacity, View } from "react-native"
+import homeStyles from "./homeStyles"
+import { Text } from "react-native-paper"
+import { IProduct } from "../../types/product"
 
 type Props = {
-  navigation: MainScreenNavigationProp["navigation"];
-  isLoading?: boolean;
-  seller: TopSellers[];
-  error?: string;
-  products: IProduct[];
-};
+  navigation: MainScreenNavigationProp["navigation"]
+  isLoading?: boolean
+  seller: TopSellers[]
+  error?: string
+  products: IProduct[]
+}
 
 const HomeContents = ({
   navigation,
@@ -29,6 +31,8 @@ const HomeContents = ({
   return (
     <>
       <Carousel navigation={navigation} />
+      <CategoryButtons />
+      <HowItWorks />
       <BrandImages />
       <Collection navigation={navigation} />
       <HomeBrands navigation={navigation} />
@@ -52,7 +56,7 @@ const HomeContents = ({
         <Text style={{ padding: 10 }}>No Products Found</Text>
       ) : null}
     </>
-  );
-};
+  )
+}
 
-export default HomeContents;
+export default HomeContents

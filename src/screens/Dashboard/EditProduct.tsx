@@ -240,7 +240,7 @@ const EditProduct = ({ navigation, route }: Props) => {
           image: "",
         })
 
-        setTags(tags)
+        setTags(res.tags)
         setPrice(res.costPrice?.toString() || "")
         setColorsVal(res.color ?? colorsVal)
         setTags(res.tags)
@@ -821,10 +821,19 @@ const EditProduct = ({ navigation, route }: Props) => {
             </Text>
           )}
           {showOtherBrand ? (
-            <AddOtherBrands
-              handleOnChange={handleOnChange}
-              setShowOtherBrand={setShowOtherBrand}
-            />
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={showOtherBrand}
+              onRequestClose={() => {
+                setShowOtherBrand(!showOtherBrand)
+              }}
+            >
+              <AddOtherBrands
+                handleOnChange={handleOnChange}
+                setShowOtherBrand={setShowOtherBrand}
+              />
+            </Modal>
           ) : null}
 
           <View style={styles.infoRow}>
