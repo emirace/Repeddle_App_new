@@ -27,7 +27,7 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
   const { addNotification } = useToastNotification();
   const { colors } = useTheme();
 
-  var region: "NGN" | "ZAR" = "NGN";
+  var region: "NG" | "ZA" = "NG";
 
   useEffect(() => {
     fetchWallet();
@@ -66,7 +66,7 @@ const Withdraw: React.FC<WithdrawNavigationProp> = ({ navigation }) => {
   const handleChange = (e: any) => {
     setAmount(e);
     const fees =
-      region === "ZAR"
+      region === "ZA"
         ? 10
         : e <= 5000
         ? 10.75

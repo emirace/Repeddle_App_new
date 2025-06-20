@@ -36,6 +36,7 @@ import { NotificationProvider } from "./contexts/NotificationContext";
 import ArticleProvider from "./contexts/ArticleContext";
 import { PaymentProvider } from "./contexts/PaymentContext";
 import "./socket.ts";
+import { PaystackProvider } from "react-native-paystack-webview";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -64,46 +65,48 @@ const Main = () => {
       <NavigationContainer
         theme={themeMode === "dark" ? CombinedDarkTheme : CombinedDefaultTheme}
       >
-        <AuthProvider>
-          <ToastNotificationProvider>
-            <BrandProvider>
-              <CategoryProvider>
-                <BottomSheetModalProvider>
-                  <StoreProvider>
-                    <ProductProvider>
-                      <UserProvider>
-                        <StoreProvider>
-                          <CartProvider>
-                            <NewsletterProvider>
-                              <OrderProvider>
-                                <TransactionProvider>
-                                  <MessageProvider>
-                                    <ReturnProvider>
-                                      <WalletProvider>
-                                        <NotificationProvider>
-                                          <ArticleProvider>
-                                            <PaymentProvider>
-                                              <ToastNotification />
-                                              <MainStackNav />
-                                            </PaymentProvider>
-                                          </ArticleProvider>
-                                        </NotificationProvider>
-                                      </WalletProvider>
-                                    </ReturnProvider>
-                                  </MessageProvider>
-                                </TransactionProvider>
-                              </OrderProvider>
-                            </NewsletterProvider>
-                          </CartProvider>
-                        </StoreProvider>
-                      </UserProvider>
-                    </ProductProvider>
-                  </StoreProvider>
-                </BottomSheetModalProvider>
-              </CategoryProvider>
-            </BrandProvider>
-          </ToastNotificationProvider>
-        </AuthProvider>
+        <PaystackProvider publicKey="pk_test_8b77dc49b3d3fd1f63484986b3f8f0ea3c78b7dd">
+          <AuthProvider>
+            <ToastNotificationProvider>
+              <BrandProvider>
+                <CategoryProvider>
+                  <BottomSheetModalProvider>
+                    <StoreProvider>
+                      <ProductProvider>
+                        <UserProvider>
+                          <StoreProvider>
+                            <CartProvider>
+                              <NewsletterProvider>
+                                <OrderProvider>
+                                  <TransactionProvider>
+                                    <MessageProvider>
+                                      <ReturnProvider>
+                                        <WalletProvider>
+                                          <NotificationProvider>
+                                            <ArticleProvider>
+                                              <PaymentProvider>
+                                                <ToastNotification />
+                                                <MainStackNav />
+                                              </PaymentProvider>
+                                            </ArticleProvider>
+                                          </NotificationProvider>
+                                        </WalletProvider>
+                                      </ReturnProvider>
+                                    </MessageProvider>
+                                  </TransactionProvider>
+                                </OrderProvider>
+                              </NewsletterProvider>
+                            </CartProvider>
+                          </StoreProvider>
+                        </UserProvider>
+                      </ProductProvider>
+                    </StoreProvider>
+                  </BottomSheetModalProvider>
+                </CategoryProvider>
+              </BrandProvider>
+            </ToastNotificationProvider>
+          </AuthProvider>
+        </PaystackProvider>
       </NavigationContainer>
     </PaperProvider>
   );

@@ -4,13 +4,13 @@ import { Coupon, IProduct } from "../types/product";
 import * as WebBrowser from "expo-web-browser";
 
 export const currency = (region: IProduct["region"]) => {
-  if (region === "NGN") return "₦";
+  if (region === "NG") return "₦";
   return "R";
 };
 
 export const region = (): IProduct["region"] => {
   // TODO:
-  return "NGN";
+  return "NG";
 };
 
 export const goto = async (address: string) => {
@@ -18,7 +18,7 @@ export const goto = async (address: string) => {
 };
 
 export const currentAddress = (region: IProduct["region"]) =>
-  region === "NGN" ? "https://repeddle.com" : "https://repeddle.co.za";
+  region === "NG" ? "https://repeddle.com" : "https://repeddle.co.za";
 
 export const daydiff = (start: Date | string | number, end: number) => {
   if (!start) return 0;
@@ -112,7 +112,7 @@ export const generateTransactionRef = (length: number) => {
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  return `emirace_tx_ref_${result}`;
+  return `rep_tx_ref_${result}`;
 };
 
 export const couponDiscount = (coupon: Coupon, price: number) => {

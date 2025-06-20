@@ -5,31 +5,32 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-} from "react-native"
-import React, { useMemo, useState } from "react"
-import { Appbar, Button, Text, useTheme } from "react-native-paper"
-import useCart from "../hooks/useCart"
-import { CheckoutNavigationProp } from "../types/navigation/stack"
-import { API_KEY } from "../utils/constants"
+} from "react-native";
+import React, { useMemo, useState } from "react";
+import { Appbar, Button, Text, useTheme } from "react-native-paper";
+import useCart from "../hooks/useCart";
+import { CheckoutNavigationProp } from "../types/navigation/stack";
+import { API_KEY } from "../utils/constants";
 import {
   couponDiscount,
   currency,
   generateTransactionRef,
   region,
-} from "../utils/common"
-import useAuth from "../hooks/useAuth"
-import { Ionicons } from "@expo/vector-icons"
-import PayWithFlutterwave from "flutterwave-react-native"
-import Payfast from "../components/paymentMethod/Payfast"
-import useOrder from "../hooks/useOrder"
-import { RedirectParams } from "flutterwave-react-native/dist/PayWithFlutterwave"
-import { baseURL } from "../services/api"
-import useToastNotification from "../hooks/useToastNotification"
+} from "../utils/common";
+import useAuth from "../hooks/useAuth";
+import { Ionicons } from "@expo/vector-icons";
+import PayWithFlutterwave from "flutterwave-react-native";
+import Payfast from "../components/paymentMethod/Payfast";
+import useOrder from "../hooks/useOrder";
+import { RedirectParams } from "flutterwave-react-native/dist/PayWithFlutterwave";
+import { baseURL } from "../services/api";
+import useToastNotification from "../hooks/useToastNotification";
+import PayWithPaystack from "../components/paymentMethod/Paystack";
 
-type Props = CheckoutNavigationProp
+type Props = CheckoutNavigationProp;
 
 const Checkout = ({ navigation }: Props) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
   const {
     cart,
     subtotal,
@@ -37,79 +38,88 @@ const Checkout = ({ navigation }: Props) => {
     paymentMethod,
     clearCart,
     changePaymentMethod,
-  } = useCart()
-  const { createOrder, error } = useOrder()
-  const { user } = useAuth()
-  const { addNotification } = useToastNotification()
+  } = useCart();
+  const { createOrder, error } = useOrder();
+  const { user } = useAuth();
+  const { addNotification } = useToastNotification();
 
-  const [showDelivery, setShowDelivery] = useState("")
-  const [coupon, setCoupon] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [loadingPay, setLoadingPay] = useState(false)
+  const [showDelivery, setShowDelivery] = useState("");
+  const [coupon, setCoupon] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingPay, setLoadingPay] = useState(false);
 
-  const currencyVal = useMemo(() => currency(cart?.[0]?.region), [cart])
+  const currencyVal = useMemo(() => currency(cart?.[0]?.region), [cart]);
   const discount = useMemo(
     () => (coupon ? couponDiscount(coupon, total) : 0),
     [coupon]
-  )
+  );
 
-  const handleSubmit = () => {}
+  const handleSubmit = () => {};
 
-  const onApprove = async (response: RedirectParams) => {
+  const onApprove = async ({
+    paymentMethod,
+    id,
+  }: {
+    paymentMethod: string;
+    id: string;
+  }) => {
     const order1 = await placeOrderHandler({
-      paymentMethod: "Flutterwave",
-      transId: response.transaction_id || response.tx_ref,
-    })
+      paymentMethod,
+      transId: id,
+    });
     if (order1) {
-      clearCart()
-      changePaymentMethod("Card")
-      navigation.pop(3)
-      navigation.navigate("OrderDetails", { id: order1._id })
+      clearCart();
+      changePaymentMethod("Card");
+      navigation.pop(3);
+      navigation.navigate("OrderDetails", { id: order1._id });
     } else {
-      addNotification({ message: error || "failed to create order" })
+      addNotification({ message: error || "failed to create order" });
     }
-  }
+  };
 
   const handleOnRedirect = async (result: RedirectParams) => {
-    console.log(result, "res")
+    console.log(result, "res");
     try {
       if (result.status !== "successful") {
-        console.log("unsuccessfull")
-        setIsLoading(false)
-        return
+        console.log("unsuccessfull");
+        setIsLoading(false);
+        return;
       }
-      addNotification({ message: "Payment successful" })
-      await onApprove(result)
+      addNotification({ message: "Payment successful" });
+      await onApprove({
+        paymentMethod: "Flutterwave",
+        id: result.transaction_id || result.tx_ref,
+      });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const onError = () => {
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const placeOrderHandler = async ({
     paymentMethod,
     transId,
   }: {
-    paymentMethod: string
-    transId: string
+    paymentMethod: string;
+    transId: string;
   }) => {
     const res = await createOrder({
       items: cart,
       paymentMethod,
       totalAmount: total,
       transactionId: transId,
-    })
+    });
 
     if (res) {
-      addNotification({ message: res.message })
-      return res.order
+      addNotification({ message: res.message });
+      return res.order;
     } else {
-      addNotification({ message: error, error: true })
+      addNotification({ message: error, error: true });
     }
-  }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -358,69 +368,73 @@ const Checkout = ({ navigation }: Props) => {
             </Text>
           </TouchableOpacity>
         ) : paymentMethod === "Card" ? (
-          region() !== "NGN" ? (
+          region() !== "NG" ? (
             <Payfast placeOrderHandler={placeOrderHandler} totalPrice={total} />
           ) : (
-            <PayWithFlutterwave
-              onRedirect={handleOnRedirect}
-              onInitializeError={onError}
-              style={{ width: "100%" }}
-              onAbort={onError}
-              options={{
-                tx_ref: generateTransactionRef(10),
-                authorization:
-                  "FLWPUBK_TEST-6a1e30713a8c6962ecb7d6cfbda2df69-X",
-                customer: {
-                  email: user?.email ?? "",
-                  name: `${user?.firstName} ${user?.lastName}`,
-                },
-                amount: total,
-                currency: "NGN",
-                payment_options: "card",
-                customizations: {
-                  title: "Repeddle",
-                  description: "Payment for order",
-                  //   logo: "https://assets.piedpiper.com/logo.png",
-                },
-                meta: {
-                  purpose: "Make Payment",
-                  userId: user?._id,
-                  image:
-                    "https://res.cloudinary.com/emirace/image/upload/v1674796101/fundwallet_rgdi9s.jpg",
-                  description: "Payment for items in cart",
-                },
-              }}
-              customButton={(props) => (
-                <Button
-                  onPress={() => {
-                    setIsLoading(true)
-                    props.onPress()
-                  }}
-                  children="Proceed"
-                  loading={isLoading}
-                  mode="contained"
-                  style={[
-                    styles.button,
-                    {
-                      // backgroundColor: colors.primary,
-                      width: "100%",
-                    },
-                  ]}
-                  labelStyle={{
-                    color: "white",
-                    fontFamily: "chronicle-text-bold",
-                  }}
-                />
-              )}
-            />
+            <>
+              <PayWithPaystack amount={total} onAprove={onApprove} />
+              <View style={{ height: 10 }} />
+              <PayWithFlutterwave
+                onRedirect={handleOnRedirect}
+                onInitializeError={onError}
+                style={{ width: "100%" }}
+                onAbort={onError}
+                options={{
+                  tx_ref: generateTransactionRef(10),
+                  authorization:
+                    "FLWPUBK_TEST-6a1e30713a8c6962ecb7d6cfbda2df69-X",
+                  customer: {
+                    email: user?.email ?? "",
+                    name: `${user?.firstName} ${user?.lastName}`,
+                  },
+                  amount: total,
+                  currency: "NGN",
+                  payment_options: "card",
+                  customizations: {
+                    title: "Repeddle",
+                    description: "Payment for order",
+                    //   logo: "https://assets.piedpiper.com/logo.png",
+                  },
+                  meta: {
+                    purpose: "Make Payment",
+                    userId: user?._id,
+                    image:
+                      "https://res.cloudinary.com/emirace/image/upload/v1674796101/fundwallet_rgdi9s.jpg",
+                    description: "Payment for items in cart",
+                  },
+                }}
+                customButton={(props) => (
+                  <Button
+                    onPress={() => {
+                      setIsLoading(true);
+                      props.onPress();
+                    }}
+                    children="Proceed"
+                    loading={isLoading}
+                    mode="contained"
+                    style={[
+                      styles.button,
+                      {
+                        // backgroundColor: colors.primary,
+                        width: "100%",
+                      },
+                    ]}
+                    labelStyle={{
+                      color: "white",
+                      fontFamily: "chronicle-text-bold",
+                    }}
+                  />
+                )}
+              />
+            </>
           )
         ) : null}
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default Checkout
+export default Checkout;
 
 const styles = StyleSheet.create({
   title: {
@@ -474,4 +488,4 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 5,
   },
-})
+});

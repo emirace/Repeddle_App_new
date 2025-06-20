@@ -46,6 +46,7 @@
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-pager-view": "6.7.1",
     "react-native-paper": "^5.12.3",
+    "react-native-paystack-webview": "^5.0.1",
     "react-native-popover-view": "^6.1.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-reanimated-carousel": "^3.5.1",

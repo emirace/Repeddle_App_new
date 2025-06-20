@@ -350,6 +350,7 @@ const OrderDetails = ({ navigation, route }: Props) => {
             {order.items.map((orderitem) =>
               orderitem.seller._id === user?._id ? (
                 <IsSeller
+                  key={orderitem._id}
                   userOrdered={order.buyer}
                   orderItem={orderitem}
                   deliverOrderHandler={deliverOrderHandler}
