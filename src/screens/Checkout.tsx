@@ -125,7 +125,7 @@ const Checkout = ({ navigation }: Props) => {
     transId,
   }: {
     paymentMethod: string;
-    transId: string;
+    transId?: string;
   }) => {
     const res = await createOrder({
       items: cart,
