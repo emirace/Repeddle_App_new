@@ -1,14 +1,19 @@
-import React, { useMemo } from "react";
-import { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
+import React, { useMemo } from "react"
+import { BottomSheetBackdropProps } from "@gorhom/bottom-sheet"
 import Animated, {
   Extrapolation,
   interpolate,
   useAnimatedStyle,
-} from "react-native-reanimated";
-import { useTheme } from "react-native-paper";
+} from "react-native-reanimated"
+import { useTheme } from "react-native-paper"
+import { Pressable } from "react-native"
 
-const CustomBackdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => {
-  const { colors } = useTheme();
+const CustomBackdrop = ({
+  animatedIndex,
+  style,
+  onPress,
+}: BottomSheetBackdropProps & { onPress?: () => void }) => {
+  const { colors } = useTheme()
   // animated variables
   const containerAnimatedStyle = useAnimatedStyle(() => ({
     opacity: interpolate(
@@ -17,7 +22,7 @@ const CustomBackdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => {
       [0, 1],
       Extrapolation.CLAMP
     ),
-  }));
+  }))
 
   // styles
   const containerStyle = useMemo(
@@ -29,10 +34,14 @@ const CustomBackdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => {
       containerAnimatedStyle,
     ],
     [style, containerAnimatedStyle]
-  );
-  console.log(animatedIndex);
+  )
+  console.log(animatedIndex)
 
-  return <Animated.View style={containerStyle} />;
-};
+  return (
+    <Pressable onPress={onPress} style={containerStyle}>
+      <Animated.View />
+    </Pressable>
+  )
+}
 
-export default CustomBackdrop;
+export default CustomBackdrop
