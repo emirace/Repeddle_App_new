@@ -84,10 +84,13 @@ type ContextType = {
     id: string,
     commentId: string,
     comment: string
-  ) => Promise<{
-    message: string
-    comment: IComment
-  } | null>
+  ) => Promise<
+    | {
+        message: string
+        comment: ICommentReply
+      }
+    | string
+  >
 
   likeProductCommentReply: (
     id: string,
@@ -433,7 +436,12 @@ export const ProductProvider = ({ children }: PropsWithChildren) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
             const comments = prod.comments ?? []
-            prod.comments = [...comments, result.comment]
+            prod.comments = comments.map((comm) => {
+              if (comm._id === commentId) {
+                comm.replies = [...comm.replies, result.comment]
+              }
+              return comm
+            })
           }
           return prod
         })
@@ -445,7 +453,7 @@ export const ProductProvider = ({ children }: PropsWithChildren) => {
     } catch (error) {
       handleError(error as string)
       // setLoading(false)
-      return null
+      return error as string
     }
   }
 
