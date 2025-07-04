@@ -10,15 +10,17 @@ import {
 } from "react-native"
 import React, { useState } from "react"
 import { baseURL } from "../services/api"
+import { Ionicons } from "@expo/vector-icons"
 
 type Props = {
   source: string
   style: StyleProp<ImageStyle>
+  onDelete?: () => void
 }
 
 const { width, height } = Dimensions.get("window")
 
-const FullScreenImage = ({ source, style }: Props) => {
+const FullScreenImage = ({ source, style, onDelete }: Props) => {
   const [modalVisible, setModalVisible] = useState(false)
 
   const handlePress = () => {
@@ -31,12 +33,26 @@ const FullScreenImage = ({ source, style }: Props) => {
 
   return (
     <>
-      <TouchableOpacity onPress={handlePress}>
+      <TouchableOpacity
+        onPress={handlePress}
+        style={{
+          position: "relative",
+          width: (style as ImageStyle)?.width || styles.image.width,
+        }}
+      >
         <Image
           source={{ uri: `${baseURL}${source}` }}
           style={[styles.image, style]}
           resizeMode="contain"
         />
+        {onDelete && (
+          <TouchableOpacity
+            onPress={onDelete}
+            style={{ position: "absolute", top: 0, right: 0 }}
+          >
+            <Ionicons name="trash" size={20} color="red" />
+          </TouchableOpacity>
+        )}
       </TouchableOpacity>
       <Modal
         visible={modalVisible}

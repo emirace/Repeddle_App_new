@@ -10,6 +10,7 @@ import { ActivityIndicator, Appbar, useTheme, Text } from "react-native-paper"
 import { CategoryNavigationProp } from "../../types/navigation/stack"
 import useCategory from "../../hooks/useCategory"
 import { ICategory } from "../../types/category"
+import { baseURL } from "../../services/api"
 
 const Category = ({ navigation }: CategoryNavigationProp) => {
   const { categories, fetchCategories, loading, error } = useCategory()
@@ -27,7 +28,17 @@ const Category = ({ navigation }: CategoryNavigationProp) => {
   }, [])
 
   const handleCategoryPress = (category: ICategory) => {
-    navigation.navigate("SubCategories", { category })
+    if (category.mobile_path) {
+      if (typeof category.mobile_path === "string") {
+        navigation.navigate(category.mobile_path as any)
+      } else {
+        navigation.navigate((category.mobile_path as any).name, {
+          ...(category.mobile_path as any).params,
+        })
+      }
+    } else {
+      navigation.navigate("SubCategories", { category })
+    }
   }
 
   const renderCategory = ({ item }: { item: ICategory }) => (
@@ -37,7 +48,7 @@ const Category = ({ navigation }: CategoryNavigationProp) => {
     >
       <Image
         source={{
-          uri: item.image,
+          uri: baseURL + item.image,
         }}
         style={styles.categoryImage}
       />

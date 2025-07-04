@@ -142,6 +142,34 @@ export const fetchProductByIdService = async (
   }
 }
 
+export const flagAsInvalidService = async (
+  id: string,
+  reason: string
+): Promise<{ message: string }> => {
+  try {
+    const data: {
+      status: boolean
+      message: string
+    } = await api.post(`/products/product/${id}/flag-as-invalid`, {
+      reason,
+    })
+
+    if (!data.status) {
+      // Handle Fetch product error, e.g., display an error message to the user
+      throw new Error("Fetch product failed: " + getBackendErrorMessage(data))
+    }
+
+    return { message: data.message }
+  } catch (error) {
+    // Handle network errors or other exceptions
+    // You can log the error or perform other error-handling actions
+    console.error("Fetch product error:", getBackendErrorMessage(error))
+
+    // Re-throw the error to propagate it up the call stack if needed
+    throw getBackendErrorMessage(error)
+  }
+}
+
 export const makeUnavailableService = async (
   id: string
 ): Promise<{ product: IProduct; message?: string }> => {
@@ -478,7 +506,7 @@ export const addProductShareCountService = async (
   userId: string
 ) => {
   try {
-    await api.post(`/products/${id}/view`, {
+    await api.post(`/products/${id}/share`, {
       hashed: Math.random().toString().slice(2),
       user: userId,
     })
