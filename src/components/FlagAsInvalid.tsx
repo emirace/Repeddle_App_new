@@ -22,22 +22,22 @@ import { MessageData } from "../types/message"
 import { uploadOptimizeImage } from "../utils/image"
 import { Ionicons } from "@expo/vector-icons"
 import { deleteImage } from "../utils/common"
+import useProducts from "../hooks/useProducts"
 
 type Props = {
   reportItem: { name: string; id: string; image?: string }
-  refs: "user" | "product"
   showModel: boolean
   setShowModel: (val: boolean) => void
 }
 
-const Report = ({ reportItem, refs, setShowModel, showModel }: Props) => {
+const Report = ({ reportItem, setShowModel, showModel }: Props) => {
   const [isReporting, setIsReporting] = useState(false)
-  const [content, setContent] = useState("")
+  const [reason, setReason] = useState("")
   const [image, setImage] = useState("")
   const [isUploading, setIsUploading] = useState(false)
   const { colors } = useTheme()
 
-  const { sendMessage } = useMessage()
+  const { flagAsInvalid } = useProducts()
   const { addNotification } = useToastNotification()
 
   const handleImagePick = async () => {
@@ -56,14 +56,19 @@ const Report = ({ reportItem, refs, setShowModel, showModel }: Props) => {
   }
 
   const handleSubmit = async () => {
-    if (!content) return
+    if (!reason) return
     setIsReporting(true)
-    const data: MessageData = { content, type: "Report" }
-    if (refs === "user") data.referencedUser = reportItem.id
-    else data.referencedProduct = reportItem.id
-    if (image) data.image = image
-    await sendMessage(data)
-    setIsReporting(false)
+    try {
+      const result = await flagAsInvalid(reportItem.id, reason)
+      if (result.error) {
+        addNotification({ message: result.message, error: true })
+      } else {
+        addNotification({ message: result.message })
+      }
+      setIsReporting(false)
+    } catch (error) {
+      addNotification({ message: "Failed to flag as invalid", error: true })
+    }
   }
 
   const onDeleteImage = async () => {
@@ -103,9 +108,10 @@ const Report = ({ reportItem, refs, setShowModel, showModel }: Props) => {
               />
             </Pressable>
             <View style={{ alignItems: "center", marginBottom: 12 }}>
-              <Text style={styles.title}>Report {refs}</Text>
+              <Text style={styles.title}>Flag as Invalid</Text>
               <Text style={styles.subtitle}>
-                Please provide details about what you want to report.
+                Please provide details about why you want to flag this item as
+                invalid.
               </Text>
             </View>
             <View style={{ alignItems: "center", marginBottom: 16 }}>
@@ -145,15 +151,15 @@ const Report = ({ reportItem, refs, setShowModel, showModel }: Props) => {
               )}
             </View>
             <View style={{ marginBottom: 16 }}>
-              <Text style={styles.label}>Content</Text>
+              <Text style={styles.label}>Reason</Text>
               <TextInput
                 mode="outlined"
                 style={styles.textarea}
                 multiline
                 numberOfLines={5}
-                placeholder="Describe the issue you're reporting..."
-                value={content}
-                onChangeText={setContent}
+                placeholder="Describe the issue you're flagging..."
+                value={reason}
+                onChangeText={setReason}
                 editable={!isReporting && !isUploading}
                 textAlignVertical="top"
               />
@@ -168,13 +174,6 @@ const Report = ({ reportItem, refs, setShowModel, showModel }: Props) => {
             >
               Submit
             </Button>
-            <Text style={styles.infoText}>
-              Please leave all information that will help us resolve your query.
-              Please include an order number if your report is related to an
-              order you purchased from this seller, or you can go to your
-              purchase history and report the related item directly from the
-              report tab on the item page.
-            </Text>
           </ScrollView>
         </View>
       </View>
@@ -235,14 +234,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     padding: 0,
   },
-  infoText: {
-    textAlign: "center",
-    fontSize: 13,
-    marginTop: 16,
-    alignSelf: "center",
-    maxWidth: 260,
-    lineHeight: 16,
-  },
+
   camera: {
     width: 80,
     height: 80,

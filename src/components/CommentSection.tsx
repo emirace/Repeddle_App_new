@@ -21,6 +21,7 @@ import Comment from "./Comment"
 import useProducts from "../hooks/useProducts"
 import useToastNotification from "../hooks/useToastNotification"
 import { uploadOptimizeImage } from "../utils/image"
+import { deleteImage } from "../utils/common"
 
 type Props = {
   comments?: IComment[]
@@ -59,6 +60,23 @@ const CommentSection = ({ product, setProduct }: Props) => {
     }
   }
 
+  const onDeleteImage = async () => {
+    if (!image) return
+    setLoadingUpload(true)
+    try {
+      setLoadingUpload(true)
+      const imageName = image.split("/").pop()
+      if (imageName) {
+        const res = await deleteImage(imageName)
+        addNotification({ message: res })
+        setImage("")
+      }
+    } catch (error) {
+      addNotification({ message: "Failed to delete image", error: true })
+    }
+    setLoadingUpload(false)
+  }
+
   useEffect(() => {
     const sortedComments = product.comments?.sort(
       (a, b) =>
@@ -89,6 +107,7 @@ const CommentSection = ({ product, setProduct }: Props) => {
       )
       newProd.comments = sortedComments || []
       setProduct(newProd)
+      setComments(sortedComments)
 
       addNotification({ message: "Comment added to product" })
       setNewComment("")
@@ -151,7 +170,11 @@ const CommentSection = ({ product, setProduct }: Props) => {
               textAlignVertical="top"
             />
             {image && (
-              <FullScreenImage source={image} style={{ height: 100 }} />
+              <FullScreenImage
+                source={image}
+                style={{ height: 100 }}
+                onDelete={onDeleteImage}
+              />
             )}
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <IconButton

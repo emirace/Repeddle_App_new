@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useState } from "react";
+import { createContext, PropsWithChildren, useState } from "react"
 import {
   IComment,
   ICommentReply,
@@ -6,8 +6,8 @@ import {
   IProduct,
   IReview,
   ProductWithPagination,
-} from "../types/product";
-import useAuth from "../hooks/useAuth";
+} from "../types/product"
+import useAuth from "../hooks/useAuth"
 import {
   addProductShareCountService,
   addProductViewCountService,
@@ -16,6 +16,7 @@ import {
   createProductService,
   deleteProductService,
   fetchProductByIdService,
+  flagAsInvalidService,
   makeUnavailableService,
   fetchProductBySlugService,
   fetchProductsService,
@@ -28,57 +29,57 @@ import {
   unlikeProductCommentService,
   unlikeProductService,
   updateProductService,
-} from "../services/product";
+} from "../services/product"
 
 type ContextType = {
-  products: ProductWithPagination;
-  loading: boolean;
-  error: string;
-  fetchProducts: (params?: string) => Promise<ProductWithPagination | string>;
-  fetchUserProducts: (params?: string) => Promise<boolean>;
-  fetchProductBySlug: (slug: string) => Promise<IProduct | null>;
-  fetchProductById: (id: string) => Promise<IProduct | string>;
+  products: ProductWithPagination
+  loading: boolean
+  error: string
+  fetchProducts: (params?: string) => Promise<ProductWithPagination | string>
+  fetchUserProducts: (params?: string) => Promise<boolean>
+  fetchProductBySlug: (slug: string) => Promise<IProduct | null>
+  fetchProductById: (id: string) => Promise<IProduct | string>
   makeUnavailable: (
     id: string
-  ) => Promise<{ product: IProduct; message?: string } | string>;
-  createProduct: (product: ICreateProduct) => Promise<IProduct | null>;
+  ) => Promise<{ product: IProduct; message?: string } | string>
+  createProduct: (product: ICreateProduct) => Promise<IProduct | null>
   updateProduct: (
     id: string,
     product: ICreateProduct
-  ) => Promise<IProduct | null>;
-  deleteProduct: (id: string) => Promise<{ message?: string } | null>;
+  ) => Promise<IProduct | null>
+  deleteProduct: (id: string) => Promise<{ message?: string } | null>
   likeProduct: (id: string) => Promise<{
-    message: string;
-    likes: string[];
-  } | null>;
+    message: string
+    likes: string[]
+  } | null>
 
   unlikeProduct: (id: string) => Promise<{
-    message: string;
-    likes: string[];
-  } | null>;
+    message: string
+    likes: string[]
+  } | null>
 
   commentProduct: (
     id: string,
     comment: { comment: string; image?: string }
   ) => Promise<{
-    comment: IComment;
-  } | null>;
+    comment: IComment
+  } | null>
 
   likeProductComment: (
     id: string,
     commentId: string
   ) => Promise<{
-    message: string;
-    comment: IComment;
-  } | null>;
+    message: string
+    comment: IComment
+  } | null>
 
   unlikeProductComment: (
     id: string,
     commentId: string
   ) => Promise<{
-    message: string;
-    comment: IComment;
-  } | null>;
+    message: string
+    comment: IComment
+  } | null>
 
   replyProductComment: (
     id: string,
@@ -97,331 +98,335 @@ type ContextType = {
     commentId: string,
     replyId: string
   ) => Promise<{
-    message: string;
-    reply: ICommentReply;
-  } | null>;
+    message: string
+    reply: ICommentReply
+  } | null>
 
   unlikeProductCommentReply: (
     id: string,
     commentId: string,
     replyId: string
   ) => Promise<{
-    message: string;
-    reply: ICommentReply;
-  } | null>;
+    message: string
+    reply: ICommentReply
+  } | null>
 
   createProductReview: (
     id: string,
     review: {
-      comment: string;
-      rating: number;
-      like: boolean;
+      comment: string
+      rating: number
+      like: boolean
     }
   ) => Promise<{
-    message: string;
-    review: IReview;
-  } | null>;
+    message: string
+    review: IReview
+  } | null>
 
-  addProductViewCount: (id: string, hashed: string) => Promise<void>;
-  addProductShareCount: (id: string, userId: string) => Promise<void>;
-};
+  addProductViewCount: (id: string, hashed: string) => Promise<void>
+  addProductShareCount: (id: string, userId: string) => Promise<void>
+  flagAsInvalid: (
+    id: string,
+    reason: string
+  ) => Promise<{ error: boolean; message: string }>
+}
 
 // Create product context
-export const ProductContext = createContext<ContextType | undefined>(undefined);
+export const ProductContext = createContext<ContextType | undefined>(undefined)
 
 export const ProductProvider = ({ children }: PropsWithChildren) => {
-  const { setAuthErrorModalOpen } = useAuth();
+  const { setAuthErrorModalOpen } = useAuth()
   const [products, setProducts] = useState<ProductWithPagination>({
     currentPage: 0,
     products: [],
     totalCount: 0,
     totalPages: 0,
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  })
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleError = (error: any) => {
-    setLoading(false);
+    setLoading(false)
 
     // Check if the error indicates an invalid or expired token
     if (error === "Token expired" || error === "Invalid token") {
-      setError("");
+      setError("")
       // Set the state to open the auth error modal
-      setAuthErrorModalOpen(true);
+      setAuthErrorModalOpen(true)
     } else {
-      setError(error || "An error occurred.");
+      setError(error || "An error occurred.")
     }
-  };
+  }
 
   // Function to fetch products
   const fetchProducts = async (params?: string) => {
     try {
-      setError("");
-      setLoading(true);
-      const result = await fetchProductsService(params);
-      setProducts(result);
-      setLoading(false);
-      return result;
+      setError("")
+      setLoading(true)
+      const result = await fetchProductsService(params)
+      setProducts(result)
+      setLoading(false)
+      return result
     } catch (error) {
-      handleError(error as string);
-      setLoading(false);
-      return error as string;
+      handleError(error as string)
+      setLoading(false)
+      return error as string
     }
-  };
+  }
 
   // Function to fetch products
   const fetchUserProducts = async (params?: string) => {
     try {
-      setError("");
-      setLoading(true);
-      const result = await fetchUserProductsService(params);
-      setProducts(result);
-      setLoading(false);
-      return true;
+      setError("")
+      setLoading(true)
+      const result = await fetchUserProductsService(params)
+      setProducts(result)
+      setLoading(false)
+      return true
     } catch (error) {
-      handleError(error as string);
-      setLoading(false);
-      return false;
+      handleError(error as string)
+      setLoading(false)
+      return false
     }
-  };
+  }
 
   // Function to fetch product by slug
   const fetchProductBySlug = async (slug: string) => {
     try {
-      setError("");
-      setLoading(true);
-      const result = await fetchProductBySlugService(slug);
-      setLoading(false);
-      return result;
+      setError("")
+      setLoading(true)
+      const result = await fetchProductBySlugService(slug)
+      setLoading(false)
+      return result
     } catch (error) {
-      handleError(error as string);
-      setLoading(false);
-      return null;
+      handleError(error as string)
+      setLoading(false)
+      return null
     }
-  };
+  }
 
   const fetchProductById = async (id: string) => {
     try {
-      setError("");
-      setLoading(true);
-      const result = await fetchProductByIdService(id);
-      setLoading(false);
-      return result;
+      setError("")
+      setLoading(true)
+      const result = await fetchProductByIdService(id)
+      setLoading(false)
+      return result
     } catch (error) {
-      handleError(error as string);
-      setLoading(false);
-      return error as string;
+      handleError(error as string)
+      setLoading(false)
+      return error as string
     }
-  };
+  }
 
   const makeUnavailable = async (id: string) => {
     try {
-      setError("");
-      setLoading(true);
-      const result = await makeUnavailableService(id);
-      setLoading(false);
-      return result;
+      setError("")
+      setLoading(true)
+      const result = await makeUnavailableService(id)
+      setLoading(false)
+      return result
     } catch (error) {
-      handleError(error as string);
-      setLoading(false);
-      return error as string;
+      handleError(error as string)
+      setLoading(false)
+      return error as string
     }
-  };
+  }
 
   const createProduct = async (product: ICreateProduct) => {
     try {
-      setError("");
-      setLoading(true);
-      const result = await createProductService(product);
+      setError("")
+      setLoading(true)
+      const result = await createProductService(product)
       setProducts((prevProducts) => {
-        const updatedProducts = [result, ...prevProducts.products];
+        const updatedProducts = [result, ...prevProducts.products]
         const newProd = {
           ...prevProducts,
           products: updatedProducts,
-        };
-        return newProd;
-      });
-      setLoading(false);
-      return result;
+        }
+        return newProd
+      })
+      setLoading(false)
+      return result
     } catch (error) {
-      handleError(error as string);
-      setLoading(false);
-      return null;
+      handleError(error as string)
+      setLoading(false)
+      return null
     }
-  };
+  }
 
   const updateProduct = async (id: string, product: ICreateProduct) => {
     try {
-      setError("");
-      setLoading(true);
-      const result = await updateProductService(id, product);
+      setError("")
+      setLoading(true)
+      const result = await updateProductService(id, product)
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((p) =>
           p._id === id ? result : p
-        );
+        )
 
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
-      setLoading(false);
-      return result;
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
+      setLoading(false)
+      return result
     } catch (error) {
-      handleError(error as string);
-      setLoading(false);
-      return null;
+      handleError(error as string)
+      setLoading(false)
+      return null
     }
-  };
+  }
 
   const deleteProduct = async (id: string) => {
     try {
-      setError("");
-      setLoading(true);
-      const data = await deleteProductService(id);
+      setError("")
+      setLoading(true)
+      const data = await deleteProductService(id)
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.filter(
           (Product) => Product._id !== id
-        );
+        )
 
         const newProd = {
           ...prevProducts,
           products: updatedProducts,
-        };
-        return newProd;
-      });
-      setLoading(false);
-      return { message: data.message };
+        }
+        return newProd
+      })
+      setLoading(false)
+      return { message: data.message }
     } catch (error) {
       // handleError(error as string)
-      setLoading(false);
-      return null;
+      setLoading(false)
+      return null
     }
-  };
+  }
 
   const likeProduct = async (id: string) => {
     try {
-      setError("");
+      setError("")
       // setLoading(true)
-      const result = await likeProductService(id);
+      const result = await likeProductService(id)
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
-            prod.likes = result.likes;
+            prod.likes = result.likes
           }
-          return prod;
-        });
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
       // setLoading(false)
-      return result;
+      return result
     } catch (error) {
-      handleError(error as string);
+      handleError(error as string)
       // setLoading(false)
-      return null;
+      return null
     }
-  };
+  }
   const unlikeProduct = async (id: string) => {
     try {
-      setError("");
+      setError("")
       // setLoading(true)
-      const result = await unlikeProductService(id);
+      const result = await unlikeProductService(id)
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
-            prod.likes = result.likes;
+            prod.likes = result.likes
           }
-          return prod;
-        });
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
       // setLoading(false)
-      return result;
+      return result
     } catch (error) {
-      handleError(error as string);
+      handleError(error as string)
       // setLoading(false)
-      return null;
+      return null
     }
-  };
+  }
 
   const commentProduct = async (
     id: string,
     comment: { comment: string; image?: string }
   ) => {
     try {
-      setError("");
+      setError("")
       // setLoading(true)
-      const result = await commentProductService(id, comment);
+      const result = await commentProductService(id, comment)
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
-            const comments = prod.comments ?? [];
-            prod.comments = [...comments, result.comment];
+            const comments = prod.comments ?? []
+            prod.comments = [...comments, result.comment]
           }
-          return prod;
-        });
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
       // setLoading(false)
-      return result;
+      return result
     } catch (error) {
-      handleError(error as string);
+      handleError(error as string)
       // setLoading(false)
-      return null;
+      return null
     }
-  };
+  }
 
   const likeProductComment = async (id: string, commentId: string) => {
     try {
-      setError("");
+      setError("")
       // setLoading(true)
-      const result = await likeProductCommentService(id, commentId);
+      const result = await likeProductCommentService(id, commentId)
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
-            const comments = prod.comments ?? [];
-            prod.comments = [...comments, result.comment];
+            const comments = prod.comments ?? []
+            prod.comments = [...comments, result.comment]
           }
-          return prod;
-        });
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
       // setLoading(false)
-      return result;
+      return result
     } catch (error) {
-      handleError(error as string);
+      handleError(error as string)
       // setLoading(false)
-      return null;
+      return null
     }
-  };
+  }
 
   const unlikeProductComment = async (id: string, commentId: string) => {
     try {
-      setError("");
+      setError("")
       // setLoading(true)
-      const result = await unlikeProductCommentService(id, commentId);
+      const result = await unlikeProductCommentService(id, commentId)
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
-            const comments = prod.comments ?? [];
-            prod.comments = [...comments, result.comment];
+            const comments = prod.comments ?? []
+            prod.comments = [...comments, result.comment]
           }
-          return prod;
-        });
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
       // setLoading(false)
-      return result;
+      return result
     } catch (error) {
-      handleError(error as string);
+      handleError(error as string)
       // setLoading(false)
-      return null;
+      return null
     }
-  };
+  }
 
   const replyProductComment = async (
     id: string,
@@ -429,9 +434,9 @@ export const ProductProvider = ({ children }: PropsWithChildren) => {
     comment: string
   ) => {
     try {
-      setError("");
+      setError("")
       // setLoading(true)
-      const result = await replyProductCommentService(id, commentId, comment);
+      const result = await replyProductCommentService(id, commentId, comment)
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
@@ -443,19 +448,19 @@ export const ProductProvider = ({ children }: PropsWithChildren) => {
               return comm
             })
           }
-          return prod;
-        });
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
       // setLoading(false)
-      return result;
+      return result
     } catch (error) {
-      handleError(error as string);
+      handleError(error as string)
       // setLoading(false)
       return error as string
     }
-  };
+  }
 
   const likeProductCommentReply = async (
     id: string,
@@ -463,43 +468,43 @@ export const ProductProvider = ({ children }: PropsWithChildren) => {
     replyId: string
   ) => {
     try {
-      setError("");
+      setError("")
       // setLoading(true)
       const result = await likeProductCommentReplyService(
         id,
         commentId,
         replyId
-      );
+      )
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
-            const comments = prod.comments ?? [];
+            const comments = prod.comments ?? []
             if (comments.length > 0) {
               const newComment = comments.map((comm) => {
                 if (comm._id === commentId) {
                   comm.replies = comm.replies.map((rep) =>
                     rep._id == replyId ? result.reply : rep
-                  );
+                  )
                 }
 
-                return comm;
-              });
-              prod.comments = newComment;
+                return comm
+              })
+              prod.comments = newComment
             }
           }
-          return prod;
-        });
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
       // setLoading(false)
-      return result;
+      return result
     } catch (error) {
-      handleError(error as string);
+      handleError(error as string)
       // setLoading(false)
-      return null;
+      return null
     }
-  };
+  }
 
   const unlikeProductCommentReply = async (
     id: string,
@@ -507,90 +512,110 @@ export const ProductProvider = ({ children }: PropsWithChildren) => {
     replyId: string
   ) => {
     try {
-      setError("");
+      setError("")
       // setLoading(true)
       const result = await unlikeProductCommentReplyService(
         id,
         commentId,
         replyId
-      );
+      )
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
-            const comments = prod.comments ?? [];
+            const comments = prod.comments ?? []
             if (comments.length > 0) {
               const newComment = comments.map((comm) => {
                 if (comm._id === commentId) {
                   comm.replies = comm.replies.map((rep) =>
                     rep._id == replyId ? result.reply : rep
-                  );
+                  )
                 }
 
-                return comm;
-              });
-              prod.comments = newComment;
+                return comm
+              })
+              prod.comments = newComment
             }
           }
-          return prod;
-        });
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
       // setLoading(false)
-      return result;
+      return result
     } catch (error) {
-      handleError(error as string);
+      handleError(error as string)
       // setLoading(false)
-      return null;
+      return null
     }
-  };
+  }
 
   const createProductReview = async (
     id: string,
     review: {
-      comment: string;
-      rating: number;
-      like: boolean;
+      comment: string
+      rating: number
+      like: boolean
     }
   ) => {
     try {
-      setError("");
+      setError("")
       // setLoading(true)
-      const result = await createProductReviewService(id, review);
+      const result = await createProductReviewService(id, review)
       setProducts((prevProducts) => {
         const updatedProducts = prevProducts.products.map((prod) => {
           if (prod._id === id) {
-            const reviews = prod.reviews ?? [];
-            prod.reviews = [...reviews, result.review];
+            const reviews = prod.reviews ?? []
+            prod.reviews = [...reviews, result.review]
           }
-          return prod;
-        });
-        const newProd = { ...prevProducts, products: updatedProducts };
-        return newProd;
-      });
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
       // setLoading(false)
-      return result;
+      return result
     } catch (error) {
-      handleError(error as string);
+      handleError(error as string)
       // setLoading(false)
-      return null;
+      return null
     }
-  };
+  }
 
   const addProductShareCount = async (id: string, userId: string) => {
     try {
-      await addProductShareCountService(id, userId);
+      await addProductShareCountService(id, userId)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
   const addProductViewCount = async (id: string, hashed: string) => {
     try {
-      await addProductViewCountService(id, hashed);
+      await addProductViewCountService(id, hashed)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
+
+  const flagAsInvalid = async (id: string, reason: string) => {
+    try {
+      const result = await flagAsInvalidService(id, reason)
+      setProducts((prevProducts) => {
+        const updatedProducts = prevProducts.products.map((prod) => {
+          if (prod._id === id) {
+            prod.isInvalid = true
+          }
+          return prod
+        })
+        const newProd = { ...prevProducts, products: updatedProducts }
+        return newProd
+      })
+      return { error: false, message: result.message }
+    } catch (error) {
+      console.log(error)
+      return { error: true, message: "An error occurred" }
+    }
+  }
 
   return (
     <ProductContext.Provider
@@ -617,9 +642,10 @@ export const ProductProvider = ({ children }: PropsWithChildren) => {
         unlikeProductCommentReply,
         addProductShareCount,
         addProductViewCount,
+        flagAsInvalid,
       }}
     >
       {children}
     </ProductContext.Provider>
-  );
-};
+  )
+}

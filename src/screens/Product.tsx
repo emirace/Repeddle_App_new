@@ -55,6 +55,7 @@ import useToastNotification from "../hooks/useToastNotification"
 import useMessage from "../hooks/useMessage"
 import useUser from "../hooks/useUser"
 import Report from "../components/Report"
+import FlagAsInvalid from "../components/FlagAsInvalid"
 
 type Props = ProductNavigationProp
 
@@ -66,6 +67,7 @@ const Product = ({ navigation, route }: Props) => {
     likeProduct,
     unlikeProduct,
     addProductShareCount,
+    addProductViewCount,
   } = useProducts()
   const { createMessage, error: messageError } = useMessage()
   const { cart, addToCart } = useCart()
@@ -94,6 +96,7 @@ const Product = ({ navigation, route }: Props) => {
   const [adding, setAdding] = useState(false)
   const [messageLoading, setMessageLoading] = useState(false)
   const [showReport, setShowReport] = useState(false)
+  const [showFlagAsInvalid, setShowFlagAsInvalid] = useState(false)
 
   useEffect(() => {
     const fetchProd = async () => {
@@ -109,6 +112,12 @@ const Product = ({ navigation, route }: Props) => {
 
     fetchProd()
   }, [])
+
+  useEffect(() => {
+    if (product) {
+      addProductViewCount(product._id, Math.random().toString().slice(2))
+    }
+  }, [product])
 
   useEffect(() => {
     const getRecent = async () => {
@@ -904,6 +913,7 @@ const Product = ({ navigation, route }: Props) => {
                   flexDirection: "row",
                   gap: 5,
                 }}
+                onPress={() => setShowFlagAsInvalid(true)}
               >
                 <Ionicons name="flag" size={15} color={colors.secondary} />
                 <Text
@@ -933,6 +943,15 @@ const Product = ({ navigation, route }: Props) => {
           refs="product"
           setShowModel={setShowReport}
           showModel={showReport}
+        />
+        <FlagAsInvalid
+          reportItem={{
+            id: product._id,
+            image: product.images[0],
+            name: product.name,
+          }}
+          setShowModel={setShowFlagAsInvalid}
+          showModel={showFlagAsInvalid}
         />
         <Text style={styles.recentText}>Recently Viewed</Text>
         <View style={styles.section}>
