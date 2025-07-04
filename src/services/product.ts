@@ -344,7 +344,7 @@ export const replyProductCommentService = async (
   comment: string
 ) => {
   try {
-    const data: { message: string; comment: IComment } = await api.post(
+    const data: { message: string; comment: ICommentReply } = await api.post(
       `/products/${id}/comments/${commentId}/reply`,
       { comment }
     )

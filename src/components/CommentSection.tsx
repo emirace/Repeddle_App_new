@@ -7,7 +7,7 @@ import {
   View,
   Dimensions,
 } from "react-native"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { normaliseH, normaliseW } from "../utils/normalize"
 import { Button, IconButton, Text, useTheme } from "react-native-paper"
 import { Ionicons } from "@expo/vector-icons"
@@ -28,7 +28,7 @@ type Props = {
   setProduct: (val: IProduct) => void
 }
 
-const CommentSection = ({ product, setProduct, comments }: Props) => {
+const CommentSection = ({ product, setProduct }: Props) => {
   const { colors } = useTheme()
   const { user } = useAuth()
   const { commentProduct, error } = useProducts()
@@ -37,6 +37,7 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
   const { push } = useNavigation<ProductNavigationProp["navigation"]>()
 
   const [modalVisible, setModalVisible] = useState(false)
+  const [comments, setComments] = useState<IComment[]>([])
   const [newComment, setNewComment] = useState("")
   const [image, setImage] = useState("")
   const [loadingUpload, setLoadingUpload] = useState(false)
@@ -58,6 +59,15 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
     }
   }
 
+  useEffect(() => {
+    const sortedComments = product.comments?.sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    )
+
+    setComments(sortedComments || [])
+  }, [product])
+
   const submitCommentHandler = async () => {
     if (!newComment) {
       addNotification({ message: "Enter a comment", error: true })
@@ -73,9 +83,16 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
     if (res) {
       const newProd = product
       newProd.comments = [...(newProd.comments || []), res.comment]
+      const sortedComments = newProd.comments?.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      )
+      newProd.comments = sortedComments || []
       setProduct(newProd)
 
       addNotification({ message: "Comment added to product" })
+      setNewComment("")
+      setImage("")
       setModalVisible(false)
     } else addNotification({ message: error, error: true })
 
@@ -88,17 +105,14 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
         <Text style={styles.header}>Comments</Text>
       </View>
       <View>
-        {product.comments &&
-          product.comments
-            .reverse()
-            .map((item, index) => (
-              <Comment
-                product={product}
-                setProduct={setProduct}
-                comment={item}
-                key={index}
-              />
-            ))}
+        {comments.map((item, index) => (
+          <Comment
+            product={product}
+            setProduct={setProduct}
+            comment={item}
+            key={index}
+          />
+        ))}
       </View>
       <Modal
         animationType="slide"
@@ -125,20 +139,19 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
                   backgroundColor: colors.elevation.level2,
                   color: colors.onBackground,
                   width: "100%",
+                  minHeight: 60,
                 },
               ]}
               multiline={true}
-              placeholder="   write a comment"
+              placeholder="Write a comment"
               placeholderTextColor={colors.onBackground}
               numberOfLines={10}
               onChangeText={(text) => setNewComment(text)}
               value={newComment}
+              textAlignVertical="top"
             />
             {image && (
-              <FullScreenImage
-                source={image}
-                style={{ width: 100, height: 100 }}
-              />
+              <FullScreenImage source={image} style={{ height: 100 }} />
             )}
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <IconButton
@@ -160,12 +173,13 @@ const CommentSection = ({ product, setProduct, comments }: Props) => {
         </View>
       </Modal>
       {user ? (
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: colors.primary }]}
+        <Button
+          mode="contained"
           onPress={() => setModalVisible(!modalVisible)}
+          style={{ borderRadius: 5 }}
         >
-          <Text style={styles.buttonText}>Write comment</Text>
-        </TouchableOpacity>
+          Write comment
+        </Button>
       ) : (
         <View style={{ alignItems: "center", marginVertical: 5 }}>
           <Text>

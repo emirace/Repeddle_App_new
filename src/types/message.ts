@@ -58,11 +58,11 @@ export interface MessageStartResponse {
 
 export interface MessageData {
   content: string
-  conversationId: string
+  type: string
+  conversationId?: string
   referencedUser?: string
   referencedProduct?: string
   image?: string
-  type?: string
 }
 
 export interface ForwardData {

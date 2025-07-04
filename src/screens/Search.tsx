@@ -223,7 +223,12 @@ const Search = ({ navigation, route }: SearchScreenNavigationProp) => {
           handleIndicatorStyle={{
             backgroundColor: colors.primary,
           }}
-          backdropComponent={(props) => <CustomBackdrop {...props} />}
+          backdropComponent={(props) => (
+            <CustomBackdrop
+              {...props}
+              onPress={() => bottomSheetRef.current?.close()}
+            />
+          )}
           style={styles.bottomStyle}
           enableDynamicSizing={false}
         >

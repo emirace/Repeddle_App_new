@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native"
 import React, { useState } from "react"
+import { baseURL } from "../services/api"
 
 type Props = {
   source: string
@@ -32,7 +33,7 @@ const FullScreenImage = ({ source, style }: Props) => {
     <>
       <TouchableOpacity onPress={handlePress}>
         <Image
-          source={{ uri: source }}
+          source={{ uri: `${baseURL}${source}` }}
           style={[styles.image, style]}
           resizeMode="contain"
         />
@@ -45,7 +46,7 @@ const FullScreenImage = ({ source, style }: Props) => {
         <TouchableOpacity style={styles.modal} onPress={handleClose}>
           <View>
             <Image
-              source={{ uri: source }}
+              source={{ uri: `${baseURL}${source}` }}
               style={styles.fullScreenImage}
               resizeMode="contain"
             />

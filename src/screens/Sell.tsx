@@ -178,7 +178,7 @@ const Sell = ({ navigation, route }: any) => {
       setLoading(false)
     }
 
-    fetchProduct()
+    if (route.params?.id || route.params?.slug) fetchProduct()
   }, [route.params?.id, route.params?.slug])
 
   const handleOnChange = (text: string | boolean, key: keyof typeof input) => {

@@ -1,5 +1,6 @@
 import {
   Image,
+  KeyboardAvoidingView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -150,27 +151,30 @@ const Comment = ({ comment, product, setProduct }: Props) => {
     setLoading(true)
 
     const res = await replyProductComment(product._id, comment._id, reply)
+    console.log(res, "res")
 
-    if (res) {
+    if (typeof res !== "string") {
+      console.log("here")
       const newProd = product
       newProd.comments = newProd.comments?.map((com) => {
         if (com._id === comment._id) {
           console.log("here")
           console.log(res.comment, "comment")
           const newComment = com
-          newComment.replies = [...newComment.replies, ...res.comment.replies]
+          newComment.replies = [...newComment.replies, res.comment]
           console.log(newComment.replies)
           return newComment
         }
         return com
       })
+      console.log(newProd, "newProd")
       setProduct(newProd)
       setReply("")
       setReplyArea(false)
 
       addNotification({ message: res.message })
-    } else addNotification({ message: error, error: true })
-
+    } else addNotification({ message: res || error, error: true })
+    console.log(error, "error")
     setLoading(false)
   }
 
@@ -280,11 +284,12 @@ const Comment = ({ comment, product, setProduct }: Props) => {
             <TextInput
               style={[
                 styles.textInput,
-                { color: colors.onBackground, width: "100%" },
+                { color: colors.onBackground, width: "100%", marginBottom: 10 },
               ]}
-              placeholder="Leave a reply here"
+              placeholder="  Leave a reply here"
               value={reply}
               onChangeText={setReply}
+              placeholderTextColor={colors.onBackground}
             />
             <Button
               children="Submit"
