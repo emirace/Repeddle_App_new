@@ -68,7 +68,15 @@ const Checkout = ({ navigation }: Props) => {
         {
           text: "Proceed",
           onPress: async () => {
-            await placeOrderHandler({ paymentMethod });
+            const order1 = await placeOrderHandler({ paymentMethod });
+            if (order1) {
+              clearCart();
+              changePaymentMethod("Card");
+              navigation.pop(3);
+              navigation.navigate("OrderDetails", { id: order1._id });
+            } else {
+              addNotification({ message: error || "failed to create order" });
+            }
           },
         },
       ]
