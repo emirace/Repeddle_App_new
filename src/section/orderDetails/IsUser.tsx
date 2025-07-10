@@ -1,36 +1,42 @@
-import { Image, Modal, Pressable, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
-import { Button, Text, useTheme } from "react-native-paper";
-import { displayDeliveryStatus } from "../../utils/render";
-import moment from "moment";
-import { IOrder, OrderItem } from "../../types/order";
-import { orderDetailsStyle as styles } from "./style";
-import { IUser } from "../../types/user";
-import useAuth from "../../hooks/useAuth";
-import useToastNotification from "../../hooks/useToastNotification";
-import { currency, daydiff, deliveryNumber, region } from "../../utils/common";
-import { OrderDetailsNavigationProp } from "../../types/navigation/stack";
-import { baseURL } from "../../services/api";
-import { Ionicons } from "@expo/vector-icons";
+import { Image, Modal, Pressable, TouchableOpacity, View } from "react-native"
+import React, { useState } from "react"
+import { Button, Text, useTheme } from "react-native-paper"
+import { displayDeliveryStatus } from "../../utils/render"
+import moment from "moment"
+import { IOrder, OrderItem } from "../../types/order"
+import { orderDetailsStyle as styles } from "./style"
+import { IUser } from "../../types/user"
+import useAuth from "../../hooks/useAuth"
+import useToastNotification from "../../hooks/useToastNotification"
+import {
+  currency,
+  daydiff,
+  deliveryNumber,
+  deliveryStatusMap,
+  region,
+} from "../../utils/common"
+import { OrderDetailsNavigationProp } from "../../types/navigation/stack"
+import { baseURL } from "../../services/api"
+import { Ionicons } from "@expo/vector-icons"
 
 type Props = {
-  order: IOrder;
-  orderItem: OrderItem;
-  userOrdered: IUser;
-  setShowDeliveryHistory: (val: boolean) => void;
-  setCurrentDeliveryHistory: (val: number) => void;
-  handleCancelOrder: (val: OrderItem) => void;
-  refund: (val: OrderItem) => void;
-  paySeller: (val: OrderItem) => void;
+  order: IOrder
+  orderItem: OrderItem
+  userOrdered: IUser
+  setShowDeliveryHistory: (val: boolean) => void
+  setCurrentDeliveryHistory: (val: number) => void
+  handleCancelOrder: (val: OrderItem) => void
+  refund: (val: OrderItem) => void
+  paySeller: (val: OrderItem) => void
   deliverOrderHandler: (
     deliveryStatus: string,
     orderItem: OrderItem
-  ) => Promise<void>;
-  updatingStatus: boolean;
-  toggleOrderHoldStatus: (item: OrderItem) => Promise<void>;
-  navigation: OrderDetailsNavigationProp["navigation"];
-  id: string;
-};
+  ) => Promise<void>
+  updatingStatus: boolean
+  toggleOrderHoldStatus: (item: OrderItem) => Promise<void>
+  navigation: OrderDetailsNavigationProp["navigation"]
+  id: string
+}
 
 const IsUser = ({
   orderItem,
@@ -47,22 +53,22 @@ const IsUser = ({
   navigation,
   id,
 }: Props) => {
-  const { colors, dark } = useTheme();
-  const { user } = useAuth();
-  const { addNotification } = useToastNotification();
+  const { colors, dark } = useTheme()
+  const { user } = useAuth()
+  const { addNotification } = useToastNotification()
 
-  const [afterAction, setAfterAction] = useState(false);
-  const [showDelivery, setShowDelivery] = useState(false);
+  const [afterAction, setAfterAction] = useState(false)
+  const [showDelivery, setShowDelivery] = useState(false)
 
   const placeOrderOnHold = () => {
-    addNotification({ message: "Order placed on Hold", error: true });
-  };
+    addNotification({ message: "Order placed on Hold", error: true })
+  }
 
   const paymentRequest = async () => {
     // the below function accepts the current status then uses the next function to update
-    await deliverOrderHandler("Delivered", orderItem);
-    setAfterAction(false);
-  };
+    await deliverOrderHandler("Delivered", orderItem)
+    setAfterAction(false)
+  }
 
   return (
     <View
@@ -88,12 +94,12 @@ const IsUser = ({
             )}
             <TouchableOpacity
               onPress={() => {
-                setShowDeliveryHistory(true);
+                setShowDeliveryHistory(true)
                 setCurrentDeliveryHistory(
                   deliveryNumber(
                     orderItem.deliveryTracking.currentStatus.status
                   )
-                );
+                )
               }}
             >
               <Text
@@ -151,7 +157,7 @@ const IsUser = ({
                 animationType="slide"
                 visible={afterAction}
                 onRequestClose={() => {
-                  setAfterAction(!afterAction);
+                  setAfterAction(!afterAction)
                 }}
               >
                 <View
@@ -197,9 +203,9 @@ const IsUser = ({
                           },
                         ]}
                         onPress={() => {
-                          deliverOrderHandler("Received", orderItem);
-                          paymentRequest();
-                          setAfterAction(false);
+                          deliverOrderHandler("Received", orderItem)
+                          paymentRequest()
+                          setAfterAction(false)
                         }}
                         mode="contained"
                         loading={updatingStatus}
@@ -217,13 +223,13 @@ const IsUser = ({
                           },
                         ]}
                         onPress={() => {
-                          if (updatingStatus) return;
+                          if (updatingStatus) return
                           navigation.push("ReturnForm", {
                             orderItems: order.items,
                             // deliveryMethod: order.deliveryMethod,
                             orderId: id,
-                          });
-                          setAfterAction(false);
+                          })
+                          setAfterAction(false)
                         }}
                       >
                         Log a return
@@ -236,6 +242,8 @@ const IsUser = ({
           )}
 
         {deliveryNumber(orderItem.deliveryTracking.currentStatus.status) >= 4 &&
+          deliveryNumber(orderItem.deliveryTracking.currentStatus.status) <
+            deliveryStatusMap["Return Logged"] &&
           !orderItem.isHold &&
           daydiff(orderItem.deliveryTracking.currentStatus.timestamp, 3) >=
             0 && (
@@ -316,7 +324,7 @@ const IsUser = ({
             onPress={() => {
               navigation.push("Product", {
                 slug: orderItem.product.slug,
-              });
+              })
             }}
           >
             <Text style={styles.link}>Buy Again</Text>
@@ -475,7 +483,7 @@ const IsUser = ({
         </>
       ) : null}
     </View>
-  );
-};
+  )
+}
 
-export default IsUser;
+export default IsUser

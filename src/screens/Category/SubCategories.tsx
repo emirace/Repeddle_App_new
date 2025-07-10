@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   FlatList,
   Image,
-} from "react-native";
-import { Appbar, useTheme, Text } from "react-native-paper";
-import { SubCategoriesNavigationProp } from "../../types/navigation/stack";
-import { ISubCategory, ISubCategoryItem } from "../../types/category";
+} from "react-native"
+import { Appbar, useTheme, Text } from "react-native-paper"
+import { SubCategoriesNavigationProp } from "../../types/navigation/stack"
+import { ISubCategory, ISubCategoryItem } from "../../types/category"
+import { baseURL } from "../../services/api"
 
 const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
-  const { category } = route.params;
-  const { colors } = useTheme();
+  const { category } = route.params
+  const { colors } = useTheme()
 
   const renderSubcategoryItem = ({ item }: { item: ISubCategory }) => {
     return (
@@ -24,7 +25,8 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
         onPress={() => handleSubcategorySelect(item)}
       >
         <Text style={styles.subcategoryTitle}>
-          {removeGreaterThanSign(item.name)}
+          {item.name}
+          {item.name && removeGreaterThanSign(item.name)}
         </Text>
         {item.items && (
           <FlatList
@@ -37,8 +39,8 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
           />
         )}
       </TouchableOpacity>
-    );
-  };
+    )
+  }
 
   const renderNextSubcategoryItem = ({ item }: { item: ISubCategoryItem }) => {
     return (
@@ -48,16 +50,16 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
       >
         <View style={[styles.gradient, { borderColor: colors.onBackground }]}>
           <Text style={[styles.text, { borderColor: colors.onBackground }]}>
-            {removeGreaterThanSign(item.name)}
+            {item.name && removeGreaterThanSign(item.name)}
           </Text>
         </View>
       </TouchableOpacity>
-    );
-  };
+    )
+  }
 
   const handleSubcategorySelect = (subcategory: ISubCategory) => {
-    navigation.navigate("Search", { query: subcategory.name });
-  };
+    navigation.navigate("Search", { query: subcategory.name })
+  }
 
   return (
     <View style={styles.container}>
@@ -79,7 +81,11 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
         <View style={styles.categoryImageContainer}>
           <Image
             style={styles.categoryImage}
-            source={{ uri: category.image }}
+            source={{
+              uri: category.image.startsWith("http")
+                ? category.image
+                : baseURL + category.image,
+            }}
             resizeMode="cover"
           />
           <Text style={styles.categoryImageTitle}>{category.name}</Text>
@@ -94,8 +100,8 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
         />
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -158,10 +164,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
   },
-});
+})
 
 function removeGreaterThanSign(str: string) {
-  return str.replace(/>/g, "");
+  return str.replace(/>/g, "")
 }
 
-export default SubCategories;
+export default SubCategories

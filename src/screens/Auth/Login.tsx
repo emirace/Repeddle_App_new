@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     marginTop: 16,
-    textAlign: "right",
+    textAlign: "center",
     textDecorationLine: "underline",
     fontSize: 18,
   },
