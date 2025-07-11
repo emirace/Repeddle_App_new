@@ -485,7 +485,8 @@ export const createProductReviewService = async (
 
 export const addProductViewCountService = async (id: string) => {
   try {
-    await api.post(`/products/${id}/view`, { hashed: getOrCreateDeviceId() });
+    const hashed = await getOrCreateDeviceId();
+    await api.post(`/products/${id}/view`, { hashed });
 
     // if (!data.status) {
     //   // Handle Create review product error, e.g., display an error message to the user
@@ -513,8 +514,9 @@ export const addProductShareCountService = async (
   userId: string
 ) => {
   try {
+    const hashed = await getOrCreateDeviceId();
     await api.post(`/products/${id}/share`, {
-      hashed: getOrCreateDeviceId(),
+      hashed,
       user: userId,
     });
 

@@ -31,7 +31,7 @@ const FacebookLoginButton: FC = () => {
   const [loading, setLoading] = React.useState(false);
 
   const redirectUri = AuthSession.makeRedirectUri();
-  console.log("Redirect URI:", redirectUri);
+
   const [request, response, promptAsync] = AuthSession.useAuthRequest(
     {
       clientId: "987624389041257",

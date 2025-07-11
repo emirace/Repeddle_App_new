@@ -3,7 +3,6 @@ import { deleteImageService, saveImageService } from "../services/image";
 import { Coupon, IProduct } from "../types/product";
 import * as WebBrowser from "expo-web-browser";
 import * as SecureStore from "expo-secure-store";
-import { v4 as uuidv4 } from "uuid";
 
 export const currency = (region: IProduct["region"]) => {
   if (region === "NG") return "₦";
@@ -145,9 +144,9 @@ export async function getOrCreateDeviceId(): Promise<string> {
   let deviceId = await SecureStore.getItemAsync(DEVICE_ID_KEY);
 
   if (!deviceId) {
-    deviceId = uuidv4();
+    deviceId = `device-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
     await SecureStore.setItemAsync(DEVICE_ID_KEY, deviceId);
   }
-
+  console.log("Device ID:", deviceId);
   return deviceId;
 }

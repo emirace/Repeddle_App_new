@@ -118,6 +118,9 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation, route }) => {
           // onFocus={handleOnFocus}
           // onBlur={handleOnBlur}
         />
+        <TouchableOpacity onPress={handleForgotPassword}>
+          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+        </TouchableOpacity>
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
         <Button
           mode="contained"
@@ -140,9 +143,6 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation, route }) => {
             Sign Up
           </Text>
         </Text>
-        <TouchableOpacity onPress={handleForgotPassword}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
 
         <View style={styles.socialIconsContainer}>
           <FacebookLoginButton />
@@ -191,8 +191,9 @@ const styles = StyleSheet.create({
     color: "red",
   },
   forgotPasswordText: {
-    marginTop: 16,
-    textAlign: "center",
+    marginTop: -5,
+    marginBottom: 16,
+    textAlign: "right",
     textDecorationLine: "underline",
     fontSize: 18,
   },

@@ -102,6 +102,7 @@ const Product = ({ navigation, route }: Props) => {
     const fetchProd = async () => {
       setProductError("");
       const res = await fetchProductBySlug(params.slug);
+      console.log("Product", res);
       if (res) {
         setProduct(res);
         storeRecently(res);
@@ -426,7 +427,7 @@ const Product = ({ navigation, route }: Props) => {
               />
             </TouchableOpacity>
             {product.likes.length ? (
-              <View style={styles.badge1}>
+              <View style={styles.badge}>
                 <Badge theme={{ colors: { background: "red" } }}>
                   {product.likes.length}
                 </Badge>
@@ -439,27 +440,16 @@ const Product = ({ navigation, route }: Props) => {
             style={[styles.share, { backgroundColor: colors.elevation.level2 }]}
           >
             <IconButton icon="share-variant" />
+            <IconButton icon="eye" />
 
-            {
-              product.shares.length ? (
-                <View style={styles.badge}>
-                  <Badge
-                    theme={{ colors: { background: "red" } }}
-                    children={cart.length}
-                  />
-                </View>
-              ) : null
-              // (
-              //   <Text
-              //     style={[
-              //       styles.shareCount,
-              //       { backgroundColor: "red", color: "white" },
-              //     ]}
-              //   >
-              //     {product.shares.length}
-              //   </Text>
-              // ) : null
-            }
+            {product.shares.length ? (
+              <View style={styles.badge}>
+                <Badge
+                  theme={{ colors: { background: "red" } }}
+                  children={product.shares.length}
+                />
+              </View>
+            ) : null}
           </TouchableOpacity>
         </View>
 
@@ -1217,7 +1207,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  badge: { position: "absolute", top: 5, right: 5 },
+  badge: { position: "absolute", top: 0, right: 0 },
   badge1: { position: "absolute", top: "50%", right: "90%" },
   commentSection: { flex: 1, height: 500 },
   leftname: { fontWeight: "500", textTransform: "capitalize", padding: 2 },
