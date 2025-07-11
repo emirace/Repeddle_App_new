@@ -30,18 +30,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-font",
-      "expo-asset",
-      "expo-secure-store",
-      "expo-web-browser",
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps.359040935611-1kijfv8vvtn9ghvehrqqciv2dm7sme3m"
-        }
-      ]
-    ],
+    "plugins": ["expo-font", "expo-asset", "expo-secure-store"],
     "extra": {
       "eas": {
         "projectId": "c576fd6e-ba91-4e0b-96d5-d0c3705759fd"

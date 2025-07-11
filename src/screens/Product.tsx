@@ -435,22 +435,36 @@ const Product = ({ navigation, route }: Props) => {
             ) : null}
           </View>
 
-          <TouchableOpacity
-            onPress={onShare}
+          <View
             style={[styles.share, { backgroundColor: colors.elevation.level2 }]}
           >
-            <IconButton icon="share-variant" />
-            <IconButton icon="eye" />
+            <TouchableOpacity
+              onPress={onShare}
+              style={{ position: "relative" }}
+            >
+              <IconButton icon="share-variant" />
+              {product.shares.length ? (
+                <View style={styles.badge}>
+                  <Badge
+                    theme={{ colors: { background: "red" } }}
+                    children={product.shares.length}
+                  />
+                </View>
+              ) : null}
+            </TouchableOpacity>
 
-            {product.shares.length ? (
-              <View style={styles.badge}>
-                <Badge
-                  theme={{ colors: { background: "red" } }}
-                  children={product.shares.length}
-                />
-              </View>
-            ) : null}
-          </TouchableOpacity>
+            <View style={{ position: "relative" }}>
+              <IconButton icon="eye" />
+              {product.viewcount.length ? (
+                <View style={styles.badge}>
+                  <Badge
+                    theme={{ colors: { background: "red" } }}
+                    children={product.viewcount.length}
+                  />
+                </View>
+              ) : null}
+            </View>
+          </View>
         </View>
 
         <View style={styles.details}>
