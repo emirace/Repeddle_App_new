@@ -62,8 +62,16 @@ const Report = ({ reportItem, refs, setShowModel, showModel }: Props) => {
     if (refs === "user") data.referencedUser = reportItem.id
     else data.referencedProduct = reportItem.id
     if (image) data.image = image
-    await sendMessage(data)
-    setIsReporting(false)
+    try {
+      await sendMessage(data)
+      addNotification({ message: "Report sent successfully" })
+      setIsReporting(false)
+      setShowModel(false)
+    } catch (error) {
+      addNotification({ message: "Failed to report", error: true })
+    } finally {
+      setIsReporting(false)
+    }
   }
 
   const onDeleteImage = async () => {

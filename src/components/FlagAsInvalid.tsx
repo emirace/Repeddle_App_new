@@ -64,6 +64,7 @@ const Report = ({ reportItem, setShowModel, showModel }: Props) => {
         addNotification({ message: result.message, error: true })
       } else {
         addNotification({ message: result.message })
+        setShowModel(false)
       }
       setIsReporting(false)
     } catch (error) {

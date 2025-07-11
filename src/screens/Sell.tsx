@@ -103,7 +103,10 @@ const Sell = ({ navigation, route }: any) => {
   const [countInStock, setCountInStock] = useState(1)
   const [sizes, setSizes] = useState<ISize[]>([])
   const [sizesError, setSizesError] = useState("")
-  const [addSize, setAddSize] = useState(sizes.length < 1)
+  const showSize = useMemo(() => {
+    return route.params?.slug || route.params?.id ? sizes.length > 0 : false
+  }, [sizes, route.params?.slug, route.params?.id])
+  const [addSize, setAddSize] = useState(showSize)
   const [showCondition, setShowCondition] = useState(false)
   const [showVideoModal, setShowVideoModal] = useState(false)
   const [tags, setTags] = useState<string[]>([])

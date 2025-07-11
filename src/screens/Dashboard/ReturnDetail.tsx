@@ -222,7 +222,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
             onPress={() => {
               // navigate to order details screen
               navigation.push("MyAccount", {
-                username: returned.orderId.buyer._id,
+                username: returned.orderId.buyer.username,
               })
             }}
           >
@@ -360,12 +360,20 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                     ) : returned.orderId.buyer._id === user?._id ? (
                       showTracking ? (
                         <View
-                          style={{ flexDirection: "row", alignItems: "center" }}
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 10,
+                          }}
                         >
                           <TextInput
                             style={[
                               styles.textarea,
-                              { textAlignVertical: "top", color: "white" },
+                              {
+                                textAlignVertical: "top",
+                                color: "white",
+                                marginBottom: 0,
+                              },
                             ]}
                             placeholderTextColor={"grey"}
                             value={trackingNumber}
