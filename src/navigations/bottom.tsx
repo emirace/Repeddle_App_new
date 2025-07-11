@@ -1,28 +1,28 @@
 // MainBottomNav.tsx
-import React from "react"
-import { StyleProp, View, ViewStyle, Platform, Pressable } from "react-native"
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { Icon, useTheme } from "react-native-paper"
-import { lightTheme } from "../constant/theme"
-import { MainScreenNavigationProp } from "../types/navigation/stack"
-import Home from "../screens/Home"
-import Category from "../screens/Category"
-import CustomTabBarButton from "../components/CustomTabBarButton"
-import Conversation from "../screens/chat/Conversation"
-import useAuth from "../hooks/useAuth"
-import Profile from "../screens/Profile"
-import useNotification from "../hooks/useNotification"
+import React from "react";
+import { StyleProp, View, ViewStyle, Platform, Pressable } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Icon, useTheme } from "react-native-paper";
+import { lightTheme } from "../constant/theme";
+import { MainScreenNavigationProp } from "../types/navigation/stack";
+import Home from "../screens/Home";
+import Category from "../screens/Category";
+import CustomTabBarButton from "../components/CustomTabBarButton";
+import Conversation from "../screens/chat/Conversation";
+import useAuth from "../hooks/useAuth";
+import Profile from "../screens/Profile";
+import useNotification from "../hooks/useNotification";
 
 type TabConfiguration = {
-  name: string
-  component: React.ComponentType<any>
-  iconSource: { selected: string; unselected: string }
-  badge?: any
-  floatingButton?: boolean
-  requiresAuth?: boolean
-}
+  name: string;
+  component: React.ComponentType<any>;
+  iconSource: { selected: string; unselected: string };
+  badge?: any;
+  floatingButton?: boolean;
+  requiresAuth?: boolean;
+};
 
-const Tab = createBottomTabNavigator()
+const Tab = createBottomTabNavigator();
 
 const tabBarStyle: StyleProp<ViewStyle> = {
   elevation: 0,
@@ -35,7 +35,7 @@ const tabBarStyle: StyleProp<ViewStyle> = {
   backgroundColor: "transparent",
   bottom: 0,
   // paddingTop: Platform.OS === "ios" ? 30 : 0,
-}
+};
 
 const tabBarShadowStyle: StyleProp<ViewStyle> = {
   shadowColor: lightTheme.colors.secondary,
@@ -43,7 +43,7 @@ const tabBarShadowStyle: StyleProp<ViewStyle> = {
   shadowOpacity: 0.1,
   shadowRadius: 3.5,
   elevation: 5,
-}
+};
 
 const tabBarBadgeStyle: StyleProp<ViewStyle> = {
   position: "absolute",
@@ -52,10 +52,10 @@ const tabBarBadgeStyle: StyleProp<ViewStyle> = {
   left: "55%",
   backgroundColor: lightTheme.colors.primary,
   maxWidth: "15%",
-}
+};
 
 const CustomBottomTabBar2 = (props: any) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return (
     <View style={{ position: "relative", flex: 1 }}>
@@ -76,18 +76,18 @@ const CustomBottomTabBar2 = (props: any) => {
         {props.children}
       </Pressable>
     </View>
-  )
-}
+  );
+};
 
 const MainBottomNav: React.FC<MainScreenNavigationProp> = ({ navigation }) => {
-  const { user } = useAuth()
-  const { dotNotifications } = useNotification()
+  const { user } = useAuth();
+  const { dotNotifications } = useNotification();
 
-  const { dark, colors } = useTheme()
+  const { dark, colors } = useTheme();
 
   const messageDot = dotNotifications.filter(
     (notification) => notification.type === "message"
-  )
+  );
 
   const tabConfigurations: TabConfiguration[] = [
     {
@@ -122,7 +122,7 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({ navigation }) => {
       component: Profile,
       iconSource: { selected: "account", unselected: "account-outline" },
     },
-  ]
+  ];
 
   return (
     <View style={{ flex: 1, justifyContent: "flex-end" }}>
@@ -186,7 +186,7 @@ const MainBottomNav: React.FC<MainScreenNavigationProp> = ({ navigation }) => {
         ))}
       </Tab.Navigator>
     </View>
-  )
-}
+  );
+};
 
-export default MainBottomNav
+export default MainBottomNav;

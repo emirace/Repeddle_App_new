@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   FlatList,
   Image,
-} from "react-native"
-import { Appbar, useTheme, Text } from "react-native-paper"
-import { SubCategoriesNavigationProp } from "../../types/navigation/stack"
-import { ISubCategory, ISubCategoryItem } from "../../types/category"
-import { baseURL } from "../../services/api"
+} from "react-native";
+import { Appbar, useTheme, Text, IconButton } from "react-native-paper";
+import { SubCategoriesNavigationProp } from "../../types/navigation/stack";
+import { ISubCategory, ISubCategoryItem } from "../../types/category";
+import { baseURL } from "../../services/api";
 
 const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
-  const { category } = route.params
-  const { colors } = useTheme()
+  const { category } = route.params;
+  const { colors } = useTheme();
 
   const renderSubcategoryItem = ({ item }: { item: ISubCategory }) => {
     return (
@@ -39,8 +39,8 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
           />
         )}
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   const renderNextSubcategoryItem = ({ item }: { item: ISubCategoryItem }) => {
     return (
@@ -54,29 +54,15 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
           </Text>
         </View>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   const handleSubcategorySelect = (subcategory: ISubCategory) => {
-    navigation.navigate("Search", { query: subcategory.name })
-  }
+    navigation.navigate("Search", { query: subcategory.name });
+  };
 
   return (
     <View style={styles.container}>
-      <Appbar.Header
-        mode="small"
-        style={{
-          justifyContent: "space-between",
-          backgroundColor: colors.primary,
-        }}
-      >
-        <Appbar.BackAction
-          iconColor="white"
-          onPress={() => navigation.goBack()}
-        />
-        <Appbar.Content titleStyle={{ color: "white" }} title={category.name} />
-      </Appbar.Header>
-
       {category.image && (
         <View style={styles.categoryImageContainer}>
           <Image
@@ -91,6 +77,13 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
           <Text style={styles.categoryImageTitle}>{category.name}</Text>
         </View>
       )}
+      <IconButton
+        icon="chevron-left"
+        size={35}
+        iconColor="black"
+        onPress={() => navigation.goBack()}
+        style={{ position: "absolute", top: 40, left: 5 }}
+      />
       <View style={styles.listCont}>
         <FlatList
           data={category.subCategories}
@@ -100,12 +93,13 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
         />
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: "relative",
   },
   categoryTitle: {
     fontSize: 20,
@@ -164,10 +158,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
   },
-})
+});
 
 function removeGreaterThanSign(str: string) {
-  return str.replace(/>/g, "")
+  return str.replace(/>/g, "");
 }
 
-export default SubCategories
+export default SubCategories;

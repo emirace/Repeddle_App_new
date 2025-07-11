@@ -1,7 +1,7 @@
-import { View, Text, Image, Pressable } from "react-native"
-import React from "react"
-import { goto } from "../../utils/common"
-import { frontendURL } from "../../services/api"
+import { View, Text, Image, Pressable } from "react-native";
+import React from "react";
+import { goto } from "../../utils/common";
+import { frontendURL } from "../../services/api";
 
 const HowItWorks = () => {
   return (
@@ -14,7 +14,7 @@ const HowItWorks = () => {
         style={{ width: "100%", objectFit: "contain", minHeight: 150 }}
       />
     </Pressable>
-  )
-}
+  );
+};
 
-export default HowItWorks
+export default HowItWorks;

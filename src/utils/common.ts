@@ -2,6 +2,7 @@ import { CartItem } from "../contexts/CartContext";
 import { deleteImageService, saveImageService } from "../services/image";
 import { Coupon, IProduct } from "../types/product";
 import * as WebBrowser from "expo-web-browser";
+import * as SecureStore from "expo-secure-store";
 
 export const currency = (region: IProduct["region"]) => {
   if (region === "NG") return "₦";
@@ -14,7 +15,7 @@ export const region = (): IProduct["region"] => {
 };
 
 export const goto = async (address: string) => {
-  let result = await WebBrowser.openBrowserAsync(address);
+  let result = await WebBrowser.openAuthSessionAsync(address, address);
 };
 
 export const currentAddress = (region: IProduct["region"]) =>
@@ -136,3 +137,16 @@ export const createSearchParam = (params: [string, string][] | string[][]) => {
 
   return string;
 };
+
+const DEVICE_ID_KEY = "device-unique-id";
+
+export async function getOrCreateDeviceId(): Promise<string> {
+  let deviceId = await SecureStore.getItemAsync(DEVICE_ID_KEY);
+
+  if (!deviceId) {
+    deviceId = `device-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+    await SecureStore.setItemAsync(DEVICE_ID_KEY, deviceId);
+  }
+  console.log("Device ID:", deviceId);
+  return deviceId;
+}

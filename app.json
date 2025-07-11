@@ -13,7 +13,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.emirace.repeddle-app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,13 +26,21 @@
       },
       "package": "com.emirace.Repeddle_App"
     },
+    "scheme": "repeddle-app",
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-font",
       "expo-asset",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-web-browser",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.359040935611-1kijfv8vvtn9ghvehrqqciv2dm7sme3m"
+        }
+      ]
     ],
     "extra": {
       "eas": {
