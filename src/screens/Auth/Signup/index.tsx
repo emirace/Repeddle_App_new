@@ -1,62 +1,62 @@
-import React, { useState } from "react"
-import { View, StyleSheet, Image, ScrollView } from "react-native"
+import React, { useState } from "react";
+import { View, StyleSheet, Image, ScrollView } from "react-native";
 import {
   TextInput,
   Button,
   Text,
   useTheme,
   IconButton,
-} from "react-native-paper"
-import useAuth from "../../../hooks/useAuth"
-import { SignUpNavigationProp } from "../../../types/navigation/stack"
+} from "react-native-paper";
+import useAuth from "../../../hooks/useAuth";
+import { SignUpNavigationProp } from "../../../types/navigation/stack";
 
 interface Props {
-  gotoLogin: () => void
-  gotoToken: () => void
-  email: string
-  setEmail: (value: string) => void
+  gotoLogin: () => void;
+  gotoToken: () => void;
+  email: string;
+  setEmail: (value: string) => void;
 }
 
 const SignUp: React.FC<SignUpNavigationProp> = ({
   navigation: { navigate },
 }) => {
-  const { sendVerifyOtp, error: signInError } = useAuth()
-  const { colors, dark } = useTheme()
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [email, setEmail] = useState("")
+  const { sendVerifyOtp, error: signInError } = useAuth();
+  const { colors, dark } = useTheme();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
 
   const handleSignIn = async () => {
     // Basic email validation
     if (!email.trim()) {
-      setError("Please enter your email.")
+      setError("Please enter your email.");
     } else if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.")
+      setError("Please enter a valid email address.");
     } else {
-      setLoading(true)
-      const result = await sendVerifyOtp({ email })
+      setLoading(true);
+      const result = await sendVerifyOtp({ email });
       if (result) {
-        navigate("Step", { email: email.trim().toLowerCase() })
+        navigate("Step", { email: email.trim().toLowerCase() });
       } else {
-        setError(signInError || "")
+        setError(signInError || "");
       }
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const isValidEmail = (email: string): boolean => {
     // Basic email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailRegex.test(email)
-  }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   return (
     <ScrollView style={styles.container}>
       <Image
         source={{
           uri: dark
-            ? "https://res.cloudinary.com/emirace/image/upload/v1658136003/Reppedle_White_d56cic.gif"
-            : "https://res.cloudinary.com/emirace/image/upload/v1658136004/Reppedle_Black_ebqmot.gif",
+            ? require("../../../../assets/images/white_anime_logo.gif")
+            : require("../../../../assets/images/black_anime_logo.gif"),
         }}
         style={styles.logo}
         alt="logo"
@@ -68,8 +68,8 @@ const SignUp: React.FC<SignUpNavigationProp> = ({
           label="Email"
           value={email}
           onChangeText={(text) => {
-            setEmail(text)
-            setError("")
+            setEmail(text);
+            setError("");
           }}
           style={styles.input}
           autoCapitalize="none"
@@ -117,8 +117,8 @@ const SignUp: React.FC<SignUpNavigationProp> = ({
         </View>
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -173,6 +173,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: "center",
   },
-})
+});
 
-export default SignUp
+export default SignUp;

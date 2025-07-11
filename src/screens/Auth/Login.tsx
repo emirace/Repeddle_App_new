@@ -69,8 +69,8 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation, route }) => {
       <Image
         source={{
           uri: dark
-            ? "https://res.cloudinary.com/emirace/image/upload/v1658136003/Reppedle_White_d56cic.gif"
-            : "https://res.cloudinary.com/emirace/image/upload/v1658136004/Reppedle_Black_ebqmot.gif",
+            ? require("../../../assets/images/white_anime_logo.gif")
+            : require("../../../assets/images/black_anime_logo.gif"),
         }}
         style={styles.logo}
         alt="logo"
@@ -146,7 +146,7 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation, route }) => {
 
         <View style={styles.socialIconsContainer}>
           <FacebookLoginButton />
-          <GoogleLoginButton />
+          <GoogleLoginButton navigation={navigation} />
         </View>
       </View>
     </ScrollView>

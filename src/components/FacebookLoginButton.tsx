@@ -6,6 +6,9 @@ import * as AuthSession from "expo-auth-session";
 import axios from "axios";
 import { discovery } from "expo-auth-session/build/providers/Facebook";
 import { IconButton, useTheme } from "react-native-paper";
+import api from "../services/api";
+import useToastNotification from "../hooks/useToastNotification";
+import useAuth from "../hooks/useAuth";
 
 // Complete the authentication when the browser redirects back
 WebBrowser.maybeCompleteAuthSession();
@@ -23,12 +26,16 @@ interface AuthResponse {
 
 const FacebookLoginButton: FC = () => {
   const { colors } = useTheme();
-  const redirectUri = AuthSession.makeRedirectUri();
+  const { addNotification } = useToastNotification();
+  const { getUser } = useAuth();
+  const [loading, setLoading] = React.useState(false);
 
+  const redirectUri = AuthSession.makeRedirectUri();
+  console.log("Redirect URI:", redirectUri);
   const [request, response, promptAsync] = AuthSession.useAuthRequest(
     {
-      clientId: "1298755690808700",
-      redirectUri,
+      clientId: "987624389041257",
+      redirectUri: "fb987624389041257://authorize",
       scopes: ["public_profile", "email"],
       responseType: "code",
       extraParams: {
@@ -39,16 +46,15 @@ const FacebookLoginButton: FC = () => {
   );
 
   useEffect(() => {
-    console.log("Redirect URI:", redirectUri);
     if (response?.type === "success") {
       const { code } = response.params;
-      axios
-        .post<AuthResponse>("http://localhost:5000/auth/facebook/mobile", {
+      api
+        .post(`http://localhost:5000/auth/facebook/callback`, {
           code,
           redirectUri,
         })
         .then((res) => {
-          console.log("User:", res.data.user);
+          console.log("User:", res);
           // TODO: Store tokens, update UI
         })
         .catch((error) => {

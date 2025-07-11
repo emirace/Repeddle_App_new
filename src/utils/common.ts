@@ -16,7 +16,7 @@ export const region = (): IProduct["region"] => {
 };
 
 export const goto = async (address: string) => {
-  let result = await WebBrowser.openBrowserAsync(address);
+  let result = await WebBrowser.openAuthSessionAsync(address, address);
 };
 
 export const currentAddress = (region: IProduct["region"]) =>
