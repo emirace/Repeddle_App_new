@@ -1,77 +1,77 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   Image,
   ScrollView,
-} from "react-native";
+} from "react-native"
 import {
   TextInput,
   Button,
   Text,
   useTheme,
   IconButton,
-} from "react-native-paper";
-import { LoginNavigationProp } from "../../types/navigation/stack";
-import useAuth from "../../hooks/useAuth";
-import GoogleLoginButton from "../../components/GoogleLoginButton";
-import FacebookLoginButton from "../../components/FacebookLoginButton";
+} from "react-native-paper"
+import { LoginNavigationProp } from "../../types/navigation/stack"
+import useAuth from "../../hooks/useAuth"
+import GoogleLoginButton from "../../components/GoogleLoginButton"
+import FacebookLoginButton from "../../components/FacebookLoginButton"
 
 const Login: React.FC<LoginNavigationProp> = ({ navigation, route }) => {
-  const { login, error: loginError } = useAuth();
-  const { colors, dark } = useTheme();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { login, error: loginError } = useAuth()
+  const { colors, dark } = useTheme()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const { navigate } = navigation;
+  const { navigate } = navigation
 
   const handleTogglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+    setShowPassword(!showPassword)
+  }
 
   const handleLogin = async () => {
     // Basic email and password validation
     if (!email.trim() || !password.trim()) {
-      setError("Please enter both email and password.");
+      setError("Please enter both email and password.")
     } else if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
+      setError("Please enter a valid email address.")
     } else {
-      setLoading(true);
+      setLoading(true)
       const result = await login({
         email: email.trim().toLowerCase(),
         password,
-      });
+      })
       if (result) {
-        route.params?.back ? navigation.pop() : navigate("Main");
+        route.params?.back ? navigation.pop() : navigate("Main")
       } else {
-        setError(loginError || "");
+        setError(loginError || "")
       }
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleForgotPassword = () => {
-    navigation.push("ForgetPassword");
-  };
+    navigation.push("ForgetPassword")
+  }
 
   const isValidEmail = (email: string): boolean => {
     // Basic email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
 
   return (
     <ScrollView style={styles.container}>
       <Image
-        source={{
-          uri: dark
+        source={
+          dark
             ? require("../../../assets/images/white_anime_logo.gif")
-            : require("../../../assets/images/black_anime_logo.gif"),
-        }}
+            : require("../../../assets/images/black_anime_logo.gif")
+        }
         style={styles.logo}
         alt="logo"
       />
@@ -91,8 +91,8 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation, route }) => {
           label="Email"
           value={email}
           onChangeText={(text) => {
-            setEmail(text);
-            setError("");
+            setEmail(text)
+            setError("")
           }}
           style={styles.input}
           autoCapitalize="none"
@@ -104,8 +104,8 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation, route }) => {
           label="Password"
           value={password}
           onChangeText={(text) => {
-            setPassword(text);
-            setError("");
+            setPassword(text)
+            setError("")
           }}
           right={
             <TextInput.Icon
@@ -150,8 +150,8 @@ const Login: React.FC<LoginNavigationProp> = ({ navigation, route }) => {
         </View>
       </View>
     </ScrollView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -204,6 +204,6 @@ const styles = StyleSheet.create({
   socialIcon: {
     marginHorizontal: 10,
   },
-});
+})
 
-export default Login;
+export default Login

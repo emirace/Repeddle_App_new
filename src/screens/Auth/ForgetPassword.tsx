@@ -1,46 +1,46 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
-import { TextInput, Button, Text, useTheme, Icon } from "react-native-paper";
-import useAuth from "../../hooks/useAuth";
-import { ForgetPasswordNavigationProp } from "../../types/navigation/stack";
-import Token from "../../components/auth/forgotPassword/Token";
-import Password from "../../components/auth/forgotPassword/Password";
-import Success from "../../components/auth/forgotPassword/Success";
+import React, { useCallback, useEffect, useState } from "react"
+import { View, StyleSheet, Image } from "react-native"
+import { TextInput, Button, Text, useTheme, Icon } from "react-native-paper"
+import useAuth from "../../hooks/useAuth"
+import { ForgetPasswordNavigationProp } from "../../types/navigation/stack"
+import Token from "../../components/auth/forgotPassword/Token"
+import Password from "../../components/auth/forgotPassword/Password"
+import Success from "../../components/auth/forgotPassword/Success"
 
 const ForgetPassword: React.FC<ForgetPasswordNavigationProp> = ({
   navigation,
 }) => {
-  const { sendForgetPasswordEmail, error: forgetError } = useAuth();
-  const { colors, dark } = useTheme();
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState("");
-  const [token, setToken] = useState("");
+  const { sendForgetPasswordEmail, error: forgetError } = useAuth()
+  const { colors, dark } = useTheme()
+  const [email, setEmail] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [step, setStep] = useState("")
+  const [token, setToken] = useState("")
 
   const handleResetPassword = async () => {
     // Basic email validation
     if (!email.trim()) {
-      setError("Please enter your email.");
+      setError("Please enter your email.")
     } else if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
+      setError("Please enter a valid email address.")
     } else {
-      setLoading(true);
-      const result = await sendForgetPasswordEmail({ email });
+      setLoading(true)
+      const result = await sendForgetPasswordEmail({ email })
       if (result) {
-        setStep("token");
+        setStep("token")
       }
-      setLoading(false);
+      setLoading(false)
       // Reset error state
-      setError(forgetError || "");
+      setError(forgetError || "")
     }
-  };
+  }
 
   const isValidEmail = (email: string): boolean => {
     // Basic email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
 
   const renderScreen = () => {
     switch (step) {
@@ -51,8 +51,8 @@ const ForgetPassword: React.FC<ForgetPasswordNavigationProp> = ({
             onVerify={() => setStep("password")}
             setToken={setToken}
           />
-        );
-        break;
+        )
+        break
       case "password":
         return (
           <Password
@@ -60,9 +60,9 @@ const ForgetPassword: React.FC<ForgetPasswordNavigationProp> = ({
             onSuccess={() => setStep("success")}
             token={token}
           />
-        );
+        )
       case "success":
-        return <Success navigation={navigation} />;
+        return <Success navigation={navigation} />
 
       default:
         return (
@@ -76,8 +76,8 @@ const ForgetPassword: React.FC<ForgetPasswordNavigationProp> = ({
                 label="Email"
                 value={email}
                 onChangeText={(text) => {
-                  setEmail(text);
-                  setError("");
+                  setEmail(text)
+                  setError("")
                 }}
                 style={styles.input}
                 autoCapitalize="none"
@@ -108,25 +108,25 @@ const ForgetPassword: React.FC<ForgetPasswordNavigationProp> = ({
               </Text>
             </>
           </View>
-        );
+        )
     }
-  };
+  }
 
   return (
     <View style={styles.container}>
       <Image
-        source={{
-          uri: dark
+        source={
+          dark
             ? require("../../../assets/images/white_anime_logo.gif")
-            : require("../../../assets/images/black_anime_logo.gif"),
-        }}
+            : require("../../../assets/images/black_anime_logo.gif")
+        }
         style={styles.logo}
         alt="logo"
       />
       {renderScreen()}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -171,6 +171,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   registerText: { textAlign: "center", marginTop: 20 },
-});
+})
 
-export default ForgetPassword;
+export default ForgetPassword
