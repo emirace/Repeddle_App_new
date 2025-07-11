@@ -48,7 +48,9 @@ const Category = ({ navigation }: CategoryNavigationProp) => {
     >
       <Image
         source={{
-          uri: baseURL + item.image,
+          uri: item.image.startsWith("http")
+            ? item.image
+            : baseURL + item.image,
         }}
         style={styles.categoryImage}
       />
