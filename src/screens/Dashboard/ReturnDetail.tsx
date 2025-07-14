@@ -235,7 +235,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           <TouchableOpacity
             onPress={() => {
               navigation.push("MyAccount", {
-                username: returned.productId.seller._id,
+                username: returned.productId.seller.username,
               })
             }}
           >
@@ -387,7 +387,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                             disabled={loadingReturn}
                             style={{ borderRadius: 5 }}
                           >
-                            Confirm Tracking
+                            Confirm
                           </Button>
                         </View>
                       ) : (
@@ -491,6 +491,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: "gray",
     borderWidth: 1,
+    flex: 1,
   },
   itemImage: {
     width: 120,
