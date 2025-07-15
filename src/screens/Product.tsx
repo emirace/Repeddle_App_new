@@ -17,6 +17,7 @@ import {
   Badge,
   Button,
   Chip,
+  Icon,
   IconButton,
   Text,
   useTheme,
@@ -140,8 +141,8 @@ const Product = ({ navigation, route }: Props) => {
     transform: [
       {
         translateY: animatedValue.interpolate({
-          inputRange: [600, 650],
-          outputRange: [-100, 0],
+          inputRange: [550, 650],
+          outputRange: [-110, 0],
           extrapolate: "clamp",
         }),
       },
@@ -394,7 +395,7 @@ const Product = ({ navigation, route }: Props) => {
       >
         <View
           style={{
-            height: 100,
+            height: 110,
             backgroundColor: colors.primary,
             position: "absolute",
             top: 0,
@@ -452,18 +453,6 @@ const Product = ({ navigation, route }: Props) => {
                 </View>
               ) : null}
             </TouchableOpacity>
-
-            <View style={{ position: "relative" }}>
-              <IconButton icon="eye" />
-              {product.viewcount.length ? (
-                <View style={styles.badge}>
-                  <Badge
-                    theme={{ colors: { background: "red" } }}
-                    children={product.viewcount.length}
-                  />
-                </View>
-              ) : null}
-            </View>
           </View>
         </View>
 
@@ -473,7 +462,6 @@ const Product = ({ navigation, route }: Props) => {
               <RebundlePoster />
             </View>
           )}
-
           <View style={styles.titleCont}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text
@@ -509,15 +497,27 @@ const Product = ({ navigation, route }: Props) => {
               setModalProductReview={setModalProductReview}
             />
           </Modal>
-
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 5,
+            }}
+          >
+            <Text style={{}}>Listed {moment(product.createdAt).fromNow()}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 5,
+              }}
+            >
+              <Text style={{}}>{product?.viewcount?.length}</Text>
+              <Icon source="eye" size={16} />
+            </View>
+          </View>
           <Text style={styles.description}>{product.description}</Text>
-
-          <Text style={{ marginVertical: 5, textAlign: "left" }}>
-            Listed {moment(product.createdAt).fromNow()}
-          </Text>
-          <Text style={{ marginVertical: 5, textAlign: "left" }}>
-            {product?.viewcount?.length} views
-          </Text>
           <View style={{ marginBottom: 10 }}>
             <Text style={[styles.sectionTitle]}>Overview</Text>
             <View
@@ -561,7 +561,6 @@ const Product = ({ navigation, route }: Props) => {
               </View>
             </View>
           </View>
-
           <View
             style={[
               styles.section,
@@ -707,7 +706,6 @@ const Product = ({ navigation, route }: Props) => {
               </View>
             </View>
           </View>
-
           {product.sizes.length > 0 && (
             <>
               <View style={styles.section}>
@@ -750,7 +748,6 @@ const Product = ({ navigation, route }: Props) => {
               </View>
             </>
           )}
-
           <CollapsibleSection title="Condition">
             <View style={{}}>
               <Text
@@ -772,24 +769,20 @@ const Product = ({ navigation, route }: Props) => {
               </Text>
             </View>
           </CollapsibleSection>
-
           {product.specification && (
             <CollapsibleSection title="Specification">
               <Text style={styles.description}>{product.specification}</Text>
             </CollapsibleSection>
           )}
-
           {product.keyFeatures && (
             <CollapsibleSection title="Key Features">
               <Text style={styles.description}>{product.keyFeatures}</Text>
             </CollapsibleSection>
           )}
-
           {/* TODO:  */}
           {/* <CollapsibleSection title="Shipping Location">
             <Text style={styles.description}>{product.shippingLocation}</Text>
           </CollapsibleSection> */}
-
           <TouchableOpacity
             onPress={() => navigation.push("BuyersProtection")}
             style={[
@@ -1119,15 +1112,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: width - normaliseW(106),
+    gap: 10,
+    // width: width - normaliseW(106),
   },
   rating: { flexDirection: "row", alignItems: "center" },
   title: {
     fontSize: 20,
     fontFamily: "absential-sans-bold",
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 5,
     textTransform: "capitalize",
-    marginRight: normaliseW(10),
+    // marginRight: normaliseW(10),
   },
   recentText: {
     fontSize: 20,
@@ -1142,7 +1137,7 @@ const styles = StyleSheet.create({
     fontFamily: "absential-sans-bold",
   },
   ratingCount: { color: "grey" },
-  description: { marginBottom: 5, marginHorizontal: 7, color: "grey" },
+  description: { marginBottom: 15, marginHorizontal: 7, color: "grey" },
   section: { marginVertical: 10 },
   sectionTitle: {
     fontSize: 16,
