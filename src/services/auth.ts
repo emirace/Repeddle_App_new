@@ -65,7 +65,6 @@ export async function verifyEmailService(tokenData: {
     const data = await api.get(
       `/users/verify-email/${tokenData.token}?mode=${tokenData.mode}&type=${tokenData.type}`
     );
-    console.log(data);
 
     if (!data.status) {
       const errorMessage = getBackendErrorMessage(data.data);
