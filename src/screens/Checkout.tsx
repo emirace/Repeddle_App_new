@@ -6,31 +6,32 @@ import {
   TouchableOpacity,
   View,
   Alert,
-} from "react-native";
-import React, { useMemo, useState } from "react";
-import { Appbar, Button, Text, useTheme } from "react-native-paper";
-import useCart from "../hooks/useCart";
-import { CheckoutNavigationProp } from "../types/navigation/stack";
+  Modal,
+} from "react-native"
+import React, { useMemo, useState } from "react"
+import { Appbar, Button, Text, useTheme } from "react-native-paper"
+import useCart from "../hooks/useCart"
+import { CheckoutNavigationProp } from "../types/navigation/stack"
 import {
   couponDiscount,
   currency,
   generateTransactionRef,
   region,
-} from "../utils/common";
-import useAuth from "../hooks/useAuth";
-import { Ionicons } from "@expo/vector-icons";
-import PayWithFlutterwave from "flutterwave-react-native";
-import Payfast from "../components/paymentMethod/Payfast";
-import useOrder from "../hooks/useOrder";
-import { RedirectParams } from "flutterwave-react-native/dist/PayWithFlutterwave";
-import { baseURL } from "../services/api";
-import useToastNotification from "../hooks/useToastNotification";
-import PayWithPaystack from "../components/paymentMethod/Paystack";
+} from "../utils/common"
+import useAuth from "../hooks/useAuth"
+import { Ionicons } from "@expo/vector-icons"
+import PayWithFlutterwave from "flutterwave-react-native"
+import Payfast from "../components/paymentMethod/Payfast"
+import useOrder from "../hooks/useOrder"
+import { RedirectParams } from "flutterwave-react-native/dist/PayWithFlutterwave"
+import { baseURL } from "../services/api"
+import useToastNotification from "../hooks/useToastNotification"
+import PayWithPaystack from "../components/paymentMethod/Paystack"
 
-type Props = CheckoutNavigationProp;
+type Props = CheckoutNavigationProp
 
 const Checkout = ({ navigation }: Props) => {
-  const { colors } = useTheme();
+  const { colors } = useTheme()
   const {
     cart,
     subtotal,
@@ -38,117 +39,99 @@ const Checkout = ({ navigation }: Props) => {
     paymentMethod,
     clearCart,
     changePaymentMethod,
-  } = useCart();
-  const { createOrder, error } = useOrder();
-  const { user } = useAuth();
-  const { addNotification } = useToastNotification();
+  } = useCart()
+  const { createOrder, error } = useOrder()
+  const { user } = useAuth()
+  const { addNotification } = useToastNotification()
 
-  const [showDelivery, setShowDelivery] = useState("");
-  const [coupon, setCoupon] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingPay, setLoadingPay] = useState(false);
-
-  const currencyVal = useMemo(() => currency(cart?.[0]?.region), [cart]);
+  const [showDelivery, setShowDelivery] = useState("")
+  const [coupon, setCoupon] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingWallet, setIsLoadingWallet] = useState(false)
+  const [loadingPay, setLoadingPay] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const currencyVal = useMemo(() => currency(cart?.[0]?.region), [cart])
   const discount = useMemo(
     () => (coupon ? couponDiscount(coupon, total) : 0),
     [coupon]
-  );
+  )
 
-  const handleSubmit = () => {
-    Alert.alert(
-      "Confirm Payment",
-      `${currencyVal}${(total - discount).toFixed(
-        2
-      )} will be deducted from your wallet.`,
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Proceed",
-          onPress: async () => {
-            const order1 = await placeOrderHandler({ paymentMethod });
-            if (order1) {
-              clearCart();
-              changePaymentMethod("Card");
-              navigation.pop(3);
-              navigation.navigate("OrderDetails", { id: order1._id });
-            } else {
-              addNotification({ message: error || "failed to create order" });
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  const confirmWalletPayment = () => {};
+  const confirmWalletPayment = async () => {
+    setIsLoadingWallet(true)
+    const order1 = await placeOrderHandler({ paymentMethod: "Wallet" })
+    if (order1) {
+      clearCart()
+      changePaymentMethod("Card")
+      navigation.pop(3)
+      navigation.navigate("OrderDetails", { id: order1._id })
+    }
+    setIsLoadingWallet(false)
+  }
 
   const onApprove = async ({
     paymentMethod,
     id,
   }: {
-    paymentMethod: string;
-    id: string;
+    paymentMethod: string
+    id: string
   }) => {
     const order1 = await placeOrderHandler({
       paymentMethod,
       transId: id,
-    });
+    })
     if (order1) {
-      clearCart();
-      changePaymentMethod("Card");
-      navigation.pop(3);
-      navigation.navigate("OrderDetails", { id: order1._id });
+      clearCart()
+      changePaymentMethod("Card")
+      navigation.pop(3)
+      navigation.navigate("OrderDetails", { id: order1._id })
     } else {
-      addNotification({ message: error || "failed to create order" });
+      addNotification({ message: error || "failed to create order" })
     }
-  };
+  }
 
   const handleOnRedirect = async (result: RedirectParams) => {
-    console.log(result, "res");
+    console.log(result, "res")
     try {
       if (result.status !== "successful") {
-        console.log("unsuccessfull");
-        setIsLoading(false);
-        return;
+        console.log("unsuccessfull")
+        setIsLoading(false)
+        return
       }
-      addNotification({ message: "Payment successful" });
+      addNotification({ message: "Payment successful" })
       await onApprove({
         paymentMethod: "Flutterwave",
         id: result.transaction_id || result.tx_ref,
-      });
+      })
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const onError = () => {
-    setIsLoading(false);
-  };
+    setIsLoading(false)
+  }
 
   const placeOrderHandler = async ({
     paymentMethod,
     transId,
   }: {
-    paymentMethod: string;
-    transId?: string;
+    paymentMethod: string
+    transId?: string
   }) => {
     const res = await createOrder({
       items: cart,
       paymentMethod,
       totalAmount: total,
       transactionId: transId,
-    });
+    })
 
     if (res) {
-      addNotification({ message: res.message });
-      return res.order;
+      addNotification({ message: res.message })
+      return res.order
     } else {
-      addNotification({ message: error, error: true });
+      addNotification({ message: error, error: true })
     }
-  };
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -395,7 +378,7 @@ const Checkout = ({ navigation }: Props) => {
                 alignItems: "center",
               },
             ]}
-            onPress={handleSubmit}
+            onPress={() => setVisible(true)}
           >
             <Text style={{ color: "white", fontFamily: "chronicle-text-bold" }}>
               Proceed to Payment
@@ -440,8 +423,8 @@ const Checkout = ({ navigation }: Props) => {
                 customButton={(props) => (
                   <Button
                     onPress={() => {
-                      setIsLoading(true);
-                      props.onPress();
+                      setIsLoading(true)
+                      props.onPress()
                     }}
                     children="Proceed"
                     loading={isLoading}
@@ -464,11 +447,52 @@ const Checkout = ({ navigation }: Props) => {
           )
         ) : null}
       </View>
+      <Modal animationType="fade" transparent={true} visible={visible}>
+        <View style={styles.overlay}>
+          <View style={[styles.alert, { backgroundColor: colors.background }]}>
+            <Text style={[styles.title]}>Confirm Payment</Text>
+            <TouchableOpacity
+              style={[styles.cancelButton]}
+              onPress={() => setVisible(false)}
+            >
+              <Ionicons name="close" size={20} color={colors.onBackground} />
+            </TouchableOpacity>
+            <Text style={[styles.message]}>
+              {currencyVal} {(total - discount).toFixed(2)} will be deducted
+              from your wallet.
+            </Text>
+            <View style={styles.buttonsContainer}>
+              <TouchableOpacity
+                style={[styles.button1]}
+                onPress={() => setVisible(false)}
+              >
+                <Text
+                  style={[styles.wishlistButton, { color: colors.secondary }]}
+                >
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button1]}
+                onPress={confirmWalletPayment}
+                disabled={isLoadingWallet}
+              >
+                <Text style={[styles.confirmButton, { color: colors.primary }]}>
+                  Proceed{" "}
+                  {isLoadingWallet && (
+                    <ActivityIndicator size={"small"} color={colors.primary} />
+                  )}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
-  );
-};
+  )
+}
 
-export default Checkout;
+export default Checkout
 
 const styles = StyleSheet.create({
   title: {
@@ -522,4 +546,48 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 5,
   },
-});
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  alert: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 20,
+    width: "85%",
+    alignItems: "center",
+  },
+  cancelButton: {
+    // backgroundColor: "#ccc",
+    position: "absolute",
+    top: 10,
+    right: 10,
+  },
+  message: {
+    fontSize: 15,
+    marginBottom: 10,
+    textAlign: "center",
+    marginTop: 12,
+  },
+  buttonsContainer: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "flex-end",
+  },
+  button1: {
+    borderRadius: 5,
+    padding: 10,
+    alignItems: "center",
+  },
+  confirmButton: {
+    fontSize: 18,
+  },
+  wishlistButton: {
+    fontSize: 18,
+  },
+  buttonText: {
+    color: "#fff",
+  },
+})
