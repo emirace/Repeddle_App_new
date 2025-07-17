@@ -499,45 +499,27 @@ const Product = ({ navigation, route }: Props) => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "space-between",
+              gap: 15,
               marginBottom: 5,
             }}
           >
-            <Text style={{}}>Listed {moment(product.createdAt).fromNow()}</Text>
             <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 5,
-              }}
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
             >
-              <Text style={{}}>{product?.viewcount?.length}</Text>
-              <Icon source="eye" size={16} />
+              <Icon source="eye" size={16} color={colors.primary} />
+              <Text>{product?.viewcount?.length}</Text>
             </View>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
+              <Ionicons name="pricetag" size={15} color={colors.primary} />
+              <Text>{product?.buyers?.length}</Text>
+              <Text style={{ marginVertical: 5, textAlign: "left" }}>Sold</Text>
+            </View>
+            <Text style={{}}>Listed {moment(product.createdAt).fromNow()}</Text>
           </View>
           <Text style={styles.description}>{product.description}</Text>
 
-          <Text style={{ marginVertical: 5, textAlign: "left" }}>
-            Listed {moment(product.createdAt).fromNow()}
-          </Text>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-            >
-              <Text style={{ marginVertical: 5, textAlign: "left" }}>
-                {product?.viewcount?.length}
-              </Text>
-              <Icon source="eye" size={16} color={colors.primary} />
-            </View>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
-            >
-              <Text style={{ marginVertical: 5, textAlign: "left" }}>
-                {product?.buyers?.length}
-              </Text>
-              <Text style={{ marginVertical: 5, textAlign: "left" }}>Sold</Text>
-            </View>
-          </View>
           <View style={{ marginBottom: 10 }}>
             <Text style={[styles.sectionTitle]}>Overview</Text>
             <View
