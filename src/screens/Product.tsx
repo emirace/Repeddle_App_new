@@ -361,8 +361,6 @@ const Product = ({ navigation, route }: Props) => {
     setAddToWish(false);
   };
 
-  console.log(product?.shares, "shares", product?.likes, "likes");
-
   const liked = useMemo(() => {
     return !!product?.likes.find((like) => like === user?._id);
   }, [product?.likes, user?._id]);
@@ -518,6 +516,28 @@ const Product = ({ navigation, route }: Props) => {
             </View>
           </View>
           <Text style={styles.description}>{product.description}</Text>
+
+          <Text style={{ marginVertical: 5, textAlign: "left" }}>
+            Listed {moment(product.createdAt).fromNow()}
+          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
+              <Text style={{ marginVertical: 5, textAlign: "left" }}>
+                {product?.viewcount?.length}
+              </Text>
+              <Icon source="eye" size={16} color={colors.primary} />
+            </View>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
+              <Text style={{ marginVertical: 5, textAlign: "left" }}>
+                {product?.buyers?.length}
+              </Text>
+              <Text style={{ marginVertical: 5, textAlign: "left" }}>Sold</Text>
+            </View>
+          </View>
           <View style={{ marginBottom: 10 }}>
             <Text style={[styles.sectionTitle]}>Overview</Text>
             <View

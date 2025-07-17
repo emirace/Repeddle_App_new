@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "absential-sans-bold",
     marginVertical: 20,
+    textAlign: "center",
   },
   instruction: {
     fontSize: 18,
