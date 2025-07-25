@@ -28,8 +28,8 @@ const ProductReview = ({ product, setModalProductReview }: Props) => {
               <Review review={item} key={index} />
             ))
           ) : (
-            <Text>
-              There are no reviews yet, be the first to write a review
+            <Text style={{ textAlign: "center" }}>
+              There are no reviews yet
             </Text>
           )}
         </ScrollView>

@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   Share,
@@ -84,6 +85,36 @@ const MyAccount = ({ navigation, route }: Props) => {
     [userData, userInfo]
   )
 
+  const updateUserFollow = (action: "follow" | "unfollow") => {
+    if (!userData) return
+    if (action === "follow") {
+      const newFollowers = [
+        ...new Set([
+          ...userData.user.followers,
+          ...(userInfo?._id ? [userInfo?._id] : []),
+        ]),
+      ]
+
+      const newUser: UserByUsername = {
+        ...userData,
+        user: { ...userData.user, followers: newFollowers },
+      }
+
+      setUserData(newUser)
+    } else {
+      const newFollowers = userData.user.followers.filter(
+        (fl) => fl !== userInfo?._id
+      )
+
+      const newUser: UserByUsername = {
+        ...userData,
+        user: { ...userData.user, followers: newFollowers },
+      }
+
+      setUserData(newUser)
+    }
+  }
+
   return fetchingUser ? (
     <Loader />
   ) : userData ? (
@@ -127,6 +158,7 @@ const MyAccount = ({ navigation, route }: Props) => {
             navigation={navigation}
             user={userData.user}
             userInfo={userInfo}
+            updateUserFollow={updateUserFollow}
           />
         )}
         renderTabBar={(props) => <TabBar {...props} />}
@@ -161,6 +193,7 @@ type RenderProps = {
   userInfo: IUser | null
   navigation: MyAccountNavigationProp["navigation"]
   isFollowing: boolean
+  updateUserFollow: (action: "follow" | "unfollow") => void
 }
 
 const RenderHeader = ({
@@ -168,6 +201,7 @@ const RenderHeader = ({
   userInfo,
   navigation,
   isFollowing,
+  updateUserFollow,
 }: RenderProps) => {
   const { colors } = useTheme()
   const { followUser, unFollowUser, error } = useAuth()
@@ -175,6 +209,8 @@ const RenderHeader = ({
   const { createMessage, error: messageError } = useMessage()
   const { isOnline } = useUser()
   const [showReport, setShowReport] = useState(false)
+  const [followLoading, setFollowLoading] = useState(false)
+
   const followHandle = async () => {
     if (!user?._id) return
 
@@ -183,25 +219,31 @@ const RenderHeader = ({
     }
 
     if (isFollowing) {
+      setFollowLoading(true)
       const res = await unFollowUser(user._id)
       if (res) {
         addNotification({ message: res })
+        updateUserFollow("unfollow")
       } else {
         addNotification({
           message: error || "failed to unfollow user",
           error: true,
         })
       }
+      setFollowLoading(false)
     } else {
+      setFollowLoading(true)
       const res = await followUser(user._id)
       if (res) {
         addNotification({ message: res })
+        updateUserFollow("follow")
       } else {
         addNotification({
           message: error || "failed to follow user",
           error: true,
         })
       }
+      setFollowLoading(false)
     }
   }
 
@@ -291,14 +333,21 @@ const RenderHeader = ({
         <View style={styles.followCont}>
           <Text>{user.followers.length} Follower</Text>
           <Text>{user.following.length} Following</Text>
-          {userInfo && userInfo._id !== user._id && (
-            <Text
-              onPress={followHandle}
-              style={[styles.followButton, { backgroundColor: colors.primary }]}
-            >
-              {isFollowing ? "Following" : "Follow"}
-            </Text>
-          )}
+          {userInfo &&
+            userInfo._id !== user._id &&
+            (followLoading ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
+              <Text
+                onPress={followHandle}
+                style={[
+                  styles.followButton,
+                  { backgroundColor: colors.primary },
+                ]}
+              >
+                {isFollowing ? "Following" : "Follow"}
+              </Text>
+            ))}
         </View>
         <TouchableOpacity
           onPress={() =>
