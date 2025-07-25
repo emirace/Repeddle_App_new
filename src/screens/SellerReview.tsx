@@ -72,28 +72,28 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
   const { colors } = useTheme()
   const { addNotification } = useToastNotification()
 
-  const [replyVisible, setReplyVisible] = useState(false)
-  const [replyText, setReplyText] = useState("")
+  // const [replyVisible, setReplyVisible] = useState(false)
+  // const [replyText, setReplyText] = useState("")
   const [loading, setLoading] = useState(false)
   const [currentReview, setCurrentReview] = useState(item)
 
-  const handleReply = () => {
-    setReplyVisible(true)
-  }
+  // const handleReply = () => {
+  //   setReplyVisible(true)
+  // }
 
-  const handleReplySubmit = async () => {
-    if (!replyText) {
-      addNotification({ message: "Enter a reply", error: true })
-      return
-    }
-    setLoading(true)
+  // const handleReplySubmit = async () => {
+  //   if (!replyText) {
+  //     addNotification({ message: "Enter a reply", error: true })
+  //     return
+  //   }
+  //   setLoading(true)
 
-    setReplyText("")
-    setReplyVisible(false)
-    addNotification({ message: "Reply submitted successfully" })
+  //   setReplyText("")
+  //   setReplyVisible(false)
+  //   addNotification({ message: "Reply submitted successfully" })
 
-    setLoading(false)
-  }
+  //   setLoading(false)
+  // }
 
   return (
     <View style={styles.reviewContainer}>
@@ -169,7 +169,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
             </Text>
           </View>
         )}
-        {!replyVisible && !currentReview.comment && (
+        {/* {!replyVisible && !currentReview.comment && (
           <TouchableOpacity
             style={[styles.replyButton, { backgroundColor: colors.primary }]}
             onPress={handleReply}
@@ -199,7 +199,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
               labelStyle={styles.submitButtonText}
             />
           </View>
-        )}
+        )} */}
       </View>
     </View>
   )

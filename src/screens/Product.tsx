@@ -292,7 +292,6 @@ const Product = ({ navigation, route }: Props) => {
     setLiking(false);
   };
 
-  // TODO:
   const addConversation = async () => {
     if (!user) {
       addNotification({ message: "Login to chat user", error: true });

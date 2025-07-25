@@ -329,7 +329,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
               </View>
             </>
           ) : (
-            <Text style={{ color: "red" }}>Waiting Admin Approver/Decline</Text>
+            <Text style={{ color: "red" }}>Waiting Admin Approval/Decline</Text>
           )}
           <View>
             {returned.orderId.items.map(
