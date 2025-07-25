@@ -57,6 +57,7 @@ import useMessage from "../hooks/useMessage"
 import useUser from "../hooks/useUser"
 import Report from "../components/Report"
 import FlagAsInvalid from "../components/FlagAsInvalid"
+import { useIsFocused } from "@react-navigation/native"
 
 type Props = ProductNavigationProp
 
@@ -99,6 +100,8 @@ const Product = ({ navigation, route }: Props) => {
   const [showReport, setShowReport] = useState(false)
   const [showFlagAsInvalid, setShowFlagAsInvalid] = useState(false)
 
+  const isFocused = useIsFocused()
+
   useEffect(() => {
     const fetchProd = async () => {
       setProductError("")
@@ -113,7 +116,7 @@ const Product = ({ navigation, route }: Props) => {
     }
 
     fetchProd()
-  }, [])
+  }, [isFocused])
 
   useEffect(() => {
     if (product) {
@@ -505,6 +508,9 @@ const Product = ({ navigation, route }: Props) => {
             <ProductReview
               product={product}
               setModalProductReview={setModalProductReview}
+              reviews={product.reviews}
+              user={user}
+              navigation={navigation}
             />
           </Modal>
 
@@ -970,21 +976,24 @@ const Product = ({ navigation, route }: Props) => {
           setShowModel={setShowFlagAsInvalid}
           showModel={showFlagAsInvalid}
         />
-        <Text style={styles.recentText}>Recently Viewed</Text>
-        <View style={styles.section}>
-          <FlatList
-            data={recentlyViewed}
-            renderItem={({ item }) => (
-              <View style={{ width: 175 }}>
-                <RenderItem item={item} navigation={navigation} />
-              </View>
-            )}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item) => item.productId}
-            horizontal
-          />
-        </View>
-
+        {recentlyViewed.length > 0 && (
+          <>
+            <Text style={styles.recentText}>Recently Viewed</Text>
+            <View style={styles.section}>
+              <FlatList
+                data={recentlyViewed}
+                renderItem={({ item }) => (
+                  <View style={{ width: 175 }}>
+                    <RenderItem item={item} navigation={navigation} />
+                  </View>
+                )}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item) => item.productId}
+                horizontal
+              />
+            </View>
+          </>
+        )}
         <CommentSection setProduct={changeProduct} product={product} />
       </ScrollView>
       <View style={styles.header}>
