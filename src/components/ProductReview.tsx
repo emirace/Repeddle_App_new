@@ -1,17 +1,37 @@
 import { Pressable, ScrollView, StyleSheet, View } from "react-native"
-import React from "react"
-import { IProduct } from "../types/product"
+import React, { useMemo } from "react"
+import { IProduct, IReview } from "../types/product"
 import { Ionicons } from "@expo/vector-icons"
-import { Text, useTheme } from "react-native-paper"
+import { Button, Text, useTheme } from "react-native-paper"
 import Review from "./Review"
+import { IUser } from "../types/user"
+import { ProductNavigationProp } from "../types/navigation/stack"
 
 type Props = {
   product: IProduct
   setModalProductReview: (val: boolean) => void
+  reviews: IReview[]
+  user: IUser | null
+  navigation: ProductNavigationProp["navigation"]
 }
 
-const ProductReview = ({ product, setModalProductReview }: Props) => {
+const ProductReview = ({
+  product,
+  setModalProductReview,
+  reviews,
+  user,
+  navigation,
+}: Props) => {
   const { colors } = useTheme()
+  const canReview = useMemo(
+    () => user && product.buyers.includes(user._id),
+    [product.buyers, user?._id]
+  )
+
+  const hasReviewed = useMemo(
+    () => reviews.some((review) => review.user._id === user?._id),
+    [reviews, user?._id]
+  )
 
   return (
     <View style={styles.container}>
@@ -23,6 +43,21 @@ const ProductReview = ({ product, setModalProductReview }: Props) => {
           <Text style={[styles.modalTitle]}>Reviews</Text>
         </View>
         <ScrollView>
+          {canReview && !hasReviewed && (
+            <Button
+              onPress={() =>
+                navigation.navigate("WriteReview", {
+                  slug: product.slug,
+                  item: "product",
+                })
+              }
+              mode="contained"
+              style={{ borderRadius: 10, marginBottom: 10 }}
+            >
+              Write a review
+            </Button>
+          )}
+
           {product.reviews.length > 0 ? (
             product.reviews.map((item, index) => (
               <Review review={item} key={index} />

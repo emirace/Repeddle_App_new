@@ -37,28 +37,29 @@ import {
   currentAddress,
   goto,
   region,
-} from "../utils/common";
-import Rating from "../components/Rating";
-import ImageCarousel from "../components/ImageCarousel";
-import RebundleLabel from "../components/RebundleLabel";
-import CollapsibleSection from "../components/CollapsibleSection";
-import useCart from "../hooks/useCart";
-import ProductReview from "../components/ProductReview";
-import CommentSection from "../components/CommentSection";
-import SizeSelection from "../components/SizeSelection";
-import useStore from "../hooks/useStore";
-import { baseURL, frontendURL } from "../services/api";
-import { Asset } from "expo-asset";
-import * as Sharing from "expo-sharing";
-import Loader from "../components/ui/Loader";
-import CartIcon from "../components/ui/cartIcon";
-import useToastNotification from "../hooks/useToastNotification";
-import useMessage from "../hooks/useMessage";
-import useUser from "../hooks/useUser";
-import Report from "../components/Report";
-import FlagAsInvalid from "../components/FlagAsInvalid";
+} from "../utils/common"
+import Rating from "../components/Rating"
+import ImageCarousel from "../components/ImageCarousel"
+import RebundleLabel from "../components/RebundleLabel"
+import CollapsibleSection from "../components/CollapsibleSection"
+import useCart from "../hooks/useCart"
+import ProductReview from "../components/ProductReview"
+import CommentSection from "../components/CommentSection"
+import SizeSelection from "../components/SizeSelection"
+import useStore from "../hooks/useStore"
+import { baseURL, frontendURL } from "../services/api"
+import { Asset } from "expo-asset"
+import * as Sharing from "expo-sharing"
+import Loader from "../components/ui/Loader"
+import CartIcon from "../components/ui/cartIcon"
+import useToastNotification from "../hooks/useToastNotification"
+import useMessage from "../hooks/useMessage"
+import useUser from "../hooks/useUser"
+import Report from "../components/Report"
+import FlagAsInvalid from "../components/FlagAsInvalid"
+import { useIsFocused } from "@react-navigation/native"
 
-type Props = ProductNavigationProp;
+type Props = ProductNavigationProp
 
 const Product = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
@@ -99,6 +100,8 @@ const Product = ({ navigation, route }: Props) => {
   const [showReport, setShowReport] = useState(false);
   const [showFlagAsInvalid, setShowFlagAsInvalid] = useState(false);
 
+  const isFocused = useIsFocused()
+
   useEffect(() => {
     const fetchProd = async () => {
       setProductError("");
@@ -112,8 +115,8 @@ const Product = ({ navigation, route }: Props) => {
       }
     };
 
-    fetchProd();
-  }, []);
+    fetchProd()
+  }, [isFocused])
 
   useEffect(() => {
     if (product) {
@@ -492,6 +495,9 @@ const Product = ({ navigation, route }: Props) => {
             <ProductReview
               product={product}
               setModalProductReview={setModalProductReview}
+              reviews={product.reviews}
+              user={user}
+              navigation={navigation}
             />
           </Modal>
           <View
@@ -951,21 +957,24 @@ const Product = ({ navigation, route }: Props) => {
           setShowModel={setShowFlagAsInvalid}
           showModel={showFlagAsInvalid}
         />
-        <Text style={styles.recentText}>Recently Viewed</Text>
-        <View style={styles.section}>
-          <FlatList
-            data={recentlyViewed}
-            renderItem={({ item }) => (
-              <View style={{ width: 175 }}>
-                <RenderItem item={item} navigation={navigation} />
-              </View>
-            )}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item) => item.productId}
-            horizontal
-          />
-        </View>
-
+        {recentlyViewed.length > 0 && (
+          <>
+            <Text style={styles.recentText}>Recently Viewed</Text>
+            <View style={styles.section}>
+              <FlatList
+                data={recentlyViewed}
+                renderItem={({ item }) => (
+                  <View style={{ width: 175 }}>
+                    <RenderItem item={item} navigation={navigation} />
+                  </View>
+                )}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item) => item.productId}
+                horizontal
+              />
+            </View>
+          </>
+        )}
         <CommentSection setProduct={changeProduct} product={product} />
       </ScrollView>
       <View style={styles.header}>
