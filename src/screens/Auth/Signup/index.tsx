@@ -9,6 +9,8 @@ import {
 } from "react-native-paper"
 import useAuth from "../../../hooks/useAuth"
 import { SignUpNavigationProp } from "../../../types/navigation/stack"
+import GoogleLoginButton from "../../../components/GoogleLoginButton"
+import FacebookLoginButton from "../../../components/FacebookLoginButton"
 
 interface Props {
   gotoLogin: () => void
@@ -102,18 +104,8 @@ const SignUp: React.FC<SignUpNavigationProp> = ({
         </Text>
 
         <View style={styles.socialIconsContainer}>
-          <IconButton
-            icon="facebook"
-            size={28}
-            iconColor={colors.primary}
-            style={styles.socialIcon}
-          />
-          <IconButton
-            icon="google-plus"
-            size={28}
-            iconColor={colors.primary}
-            style={styles.socialIcon}
-          />
+          <FacebookLoginButton />
+          <GoogleLoginButton navigation={navigate} />
         </View>
       </View>
     </ScrollView>

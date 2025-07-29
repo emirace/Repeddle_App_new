@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native"
-import React, { useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Appbar, Button, Text, useTheme } from "react-native-paper"
 import { FontAwesome } from "@expo/vector-icons"
 import Rating from "../components/Rating"
@@ -15,15 +15,52 @@ import moment from "moment"
 import { IReview } from "../types/product"
 import { SellerReviewNavigationProp } from "../types/navigation/stack"
 import useToastNotification from "../hooks/useToastNotification"
+import useAuth from "../hooks/useAuth"
+import useUser from "../hooks/useUser"
+import Loader from "../components/ui/Loader"
+import { useIsFocused } from "@react-navigation/native"
+import { UserByUsername } from "../types/user"
 
 type Props = SellerReviewNavigationProp
 
 const SellerReview = ({ navigation, route: { params } }: Props) => {
   const { colors } = useTheme()
-
+  const { user } = useAuth()
+  const { getUserByUsername } = useUser()
+  const { addNotification } = useToastNotification()
   const [reviews, setReviews] = useState<IReview[]>([])
+  const [seller, setSeller] = useState<UserByUsername["user"] | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  return (
+  const isFocused = useIsFocused()
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const res = await getUserByUsername(params.username)
+      if (typeof res !== "string") {
+        setReviews(res.user.reviews || [])
+        setSeller(res.user)
+      } else {
+        addNotification({ message: res, error: true })
+      }
+      setLoading(false)
+    }
+    fetchReviews()
+  }, [isFocused])
+
+  const canReview = useMemo(
+    () => user?._id && seller?.buyers?.includes(user?._id),
+    [seller, user?._id]
+  )
+
+  const hasReviewed = useMemo(
+    () => reviews.some((review) => review.user._id === user?._id),
+    [reviews, user?._id]
+  )
+
+  return loading ? (
+    <Loader />
+  ) : (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Appbar.Header
         mode="small"
@@ -38,6 +75,20 @@ const SellerReview = ({ navigation, route: { params } }: Props) => {
         />
         <Appbar.Content titleStyle={{ color: "white" }} title="Reviews" />
       </Appbar.Header>
+      {user?.username !== params.username && canReview && !hasReviewed && (
+        <Button
+          onPress={() =>
+            navigation.navigate("WriteReview", {
+              username: params.username,
+              item: "seller",
+            })
+          }
+          mode="contained"
+          style={{ borderRadius: 10, margin: 10 }}
+        >
+          Write a review
+        </Button>
+      )}
       {!reviews.length && (
         <View
           style={{
@@ -72,28 +123,28 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
   const { colors } = useTheme()
   const { addNotification } = useToastNotification()
 
-  const [replyVisible, setReplyVisible] = useState(false)
-  const [replyText, setReplyText] = useState("")
+  // const [replyVisible, setReplyVisible] = useState(false)
+  // const [replyText, setReplyText] = useState("")
   const [loading, setLoading] = useState(false)
   const [currentReview, setCurrentReview] = useState(item)
 
-  const handleReply = () => {
-    setReplyVisible(true)
-  }
+  // const handleReply = () => {
+  //   setReplyVisible(true)
+  // }
 
-  const handleReplySubmit = async () => {
-    if (!replyText) {
-      addNotification({ message: "Enter a reply", error: true })
-      return
-    }
-    setLoading(true)
+  // const handleReplySubmit = async () => {
+  //   if (!replyText) {
+  //     addNotification({ message: "Enter a reply", error: true })
+  //     return
+  //   }
+  //   setLoading(true)
 
-    setReplyText("")
-    setReplyVisible(false)
-    addNotification({ message: "Reply submitted successfully" })
+  //   setReplyText("")
+  //   setReplyVisible(false)
+  //   addNotification({ message: "Reply submitted successfully" })
 
-    setLoading(false)
-  }
+  //   setLoading(false)
+  // }
 
   return (
     <View style={styles.reviewContainer}>
@@ -169,7 +220,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
             </Text>
           </View>
         )}
-        {!replyVisible && !currentReview.comment && (
+        {/* {!replyVisible && !currentReview.comment && (
           <TouchableOpacity
             style={[styles.replyButton, { backgroundColor: colors.primary }]}
             onPress={handleReply}
@@ -199,7 +250,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
               labelStyle={styles.submitButtonText}
             />
           </View>
-        )}
+        )} */}
       </View>
     </View>
   )

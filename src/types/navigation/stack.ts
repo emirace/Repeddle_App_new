@@ -49,6 +49,9 @@ export type RootStackParamList = {
   Earnings: undefined
   Notification: undefined
   Support: undefined
+  WriteReview:
+    | { slug: string; item: "product" }
+    | { username: string; item: "seller" }
 }
 
 export type MainScreenNavigationProp = NativeStackScreenProps<
@@ -234,4 +237,9 @@ export type NotificationNavigationProp = NativeStackScreenProps<
 export type SupportNavigationProp = NativeStackScreenProps<
   RootStackParamList,
   "Support"
+>
+
+export type WriteReviewNavigationProp = NativeStackScreenProps<
+  RootStackParamList,
+  "WriteReview"
 >

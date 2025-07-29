@@ -113,7 +113,11 @@ const ReturnDetail = ({ navigation, route }: Props) => {
       returned.deliveryTracking.currentStatus.status
     )
 
-    if (nextStatus[1] === 9 && !trackingNumber) {
+    if (
+      nextStatus[1] === 9 &&
+      returned.deliveryOption.method !== "Pick up from Seller" &&
+      !trackingNumber
+    ) {
       setShowTracking(true)
     } else {
       setLoadingReturn(true)
@@ -329,7 +333,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
               </View>
             </>
           ) : (
-            <Text style={{ color: "red" }}>Waiting Admin Approver/Decline</Text>
+            <Text style={{ color: "red" }}>Waiting Admin Approval/Decline</Text>
           )}
           <View>
             {returned.orderId.items.map(
@@ -400,24 +404,28 @@ const ReturnDetail = ({ navigation, route }: Props) => {
                           {deliveryNumber(
                             returned.deliveryTracking.currentStatus.status
                           ) > 7 &&
-                            deliveryNumber(
-                              returned.deliveryTracking.currentStatus.status
-                            ) < 10 && (
-                              <Button
-                                mode="contained"
-                                onPress={updateTracking}
-                                loading={loadingReturn}
-                                disabled={loadingReturn}
-                                style={{ borderRadius: 5 }}
-                              >
-                                {`Mark as ${
-                                  showNextStatus(
-                                    returned.deliveryTracking.currentStatus
-                                      .status
-                                  )[0]
-                                }`}
-                              </Button>
-                            )}
+                          deliveryNumber(
+                            returned.deliveryTracking.currentStatus.status
+                          ) < 10 &&
+                          returned.deliverySelected ? (
+                            <Button
+                              mode="contained"
+                              onPress={updateTracking}
+                              loading={loadingReturn}
+                              disabled={loadingReturn}
+                              style={{ borderRadius: 5 }}
+                            >
+                              {`Mark as ${
+                                showNextStatus(
+                                  returned.deliveryTracking.currentStatus.status
+                                )[0]
+                              }`}
+                            </Button>
+                          ) : (
+                            <Text style={{ color: "red" }}>
+                              Waiting for seller to provide delivery address
+                            </Text>
+                          )}
                         </>
                       )
                     ) : // Other cases
