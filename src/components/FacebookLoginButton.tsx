@@ -35,7 +35,7 @@ const FacebookLoginButton: FC = () => {
   const [request, response, promptAsync] = AuthSession.useAuthRequest(
     {
       clientId: "987624389041257",
-      redirectUri: "fb987624389041257://authorize",
+      redirectUri: AuthSession.makeRedirectUri(),
       scopes: ["public_profile", "email"],
       responseType: "code",
       extraParams: {
