@@ -51,7 +51,10 @@ const SellerReview = ({ navigation, route: { params } }: Props) => {
   }, [isFocused])
 
   const canReview = useMemo(
-    () => user?._id && seller?.buyers?.includes(user?._id),
+    () =>
+      user?._id &&
+      (seller?.buyers?.includes(user._id) ||
+        user?.reviews?.some((review) => review.user._id === seller?._id)),
     [seller, user?._id]
   )
 

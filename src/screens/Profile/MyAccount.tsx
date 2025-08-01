@@ -356,7 +356,10 @@ const RenderHeader = ({
             })
           }
         >
-          <Rating rating={user.rating ?? 0} numReviews={user.numReviews} />
+          <Rating
+            rating={user.rating ?? 0}
+            numReviews={user.numReviews || user.reviews?.length || 0}
+          />
         </TouchableOpacity>
       </View>
       {userInfo?._id !== user._id && (

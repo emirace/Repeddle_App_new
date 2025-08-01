@@ -10,6 +10,11 @@ export interface IReview {
   updatedAt: string
 }
 
+export interface ReviewWithPagination {
+  reviews: IReview[]
+  pagination: Pagination
+}
+
 export interface Share {
   user: string | null
   hashed: string
