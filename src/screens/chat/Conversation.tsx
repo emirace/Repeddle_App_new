@@ -38,7 +38,7 @@ const Conversation: React.FC<any> = ({ navigation }) => {
   }, []);
 
   const filteredConversations = conversations.filter((conversation) =>
-    conversation.otherUser.username
+    conversation?.otherUser?.username
       .toLowerCase()
       .includes(searchQuery.toLowerCase())
   );
@@ -88,7 +88,6 @@ const Conversation: React.FC<any> = ({ navigation }) => {
         keyExtractor={(item, index) => item._id || index.toString()}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
-          console.log("item", item);
           return item.lastMessage ? (
             <TouchableOpacity
               style={styles.listItem}
@@ -103,7 +102,7 @@ const Conversation: React.FC<any> = ({ navigation }) => {
               </View>
               <View style={styles.contentContainer}>
                 <View style={styles.textContainer}>
-                  <Text style={styles.name}>{item.otherUser.username}</Text>
+                  <Text style={styles.name}>{item?.otherUser?.username}</Text>
                   <Text style={styles.lastMessage}>
                     {isTypingList.find((type) => type.id === item._id) ? (
                       <Text style={{ color: colors.primary }}>typing...</Text>
