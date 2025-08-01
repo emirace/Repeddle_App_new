@@ -52,6 +52,22 @@ export type RootStackParamList = {
   WriteReview:
     | { slug: string; item: "product" }
     | { username: string; item: "seller" }
+    | {
+        slug: string
+        item: "product"
+        rating: number
+        like: boolean
+        comment: string
+        _id: string
+      }
+    | {
+        username: string
+        item: "seller"
+        rating: number
+        like: boolean
+        comment: string
+        _id: string
+      }
 }
 
 export type MainScreenNavigationProp = NativeStackScreenProps<

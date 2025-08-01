@@ -60,7 +60,13 @@ const ProductReview = ({
 
           {product.reviews.length > 0 ? (
             product.reviews.map((item, index) => (
-              <Review review={item} key={index} />
+              <Review
+                review={item}
+                key={index}
+                navigation={navigation}
+                item="product"
+                slug={product.slug}
+              />
             ))
           ) : (
             <Text style={{ textAlign: "center" }}>

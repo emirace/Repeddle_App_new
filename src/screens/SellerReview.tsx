@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native"
 import React, { useEffect, useMemo, useState } from "react"
-import { Appbar, Button, Text, useTheme } from "react-native-paper"
+import { Appbar, Button, IconButton, Text, useTheme } from "react-native-paper"
 import { FontAwesome } from "@expo/vector-icons"
 import Rating from "../components/Rating"
 import moment from "moment"
@@ -20,6 +20,7 @@ import useUser from "../hooks/useUser"
 import Loader from "../components/ui/Loader"
 import { useIsFocused } from "@react-navigation/native"
 import { UserByUsername } from "../types/user"
+import { baseURL } from "../services/api"
 
 type Props = SellerReviewNavigationProp
 
@@ -146,6 +147,8 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
   //   setLoading(false)
   // }
 
+  console.log(currentReview)
+
   return (
     <View style={styles.reviewContainer}>
       <Pressable
@@ -157,7 +160,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
         }
       >
         <Image
-          source={{ uri: currentReview?.user?.image }}
+          source={{ uri: baseURL + currentReview?.user?.image }}
           style={styles.reviewerImage}
         />
         <View style={styles.reviewerInfo}>
@@ -170,33 +173,56 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
         </View>
       </Pressable>
       <View style={styles.reviewContent}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Rating rating={currentReview.rating} caption=" " />
-          <FontAwesome
-            style={styles.icon}
-            name={
-              currentReview.like
-                ? "thumbs-up"
-                : currentReview.like
-                ? "thumbs-down"
-                : "smile-o"
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Rating rating={currentReview.rating} caption=" " />
+            <FontAwesome
+              style={styles.icon}
+              name={
+                currentReview.like
+                  ? "thumbs-up"
+                  : currentReview.like
+                  ? "thumbs-down"
+                  : "smile-o"
+              }
+              color={
+                currentReview.like
+                  ? "#eb9f40"
+                  : currentReview.like
+                  ? "red"
+                  : "grey"
+              }
+              size={18}
+            />
+          </View>
+          <Pressable
+            onPress={() =>
+              navigation.navigate("WriteReview", {
+                ...currentReview,
+                username: currentReview.user.username,
+                item: "seller",
+              })
             }
-            color={
-              currentReview.like
-                ? "#eb9f40"
-                : currentReview.like
-                ? "red"
-                : "grey"
-            }
-            size={18}
-          />
+          >
+            <IconButton
+              icon="pencil-outline"
+              style={[styles.edit]}
+              iconColor={colors.primary}
+            />
+          </Pressable>
         </View>
         <Text style={styles.reviewText}>{currentReview.comment}</Text>
-        {currentReview?.user && (
+        {/* {currentReview?.user && (
           <View
             style={[
               styles.sellerReplyContainer,
-              { backgroundColor: colors.elevation.level2 },
+              { backgroundColor: colors.primary },
             ]}
           >
             <Pressable
@@ -219,7 +245,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
               {currentReview.comment}
             </Text>
           </View>
-        )}
+        )} */}
         {/* {!replyVisible && !currentReview.comment && (
           <TouchableOpacity
             style={[styles.replyButton, { backgroundColor: colors.primary }]}
@@ -368,6 +394,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   icon: {
-    marginLeft: 20,
+    marginLeft: 10,
   },
+  edit: { padding: 0, margin: 0, height: 30, width: 30 },
 })
