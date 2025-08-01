@@ -133,11 +133,14 @@ const WriteProductReview = ({
         review: IReview
       } | null = null
       if (reviewData) {
-        res = await updateProductReview(product?._id, {
-          comment,
-          rating: Number(rating),
-          like,
-          _id: reviewData._id,
+        // res = await updateProductReview(product?._id, {
+        //   comment,
+        //   rating: Number(rating),
+        //   like,
+        //   _id: reviewData._id,
+        // })
+        addNotification({
+          message: "Review updated successfully. not implemented",
         })
       } else {
         res = await createProductReview(product?._id, {
@@ -163,11 +166,14 @@ const WriteProductReview = ({
         review: IReview
       } | null = null
       if (reviewData) {
-        res = await updateSellerReview(seller.user._id, {
-          comment,
-          rating: Number(rating),
-          like,
-          _id: reviewData._id,
+        // res = await updateSellerReview(seller.user._id, {
+        //   comment,
+        //   rating: Number(rating),
+        //   like,
+        //   _id: reviewData._id,
+        // })
+        addNotification({
+          message: "Review updated successfully. not implemented",
         })
       } else {
         res = await reviewSeller(seller.user._id, {
@@ -194,8 +200,8 @@ const WriteProductReview = ({
   ]
 
   const canReview = useMemo(
-    () => true,
-    // () => user && product?.buyers.some((buyer) => buyer === user._id),
+    // () => true,
+    () => user && product?.buyers.some((buyer) => buyer === user._id),
     [product, user]
   )
 

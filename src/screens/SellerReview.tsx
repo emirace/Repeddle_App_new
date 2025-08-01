@@ -21,6 +21,7 @@ import Loader from "../components/ui/Loader"
 import { useIsFocused } from "@react-navigation/native"
 import { UserByUsername } from "../types/user"
 import { baseURL } from "../services/api"
+import { IUser } from "../types/user"
 
 type Props = SellerReviewNavigationProp
 
@@ -105,7 +106,7 @@ const SellerReview = ({ navigation, route: { params } }: Props) => {
       <FlatList
         data={reviews}
         renderItem={({ item }) => (
-          <ReviewItem item={item} navigation={navigation} />
+          <ReviewItem item={item} navigation={navigation} user={user} />
         )}
         keyExtractor={(item, index) => item._id.toString()}
         contentContainerStyle={styles.flatListContentContainer}
@@ -118,9 +119,10 @@ const SellerReview = ({ navigation, route: { params } }: Props) => {
 type ReviewProps = {
   navigation: SellerReviewNavigationProp["navigation"]
   item: IReview
+  user: IUser | null
 }
 
-const ReviewItem = ({ item, navigation }: ReviewProps) => {
+const ReviewItem = ({ item, navigation, user }: ReviewProps) => {
   const { colors } = useTheme()
   const { addNotification } = useToastNotification()
 
@@ -201,21 +203,23 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
               size={18}
             />
           </View>
-          <Pressable
-            onPress={() =>
-              navigation.navigate("WriteReview", {
-                ...currentReview,
-                username: currentReview.user.username,
-                item: "seller",
-              })
-            }
-          >
-            <IconButton
-              icon="pencil-outline"
-              style={[styles.edit]}
-              iconColor={colors.primary}
-            />
-          </Pressable>
+          {currentReview.user._id === user?._id && (
+            <Pressable
+              onPress={() =>
+                navigation.navigate("WriteReview", {
+                  ...currentReview,
+                  username: currentReview.user.username,
+                  item: "seller",
+                })
+              }
+            >
+              <IconButton
+                icon="pencil-outline"
+                style={[styles.edit]}
+                iconColor={colors.primary}
+              />
+            </Pressable>
+          )}
         </View>
         <Text style={styles.reviewText}>{currentReview.comment}</Text>
         {/* {currentReview?.user && (
