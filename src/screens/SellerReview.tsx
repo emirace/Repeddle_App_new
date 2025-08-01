@@ -152,7 +152,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
         style={styles.reviewerInfoContainer}
         onPress={() =>
           navigation.push("MyAccount", {
-            username: currentReview.user._id,
+            username: currentReview.user.username,
           })
         }
       >
@@ -203,7 +203,7 @@ const ReviewItem = ({ item, navigation }: ReviewProps) => {
               style={styles.sellerContainer}
               onPress={() =>
                 navigation.push("MyAccount", {
-                  username: currentReview.user._id,
+                  username: currentReview.user.username,
                 })
               }
             >
