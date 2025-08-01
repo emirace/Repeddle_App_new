@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import {
   View,
   ImageBackground,
@@ -8,17 +8,19 @@ import {
   Image,
   Platform,
   ImageSourcePropType,
-} from "react-native"
-import { LinearGradient } from "expo-linear-gradient"
-import { Button, IconButton, Text, useTheme } from "react-native-paper"
-import { AuthNavigationProp } from "../../types/navigation/stack"
-import useAuth from "../../hooks/useAuth"
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Button, IconButton, Text, useTheme } from "react-native-paper";
+import { AuthNavigationProp } from "../../types/navigation/stack";
+import useAuth from "../../hooks/useAuth";
+import FacebookLoginButton from "../../components/FacebookLoginButton";
+import GoogleLoginButton from "../../components/GoogleLoginButton";
 
 interface OnboardingItem {
-  id: string
-  backgroundImage: ImageSourcePropType
-  header: string
-  description: string
+  id: string;
+  backgroundImage: ImageSourcePropType;
+  header: string;
+  description: string;
 }
 
 const data: OnboardingItem[] = [
@@ -50,20 +52,20 @@ const data: OnboardingItem[] = [
     description:
       "Join a community dedicated to conscious consumption. By choosing pre-loved items, you're not just saving money—you're also playing a part in solving Africa’s fashion waste crisis. Let's build a sustainable future together.",
   },
-]
+];
 
-const WIDTH = Dimensions.get("screen").width
+const WIDTH = Dimensions.get("screen").width;
 
 const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
-  const { colors, dark } = useTheme()
-  const { loading, user } = useAuth()
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const { colors, dark } = useTheme();
+  const { loading, user } = useAuth();
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     if (user) {
-      navigation.replace("Main")
+      navigation.replace("Main");
     }
-  }, [user])
+  }, [user]);
 
   if (loading) {
     return (
@@ -91,14 +93,14 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
           alt="logo"
         />
       </View>
-    )
+    );
   }
   const renderItem = ({
     item,
     index,
   }: {
-    item: OnboardingItem
-    index: number
+    item: OnboardingItem;
+    index: number;
   }) => {
     return (
       <ImageBackground
@@ -130,8 +132,8 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
           </View>
         </View>
       </ImageBackground>
-    )
-  }
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -143,11 +145,11 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         onScroll={(event) => {
-          const { x } = event.nativeEvent.contentOffset
+          const { x } = event.nativeEvent.contentOffset;
           const index = Math.round(
             x / (event.nativeEvent.layoutMeasurement.width - 20)
-          )
-          setCurrentIndex(index)
+          );
+          setCurrentIndex(index);
         }}
       />
       <View
@@ -193,24 +195,14 @@ const Auth: React.FC<AuthNavigationProp> = ({ navigation, route }) => {
             </Text>
           </Text>
           <View style={styles.socialIconsContainer}>
-            <IconButton
-              icon="facebook"
-              size={28}
-              iconColor="white"
-              style={styles.socialIcon}
-            />
-            <IconButton
-              icon="google-plus"
-              size={28}
-              iconColor="white"
-              style={styles.socialIcon}
-            />
+            <FacebookLoginButton color="white" />
+            <GoogleLoginButton navigation={navigation} color="white" />
           </View>
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -292,6 +284,6 @@ const styles = StyleSheet.create({
     right: 30,
     zIndex: 50,
   },
-})
+});
 
-export default Auth
+export default Auth;

@@ -99,6 +99,7 @@ const Chat: React.FC<ChatNavigationProp> = ({ navigation, route }) => {
         content: messageInput,
         conversationId: currentConversation._id,
         image,
+        type: currentConversation.type,
       });
       setSending({ value: false, message: "", failed: false, image: "" });
     } catch (error) {
