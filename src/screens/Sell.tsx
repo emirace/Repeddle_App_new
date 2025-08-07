@@ -46,6 +46,7 @@ import Tooltip from "../components/Tooltip"
 import useUser from "../hooks/useUser"
 import { baseURL } from "../services/api"
 import { uploadOptimizeImage } from "../utils/image"
+import ProductSuccess from "../components/ProductSuccess"
 
 const Sell = ({ navigation, route }: any) => {
   const { user } = useAuth()
@@ -71,7 +72,7 @@ const Sell = ({ navigation, route }: any) => {
   const { addNotification } = useToastNotification()
   const isFocused = useIsFocused()
 
-  const [input, setInput] = useState({
+  const initialInputState = {
     name: "",
     image1: "",
     image2: "",
@@ -96,10 +97,13 @@ const Sell = ({ navigation, route }: any) => {
     luxuryImage: "",
     luxury: false,
     vintage: false,
-  })
+  }
+
+  const [input, setInput] = useState(initialInputState)
 
   const [tempSize, setTempSize] = useState("S")
   const [modalVisible, setModalVisible] = useState(false)
+  const [showProductSuccess, setShowProductSuccess] = useState(false)
   const [countInStock, setCountInStock] = useState(1)
   const [sizes, setSizes] = useState<ISize[]>([])
   const [sizesError, setSizesError] = useState("")
@@ -328,7 +332,8 @@ const Sell = ({ navigation, route }: any) => {
     })
 
     if (res) {
-      navigation.push("MyAccount", { username: user!.username })
+      clearFormData()
+      setShowProductSuccess(true)
     } else {
       addNotification({ message: error || "", error: true })
     }
@@ -458,8 +463,30 @@ const Sell = ({ navigation, route }: any) => {
     setSizesInputCounts(sizesInputCounts.filter((_, ind) => i !== ind))
   }
 
+  const clearFormData = () => {
+    setInput(initialInputState)
+    setSizes([])
+    setTags([])
+    setColorsVal([])
+    setCountInStock(1)
+    setDeliveryOption([{ name: "Pick up from Seller", value: 0 }])
+    setValidationError({})
+    setSizesError("")
+    setMeta({})
+    setQueryBrand("")
+    setSearchBrand([])
+    setSizesInputCounts([])
+    setTempSize("S")
+    setAddSize(false)
+  }
+
   return (
     <View style={styles.container}>
+      <ProductSuccess
+        navigation={navigation}
+        showModel={showProductSuccess}
+        setShowModel={setShowProductSuccess}
+      />
       <Appbar.Header
         mode="small"
         style={{
