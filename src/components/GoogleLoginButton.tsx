@@ -30,8 +30,10 @@ const getRedirectUri = () => {
 
 WebBrowser.maybeCompleteAuthSession();
 
-const GoogleLoginButton: FC<{ navigation: any }> = ({ navigation }) => {
-  const { colors } = useTheme();
+const GoogleLoginButton: FC<{ navigation: any; color: string }> = ({
+  navigation,
+  color,
+}) => {
   const { addNotification } = useToastNotification();
   const { getUser } = useAuth();
   const [loading, setLoading] = React.useState(false);
@@ -80,7 +82,7 @@ const GoogleLoginButton: FC<{ navigation: any }> = ({ navigation }) => {
       onPress={() => promptAsync()}
       icon="google-plus"
       size={28}
-      iconColor={colors.primary}
+      iconColor={color}
       style={{ marginHorizontal: 10 }}
     />
   );

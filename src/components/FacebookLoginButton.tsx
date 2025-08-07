@@ -24,7 +24,7 @@ interface AuthResponse {
   accessToken: string;
 }
 
-const FacebookLoginButton: FC = () => {
+const FacebookLoginButton: FC<{ color: string }> = ({ color }) => {
   const { colors } = useTheme();
   const { addNotification } = useToastNotification();
   const { getUser } = useAuth();
@@ -76,7 +76,7 @@ const FacebookLoginButton: FC = () => {
       icon="facebook"
       onPress={() => promptAsync()}
       size={28}
-      iconColor={colors.primary}
+      iconColor={color}
       style={{ marginHorizontal: 10 }}
     />
   );
