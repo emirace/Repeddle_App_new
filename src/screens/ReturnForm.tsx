@@ -55,7 +55,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
         participantId: sellerId,
         type: "Chat",
       })
-      navigation.push("Chat", { conversationId: convo._id })
+      navigation.replace("Chat", { conversationId: convo._id })
     } catch (error) {
       addNotification({
         message: messageError || (error as string),
@@ -119,7 +119,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
       setDescription("")
       setSending("")
       setRefund("")
-      navigation.navigate("ReturnDetail", { id: res._id })
+      navigation.replace("ReturnDetail", { id: res._id })
     } else {
       addNotification({
         message: error || "Failed to update status",
@@ -266,7 +266,7 @@ const ReturnForm = ({ navigation, route }: Props) => {
                 style={[styles.option]}
                 onPress={() =>
                   current &&
-                  navigation.push("Sell", {
+                  navigation.replace("Sell", {
                     id: current.product._id,
                     slug: current.product.slug,
                     relist: true,

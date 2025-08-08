@@ -1,4 +1,4 @@
-import { CreateReturn, IReturn } from "../types/order"
+import { CreateReturn, IDeliveryMeta, IReturn } from "../types/order"
 import { getBackendErrorMessage } from "../utils/error"
 import api from "./api"
 
@@ -196,7 +196,7 @@ export const updateReturnStatusService = async (
 
 export const updateReturnAddressService = async (
   id: string,
-  body: { method: string; fee: number }
+  body: { method: string; fee: number; meta?: IDeliveryMeta }
 ) => {
   const url = `/returns/${id}/address`
 

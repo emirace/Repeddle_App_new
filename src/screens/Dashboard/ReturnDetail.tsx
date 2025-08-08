@@ -1,5 +1,6 @@
 import {
   Image,
+  Modal,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -11,13 +12,20 @@ import { Appbar, Button, IconButton, Text, useTheme } from "react-native-paper"
 import moment from "moment"
 import useAuth from "../../hooks/useAuth"
 import DeliveryHistory from "../../components/DeliveryHistory"
-import { deliveryNumber, deliveryStatusMap } from "../../utils/common"
+import {
+  currency,
+  deliveryNumber,
+  deliveryStatusMap,
+  region,
+} from "../../utils/common"
 import { ReturnDetailNavigationProp } from "../../types/navigation/stack"
 import { IReturn } from "../../types/order"
 import Loader from "../../components/ui/Loader"
 import useReturn from "../../hooks/useReturn"
 import useToastNotification from "../../hooks/useToastNotification"
 import { baseURL } from "../../services/api"
+import { useIsFocused } from "@react-navigation/native"
+import DeliveryReturn from "../../components/DeliveryReturn"
 
 type Props = ReturnDetailNavigationProp
 
@@ -31,6 +39,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
     updateReturnStatus,
   } = useReturn()
   const { addNotification } = useToastNotification()
+  const isFocused = useIsFocused()
 
   const { id: returnId } = route.params
 
@@ -41,8 +50,6 @@ const ReturnDetail = ({ navigation, route }: Props) => {
   const [returned, setReturned] = useState<IReturn>()
   const [showTracking, setShowTracking] = useState(false)
   const [trackingNumber, setTrackingNumber] = useState("")
-
-  console.log(returned)
 
   useEffect(() => {
     const getData = async () => {
@@ -60,7 +67,7 @@ const ReturnDetail = ({ navigation, route }: Props) => {
     }
 
     getData()
-  }, [])
+  }, [isFocused])
 
   const showNextStatus = (status: string) => {
     const entries = Object.entries(deliveryStatusMap)
@@ -335,6 +342,85 @@ const ReturnDetail = ({ navigation, route }: Props) => {
           ) : (
             <Text style={{ color: "red" }}>Waiting Admin Approval/Decline</Text>
           )}
+
+          {returned.status === "Approved" && (
+            <>
+              <Text style={styles.name}>Return Delivery Address</Text>
+              {returned.deliverySelected ? (
+                Object.entries(returned.deliverySelected).map(
+                  ([key, value]) => (
+                    <View style={styles.itemNum}>
+                      {key === "fee" ? (
+                        <>
+                          <View style={{ flex: 3 }}>
+                            <Text
+                              style={{
+                                textTransform: "capitalize",
+                                fontSize: 13,
+                              }}
+                            >
+                              {key}:
+                            </Text>
+                          </View>
+                          <View style={{ flex: 5 }}>
+                            <Text
+                              style={{
+                                fontSize: 13,
+                                textTransform: "capitalize",
+                              }}
+                            >
+                              {currency(region())} {value}
+                            </Text>
+                          </View>
+                        </>
+                      ) : (
+                        <>
+                          <View style={{ flex: 3 }}>
+                            <Text
+                              style={{
+                                textTransform: "capitalize",
+                                fontSize: 13,
+                              }}
+                            >
+                              {key}:
+                            </Text>
+                          </View>
+                          <View style={{ flex: 5 }}>
+                            <Text
+                              style={{
+                                fontSize: 13,
+                                textTransform: "capitalize",
+                              }}
+                            >
+                              {value}
+                            </Text>
+                          </View>
+                        </>
+                      )}
+                    </View>
+                  )
+                )
+              ) : returned.productId.seller._id === user?._id ? (
+                <Button
+                  mode="contained"
+                  style={{
+                    backgroundColor: colors.primary,
+                    borderRadius: 5,
+                    marginTop: 10,
+                    width: "100%",
+                  }}
+                  onPress={() => setShowModel(true)}
+                >
+                  Add Return Delivery Address
+                </Button>
+              ) : (
+                <Text style={{ color: "red" }}>
+                  Waiting Seller's delivery address
+                </Text>
+              )}
+            </>
+          )}
+
           <View>
             {returned.orderId.items.map(
               (orderitem) =>
@@ -442,6 +528,13 @@ const ReturnDetail = ({ navigation, route }: Props) => {
             )}
           </View>
         </View>
+
+        <DeliveryReturn
+          setShowModel={setShowModel}
+          returned={returned}
+          setReturned={setReturned}
+          showModel={showModel}
+        />
       </ScrollView>
     </View>
   ) : null
