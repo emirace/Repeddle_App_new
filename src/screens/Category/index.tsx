@@ -70,10 +70,15 @@ const Category = ({ navigation }: CategoryNavigationProp) => {
           iconColor="white"
           onPress={() => navigation.goBack()}
         />
-        <Appbar.Content title="Category" />
+        <Appbar.Content title="Category" color="white" />
       </Appbar.Header>
       {loading && <ActivityIndicator />}
-      {error && <Text style={{ color: "red" }}>{error}</Text>}
+      {error && !categories.length && (
+        <Text style={{ color: "red" }}>{error}</Text>
+      )}
+      {!loading && !categories.length && !error && (
+        <Text style={{ color: "red" }}>No categories found</Text>
+      )}
       <View style={styles.container}>
         <FlatList
           data={categories}

@@ -140,7 +140,11 @@ const Report = ({ reportItem, refs, setShowModel, showModel }: Props) => {
                     style={styles.trash}
                     onPress={() => onDeleteImage()}
                   >
-                    <Ionicons name="trash-outline" size={16} color="black" />
+                    <Ionicons
+                      name="trash-outline"
+                      size={16}
+                      color={colors.onBackground}
+                    />
                   </Pressable>
                 </>
               ) : (
@@ -195,7 +199,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.4)",
+    // backgroundColor: "rgba(0,0,0,0.4)",
   },
   modalContent: {
     backgroundColor: "#fff",

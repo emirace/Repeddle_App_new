@@ -1,7 +1,6 @@
 import React, { useEffect } from "react"
 import {
   View,
-  Text,
   FlatList,
   TouchableOpacity,
   Image,
@@ -13,7 +12,7 @@ import useNotification from "../hooks/useNotification"
 import { baseURL } from "../services/api"
 import { Notification } from "../types/conversation"
 import { NotificationNavigationProp } from "../types/navigation/stack"
-import { Appbar, useTheme } from "react-native-paper"
+import { Appbar, Text, useTheme } from "react-native-paper"
 
 const MobileNotification: React.FC<NotificationNavigationProp> = ({
   navigation,
@@ -30,7 +29,7 @@ const MobileNotification: React.FC<NotificationNavigationProp> = ({
     console.log(not)
     markNotification(not._id)
     if (not.mobileLink) {
-      console.log("Mobile Link", not.mobileLink);
+      console.log("Mobile Link", not.mobileLink)
       navigation.navigate(not.mobileLink.name, {
         ...not.mobileLink.params,
       })
@@ -49,12 +48,7 @@ const MobileNotification: React.FC<NotificationNavigationProp> = ({
       >
         <Image source={{ uri: baseURL + not.image }} style={styles.image} />
         <View style={styles.textContainer}>
-          <Text
-            style={[
-              styles.message,
-              { color: colors.onBackground, marginBottom: 4 },
-            ]}
-          >
+          <Text style={[styles.message, { marginBottom: 4 }]}>
             {not.message}
           </Text>
           <Text style={styles.time}>{moment(not.createdAt).fromNow()}</Text>
