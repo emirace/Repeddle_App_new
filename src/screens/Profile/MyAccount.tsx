@@ -141,7 +141,7 @@ const MyAccount = ({ navigation, route }: Props) => {
                 iconColor="white"
                 name="edit"
                 size={size}
-                color={color}
+                color={"white"}
               />
             )}
             onPress={() => navigation.push("ProfileSettings")}

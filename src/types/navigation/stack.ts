@@ -29,7 +29,7 @@ export type RootStackParamList = {
   Cart: undefined
   Checkout: undefined
   PaymentMethod: undefined
-  SellerReview: { username: string }
+  SellerReview: { username: string; isUser?: boolean }
   Wishlist: undefined
   ReturnDetail: { id: string }
   ReturnForm: {

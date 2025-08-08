@@ -181,5 +181,7 @@ export type IDeliveryMeta = {
   postalcode?: string
   pickUp?: string
   "delivery Option"?: string
+  deliveryOption?: string
+  fee?: number
   cost?: number
 }

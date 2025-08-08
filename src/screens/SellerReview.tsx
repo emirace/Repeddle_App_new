@@ -22,13 +22,16 @@ import { useIsFocused } from "@react-navigation/native"
 import { UserByUsername } from "../types/user"
 import { baseURL } from "../services/api"
 import { IUser } from "../types/user"
+import useReviews from "../hooks/useReviews"
 
 type Props = SellerReviewNavigationProp
 
 const SellerReview = ({ navigation, route: { params } }: Props) => {
   const { colors } = useTheme()
   const { user } = useAuth()
+
   const { getUserByUsername } = useUser()
+  const { fetchUserReviews } = useReviews()
   const { addNotification } = useToastNotification()
   const [reviews, setReviews] = useState<IReview[]>([])
   const [seller, setSeller] = useState<UserByUsername["user"] | null>(null)
@@ -38,12 +41,21 @@ const SellerReview = ({ navigation, route: { params } }: Props) => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      const res = await getUserByUsername(params.username)
-      if (typeof res !== "string") {
-        setReviews(res.user.reviews || [])
-        setSeller(res.user)
+      if (params.isUser) {
+        const res = await fetchUserReviews()
+        if (typeof res !== "string") {
+          setReviews(res.reviews || [])
+        } else {
+          addNotification({ message: res, error: true })
+        }
       } else {
-        addNotification({ message: res, error: true })
+        const res = await getUserByUsername(params.username)
+        if (typeof res !== "string") {
+          setReviews(res.user.reviews || [])
+          setSeller(res.user)
+        } else {
+          addNotification({ message: res, error: true })
+        }
       }
       setLoading(false)
     }

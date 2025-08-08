@@ -180,7 +180,12 @@ const Profile: React.FC<ProfileNavigationProp> = ({ navigation }) => {
                 left={() => <List.Icon icon={item.leftIcon} />}
                 right={() => <List.Icon icon="chevron-right" />}
                 descriptionStyle={{ fontSize: 14 }}
-                onPress={() => navigation.navigate(`${item.link}` as any)}
+                onPress={() =>
+                  navigation.navigate(`${item.link}` as any, {
+                    username: user?.username,
+                    isUser: true,
+                  })
+                }
               />
             ))}
             <List.Item
@@ -213,7 +218,7 @@ const dashboardItems: {
 }[] = [
   {
     name: "My Profile",
-    link: "ProfileSettings",
+    link: "MyAccount",
     leftIcon: "account",
     description: "Manage your profile",
   },
@@ -222,6 +227,12 @@ const dashboardItems: {
     link: "ProductList",
     leftIcon: "bookmark",
     description: "Manage your products",
+  },
+  {
+    name: "My Reviews",
+    link: "SellerReview",
+    leftIcon: "star",
+    description: "View your reviews",
   },
   {
     name: "Orders",

@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   FlatList,
   Image,
-} from "react-native";
-import { Appbar, useTheme, Text, IconButton } from "react-native-paper";
-import { SubCategoriesNavigationProp } from "../../types/navigation/stack";
-import { ISubCategory, ISubCategoryItem } from "../../types/category";
-import { baseURL } from "../../services/api";
+} from "react-native"
+import { Appbar, useTheme, Text, IconButton } from "react-native-paper"
+import { SubCategoriesNavigationProp } from "../../types/navigation/stack"
+import { ISubCategory, ISubCategoryItem } from "../../types/category"
+import { baseURL } from "../../services/api"
 
 const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
-  const { category } = route.params;
-  const { colors } = useTheme();
+  const { category } = route.params
+  const { colors } = useTheme()
 
   const renderSubcategoryItem = ({ item }: { item: ISubCategory }) => {
     return (
@@ -39,14 +39,30 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
           />
         )}
       </TouchableOpacity>
-    );
-  };
+    )
+  }
 
   const renderNextSubcategoryItem = ({ item }: { item: ISubCategoryItem }) => {
+    const handleSubcategorySelect = (subcategory: ISubCategoryItem) => {
+      console.log(subcategory.name, "subcategory")
+      if (
+        subcategory.name.startsWith("SELL WITH US") ||
+        subcategory.name
+          .split(" ")
+          .join("")
+          .split("+")
+          .join("")
+          .toLowerCase()
+          .includes("sellwithus")
+      )
+        return navigation.navigate("Sell")
+      navigation.navigate("Search", { query: subcategory.name })
+    }
+
     return (
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("Search", { query: item.name })}
+        onPress={() => handleSubcategorySelect(item)}
       >
         <View style={[styles.gradient, { borderColor: colors.onBackground }]}>
           <Text style={[styles.text, { borderColor: colors.onBackground }]}>
@@ -54,12 +70,24 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
           </Text>
         </View>
       </TouchableOpacity>
-    );
-  };
+    )
+  }
 
   const handleSubcategorySelect = (subcategory: ISubCategory) => {
-    navigation.navigate("Search", { query: subcategory.name });
-  };
+    console.log(subcategory.name, "subcategory")
+    if (
+      subcategory.name.startsWith("SELL WITH US") ||
+      subcategory.name
+        .split(" ")
+        .join("")
+        .split("+")
+        .join("")
+        .toLowerCase()
+        .includes("sellwithus")
+    )
+      return navigation.navigate("Sell")
+    navigation.navigate("Search", { query: subcategory.name })
+  }
 
   return (
     <View style={styles.container}>
@@ -93,8 +121,8 @@ const SubCategories = ({ route, navigation }: SubCategoriesNavigationProp) => {
         />
       </View>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -158,10 +186,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
   },
-});
+})
 
 function removeGreaterThanSign(str: string) {
-  return str.replace(/>/g, "");
+  return str.replace(/>/g, "")
 }
 
-export default SubCategories;
+export default SubCategories

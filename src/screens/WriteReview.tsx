@@ -17,6 +17,7 @@ import { UserByUsername } from "../types/user"
 import useUser from "../hooks/useUser"
 import { Picker } from "@react-native-picker/picker"
 import useAuth from "../hooks/useAuth"
+import useReviews from "../hooks/useReviews"
 
 const WriteProductReview = ({
   route,
@@ -33,6 +34,12 @@ const WriteProductReview = ({
   }, [params])
 
   const { fetchProductBySlug, error, createProductReview } = useProducts()
+  const {
+    editUserReview,
+    deleteUserReview,
+    editProductReview,
+    deleteProductReview,
+  } = useReviews()
   const { getUserByUsername, reviewSeller } = useUser()
   const { addNotification } = useToastNotification()
   const { user } = useAuth()
@@ -128,17 +135,21 @@ const WriteProductReview = ({
         addNotification({ message: "Product not found", error: true })
         return
       }
-      let res: {
-        message: string
-        review: IReview
-      } | null = null
+      let res:
+        | {
+            message: string
+            review: IReview
+          }
+        | string
+        | null = null
       if (reviewData) {
-        // res = await updateProductReview(product?._id, {
-        //   comment,
-        //   rating: Number(rating),
-        //   like,
-        //   _id: reviewData._id,
-        // })
+        res = await editProductReview(product?._id, {
+          comment,
+          rating: Number(rating),
+          like,
+          _id: reviewData._id,
+          itemType: "Product",
+        })
         addNotification({
           message: "Review updated successfully. not implemented",
         })
@@ -161,17 +172,21 @@ const WriteProductReview = ({
         return
       }
 
-      let res: {
-        message: string
-        review: IReview
-      } | null = null
+      let res:
+        | {
+            message: string
+            review: IReview
+          }
+        | string
+        | null = null
       if (reviewData) {
-        // res = await updateSellerReview(seller.user._id, {
-        //   comment,
-        //   rating: Number(rating),
-        //   like,
-        //   _id: reviewData._id,
-        // })
+        res = await editUserReview(seller.user._id, {
+          comment,
+          rating: Number(rating),
+          like,
+          _id: reviewData._id,
+          itemType: "User",
+        })
         addNotification({
           message: "Review updated successfully. not implemented",
         })
@@ -205,11 +220,32 @@ const WriteProductReview = ({
     [product, user]
   )
 
-  const handleEdit = () => {
-    console.log("edit")
-  }
-  const handleDelete = () => {
-    console.log("delete")
+  const handleDelete = async () => {
+    if (params.item === "product") {
+      if (!product) {
+        addNotification({ message: "Product not found", error: true })
+        return
+      }
+      const res = await deleteProductReview(product?._id)
+      if (typeof res !== "string") {
+        addNotification({ message: "Review deleted successfully" })
+        handleBack()
+      } else {
+        addNotification({ message: res, error: true })
+      }
+    } else {
+      if (!seller) {
+        addNotification({ message: "Seller not found", error: true })
+        return
+      }
+      const res = await deleteUserReview(seller?.user._id)
+      if (typeof res !== "string") {
+        addNotification({ message: "Review deleted successfully" })
+        handleBack()
+      } else {
+        addNotification({ message: res, error: true })
+      }
+    }
   }
 
   return isLoading ? (

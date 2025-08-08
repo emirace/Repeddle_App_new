@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useState } from "react"
 import useAuth from "../hooks/useAuth"
-import { CreateReturn, IReturn } from "../types/order"
+import { CreateReturn, IDeliveryMeta, IReturn } from "../types/order"
 import {
   createReturnService,
   fetchAdminReturnService,
@@ -60,7 +60,7 @@ type ContextType = {
   ) => Promise<IReturn | string>
   updateReturnAddress: (
     id: string,
-    body: { method: string; fee: number }
+    body: { method: string; fee: number; meta?: IDeliveryMeta }
   ) => Promise<IReturn | null>
 }
 
